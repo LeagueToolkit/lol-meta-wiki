@@ -1,0 +1,96 @@
+---
+import { typeDisplay, refChip } from "../utils/typeLinker";
+
+interface Property {
+  name: string;
+  ft: string;
+  vt: string;
+  kh: string;
+  kt: string;
+  since?: string;
+}
+
+interface Props {
+  properties: Property[];
+  classIndex: Record<string, string>;
+}
+
+const { properties, classIndex } = Astro.props;
+---
+
+<section class="properties-section">
+  <h2>Properties</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th><th>Type</th><th>Flags</th><th>Since</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        properties.map((p: Property) => (
+          <tr id={`prop-${p.name}`}>
+            <td>{p.name}</td>
+            <td set:html={typeDisplay(p.ft, p.vt, p.kt, classIndex)} />
+            <td>
+              {p.kh !== "0x0" ? (
+                <span set:html={refChip(p.kh, classIndex)} />
+              ) : null}
+              {p.kt !== "0x0" ? <span class="chip">kt: {p.kt}</span> : null}
+            </td>
+            <td>{p.since ?? ""}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</section>
+
+<style>
+  .properties-section table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .properties-section th,
+  .properties-section td {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--sl-color-gray-5, #e5e7eb);
+  }
+
+  .chip {
+    display: inline-block;
+    padding: 0.1rem 0.4rem;
+    border-radius: 0.4rem;
+    background: var(--sl-color-gray-6, #f3f4f6);
+    font-size: 0.8rem;
+  }
+
+  .chip-link {
+    color: var(--sl-color-accent, #4f46e5);
+    text-decoration: none;
+    transition: background 0.2s ease;
+  }
+
+  .chip-link:hover {
+    background: var(--sl-color-accent-low, #e0e7ff);
+    text-decoration: underline;
+  }
+
+  :global(.type-chip) {
+    font-family: "Courier New", monospace;
+    font-size: 0.9rem;
+  }
+
+  :global(.type-chip .type-link) {
+    color: var(--sl-color-accent, #4f46e5);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
+
+  :global(.type-chip .type-link:hover) {
+    color: var(--sl-color-accent-high, #3730a3);
+    text-decoration: underline;
+  }
+</style>

@@ -1,0 +1,342 @@
+---
+import { refChip } from "../utils/typeLinker";
+
+interface Props {
+  currentClass: string;
+  bases: string[];
+  directChildren: string[];
+  ancestors?: string[];
+  descendants?: string[];
+  classIndex: Record<string, string>;
+}
+
+const {
+  currentClass,
+  bases = [],
+  directChildren = [],
+  ancestors = [],
+  descendants = [],
+  classIndex,
+} = Astro.props;
+
+// If no inheritance relationships, don't render anything
+if (bases.length === 0 && directChildren.length === 0) {
+  return null;
+}
+
+// Build the inheritance chain from root to current class
+function buildInheritanceChain(): string[] {
+  // For simplicity, we'll build a chain from the first base
+  // In a real scenario with multiple inheritance, this would be more complex
+  const chain: string[] = [];
+  const visited = new Set<string>();
+
+  // Start from the first base and work backwards to find the root
+  function findRoot(className: string): string[] {
+    if (visited.has(className)) return [];
+    visited.add(className);
+
+    // Find classes that this class inherits from
+    const parents = ancestors.filter(
+      (a) =>
+        // This is a simplified approach - in reality you'd need parent data
+        true
+    );
+
+    return [className];
+  }
+
+  // Simple approach: just show bases then current
+  return [...bases, currentClass];
+}
+
+const inheritanceChain = buildInheritanceChain();
+---
+
+<div class="inheritance-section">
+  <h2>Inheritance</h2>
+
+  <div class="tree">
+    {/* Show parent hierarchy */}
+    {
+      bases.length > 0 && (
+        <div class="tree-group">
+          {bases.map((base: string, index: number) => (
+            <div
+              class="tree-item parent-item"
+              style={`padding-left: ${index * 1.5}rem`}
+            >
+              <span class="tree-connector">
+                {index === bases.length - 1 ? "└─" : "├─"}
+              </span>
+              <span set:html={refChip(base, classIndex)} />
+            </div>
+          ))}
+        </div>
+      )
+    }
+
+    {/* Current class */}
+    <div
+      class="tree-item current-item"
+      style={`padding-left: ${bases.length * 1.5}rem`}
+    >
+      <span class="tree-connector">{bases.length > 0 ? "  └─" : ""}</span>
+      <span class="current-class">
+        {currentClass}
+        <span class="badge">current</span>
+      </span>
+    </div>
+
+    {/* Direct children */}
+    {
+      directChildren.length > 0 && (
+        <>
+          <div
+            class="section-label"
+            style={`padding-left: ${bases.length * 1.5}rem`}
+          >
+            <span class="tree-connector"> │</span>
+          </div>
+          <div
+            class="section-header"
+            style={`padding-left: ${bases.length * 1.5}rem`}
+          >
+            <span class="tree-connector"> ↓</span>
+            <span>Inherited by:</span>
+          </div>
+          {directChildren.slice(0, 12).map((child: string, index: number) => (
+            <div
+              class="tree-item child-item"
+              style={`padding-left: ${(bases.length + 1) * 1.5}rem`}
+            >
+              <span class="tree-connector">
+                {index === Math.min(directChildren.length, 12) - 1
+                  ? "└─"
+                  : "├─"}
+              </span>
+              <span set:html={refChip(child, classIndex)} />
+            </div>
+          ))}
+          {directChildren.length > 12 && (
+            <div
+              class="tree-item more-item"
+              style={`padding-left: ${(bases.length + 1) * 1.5}rem`}
+            >
+              <span class="tree-connector">└─</span>
+              <span class="more-indicator">
+                ... and {directChildren.length - 12} more
+              </span>
+            </div>
+          )}
+        </>
+      )
+    }
+  </div>
+
+  {/* Collapsible full lists */}
+  {
+    descendants.length > 0 && (
+      <details class="inheritance-details">
+        <summary>All Descendants ({descendants.length})</summary>
+        <ul>
+          {descendants.map((descendant: string) => (
+            <li set:html={refChip(descendant, classIndex)} />
+          ))}
+        </ul>
+      </details>
+    )
+  }
+</div>
+
+<style>
+  .inheritance-section {
+    margin-bottom: 2rem;
+  }
+
+  .inheritance-section h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+  }
+
+  .tree {
+    background: var(--sl-color-bg, white);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    font-family: "Courier New", Monaco, monospace;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+  }
+
+  .tree-item {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding-top: 0.15rem;
+    padding-bottom: 0.15rem;
+    transition: background 0.15s ease;
+  }
+
+  .tree-item:hover {
+    background: var(--sl-color-gray-6, #f9fafb);
+  }
+
+  .tree-connector {
+    color: var(--sl-color-gray-4, #9ca3af);
+    margin-right: 0.5rem;
+    user-select: none;
+    font-weight: normal;
+    min-width: 1.5rem;
+  }
+
+  .parent-item .tree-connector {
+    color: var(--sl-color-blue, #3b82f6);
+  }
+
+  .child-item .tree-connector {
+    color: var(--sl-color-green, #10b981);
+  }
+
+  .current-item {
+    margin: 0.25rem 0;
+  }
+
+  .current-item .tree-connector {
+    color: var(--sl-color-accent, #4f46e5);
+    font-weight: bold;
+  }
+
+  .current-class {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--sl-color-accent, #4f46e5);
+    padding: 0.25rem 0.75rem;
+    background: var(--sl-color-accent-low, #e0e7ff);
+    border-radius: 0.375rem;
+    border: 2px solid var(--sl-color-accent, #4f46e5);
+  }
+
+  .badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.15rem 0.4rem;
+    background: var(--sl-color-accent, #4f46e5);
+    color: white;
+    border-radius: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .section-label {
+    margin: 0;
+    padding-top: 0.15rem;
+    padding-bottom: 0;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    margin: 0.25rem 0;
+    padding-top: 0.15rem;
+    padding-bottom: 0.15rem;
+    font-size: 0.85rem;
+    color: var(--sl-color-gray-3, #6b7280);
+    font-weight: 600;
+    font-family:
+      system-ui,
+      -apple-system,
+      sans-serif;
+  }
+
+  .more-item {
+    opacity: 0.7;
+  }
+
+  .more-indicator {
+    font-style: italic;
+    color: var(--sl-color-gray-3, #6b7280);
+    font-family:
+      system-ui,
+      -apple-system,
+      sans-serif;
+  }
+
+  /* Collapsible details */
+  .inheritance-details {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: var(--sl-color-bg, white);
+    border-radius: 0.5rem;
+    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+  }
+
+  .inheritance-details summary {
+    cursor: pointer;
+    font-weight: 600;
+    padding: 0.5rem;
+    user-select: none;
+    font-family:
+      system-ui,
+      -apple-system,
+      sans-serif;
+  }
+
+  .inheritance-details summary:hover {
+    color: var(--sl-color-accent, #4f46e5);
+  }
+
+  .inheritance-details ul {
+    margin: 0.75rem 0 0 0;
+    padding-left: 1.5rem;
+    list-style: none;
+  }
+
+  .inheritance-details li {
+    margin: 0.35rem 0;
+  }
+
+  /* Chip styles for compatibility */
+  :global(.inheritance-section .chip) {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    background: var(--sl-color-gray-6, #f3f4f6);
+    font-size: 0.9rem;
+    font-family:
+      system-ui,
+      -apple-system,
+      sans-serif;
+    transition: all 0.15s ease;
+  }
+
+  :global(.inheritance-section .chip-link) {
+    color: var(--sl-color-text, #1f2937);
+    text-decoration: none;
+    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+  }
+
+  :global(.inheritance-section .chip-link:hover) {
+    background: var(--sl-color-accent-low, #e0e7ff);
+    border-color: var(--sl-color-accent, #4f46e5);
+    color: var(--sl-color-accent, #4f46e5);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  :global(.inheritance-section .parent-item .chip-link:hover) {
+    background: #dbeafe;
+    border-color: var(--sl-color-blue, #3b82f6);
+    color: var(--sl-color-blue, #3b82f6);
+  }
+
+  :global(.inheritance-section .child-item .chip-link:hover) {
+    background: #d1fae5;
+    border-color: var(--sl-color-green, #10b981);
+    color: var(--sl-color-green, #10b981);
+  }
+</style>

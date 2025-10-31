@@ -1,0 +1,48 @@
+---
+import fs from "node:fs";
+import InheritanceTree from "./InheritanceTree.astro";
+import PropertiesTable from "./PropertiesTable.astro";
+// import InheritanceDiagram from "./InheritanceDiagram.astro";
+// import MermaidLoader from "./MermaidLoader.astro";
+// import { generateInheritanceDiagram } from "../utils/mermaidGenerator";
+
+// Props: { file: string } e.g. "/db/classes/BuffSpell.a1b2c3d4e5f6.json"
+const { file } = Astro.props;
+
+// Read the class data from /public at build time (server-side only)
+const dataUrl = new URL(`../../public${file}`, import.meta.url);
+const data = JSON.parse(fs.readFileSync(dataUrl, "utf8"));
+
+// Load classIndex for auto-linking
+const classIndexUrl = new URL(
+  `../../public/db/classIndex.json`,
+  import.meta.url
+);
+const classIndex: Record<string, string> = JSON.parse(
+  fs.readFileSync(classIndexUrl, "utf8")
+);
+
+// For Mermaid diagram (future use):
+// const mermaidDiagram = generateInheritanceDiagram(data, classIndex);
+---
+
+<InheritanceTree
+  currentClass={data.name}
+  bases={data.bases}
+  directChildren={data.directChildren}
+  ancestors={data.ancestors}
+  descendants={data.descendants}
+  classIndex={classIndex}
+/>
+
+<PropertiesTable properties={data.properties} classIndex={classIndex} />
+
+<!-- For Mermaid diagram (future use):
+<InheritanceDiagram
+  mermaidDiagram={mermaidDiagram}
+  ancestors={data.ancestors}
+  descendants={data.descendants}
+  classIndex={classIndex}
+/>
+<MermaidLoader />
+-->

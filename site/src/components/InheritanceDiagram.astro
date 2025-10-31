@@ -1,0 +1,107 @@
+---
+import { refChip } from "../utils/typeLinker";
+
+interface Props {
+  mermaidDiagram: string;
+  ancestors?: string[];
+  descendants?: string[];
+  classIndex: Record<string, string>;
+}
+
+const {
+  mermaidDiagram,
+  ancestors = [],
+  descendants = [],
+  classIndex,
+} = Astro.props;
+---
+
+{
+  mermaidDiagram && (
+    <div class="inheritance-section">
+      <h2>Inheritance Hierarchy</h2>
+      <div class="mermaid-wrapper">
+        <pre class="mermaid">{mermaidDiagram}</pre>
+      </div>
+      {ancestors.length > 0 && (
+        <details class="inheritance-details">
+          <summary>All Ancestors ({ancestors.length})</summary>
+          <ul>
+            {ancestors.map((ancestor: string) => (
+              <li set:html={refChip(ancestor, classIndex)} />
+            ))}
+          </ul>
+        </details>
+      )}
+      {descendants.length > 0 && (
+        <details class="inheritance-details">
+          <summary>All Descendants ({descendants.length})</summary>
+          <ul>
+            {descendants.map((descendant: string) => (
+              <li set:html={refChip(descendant, classIndex)} />
+            ))}
+          </ul>
+        </details>
+      )}
+    </div>
+  )
+}
+
+<style>
+  .inheritance-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--sl-color-gray-6, #f9fafb);
+    border-radius: 0.5rem;
+    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+  }
+
+  .inheritance-section h2 {
+    margin-top: 0;
+  }
+
+  .mermaid-wrapper {
+    margin: 1rem 0;
+    background: var(--sl-color-bg, white);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mermaid-wrapper :global(.mermaid) {
+    min-width: 100%;
+  }
+
+  .inheritance-details {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: var(--sl-color-bg, white);
+    border-radius: 0.5rem;
+    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+  }
+
+  .inheritance-details summary {
+    cursor: pointer;
+    font-weight: 600;
+    padding: 0.5rem;
+    user-select: none;
+  }
+
+  .inheritance-details summary:hover {
+    color: var(--sl-color-accent, #4f46e5);
+  }
+
+  .inheritance-details ul {
+    margin: 0.75rem 0 0 0;
+    padding-left: 1.5rem;
+    list-style: none;
+  }
+
+  .inheritance-details li {
+    margin: 0.35rem 0;
+  }
+</style>

@@ -1,0 +1,94 @@
+---
+// This component handles loading and initializing Mermaid with theme support
+---
+
+<script>
+  // Initialize Mermaid with theme detection
+  function initMermaid() {
+    if (typeof window === "undefined") return;
+
+    // Detect current theme from Starlight
+    const isDark =
+      document.documentElement.getAttribute("data-theme") === "dark";
+
+    const script = document.createElement("script");
+    script.type = "module";
+    script.textContent = `
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      
+      const lightTheme = {
+        primaryColor: '#e0e7ff',
+        primaryTextColor: '#1e1b4b',
+        primaryBorderColor: '#4f46e5',
+        lineColor: '#6366f1',
+        secondaryColor: '#f3f4f6',
+        tertiaryColor: '#fff',
+        mainBkg: '#ffffff',
+        textColor: '#1f2937',
+        background: '#ffffff',
+        nodeBorder: '#4f46e5',
+        clusterBkg: '#f9fafb',
+        clusterBorder: '#e5e7eb',
+        edgeLabelBackground: '#f9fafb',
+        defaultLinkColor: '#6366f1'
+      };
+      
+      const darkTheme = {
+        primaryColor: '#3730a3',
+        primaryTextColor: '#e0e7ff',
+        primaryBorderColor: '#818cf8',
+        lineColor: '#818cf8',
+        secondaryColor: '#374151',
+        tertiaryColor: '#1f2937',
+        mainBkg: '#1f2937',
+        textColor: '#e5e7eb',
+        background: '#1f2937',
+        nodeBorder: '#818cf8',
+        clusterBkg: '#111827',
+        clusterBorder: '#374151',
+        edgeLabelBackground: '#1f2937',
+        defaultLinkColor: '#818cf8'
+      };
+      
+      mermaid.initialize({ 
+        startOnLoad: true,
+        theme: 'base',
+        themeVariables: isDark ? darkTheme : lightTheme,
+        flowchart: {
+          useMaxWidth: true,
+          htmlLabels: true,
+          curve: 'basis',
+          padding: 20,
+          nodeSpacing: 80,
+          rankSpacing: 100
+        },
+        class: {
+          useMaxWidth: true
+        },
+        fontSize: 14
+      });
+      
+      // Re-render on theme change
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.attributeName === 'data-theme') {
+            location.reload(); // Simple reload on theme change
+          }
+        });
+      });
+      
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-theme']
+      });
+    `;
+    document.head.appendChild(script);
+  }
+
+  // Initialize once
+  if (!document.querySelector('script[src*="mermaid"]')) {
+    initMermaid();
+  }
+</script>

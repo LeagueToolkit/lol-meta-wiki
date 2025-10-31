@@ -1,0 +1,13 @@
+{
+  "name": "lol-meta-wiki-root",
+  "private": true,
+  "scripts": {
+    "generate-db": "bun scripts/generate-db.ts --in db/database.py --out site/public/db --pretty 1",
+    "dev": "pnpm --filter site dev",
+    "build": "pnpm --filter site build"
+  },
+  "devDependencies": {
+    "@types/node": "^24.9.2",
+    "bun-types": "^1.3.1"
+  }
+}
