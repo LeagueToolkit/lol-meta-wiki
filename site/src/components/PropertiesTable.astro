@@ -1,5 +1,6 @@
 ---
 import { typeDisplay, refChip } from "../utils/typeLinker";
+import PropertyScrollHandler from "./PropertyScrollHandler.astro";
 
 interface Property {
   name: string;
@@ -19,51 +20,268 @@ const { properties, classIndex } = Astro.props;
 ---
 
 <section class="properties-section">
-  <h2>Properties</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th><th>Type</th><th>Flags</th><th>Since</th>
-      </tr>
-    </thead>
-    <tbody>
-      {
-        properties.map((p: Property) => (
-          <tr id={`prop-${p.name}`}>
-            <td>{p.name}</td>
-            <td set:html={typeDisplay(p.ft, p.vt, p.kt, classIndex)} />
-            <td>
-              {p.kh !== "0x0" ? (
-                <span set:html={refChip(p.kh, classIndex)} />
-              ) : null}
-              {p.kt !== "0x0" ? <span class="chip">kt: {p.kt}</span> : null}
-            </td>
-            <td>{p.since ?? ""}</td>
-          </tr>
-        ))
-      }
-    </tbody>
-  </table>
+  <h2 class="section-title">Properties</h2>
+  <div class="properties-grid">
+    {
+      properties.map((p: Property) => (
+        <article class="property-card">
+          <div class="property-header">
+            <h2 class="property-name">{p.name}</h2>
+            {p.since && (
+              <span
+                class="property-since"
+                title={`Added in version ${p.since}`}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                {p.since}
+              </span>
+            )}
+          </div>
+
+          <div class="property-type">
+            <label class="type-label">Type</label>
+            <div class="type-display">
+              <code
+                class="type-code"
+                set:html={typeDisplay(p.ft, p.vt, p.kt, classIndex)}
+              />
+            </div>
+          </div>
+
+          {(p.kh !== "0x0" || p.kt !== "0x0") && (
+            <div class="property-metadata">
+              {p.kh !== "0x0" && (
+                <div class="metadata-item">
+                  <label class="metadata-label">Hash Reference</label>
+                  <span
+                    class="metadata-value"
+                    set:html={refChip(p.kh, classIndex)}
+                  />
+                </div>
+              )}
+              {p.kt !== "0x0" && (
+                <div class="metadata-item">
+                  <label class="metadata-label">Key Type</label>
+                  <span class="metadata-value chip">{p.kt}</span>
+                </div>
+              )}
+            </div>
+          )}
+
+          <div class="property-docs">
+            <label class="docs-label">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+                <polyline points="10 9 9 9 8 9" />
+              </svg>
+              Documentation
+            </label>
+            <div class="docs-content">
+              <p class="docs-placeholder">
+                No documentation available.{" "}
+                <a href="#" class="docs-link">
+                  Add documentation →
+                </a>
+              </p>
+            </div>
+          </div>
+        </article>
+      ))
+    }
+  </div>
 </section>
 
 <style>
-  .properties-section table {
-    width: 100%;
-    border-collapse: collapse;
+  .properties-section {
+    margin-top: 2rem;
   }
 
-  .properties-section th,
-  .properties-section td {
-    padding: 0.5rem 0.75rem;
-    border-bottom: 1px solid var(--sl-color-gray-5, #e5e7eb);
+  .section-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--sl-color-white, #1f2937);
+    border-bottom: 2px solid var(--sl-color-gray-5, #e5e7eb);
+    padding-bottom: 0.75rem;
+  }
+
+  .properties-grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .property-card {
+    background: var(--sl-color-bg-nav, #ffffff);
+    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  }
+
+  .property-card:hover {
+    border-color: var(--sl-color-accent, #4f46e5);
+    box-shadow: 0 4px 12px 0 rgb(79 70 229 / 0.1);
+  }
+
+  .property-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--sl-color-gray-6, #f3f4f6);
+  }
+
+  .property-name {
+    font-size: 1.375rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--sl-color-white, #111827);
+    font-family: "Courier New", monospace;
+    letter-spacing: -0.02em;
+  }
+
+  .property-since {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.813rem;
+    color: var(--sl-color-gray-3, #6b7280);
+    padding: 0.25rem 0.625rem;
+    background: var(--sl-color-gray-6, #f9fafb);
+    border-radius: 0.5rem;
+    font-weight: 500;
+  }
+
+  .property-since svg {
+    opacity: 0.7;
+  }
+
+  .property-type {
+    margin-bottom: 1.25rem;
+  }
+
+  .type-label,
+  .metadata-label,
+  .docs-label {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.813rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--sl-color-gray-3, #6b7280);
+    margin-bottom: 0.5rem;
+  }
+
+  .type-display {
+    background: var(--sl-color-gray-6, #f9fafb);
+    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .type-code {
+    font-family: "Courier New", Consolas, Monaco, monospace;
+    font-size: 0.938rem;
+    color: var(--sl-color-white, #1f2937);
+    font-weight: 500;
+  }
+
+  .property-metadata {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    padding: 0.75rem;
+    background: var(--sl-color-bg, #fefefe);
+    border-radius: 0.5rem;
+    border: 1px dashed var(--sl-color-gray-5, #e5e7eb);
+  }
+
+  .metadata-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    flex: 1;
+    min-width: 150px;
+  }
+
+  .metadata-value {
+    font-size: 0.875rem;
+    color: var(--sl-color-white, #374151);
+  }
+
+  .property-docs {
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--sl-color-gray-6, #f3f4f6);
+  }
+
+  .docs-content {
+    background: linear-gradient(135deg, #faf5ff 0%, #f5f3ff 100%);
+    border: 1px solid var(--sl-color-gray-5, #e9d5ff);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    min-height: 60px;
+  }
+
+  .docs-placeholder {
+    margin: 0;
+    color: var(--sl-color-gray-3, #9ca3af);
+    font-size: 0.875rem;
+    font-style: italic;
+  }
+
+  .docs-link {
+    color: var(--sl-color-accent, #7c3aed);
+    text-decoration: none;
+    font-weight: 500;
+    font-style: normal;
+    transition: color 0.2s ease;
+  }
+
+  .docs-link:hover {
+    color: var(--sl-color-accent-high, #6d28d9);
+    text-decoration: underline;
   }
 
   .chip {
     display: inline-block;
-    padding: 0.1rem 0.4rem;
-    border-radius: 0.4rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
     background: var(--sl-color-gray-6, #f3f4f6);
-    font-size: 0.8rem;
+    font-size: 0.813rem;
+    font-family: "Courier New", monospace;
+    font-weight: 500;
   }
 
   .chip-link {
@@ -85,7 +303,7 @@ const { properties, classIndex } = Astro.props;
   :global(.type-chip .type-link) {
     color: var(--sl-color-accent, #4f46e5);
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 600;
     transition: color 0.2s ease;
   }
 
@@ -93,4 +311,31 @@ const { properties, classIndex } = Astro.props;
     color: var(--sl-color-accent-high, #3730a3);
     text-decoration: underline;
   }
+
+  /* Responsive design */
+  @media (max-width: 640px) {
+    .property-card {
+      padding: 1rem;
+    }
+
+    .property-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .property-name {
+      font-size: 1.125rem;
+    }
+
+    .property-metadata {
+      flex-direction: column;
+    }
+
+    .metadata-item {
+      min-width: 100%;
+    }
+  }
 </style>
+
+<PropertyScrollHandler properties={properties} />

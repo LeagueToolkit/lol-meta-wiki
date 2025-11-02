@@ -1,0 +1,59 @@
+---
+// This component handles scrolling to property cards when TOC links are clicked
+// It maps the Markdown heading IDs (lowercase, slugified) to the actual property names
+interface Props {
+  properties: { name: string }[];
+}
+
+const { properties } = Astro.props;
+
+// Create a mapping of slugified names to actual names
+const propertyMap = properties.reduce(
+  (acc, prop) => {
+    // Starlight's slug generation: lowercase and replace spaces with hyphens
+    const slug = prop.name.toLowerCase().replace(/\s+/g, "-");
+    acc[slug] = prop.name;
+    return acc;
+  },
+  {} as Record<string, string>
+);
+---
+
+<script define:vars={{ propertyMap }}>
+  // Wait for DOM to be ready
+  document.addEventListener("DOMContentLoaded", () => {
+    // Find all TOC links
+    const tocLinks = document.querySelectorAll('.right-sidebar a[href^="#"]');
+
+    tocLinks.forEach((link) => {
+      link.addEventListener("click", (e) => {
+        const href = link.getAttribute("href");
+        if (!href) return;
+
+        const slug = href.slice(1); // Remove the #
+        const actualName = propertyMap[slug];
+
+        if (actualName) {
+          e.preventDefault();
+
+          // Find by searching through all property-name elements
+          const allPropertyNames = document.querySelectorAll(".property-name");
+          let targetCard = null;
+
+          for (const nameEl of allPropertyNames) {
+            if (nameEl.textContent.trim() === actualName) {
+              targetCard = nameEl.closest(".property-card");
+              break;
+            }
+          }
+
+          if (targetCard) {
+            targetCard.scrollIntoView({ behavior: "smooth", block: "start" });
+            // Update URL hash
+            history.pushState(null, "", href);
+          }
+        }
+      });
+    });
+  });
+</script>

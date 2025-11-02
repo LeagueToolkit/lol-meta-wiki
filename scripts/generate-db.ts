@@ -152,6 +152,13 @@ function generateMDX(c: ClassDoc, fileName: string): string {
   const basesText =
     basesLinks.length > 0 ? `**Inherits from:** ${basesLinks.join(", ")}` : "";
 
+  // Generate invisible heading anchors for TOC
+  // These will be hidden but picked up by Starlight's TOC
+  // MUST use Markdown syntax (##), not HTML <h2> tags
+  const propertyAnchors = c.properties
+    .map((prop) => `## ${prop.name}`)
+    .join("\n\n");
+
   return `---
 title: ${displayName}
 description: Reference documentation for ${displayName} meta class
@@ -164,6 +171,12 @@ import ClassDetails from '../../../components/ClassDetails.astro';
 ${basesText}
 
 <ClassDetails file="/db/classes/${fileName}" />
+
+<div style="position: absolute; visibility: hidden; pointer-events: none;" aria-hidden="true">
+
+${propertyAnchors}
+
+</div>
 `;
 }
 
