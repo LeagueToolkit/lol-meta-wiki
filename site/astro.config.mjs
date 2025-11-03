@@ -9,6 +9,9 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "LoL Meta Wiki",
+      customCss: [
+        "./src/styles/custom.css",
+      ],
       social: [
         {
           icon: "github",
