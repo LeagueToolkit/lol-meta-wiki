@@ -34,7 +34,7 @@ jobs:
         run: pnpm generate-db
       
       - name: Build site
-        run: pnpm --filter site build
+        run: pnpm --filter site run build
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
