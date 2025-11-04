@@ -15,20 +15,28 @@ jobs:
         with:
           version: 9
       
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
       - uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
       
       - name: Install dependencies
         run: |
-          pnpm install
+          pnpm install --frozen-lockfile
           bun install
       
       - name: Generate database
         run: pnpm generate-db
       
       - name: Build site
-        run: pnpm build
+        run: |
+          cd site
+          pnpm run build
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
