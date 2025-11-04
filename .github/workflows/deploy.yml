@@ -29,12 +29,16 @@ jobs:
         run: |
           pnpm install
           bun install
+      - name: Install site workspace dependencies
+        working-directory: ./site
+        run: pnpm install
       
       - name: Generate database
         run: pnpm generate-db
       
       - name: Build site
-        run: pnpm --filter site run build
+        working-directory: ./site
+        run: pnpm run build
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
