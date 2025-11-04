@@ -27,7 +27,7 @@ jobs:
       
       - name: Install dependencies
         run: |
-          pnpm install --frozen-lockfile
+          pnpm install
           bun install
       
       - name: Generate database
