@@ -6,8 +6,8 @@ import react from "@astrojs/react";
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://leaguetoolkit.github.io',
-  base: '/lol-meta-wiki',
+  site: 'https://meta-wiki.leaguetoolkit.dev',
+  // Remove 'base' when using custom domain (no subpath needed)
   integrations: [
     starlight({
       title: "LoL Meta Wiki",
