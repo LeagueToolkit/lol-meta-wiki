@@ -1,40 +1,49 @@
 ---
-title: Welcome to Starlight
-description: Get started building your docs site with Starlight.
-template: splash # Remove or comment out this line to display the site sidebar on this page.
+title: LoL Meta Wiki
+description: Explore League of Legends meta classes, read community guides, and contribute your knowledge.
+template: splash
 hero:
-  tagline: Congrats on setting up a new Starlight project!
+  tagline: Community-driven documentation for League of Legends meta (.bin) classes.
   image:
-    file: ../../assets/houston.webp
+    file: ../../assets/logo.svg
+    alt: LoL Meta Wiki logo
   actions:
-    - text: Example Guide
-      link: /guides/example/
-      icon: right-arrow
-    - text: Read the Starlight docs
-      link: https://starlight.astro.build
-      icon: external
+    - text: Browse Classes
+      link: /classes/
+    - text: Read Guides
+      link: /guides/
+    - text: How to Contribute
+      link: /guides/writing-guides/
       variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Card, CardGrid } from "@astrojs/starlight/components";
 
-## Next steps
+## What you can do here
 
 <CardGrid stagger>
-	<Card title="Update content" icon="pencil">
-		Edit `src/content/docs/index.mdx` to see this page change.
-	</Card>
-	<Card title="Change page layout" icon="document">
-		Delete `template: splash` in `src/content/docs/index.mdx` to display a
-		sidebar on this page.
-	</Card>
-	<Card title="Add new content" icon="add-document">
-		Add Markdown or MDX files to `src/content/docs` to create new pages.
-	</Card>
-	<Card title="Configure your site" icon="setting">
-		Edit your `sidebar` and other config in `astro.config.mjs`.
-	</Card>
-	<Card title="Read the docs" icon="open-book">
-		Learn more in [the Starlight Docs](https://starlight.astro.build/).
-	</Card>
+  <Card title="Understand meta classes" icon="layers">
+    Dive into thousands of meta classes with inheritance graphs and property
+    details.
+  </Card>
+  <Card title="Learn from guides" icon="open-book">
+    Read practical, community-written guides about working with game data and
+    tools.
+  </Card>
+  <Card title="Contribute knowledge" icon="pencil">
+    Improve class/property docs or write a new guide — all changes happen via
+    GitHub PRs.
+  </Card>
 </CardGrid>
+
+## How to contribute
+
+- Update class/property docs: Use the "Add documentation" buttons on class pages.
+- Write a guide: Follow the steps in [Writing Guides](/guides/writing-guides/).
+- Fix mistakes: Click "Edit this page" on any doc to open a PR.
+
+## Quick links
+
+- Guides: [/guides/](/guides/)
+- Classes: [/classes/](/classes/)
+- Reference: [/reference/](/reference/)

@@ -14,20 +14,21 @@ export default defineConfig({
       customCss: [
         "./src/styles/custom.css",
       ],
+      editLink: {
+        // Enable "Edit this page" linking to GitHub for PRs
+        baseUrl: 'https://github.com/LeagueToolkit/lol-meta-wiki/edit/main/site/src/content',
+      },
       social: [
         {
           icon: "github",
           label: "GitHub",
-          href: "https://github.com/withastro/starlight",
+          href: "https://github.com/LeagueToolkit/lol-meta-wiki",
         },
       ],
       sidebar: [
         {
           label: "Guides",
-          items: [
-            // Each item here is one entry in the navigation menu.
-            { label: "Example Guide", slug: "guides/example" },
-          ],
+          autogenerate: { directory: "guides" },
         },
         {
           label: "Reference",

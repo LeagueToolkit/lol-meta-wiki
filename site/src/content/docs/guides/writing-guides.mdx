@@ -1,0 +1,72 @@
+---
+title: Writing Guides
+description: How to create and submit a guide to the LoL Meta Wiki.
+---
+
+Welcome! This page explains how to write a guide and submit it as a GitHub pull request.
+
+## Before you start
+
+- Guides live in `site/src/content/docs/guides/`.
+- Write guides in Markdown or MDX (`.md` or `.mdx`).
+- Include frontmatter at the top with `title` and `description`.
+
+### Quick template
+
+```md
+---
+title: Your Guide Title
+description: One-line summary of what readers will learn.
+---
+
+## Introduction
+
+Explain the context and the goal.
+
+## Steps
+
+1. Step one...
+2. Step two...
+
+## Examples
+
+Show a minimal, working example.
+
+## Further reading
+
+Link to related classes, reference pages, or external resources.
+```
+
+## Submit via GitHub UI (no local setup)
+
+1. Open the guides folder on GitHub: [`site/src/content/docs/guides`](https://github.com/LeagueToolkit/lol-meta-wiki/tree/main/site/src/content/docs/guides)
+2. Click “Add file” → “Create new file”.
+3. Name it like `my-guide-name.md`.
+4. Paste the template above and write your content.
+5. Commit changes and open a Pull Request.
+
+Once merged, your guide will automatically appear under the **Guides** section in the sidebar.
+
+## Submit locally (for larger edits)
+
+```bash
+git clone https://github.com/LeagueToolkit/lol-meta-wiki.git
+cd lol-meta-wiki
+pnpm install
+
+# Create your guide
+$EDITOR site/src/content/docs/guides/my-guide-name.md
+
+# Preview the site
+pnpm generate-db
+pnpm dev
+```
+
+Open a PR when you're ready. The site is built with Astro + Starlight and will show an “Edit this page” link on docs pages for quick fixes.
+
+## Style tips
+
+- Prefer short sections and concrete examples.
+- Link to classes (under `/classes/`) and reference pages when relevant.
+- Keep titles descriptive and use the `description` to set expectations.
+
