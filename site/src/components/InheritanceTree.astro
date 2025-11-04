@@ -155,13 +155,13 @@ const inheritanceChain = buildInheritanceChain();
   }
 
   .tree {
-    background: var(--sl-color-bg, white);
+    background: var(--sl-color-bg-nav);
     padding: 1.5rem;
     border-radius: 0.5rem;
     font-family: "Courier New", Monaco, monospace;
     font-size: 0.95rem;
     line-height: 1.8;
-    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+    border: 1px solid var(--sl-color-gray-5);
   }
 
   .tree-item {
@@ -170,11 +170,31 @@ const inheritanceChain = buildInheritanceChain();
     margin: 0;
     padding-top: 0.15rem;
     padding-bottom: 0.15rem;
-    transition: background 0.15s ease;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+    border-radius: 0.375rem;
+    transition: all 0.15s ease;
   }
 
   .tree-item:hover {
-    background: var(--sl-color-gray-6, #f9fafb);
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(2px);
+  }
+
+  .tree-item:not(.current-item):hover {
+    cursor: pointer;
+  }
+  
+  /* Better hover for parent items */
+  .parent-item:hover {
+    background: rgba(59, 130, 246, 0.15);
+  }
+  
+  /* Better hover for child items */
+  .child-item:hover {
+    background: rgba(16, 185, 129, 0.15);
   }
 
   .tree-connector {
@@ -264,9 +284,9 @@ const inheritanceChain = buildInheritanceChain();
   .inheritance-details {
     margin-top: 1rem;
     padding: 0.75rem;
-    background: var(--sl-color-bg, white);
+    background: var(--sl-color-bg-nav);
     border-radius: 0.5rem;
-    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+    border: 1px solid var(--sl-color-gray-5);
   }
 
   .inheritance-details summary {
@@ -299,7 +319,7 @@ const inheritanceChain = buildInheritanceChain();
     display: inline-block;
     padding: 0.25rem 0.5rem;
     border-radius: 0.375rem;
-    background: var(--sl-color-gray-6, #f3f4f6);
+    background: rgba(255, 255, 255, 0.05);
     font-size: 0.9rem;
     font-family:
       system-ui,
@@ -309,28 +329,28 @@ const inheritanceChain = buildInheritanceChain();
   }
 
   :global(.inheritance-section .chip-link) {
-    color: var(--sl-color-text, #1f2937);
+    color: var(--sl-color-text);
     text-decoration: none;
-    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+    border: 1px solid var(--sl-color-gray-5);
   }
 
   :global(.inheritance-section .chip-link:hover) {
-    background: var(--sl-color-accent-low, #e0e7ff);
-    border-color: var(--sl-color-accent, #4f46e5);
-    color: var(--sl-color-accent, #4f46e5);
+    background: rgba(79, 70, 229, 0.15);
+    border-color: var(--sl-color-accent);
+    color: var(--sl-color-accent);
     transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
 
   :global(.inheritance-section .parent-item .chip-link:hover) {
-    background: #dbeafe;
-    border-color: var(--sl-color-blue, #3b82f6);
-    color: var(--sl-color-blue, #3b82f6);
+    background: rgba(59, 130, 246, 0.15);
+    border-color: var(--sl-color-blue);
+    color: var(--sl-color-blue);
   }
 
   :global(.inheritance-section .child-item .chip-link:hover) {
-    background: #d1fae5;
-    border-color: var(--sl-color-green, #10b981);
-    color: var(--sl-color-green, #10b981);
+    background: rgba(16, 185, 129, 0.15);
+    border-color: var(--sl-color-green);
+    color: var(--sl-color-green);
   }
 </style>

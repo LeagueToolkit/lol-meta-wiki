@@ -84,12 +84,29 @@ export function typeDisplay(
   ft: string,
   vt: string,
   kt: string,
+  kh: string,
   classIndex: Record<string, string>
 ): string {
   let display = linkType(ft, classIndex);
 
-  // For containers with value types
-  if (vt !== "0x0") {
+  // Types that should show hash reference as generic parameter
+  const genericTypes = new Set(["Link", "Embed", "List", "Map", "Pointer"]);
+  
+  // For Link, Embed, List, Map, Pointer with hash reference, show as generic
+  if (genericTypes.has(ft) && kh !== "0x0") {
+    const khLinked = linkType(kh, classIndex);
+    
+    if (ft === "Map" && kt !== "0x0") {
+      // Map<KeyType, ValueType>
+      const ktLinked = linkType(kt, classIndex);
+      display += `&lt;${ktLinked}, ${khLinked}&gt;`;
+    } else {
+      // Link<Type>, Embed<Type>, List<Type>, Pointer<Type>
+      display += `&lt;${khLinked}&gt;`;
+    }
+  } 
+  // For containers with value types (fallback for other types)
+  else if (vt !== "0x0") {
     // Check if the field type already has generic syntax
     if (!ft.includes("<")) {
       display += `&lt;${linkType(vt, classIndex)}&gt;`;

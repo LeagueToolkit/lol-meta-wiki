@@ -2,6 +2,7 @@
 import fs from "node:fs";
 import InheritanceTree from "./InheritanceTree.astro";
 import PropertiesSection from "./PropertiesSection.astro";
+import ClassDocumentation from "./ClassDocumentation.astro";
 // import InheritanceDiagram from "./InheritanceDiagram.astro";
 // import MermaidLoader from "./MermaidLoader.astro";
 // import { generateInheritanceDiagram } from "../utils/mermaidGenerator";
@@ -35,7 +36,9 @@ const classIndex: Record<string, string> = JSON.parse(
   classIndex={classIndex}
 />
 
-<PropertiesSection properties={data.properties} classIndex={classIndex} />
+<ClassDocumentation className={data.name} docs={data.docs} />
+
+<PropertiesSection properties={data.properties} classIndex={classIndex} className={data.name} />
 
 <!-- For Mermaid diagram (future use):
 <InheritanceDiagram

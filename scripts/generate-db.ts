@@ -19,6 +19,7 @@
 import { mkdir, readFile, readdir, writeFile, unlink } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { basename, dirname, join } from "node:path";
+import { parse as parseYAML } from "yaml";
 
 type FieldTuple = {
   name: string; // resolved field name or raw hex
@@ -26,6 +27,19 @@ type FieldTuple = {
   kt: string; // aux type or 0x0 (size for containers, key type for Map)
   vt: string; // aux value type or 0x0 (value type for containers/Map)
   kh: string; // referenced class/type or 0x0
+  since?: string; // version added
+};
+
+type PropertyDocumentation = {
+  description?: string;
+  examples?: string[];
+  notes?: string[];
+};
+
+type ClassDocumentation = {
+  description?: string;
+  examples?: string[];
+  notes?: string[];
 };
 
 type ClassDoc = {
@@ -54,6 +68,7 @@ for (let i = 2; i < process.argv.length; i++) {
 const inFile = args.get("in") ?? "db/database.py";
 const outDir = args.get("out") ?? "site/public/db";
 const mdxDir = args.get("mdx") ?? "site/src/content/docs/classes";
+const docsDir = args.get("docs") ?? "db/docs";
 const pretty = args.get("pretty") === "true" || args.get("pretty") === "1";
 
 // --- helpers ---
@@ -72,6 +87,37 @@ async function writeIfChanged(path: string, contents: string) {
   await mkdir(dirname(path), { recursive: true });
   await writeFile(path, contents, "utf8");
   return true;
+}
+
+/**
+ * Load documentation for a class from unified YAML file
+ */
+async function loadDocs(className: string, docsDir: string): Promise<{
+  classDocs: ClassDocumentation | null;
+  propertyDocs: Record<string, PropertyDocumentation>;
+}> {
+  try {
+    const docPath = join(docsDir, `${className}.yaml`);
+    const content = await readFile(docPath, "utf8");
+    const parsed = parseYAML(content);
+    
+    // Extract class-level docs
+    const classDocs = parsed?.class ? (parsed.class as ClassDocumentation) : null;
+    
+    // Extract property docs
+    const propertyDocs: Record<string, PropertyDocumentation> = {};
+    if (parsed?.properties && typeof parsed.properties === 'object') {
+      for (const [key, value] of Object.entries(parsed.properties)) {
+        if (typeof value === 'object' && value !== null) {
+          propertyDocs[key] = value as PropertyDocumentation;
+        }
+      }
+    }
+    
+    return { classDocs, propertyDocs };
+  } catch {
+    return { classDocs: null, propertyDocs: {} };
+  }
 }
 
 // --- parser ---
@@ -265,14 +311,24 @@ async function main() {
     const ancestors = getAncestors(c.name);
     const descendants = getDescendants(c.name);
 
+    // Load documentation from unified YAML file
+    const { classDocs, propertyDocs } = await loadDocs(c.name, docsDir);
+
+    // Merge property documentation
+    const propertiesWithDocs = c.properties.map(prop => ({
+      ...prop,
+      docs: propertyDocs[prop.name] || null,
+    }));
+
     const json = JSON.stringify(
       {
         name: c.name,
         bases: c.bases,
-        properties: c.properties,
+        properties: propertiesWithDocs,
         ancestors,
         descendants,
         directChildren: [...(children.get(c.name) || [])],
+        docs: classDocs || null,
       },
       null,
       pretty ? 2 : 0

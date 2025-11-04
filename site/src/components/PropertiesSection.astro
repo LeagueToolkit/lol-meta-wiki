@@ -1,6 +1,13 @@
 ---
 import { typeDisplay, refChip } from "../utils/typeLinker";
 import PropertyScrollHandler from "./PropertyScrollHandler.astro";
+import AddDocumentationButton from "./AddDocumentationButton";
+
+interface PropertyDocs {
+  description?: string;
+  examples?: string[];
+  notes?: string[];
+}
 
 interface Property {
   name: string;
@@ -9,14 +16,16 @@ interface Property {
   kh: string;
   kt: string;
   since?: string;
+  docs?: PropertyDocs | null;
 }
 
 interface Props {
   properties: Property[];
   classIndex: Record<string, string>;
+  className: string;
 }
 
-const { properties, classIndex } = Astro.props;
+const { properties, classIndex, className } = Astro.props;
 ---
 
 <section class="properties-section">
@@ -29,7 +38,7 @@ const { properties, classIndex } = Astro.props;
             <h2 class="property-name">{p.name}</h2>
             <code
               class="type-code"
-              set:html={typeDisplay(p.ft, p.vt, p.kt, classIndex)}
+              set:html={typeDisplay(p.ft, p.vt, p.kt, p.kh, classIndex)}
             />
             {p.since && (
               <span
@@ -55,7 +64,8 @@ const { properties, classIndex } = Astro.props;
             )}
           </div>
 
-          {(p.kh !== "0x0" || p.kt !== "0x0") && (
+          {(p.kh !== "0x0" || p.kt !== "0x0") && 
+           !["Link", "Embed", "List", "Map", "Pointer"].includes(p.ft) && (
             <div class="property-metadata">
               {p.kh !== "0x0" && (
                 <div class="metadata-item">
@@ -76,33 +86,63 @@ const { properties, classIndex } = Astro.props;
           )}
 
           <div class="property-docs">
-            <label class="docs-label">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <polyline points="14 2 14 8 20 8" />
-                <line x1="16" y1="13" x2="8" y2="13" />
-                <line x1="16" y1="17" x2="8" y2="17" />
-                <polyline points="10 9 9 9 8 9" />
-              </svg>
-              Documentation
-            </label>
+            <div class="docs-header">
+              <label class="docs-label">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                  <polyline points="10 9 9 9 8 9" />
+                </svg>
+                Documentation
+              </label>
+              <AddDocumentationButton
+                className={className}
+                propertyName={p.name}
+                client:load
+              />
+            </div>
             <div class="docs-content">
-              <p class="docs-placeholder">
-                No documentation available.{" "}
-                <a href="#" class="docs-link">
-                  Add documentation →
-                </a>
-              </p>
+              {p.docs?.description ? (
+                <div class="docs-text">
+                  <p>{p.docs.description}</p>
+                  {p.docs.examples && p.docs.examples.length > 0 && (
+                    <div class="docs-section">
+                      <strong>Examples:</strong>
+                      <ul>
+                        {p.docs.examples.map((ex: string) => (
+                          <li>{ex}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {p.docs.notes && p.docs.notes.length > 0 && (
+                    <div class="docs-section">
+                      <strong>Notes:</strong>
+                      <ul>
+                        {p.docs.notes.map((note: string) => (
+                          <li>{note}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <p class="docs-placeholder">
+                  No documentation available yet. Click "Add documentation" to contribute!
+                </p>
+              )}
             </div>
           </div>
         </article>
@@ -237,6 +277,13 @@ const { properties, classIndex } = Astro.props;
     border-top: 1px solid var(--sl-color-gray-6, #f3f4f6);
   }
 
+  .docs-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
   .docs-content {
     background: var(--sl-color-gray-6, #f9fafb);
     border: 1px solid var(--sl-color-gray-5, #e5e7eb);
@@ -252,17 +299,37 @@ const { properties, classIndex } = Astro.props;
     font-style: italic;
   }
 
-  .docs-link {
-    color: var(--sl-color-accent, #7c3aed);
-    text-decoration: none;
-    font-weight: 500;
-    font-style: normal;
-    transition: color 0.2s ease;
+  .docs-text {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--sl-color-white, #1f2937);
   }
 
-  .docs-link:hover {
-    color: var(--sl-color-accent-high, #6d28d9);
-    text-decoration: underline;
+  .docs-text p {
+    margin: 0 0 0.75rem 0;
+  }
+
+  .docs-text p:last-child {
+    margin-bottom: 0;
+  }
+
+  .docs-section {
+    margin-top: 0.75rem;
+  }
+
+  .docs-section strong {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: var(--sl-color-white, #111827);
+  }
+
+  .docs-section ul {
+    margin: 0;
+    padding-left: 1.5rem;
+  }
+
+  .docs-section li {
+    margin: 0.25rem 0;
   }
 
   .chip {

@@ -1,0 +1,59 @@
+# Turret Documentation
+
+class:
+  description: |
+    Represents defensive **turret structures** on Summoner's Rift and other maps. 
+    
+    Turrets are stationary defensive structures that:
+    - Automatically attack enemy units within range
+    - Provide vision and strategic control over map areas
+    - Grant global gold when destroyed
+    
+    See the [League of Legends Wiki](https://leagueoflegends.fandom.com/wiki/Turret) for more details.
+  
+  examples:
+    - "Outer turrets with plating in early game"
+    - "Inner turrets protecting inhibitors"
+    - "Nexus turrets defending the base"
+  
+  notes:
+    - "Turrets prioritize targets based on specific rules (champions attacking allies > closest target)"
+    - "Turrets have special mechanics like laser shots and ramping damage"
+    - "Destroying turrets grants global gold to the team"
+    - "Turrets gain armor and magic resist based on nearby enemy champions"
+
+properties:
+  mMaxHealth:
+    description: |
+      The **maximum health points** of the turret. 
+      
+      Turrets have different health values based on their tier:
+      - **Outer turrets**: Higher HP with plating
+      - **Inner turrets**: Moderate HP
+      - **Inhibitor turrets**: High HP
+      - **Nexus turrets**: Lower HP but backed by fountain
+    
+    examples:
+      - "Outer turrets: ~3000-4000 HP (plus plating)"
+      - "Nexus turrets: ~2500 HP"
+    
+    notes:
+      - "Turret health scales over game time"
+      - "Turret plating provides additional effective HP in early game"
+
+  mAttackDamage:
+    description: |
+      The base attack damage dealt by the turret's shots. 
+      
+      **Important**: This value increases with each consecutive shot against the same target!
+    
+    examples:
+      - "First shot: ~170 damage"
+      - "Second shot: ~238 damage (+40%)"
+      - "Third shot: ~333 damage (+40% again)"
+    
+    notes:
+      - "Turrets deal bonus damage to minions"
+      - "Damage ramps up when attacking champions"
+      - "The damage buff resets when switching targets"
+

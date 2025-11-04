@@ -1,0 +1,42 @@
+# Documentation Files
+
+This directory contains YAML files with documentation for meta classes and their properties.
+Each class has a single YAML file named after the class (e.g., `AiBaseClient.yaml`, `Turret.yaml`).
+
+## File Format
+
+```yaml
+# ClassName Documentation
+
+class:
+  description: "What this class represents"
+  examples:
+    - "Example 1"
+    - "Example 2"
+  notes:
+    - "Note 1"
+    - "Note 2"
+
+properties:
+  propertyName1:
+    description: "What this property does"
+    examples:
+      - "Example value"
+    notes:
+      - "Additional info"
+  
+  propertyName2:
+    description: "Another property"
+    examples:
+      - "Example"
+```
+
+## Example Files
+
+- `Turret.yaml` - Complete example with class and property documentation
+- `AiBaseClient.yaml` - Template for adding new documentation
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md) for detailed guidelines on adding documentation.
+

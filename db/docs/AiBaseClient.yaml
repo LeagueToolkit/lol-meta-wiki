@@ -1,0 +1,16 @@
+# AiBaseClient Documentation
+
+class:
+  description: ""
+  examples: []
+  notes: []
+
+properties:
+  # Add property documentation below
+  # propertyName:
+  #   description: "What this property does"
+  #   examples:
+  #     - "Example value"
+  #   notes:
+  #     - "Additional information"
+

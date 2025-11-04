@@ -1,0 +1,31 @@
+.add-docs-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--sl-color-accent, #7c3aed);
+  background: transparent;
+  border: 1px solid var(--sl-color-accent, #7c3aed);
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.add-docs-button:hover {
+  background: var(--sl-color-accent, #7c3aed);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(124, 58, 237, 0.3);
+}
+
+.add-docs-button:active {
+  transform: translateY(0);
+}
+
+.add-docs-button svg {
+  flex-shrink: 0;
+}
+
