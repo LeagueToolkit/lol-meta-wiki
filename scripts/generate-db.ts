@@ -28,6 +28,7 @@ type FieldTuple = {
   vt: string; // aux value type or 0x0 (value type for containers/Map)
   kh: string; // referenced class/type or 0x0
   since?: string; // version added
+  defaultValue?: string; // optional default value as JSON string
 };
 
 type PropertyDocumentation = {
@@ -126,6 +127,7 @@ async function loadDocs(className: string, docsDir: string): Promise<{
  *   #!python
  *   class TypeName(Base1, Base2):
  *       FieldName: (ft, kt, vt, kh)
+ *       FieldName: (ft, kt, vt, kh) = <default>
  *       ...
  *       pass
  */
@@ -137,8 +139,9 @@ function parseDatabasePy(text: string): ParsedDB {
 
   // Regexes reflect the documented structure
   const classLine = /^class\s+([^\s(]+)\s*\(([^)]*)\)\s*:\s*$/; // class Foo(Bar, Baz):
+  // Updated to capture optional default value: FieldName: (ft, kt, vt, kh) = <default>
   const fieldLine =
-    /^\s{4}([A-Za-z0-9_]+|0x[0-9a-fA-F]+):\s*\(\s*([^,\s]+)\s*,\s*([^,\s]+)\s*,\s*([^,\s]+)\s*,\s*([^)\s]+)\s*\)\s*$/;
+    /^\s{4}([A-Za-z0-9_]+|0x[0-9a-fA-F]+):\s*\(\s*([^,\s]+)\s*,\s*([^,\s]+)\s*,\s*([^,\s]+)\s*,\s*([^)\s]+)\s*\)(?:\s*=\s*(.+))?$/;
   const passLine = /^\s*pass\s*$/;
 
   for (const raw of lines) {
@@ -163,8 +166,12 @@ function parseDatabasePy(text: string): ParsedDB {
     if (current) {
       const mField = line.match(fieldLine);
       if (mField) {
-        const [, fname, ft, kt, vt, kh] = mField;
-        current.properties.push({ name: fname, ft, kt, vt, kh });
+        const [, fname, ft, kt, vt, kh, defaultValue] = mField;
+        const prop: FieldTuple = { name: fname, ft, kt, vt, kh };
+        if (defaultValue !== undefined) {
+          prop.defaultValue = defaultValue.trim();
+        }
+        current.properties.push(prop);
         continue;
       }
 
@@ -177,7 +184,7 @@ function parseDatabasePy(text: string): ParsedDB {
     }
   }
 
-  // If file didn't end with 'pass' for the last class (shouldn’t happen), finalize it defensively
+  // If file didn't end with 'pass' for the last class (shouldn't happen), finalize it defensively
   if (current) classes.push(current);
 
   return { classes };
