@@ -105,6 +105,14 @@ export function typeDisplay(
       display += `&lt;${khLinked}&gt;`;
     }
   } 
+  // For other types with hash reference, show as Container<Link<Type>>
+  else if (kh !== "0x0") {
+    const khLinked = linkType(kh, classIndex);
+    // Check if the field type already has generic syntax
+    if (!ft.includes("<")) {
+      display += `&lt;Link&lt;${khLinked}&gt;&gt;`;
+    }
+  }
   // For containers with value types (fallback for other types)
   else if (vt !== "0x0") {
     // Check if the field type already has generic syntax
