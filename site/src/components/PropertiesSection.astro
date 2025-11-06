@@ -2,6 +2,7 @@
 import { typeDisplay, refChip } from "../utils/typeLinker";
 import PropertyScrollHandler from "./PropertyScrollHandler.astro";
 import AddDocumentationButton from "./AddDocumentationButton";
+import { codeToHtml } from "shiki";
 
 interface PropertyDocs {
   description?: string;
@@ -31,26 +32,67 @@ const { properties, classIndex, className } = Astro.props;
 // Helper to format default values for display
 function formatDefaultValue(defaultValue: string): string {
   if (!defaultValue) return defaultValue;
-  
+
   // Try to parse as JSON and pretty-print if it's an object or array
   try {
     const parsed = JSON.parse(defaultValue);
-    if (typeof parsed === 'object' && parsed !== null) {
+    if (typeof parsed === "object" && parsed !== null) {
       return JSON.stringify(parsed, null, 2);
     }
   } catch {
     // Not valid JSON or a simple value, return as-is
   }
-  
+
   return defaultValue;
 }
+
+// Helper to determine language for syntax highlighting
+function detectLanguage(defaultValue: string): string {
+  if (!defaultValue) return "text";
+
+  try {
+    JSON.parse(defaultValue);
+    return "json";
+  } catch {
+    // Could add more language detection logic here
+    return "text";
+  }
+}
+
+// Highlight default values with Shiki
+async function highlightDefaultValue(defaultValue: string): Promise<string> {
+  if (!defaultValue) return "";
+
+  const formattedValue = formatDefaultValue(defaultValue);
+  const lang = detectLanguage(defaultValue);
+
+  try {
+    return await codeToHtml(formattedValue, {
+      lang,
+      theme: "github-dark",
+    });
+  } catch (error) {
+    // Fallback to plain text if highlighting fails
+    return `<pre><code>${formattedValue}</code></pre>`;
+  }
+}
+
+// Pre-process properties with highlighted default values
+const processedProperties = await Promise.all(
+  properties.map(async (p: Property) => ({
+    ...p,
+    highlightedDefaultValue: p.defaultValue
+      ? await highlightDefaultValue(p.defaultValue)
+      : null,
+  }))
+);
 ---
 
 <section class="properties-section">
   <h2 class="section-title">Properties</h2>
   <div class="properties-grid">
     {
-      properties.map((p: Property) => (
+      processedProperties.map((p) => (
         <article class="property-card">
           <div class="property-header">
             <h2 class="property-name">{p.name}</h2>
@@ -82,20 +124,20 @@ function formatDefaultValue(defaultValue: string): string {
             )}
           </div>
 
-          {(p.kt !== "0x0" && 
-            !["Link", "Embed", "List", "Map", "Pointer"].includes(p.ft)) && (
-            <div class="property-metadata">
-              <div class="metadata-item">
-                <label class="metadata-label">Key Type</label>
-                <span class="metadata-value chip">{p.kt}</span>
+          {p.kt !== "0x0" &&
+            !["Link", "Embed", "List", "Map", "Pointer"].includes(p.ft) && (
+              <div class="property-metadata">
+                <div class="metadata-item">
+                  <label class="metadata-label">Key Type</label>
+                  <span class="metadata-value chip">{p.kt}</span>
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {p.defaultValue && (
+          {p.highlightedDefaultValue && (
             <div class="default-value-container">
-             <label class="metadata-label">Default Value</label>
-             <code class="metadata-value default-value">{formatDefaultValue(p.defaultValue)}</code>
+              <label class="metadata-label">Default Value</label>
+              <div class="default-value" set:html={p.highlightedDefaultValue} />
             </div>
           )}
 
@@ -154,7 +196,8 @@ function formatDefaultValue(defaultValue: string): string {
                 </div>
               ) : (
                 <p class="docs-placeholder">
-                  No documentation available yet. Click "Add documentation" to contribute!
+                  No documentation available yet. Click "Add documentation" to
+                  contribute!
                 </p>
               )}
             </div>
@@ -285,16 +328,26 @@ function formatDefaultValue(defaultValue: string): string {
 
   .default-value {
     display: block;
-    font-size: 0.75rem;
-    background: var(--sl-color-bg, #f9fafb);
-    padding: 0.375rem 0.5rem;
-    border-radius: 0.25rem;
-    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
-    color: var(--sl-color-text, #1f2937);
     overflow-x: auto;
-    white-space: pre-wrap;
-    word-break: break-all;
     max-width: 100%;
+    border-radius: 0.375rem;
+    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+  }
+
+  .default-value :global(pre) {
+    margin: 0;
+    padding: 0.5rem;
+    background: transparent !important;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    overflow-x: auto;
+  }
+
+  .default-value :global(code) {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco,
+      "Cascadia Code", "Roboto Mono", Consolas, "Liberation Mono", "Courier New",
+      monospace;
+    font-size: 0.75rem;
   }
 
   .default-value-container {
