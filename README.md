@@ -71,6 +71,8 @@ properties:
       - "Example value"
 ```
 
+**Commit Messages:** Use [Conventional Commits](https://www.conventionalcommits.org/) format: `type: subject` (e.g., `docs: add AiBaseClient documentation`, `fix: correct typo`)
+
 See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines and [db/docs/MARKDOWN_GUIDE.md](db/docs/MARKDOWN_GUIDE.md) for Markdown formatting tips.
 
 ## Documentation
