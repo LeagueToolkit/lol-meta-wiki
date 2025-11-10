@@ -27,6 +27,30 @@ const primitives = new Set([
   "0x0",
 ]);
 
+// Descriptions for primitive types (for tooltips)
+const primitiveDescriptions: Record<string, string> = {
+  "Bool": "Boolean value - true or false",
+  "I8": "8-bit signed integer (-128 to 127)",
+  "I16": "16-bit signed integer (-32,768 to 32,767)",
+  "I32": "32-bit signed integer (-2,147,483,648 to 2,147,483,647)",
+  "I64": "64-bit signed integer",
+  "U8": "8-bit unsigned integer (0 to 255)",
+  "U16": "16-bit unsigned integer (0 to 65,535)",
+  "U32": "32-bit unsigned integer (0 to 4,294,967,295)",
+  "U64": "64-bit unsigned integer",
+  "F32": "32-bit floating point number (single precision)",
+  "F64": "64-bit floating point number (double precision)",
+  "String": "Text string value",
+  "Hash": "Hash identifier (typically references a class type)",
+  "Link": "Reference to another object instance",
+  "Embed": "Embedded object data stored inline",
+  "Flag": "Boolean flag value",
+  "Vec2": "2-dimensional vector (x, y)",
+  "Vec3": "3-dimensional vector (x, y, z)",
+  "Vec4": "4-dimensional vector (x, y, z, w)",
+  "Color": "RGBA color value",
+};
+
 /**
  * Parse and link types recursively
  * Handles container types like List<Type>, Map<Key, Value>
@@ -43,11 +67,20 @@ export function linkType(
 
   const [, baseType, innerTypes] = containerMatch;
 
-  // Link the base type if it's a class
-  let result =
-    primitives.has(baseType) || !classIndex[baseType]
-      ? baseType
-      : `<a href="${classIndex[baseType]}" class="type-link">${baseType}</a>`;
+  // Link the base type if it's a class or wrap primitives with tooltips
+  let result: string;
+  if (primitives.has(baseType)) {
+    // Wrap primitive with tooltip if it has a description
+    if (primitiveDescriptions[baseType]) {
+      result = `<span class="primitive-type" data-tooltip="${primitiveDescriptions[baseType]}">${baseType}</span>`;
+    } else {
+      result = baseType;
+    }
+  } else if (classIndex[baseType]) {
+    result = `<a href="${classIndex[baseType]}" class="type-link">${baseType}</a>`;
+  } else {
+    result = baseType;
+  }
 
   // Handle generic types
   if (innerTypes) {
