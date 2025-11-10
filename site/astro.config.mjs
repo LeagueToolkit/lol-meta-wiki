@@ -14,6 +14,11 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "LoL Meta Wiki",
+      logo: {
+        src: './src/assets/logo.svg',
+      },
+      favicon: '/favicon.svg',
+      pagefind: true,
       customCss: [
         "./src/styles/global.css",
         "./src/styles/custom.css",
