@@ -367,7 +367,7 @@ async function main() {
   try {
     const existingMDX = await readdir(mdxDir);
     for (const file of existingMDX) {
-      if (file.endsWith(".mdx") && !generatedMDX.has(file)) {
+      if (file.endsWith(".mdx") && !generatedMDX.has(file) && file !== "index.mdx") {
         await unlink(join(mdxDir, file));
         mdxDeleted++;
       }
