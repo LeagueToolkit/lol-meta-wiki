@@ -33,23 +33,6 @@
     </div>
   </section>
 
-  <!-- Recently Documented -->
-  <section class="section">
-    <h2>Recently Documented</h2>
-    <p class="section-desc">Classes with community-contributed documentation</p>
-    <div id="documented-classes" class="class-list">
-      <div class="loading-inline">Loading...</div>
-    </div>
-  </section>
-
-  <!-- Needs Documentation -->
-  <section class="section">
-    <h2>Help Wanted</h2>
-    <p class="section-desc">Classes that need documentation - contribute to help the community!</p>
-    <div id="needs-docs" class="class-list">
-      <div class="loading-inline">Loading...</div>
-    </div>
-  </section>
 
   <!-- Browse All Link -->
   <div class="browse-all">
@@ -279,24 +262,6 @@
       document.getElementById('popular-bases')!.innerHTML = 
         popularBases.map(item => renderClassItem(item.cls, item.children)).join('');
 
-      // Recently documented (hardcoded for now - could be enhanced)
-      const documented = data.classes.filter(c => 
-        c.name === 'AiBaseClient' || c.name === 'Turret'
-      );
-      
-      document.getElementById('documented-classes')!.innerHTML = 
-        documented.length > 0
-          ? documented.map(cls => renderClassItem(cls, childrenCount.get(cls.name))).join('')
-          : '<div class="loading-inline">No documented classes yet. Be the first to contribute!</div>';
-
-      // Random classes that need documentation
-      const undocumented = data.classes
-        .filter(c => c.name !== 'AiBaseClient' && c.name !== 'Turret')
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 8);
-
-      document.getElementById('needs-docs')!.innerHTML = 
-        undocumented.map(cls => renderClassItem(cls, childrenCount.get(cls.name))).join('');
 
     } catch (error) {
       console.error('Failed to load classes:', error);
