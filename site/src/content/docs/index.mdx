@@ -3,47 +3,272 @@ title: LoL Meta Wiki
 description: Explore League of Legends meta classes, read community guides, and contribute your knowledge.
 template: splash
 hero:
-  tagline: Community-driven documentation for League of Legends meta (.bin) classes.
+  tagline: Interactive documentation for 4000+ meta classes and properties. Built by the community, for developers and modders who want to understand League's internal data structures.
   image:
     file: ../../assets/logo.svg
     alt: LoL Meta Wiki logo
   actions:
     - text: Browse Classes
       link: /classes/
-    - text: Read Guides
+      icon: open-book
+      variant: primary
+    - text: Get Started
       link: /guides/
-    - text: How to Contribute
+      icon: right-arrow
+    - text: Contribute
       link: /guides/writing-guides/
+      icon: github
       variant: minimal
 ---
 
 import { Card, CardGrid } from "@astrojs/starlight/components";
 
-## What you can do here
+## Powerful Features
 
 <CardGrid stagger>
-  <Card title="Understand meta classes" icon="layers">
-    Dive into thousands of meta classes with inheritance graphs and property
-    details.
+  <Card title="Learn About Classes" icon="magnifier">
+    Explore 4000+ meta classes with inheritance graphs and property details.
   </Card>
-  <Card title="Learn from guides" icon="open-book">
-    Read practical, community-written guides about working with game data and
-    tools.
+  <Card title="Inheritance Trees" icon="random">
+    Interactive visualizations of class hierarchies and property listings.
   </Card>
-  <Card title="Contribute knowledge" icon="pencil">
-    Improve class/property docs or write a new guide — all changes happen via
-    GitHub PRs.
+  <Card title="Community-Driven" icon="pen">
+    Improve class/property docs or write a new guide — all changes happen via GitHub PRs.
+  </Card>
+  <Card title="Markdown Support" icon="document">
+    Rich documentation with full Markdown formatting and code examples.
   </Card>
 </CardGrid>
 
-## How to contribute
+## Quick Start
 
-- Update class/property docs: Use the "Add documentation" buttons on class pages.
-- Write a guide: Follow the steps in [Writing Guides](/guides/writing-guides/).
-- Fix mistakes: Click "Edit this page" on any doc to open a PR.
+<div class="steps-container">
+  <div class="step-card">
+    <div class="step-number">1</div>
+    <div class="step-content">
+      <h3>Clone and Install</h3>
 
-## Quick links
+```bash
+git clone https://github.com/LeagueToolkit/lol-meta-wiki.git
+cd lol-meta-wiki
+pnpm install && bun install
+```
 
-- Guides: [/guides/](/guides/)
-- Classes: [/classes/](/classes/)
-- Reference: [/reference/](/reference/)
+  </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-number">2</div>
+    <div class="step-content">
+      <h3>Generate Database</h3>
+
+```bash
+pnpm generate-db
+```
+
+  </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-number">3</div>
+    <div class="step-content">
+      <h3>Start Development Server</h3>
+
+```bash
+pnpm dev
+```
+
+  <p class="step-note">Visit <code>http://localhost:4321</code> to see the wiki</p>
+  </div>
+  </div>
+</div>
+
+## Contribute Documentation
+
+<CardGrid>
+  <Card title="Via Web" icon="external">
+    Click "Add documentation" buttons on any class page, edit on GitHub, and submit a PR. No local setup required!
+  </Card>
+  <Card title="Locally" icon="pencil">
+    Create or edit YAML files in `db/docs/` with full Markdown support for rich documentation.
+  </Card>
+</CardGrid>
+
+<div class="cta-box">
+  <h3>Ready to Contribute?</h3>
+  <p>Check out our contributing guide to learn about documentation standards, YAML formatting, and best practices</p>
+  <a href="https://github.com/LeagueToolkit/lol-meta-wiki/blob/main/CONTRIBUTING.md" class="cta-button">
+    View Contributing Guide
+  </a>
+</div>
+
+<style is:global>{`
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 2rem 0 3rem;
+  }
+
+  .stat-card {
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    border: 2px solid;
+    text-align: center;
+    background: linear-gradient(135deg, var(--sl-color-bg) 0%, var(--sl-color-gray-6) 100%);
+  }
+
+  .stat-blue {
+    border-color: var(--sl-color-blue);
+  }
+
+  .stat-cyan {
+    border-color: var(--sl-color-cyan);
+  }
+
+  .stat-slate {
+    border-color: var(--sl-color-gray-3);
+  }
+
+  .stat-number {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-blue .stat-number {
+    color: var(--sl-color-blue);
+  }
+
+  .stat-cyan .stat-number {
+    color: var(--sl-color-cyan);
+  }
+
+  .stat-slate .stat-number {
+    color: var(--sl-color-text);
+  }
+
+  .stat-label {
+    font-size: 0.875rem;
+    color: var(--sl-color-gray-2);
+  }
+
+  .steps-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .step-card {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    border: 2px solid var(--sl-color-gray-5);
+    background: var(--sl-color-bg);
+    transition: border-color 0.2s;
+  }
+
+  .step-card:hover {
+    border-color: var(--sl-color-blue);
+  }
+
+  .step-number {
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    background: var(--sl-color-blue);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+  }
+
+  .step-content {
+    flex: 1;
+  }
+
+  .step-content h3 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1.125rem;
+  }
+
+  .step-content .expressive-code {
+    margin: 0.5rem 0;
+  }
+
+  .step-note {
+    margin-top: 0.75rem;
+    color: var(--sl-color-gray-2);
+    font-size: 0.9rem;
+  }
+
+  .step-note code {
+    background: var(--sl-color-gray-6);
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    font-family: var(--sl-font-mono);
+    color: var(--sl-color-blue);
+    font-size: 0.875em;
+  }
+
+  .cta-box {
+    background: linear-gradient(135deg, var(--sl-color-gray-6) 0%, var(--sl-color-gray-5) 100%);
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    margin: 3rem 0;
+    border: 2px solid var(--sl-color-gray-4);
+  }
+
+  .cta-box h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.5rem;
+    color: var(--sl-color-text);
+  }
+
+  .cta-box p {
+    margin: 0 0 1.5rem 0;
+    color: var(--sl-color-gray-2);
+    max-width: 42rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .cta-button {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: var(--sl-color-blue) !important;
+    color: white !important;
+    padding: 0.5rem 1.5rem !important;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none !important;
+    transition: all 0.2s;
+    border: none;
+    line-height: 1.5;
+  }
+
+  .cta-button:hover {
+    background: var(--sl-color-blue-high) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    color: white !important;
+  }
+
+  @media (max-width: 768px) {
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .step-card {
+      flex-direction: column;
+    }
+  }
+`}</style>
