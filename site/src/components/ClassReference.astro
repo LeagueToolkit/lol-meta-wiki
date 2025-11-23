@@ -1,0 +1,307 @@
+---
+// ClassBrowser.astro - Class Reference landing page
+---
+
+<div id="class-reference">
+  <!-- Quick Stats -->
+  <div class="stats-row">
+    <div class="stat-box">
+      <span class="stat-number" id="total-classes">-</span>
+      <span class="stat-label">Total Classes</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-number" id="documented-count">-</span>
+      <span class="stat-label">Documented</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-number" id="base-count">-</span>
+      <span class="stat-label">Base Classes</span>
+    </div>
+  </div>
+
+  <!-- Search Tip -->
+  <div class="search-tip">
+    💡 <strong>Tip:</strong> Use the search bar above to find any class instantly
+  </div>
+
+  <!-- Popular Base Classes -->
+  <section class="section">
+    <h2>Popular Base Classes</h2>
+    <p class="section-desc">Most commonly inherited classes - good starting points for understanding the hierarchy</p>
+    <div id="popular-bases" class="class-list">
+      <div class="loading-inline">Loading...</div>
+    </div>
+  </section>
+
+  <!-- Recently Documented -->
+  <section class="section">
+    <h2>Recently Documented</h2>
+    <p class="section-desc">Classes with community-contributed documentation</p>
+    <div id="documented-classes" class="class-list">
+      <div class="loading-inline">Loading...</div>
+    </div>
+  </section>
+
+  <!-- Needs Documentation -->
+  <section class="section">
+    <h2>Help Wanted</h2>
+    <p class="section-desc">Classes that need documentation - contribute to help the community!</p>
+    <div id="needs-docs" class="class-list">
+      <div class="loading-inline">Loading...</div>
+    </div>
+  </section>
+
+  <!-- Browse All Link -->
+  <div class="browse-all">
+    <p>Looking for a specific class? Use the search above or browse the sidebar →</p>
+  </div>
+</div>
+
+<style>
+  #class-reference {
+    margin: 1rem 0;
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .stat-box {
+    flex: 1;
+    min-width: 150px;
+    background: var(--sl-color-gray-6);
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .stat-number {
+    display: block;
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: var(--sl-color-blue);
+  }
+
+  .stat-label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--sl-color-gray-2);
+    margin-top: 0.25rem;
+  }
+
+  .search-tip {
+    background: var(--sl-color-blue-low);
+    border-left: 3px solid var(--sl-color-blue);
+    padding: 0.75rem 1rem;
+    margin-bottom: 2rem;
+    border-radius: 0.25rem;
+    font-size: 0.9rem;
+  }
+
+  .section {
+    margin-bottom: 2.5rem;
+  }
+
+  .section h2 {
+    font-size: 1.25rem;
+    margin: 0 0 0.5rem 0;
+    color: var(--sl-color-text);
+  }
+
+  .section-desc {
+    color: var(--sl-color-gray-2);
+    font-size: 0.9rem;
+    margin: 0 0 1rem 0;
+  }
+
+  .class-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .class-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: var(--sl-color-gray-6);
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.375rem;
+    transition: all 0.15s;
+  }
+
+  .class-item:hover {
+    border-color: var(--sl-color-blue);
+    background: var(--sl-color-gray-5);
+  }
+
+  .class-item-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+  }
+
+  .class-item a {
+    color: var(--sl-color-text);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+
+  .class-item a:hover {
+    color: var(--sl-color-blue);
+  }
+
+  .class-item-meta {
+    font-size: 0.8rem;
+    color: var(--sl-color-gray-2);
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: var(--sl-color-gray-5);
+    color: var(--sl-color-gray-2);
+  }
+
+  .badge-children {
+    background: var(--sl-color-purple-low);
+    color: var(--sl-color-purple-high);
+  }
+
+  .badge-props {
+    background: var(--sl-color-blue-low);
+    color: var(--sl-color-blue-high);
+  }
+
+  .loading-inline {
+    color: var(--sl-color-gray-2);
+    font-size: 0.9rem;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .browse-all {
+    margin-top: 3rem;
+    padding: 1.5rem;
+    background: var(--sl-color-gray-6);
+    border-radius: 0.5rem;
+    text-align: center;
+    color: var(--sl-color-gray-2);
+  }
+
+  .browse-all p {
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .stats-row {
+      flex-direction: column;
+    }
+  }
+</style>
+
+<script>
+  interface ClassInfo {
+    name: string;
+    file: string;
+    bases: string[];
+    propCount: number;
+  }
+
+  interface IndexData {
+    classes: ClassInfo[];
+    total: number;
+  }
+
+  function slugify(name: string): string {
+    return name.replace(/[^A-Za-z0-9._-]/g, '_').toLowerCase();
+  }
+
+  function renderClassItem(cls: ClassInfo, childrenCount?: number): string {
+    const slug = slugify(cls.name);
+    const badges = [];
+    
+    if (childrenCount && childrenCount > 0) {
+      badges.push(`<span class="badge badge-children">${childrenCount} children</span>`);
+    }
+    if (cls.propCount > 0) {
+      badges.push(`<span class="badge badge-props">${cls.propCount} props</span>`);
+    }
+
+    return `
+      <div class="class-item">
+        <div class="class-item-left">
+          <a href="/classes/${slug}">${cls.name}</a>
+        </div>
+        <div class="class-item-meta">
+          ${badges.join(' ')}
+        </div>
+      </div>
+    `;
+  }
+
+  async function loadAndDisplay() {
+    try {
+      const response = await fetch('/db/index.json');
+      const data: IndexData = await response.json();
+      
+      // Calculate children count for each class
+      const childrenCount = new Map<string, number>();
+      for (const cls of data.classes) {
+        for (const base of cls.bases) {
+          childrenCount.set(base, (childrenCount.get(base) || 0) + 1);
+        }
+      }
+
+      // Update stats
+      const baseClasses = data.classes.filter(c => c.bases.length === 0).length;
+      document.getElementById('total-classes')!.textContent = data.total.toLocaleString();
+      document.getElementById('documented-count')!.textContent = '2';
+      document.getElementById('base-count')!.textContent = baseClasses.toLocaleString();
+
+      // Popular base classes (most inherited)
+      const popularBases = data.classes
+        .map(cls => ({ cls, children: childrenCount.get(cls.name) || 0 }))
+        .filter(item => item.children > 0)
+        .sort((a, b) => b.children - a.children)
+        .slice(0, 8);
+
+      document.getElementById('popular-bases')!.innerHTML = 
+        popularBases.map(item => renderClassItem(item.cls, item.children)).join('');
+
+      // Recently documented (hardcoded for now - could be enhanced)
+      const documented = data.classes.filter(c => 
+        c.name === 'AiBaseClient' || c.name === 'Turret'
+      );
+      
+      document.getElementById('documented-classes')!.innerHTML = 
+        documented.length > 0
+          ? documented.map(cls => renderClassItem(cls, childrenCount.get(cls.name))).join('')
+          : '<div class="loading-inline">No documented classes yet. Be the first to contribute!</div>';
+
+      // Random classes that need documentation
+      const undocumented = data.classes
+        .filter(c => c.name !== 'AiBaseClient' && c.name !== 'Turret')
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 8);
+
+      document.getElementById('needs-docs')!.innerHTML = 
+        undocumented.map(cls => renderClassItem(cls, childrenCount.get(cls.name))).join('');
+
+    } catch (error) {
+      console.error('Failed to load classes:', error);
+    }
+  }
+
+  loadAndDisplay();
+</script>
