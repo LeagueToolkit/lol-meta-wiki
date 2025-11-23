@@ -2,16 +2,185 @@
 
 /* Use a nicer monospace font for code elements */
 code {
-  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', 'Monaco', 'Menlo', monospace;
+  font-family: var(--font-mono);
 }
 
 /* Ensure inline code also uses the font */
 :not(pre) > code {
-  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', 'Monaco', 'Menlo', monospace;
+  font-family: var(--font-mono);
 }
 
 /* Code blocks */
 pre code {
-  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', 'Monaco', 'Menlo', monospace;
+  font-family: var(--font-mono);
+}
+
+/* Primitive type tooltips */
+.primitive-type {
+  position: relative;
+  cursor: help;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--color-gray-400);
+  text-underline-offset: 2px;
+}
+
+.primitive-type::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--color-gray-800);
+  color: var(--color-gray-50);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-snug);
+  border-radius: var(--radius-md);
+  white-space: nowrap;
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--duration-normal) var(--ease-out), 
+              visibility var(--duration-normal) var(--ease-out);
+  pointer-events: none;
+  z-index: var(--z-tooltip);
+  font-family: var(--font-sans);
+}
+
+.primitive-type::after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 2px;
+  border: 6px solid transparent;
+  border-top-color: var(--color-gray-800);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--duration-normal) var(--ease-out), 
+              visibility var(--duration-normal) var(--ease-out);
+  pointer-events: none;
+  z-index: var(--z-tooltip);
+}
+
+.primitive-type:hover::before,
+.primitive-type:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Dark mode adjustments */
+:root[data-theme='dark'] .primitive-type::before {
+  background-color: var(--color-gray-700);
+  color: var(--color-gray-50);
+}
+
+:root[data-theme='dark'] .primitive-type::after {
+  border-top-color: var(--color-gray-700);
+}
+
+/**
+ * Common Utility Patterns
+ * Reusable component patterns using our theme
+ */
+
+@layer utilities {
+  /* Card Patterns */
+  .card-base {
+    background: var(--color-bg-primary);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--duration-normal) var(--ease-out);
+  }
+  
+  .card-elevated {
+    box-shadow: var(--shadow-md);
+  }
+  
+  .card-elevated:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+  }
+  
+  /* Button Patterns */
+  .btn-base {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    border-radius: var(--radius-md);
+    transition: all var(--duration-normal) var(--ease-out);
+    cursor: pointer;
+  }
+  
+  .btn-primary {
+    background: var(--color-brand-primary);
+    color: white;
+    border: none;
+  }
+  
+  .btn-primary:hover {
+    background: var(--color-brand-highlight);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .btn-secondary {
+    background: transparent;
+    color: var(--color-brand-primary);
+    border: var(--border-width) solid var(--color-brand-primary);
+  }
+  
+  .btn-secondary:hover {
+    background: var(--color-brand-primary);
+    color: white;
+  }
+  
+  /* Badge Patterns */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    border-radius: var(--radius-md);
+  }
+  
+  .badge-primary {
+    background: var(--color-brand-primary);
+    color: white;
+  }
+  
+  .badge-neutral {
+    background: var(--color-gray-100);
+    color: var(--color-gray-800);
+  }
+  
+  .badge-success {
+    background: var(--color-success);
+    color: white;
+  }
+  
+  /* Section Patterns */
+  .section-title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-xl);
+  }
+  
+  .section-subtitle {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-lg);
+  }
 }
 

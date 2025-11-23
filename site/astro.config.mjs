@@ -4,9 +4,12 @@ import starlight from "@astrojs/starlight";
 import mdx from "@astrojs/mdx";
 import react from "@astrojs/react";
 
+import tailwindcss from "@tailwindcss/vite";
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://meta-wiki.leaguetoolkit.dev',
+
   // Remove 'base' when using custom domain (no subpath needed)
   integrations: [
     starlight({
@@ -17,6 +20,7 @@ export default defineConfig({
       favicon: '/favicon.svg',
       pagefind: true,
       customCss: [
+        "./src/styles/global.css",
         "./src/styles/custom.css",
       ],
       editLink: {
@@ -48,4 +52,9 @@ export default defineConfig({
     mdx(),
     react(),
   ],
+
+  vite: {
+    // @ts-expect-error - Vite plugin type compatibility issue between dependencies
+    plugins: [tailwindcss()],
+  },
 });

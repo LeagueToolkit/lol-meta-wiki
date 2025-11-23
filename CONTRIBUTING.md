@@ -157,12 +157,50 @@ Before submitting a PR, you can test your documentation locally:
 
 5. **View your changes at** `http://localhost:4321`
 
+## Commit Message Guidelines
+
+This project follows [Conventional Commits](https://www.conventionalcommits.org/) specification. All commit messages are automatically validated.
+
+### Format
+
+```
+<type>(<scope>): <subject>
+```
+
+### Allowed Types
+
+- `docs`: Documentation changes (most contributions will use this)
+- `feat`: A new feature
+- `fix`: A bug fix
+- `refactor`: Code changes without adding features or fixing bugs
+- `style`: Code formatting changes
+- `test`: Adding or updating tests
+- `build`: Build system changes
+- `ci`: CI/CD changes
+- `chore`: Other changes
+
+### Examples
+
+✅ **Good commit messages:**
+```bash
+docs: add documentation for AiBaseClient class
+feat: add search functionality to wiki
+```
+
+❌ **Bad commit messages:**
+```bash
+Update files
+Added stuff
+WIP
+quick fix
+```
+
 ## Submitting Your Contribution
 
-1. **Commit your changes** with a descriptive message:
+1. **Commit your changes** following the commit message guidelines:
    ```bash
    git add db/docs/
-   git commit -m "Add documentation for AiBaseClient class"
+   git commit -m "docs: add documentation for AiBaseClient class"
    ```
 
 2. **Push to your fork**

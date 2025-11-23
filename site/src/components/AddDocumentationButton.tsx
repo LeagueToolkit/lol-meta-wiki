@@ -1,5 +1,4 @@
 import { getDocEditUrl } from '../config/repo';
-import './AddDocumentationButton.css';
 
 interface AddDocumentationButtonProps {
   className: string;
@@ -8,6 +7,7 @@ interface AddDocumentationButtonProps {
 
 /**
  * Button component that links to GitHub to edit documentation files
+ * Now using Tailwind CSS for styling!
  */
 export default function AddDocumentationButton({
   className,
@@ -24,7 +24,7 @@ export default function AddDocumentationButton({
     <button
       type="button"
       onClick={handleClick}
-      className="add-docs-button"
+      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-(--sl-color-accent) bg-transparent border border-(--sl-color-accent) rounded-md cursor-pointer transition-all duration-200 hover:bg-(--sl-color-accent) hover:text-white hover:-translate-y-px hover:shadow-[0_2px_4px_rgba(124,58,237,0.3)] active:translate-y-0"
       title={`Edit documentation for ${propertyName || className}`}
     >
       <svg
@@ -37,6 +37,7 @@ export default function AddDocumentationButton({
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
+        className="shrink-0"
       >
         <title>Edit documentation</title>
         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
