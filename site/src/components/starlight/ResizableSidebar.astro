@@ -1,0 +1,140 @@
+---
+import type { Props } from '@astrojs/starlight/props';
+import DefaultSidebar from '@astrojs/starlight/components/Sidebar.astro';
+
+const props = Astro.props;
+---
+
+<script is:inline>
+  // Run immediately to restore saved width to prevent FOUC
+  try {
+    const savedWidth = localStorage.getItem('starlight-sidebar-width');
+    if (savedWidth) {
+      document.documentElement.style.setProperty('--sl-sidebar-width', savedWidth);
+    }
+  } catch (e) { /* ignore */ }
+</script>
+
+<DefaultSidebar {...props} />
+<div id="sidebar-resize-handle" class="resize-handle" aria-hidden="true">
+    <div class="resize-handle-line"></div>
+</div>
+
+<script>
+  class SidebarResizer {
+    handle: HTMLElement;
+    isResizing: boolean = false;
+    startX: number = 0;
+    startWidth: number = 0;
+
+    constructor(handle: HTMLElement) {
+      this.handle = handle;
+      
+      // Bind events
+      this.handle.addEventListener('mousedown', this.startResize.bind(this));
+      document.addEventListener('mousemove', this.resize.bind(this));
+      document.addEventListener('mouseup', this.stopResize.bind(this));
+      
+      // Reset on double click
+      this.handle.addEventListener('dblclick', () => {
+        document.documentElement.style.removeProperty('--sl-sidebar-width');
+        localStorage.removeItem('starlight-sidebar-width');
+      });
+    }
+
+    startResize(e: MouseEvent) {
+      this.isResizing = true;
+      this.startX = e.clientX;
+      this.handle.classList.add('resizing');
+      
+      // Calculate current width in pixels
+      const rootStyle = getComputedStyle(document.documentElement);
+      const sidebarWidthVar = rootStyle.getPropertyValue('--sl-sidebar-width').trim();
+      
+      if (sidebarWidthVar.endsWith('px')) {
+        this.startWidth = parseFloat(sidebarWidthVar);
+      } else if (sidebarWidthVar.endsWith('rem')) {
+        const rootFontSize = parseFloat(rootStyle.fontSize);
+        this.startWidth = parseFloat(sidebarWidthVar) * (rootFontSize || 16);
+      } else {
+        // Default fallback if something is weird
+        this.startWidth = 288; 
+      }
+      
+      // Prevent text selection during resize
+      document.body.style.userSelect = 'none';
+      document.body.style.cursor = 'col-resize';
+    }
+
+    resize(e: MouseEvent) {
+      if (!this.isResizing) return;
+      
+      const delta = e.clientX - this.startX;
+      const newWidth = this.startWidth + delta;
+      
+      // Min/Max constraints (200px to 50vw)
+      const maxW = window.innerWidth * 0.5; 
+      if (newWidth < 200 || newWidth > maxW) return;
+      
+      const widthStr = `${newWidth}px`;
+      document.documentElement.style.setProperty('--sl-sidebar-width', widthStr);
+    }
+
+    stopResize() {
+      if (!this.isResizing) return;
+      
+      this.isResizing = false;
+      this.handle.classList.remove('resizing');
+      document.body.style.userSelect = '';
+      document.body.style.cursor = '';
+      
+      // Save preference
+      const currentWidth = document.documentElement.style.getPropertyValue('--sl-sidebar-width');
+      if (currentWidth) {
+        localStorage.setItem('starlight-sidebar-width', currentWidth);
+      }
+    }
+  }
+
+  // Initialize
+  const handle = document.getElementById('sidebar-resize-handle');
+  if (handle) {
+    new SidebarResizer(handle);
+  }
+</script>
+
+<style>
+  .resize-handle {
+    position: fixed;
+    top: var(--sl-nav-height, 3.5rem);
+    bottom: 0;
+    left: var(--sl-sidebar-width);
+    width: 12px;
+    margin-left: -6px; /* Center on the line */
+    cursor: col-resize;
+    z-index: 2000; /* Ensure it's above most things */
+    display: none; /* Hidden by default (mobile) */
+    align-items: center;
+    justify-content: center;
+    touch-action: none;
+  }
+
+  /* Only show on desktop */
+  @media (min-width: 50rem) { /* 800px - Starlight mobile breakpoint */
+    .resize-handle {
+      display: flex;
+    }
+  }
+
+  .resize-handle-line {
+    width: 2px;
+    height: 100%;
+    background-color: transparent;
+    transition: background-color 0.2s;
+  }
+
+  .resize-handle:hover .resize-handle-line,
+  .resize-handle.resizing .resize-handle-line {
+    background-color: var(--sl-color-accent, var(--color-brand-primary, #7c3aed));
+  }
+</style>

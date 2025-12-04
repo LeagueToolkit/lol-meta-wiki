@@ -34,6 +34,9 @@ export default defineConfig({
           href: "https://github.com/LeagueToolkit/lol-meta-wiki",
         },
       ],
+      components: {
+        Sidebar: './src/components/starlight/ResizableSidebar.astro',
+      },
       sidebar: [
         {
           label: "Guides",
