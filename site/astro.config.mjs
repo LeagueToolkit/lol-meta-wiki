@@ -36,6 +36,7 @@ export default defineConfig({
       ],
       components: {
         Sidebar: './src/components/starlight/ResizableSidebar.astro',
+        PageTitle: './src/components/starlight/PageTitle.astro',
       },
       sidebar: [
         {

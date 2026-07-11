@@ -283,14 +283,6 @@ function loadMetaDb(db: MetaDb): ClassDoc[] {
 function generateMDX(c: ClassDoc, fileName: string): string {
   const displayName = c.name.startsWith("0x") ? `Class ${c.name}` : c.name;
 
-  // Create clickable links for base classes
-  const basesLinks = c.bases.map((base) => {
-    const slug = safeName(base).toLowerCase();
-    return `[${base}](/classes/${slug})`;
-  });
-  const basesText =
-    basesLinks.length > 0 ? `**Inherits from:** ${basesLinks.join(", ")}` : "";
-
   // Generate invisible heading anchors for TOC
   // These will be hidden but picked up by Starlight's TOC
   // MUST use Markdown syntax (##), not HTML <h2> tags
@@ -298,14 +290,16 @@ function generateMDX(c: ClassDoc, fileName: string): string {
     .map((prop) => `## ${prop.name}`)
     .join("\n\n");
 
+  const patchFrontmatter =
+    (c.since ? `\nsince: "${c.since}"` : "") +
+    (c.removedIn ? `\nremovedIn: "${c.removedIn}"` : "");
+
   return `---
 title: ${displayName}
-description: Reference documentation for ${displayName} meta class
+description: Reference documentation for ${displayName} meta class${patchFrontmatter}
 ---
 
 import ClassDetails from '../../../components/ClassDetails.astro';
-
-${basesText}
 
 <ClassDetails file="/db/classes/${fileName}" />
 
