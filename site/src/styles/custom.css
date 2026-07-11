@@ -1,5 +1,25 @@
 /* Custom global styles */
 
+/* Compact previous/next pagination links (Starlight defaults are huge:
+   1rem padding + 2xl titles) */
+.pagination-links a {
+  padding: 0.5rem 0.875rem;
+  box-shadow: none;
+}
+
+.pagination-links a > span {
+  font-size: 0.7rem;
+}
+
+.pagination-links .link-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.pagination-links a svg {
+  font-size: 1.1rem;
+}
+
 /* Use a nicer monospace font for code elements */
 code {
   font-family: var(--font-mono);

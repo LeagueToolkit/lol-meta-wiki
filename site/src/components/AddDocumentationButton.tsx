@@ -24,13 +24,13 @@ export default function AddDocumentationButton({
     <button
       type="button"
       onClick={handleClick}
-      className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-(--sl-color-accent) bg-transparent border border-(--sl-color-accent) rounded-md cursor-pointer transition-all duration-200 hover:bg-(--sl-color-accent) hover:text-white hover:-translate-y-px hover:shadow-[0_2px_4px_rgba(124,58,237,0.3)] active:translate-y-0"
+      className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-medium text-(--sl-color-accent) bg-transparent border border-(--sl-color-gray-5) rounded-md cursor-pointer transition-colors duration-200 hover:border-(--sl-color-accent) hover:bg-(--sl-color-accent-low)"
       title={`Edit documentation for ${propertyName || className}`}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="12"
-        height="12"
+        width="11"
+        height="11"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
