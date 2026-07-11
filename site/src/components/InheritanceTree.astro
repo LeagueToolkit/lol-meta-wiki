@@ -86,7 +86,9 @@ const countsLabel = [
   .join(" · ");
 ---
 
-<div class="inheritance-section not-content">
+<!-- data-pagefind-ignore: the tree names dozens of *other* classes; indexing it
+     would make every class match searches for its ancestors/descendants -->
+<div class="inheritance-section not-content" data-pagefind-ignore>
   <h2>
     Inheritance
     {countsLabel && <span class="counts">{countsLabel}</span>}

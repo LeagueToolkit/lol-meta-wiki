@@ -294,6 +294,13 @@ function generateMDX(c: ClassDoc, fileName: string): string {
     (c.since ? `\nsince: "${c.since}"` : "") +
     (c.removedIn ? `\nremovedIn: "${c.removedIn}"` : "");
 
+  // Hash-named classes stay searchable (by hash and by property name), but
+  // their property headings are heavily down-weighted in Pagefind so classes
+  // with real names always rank above "Class 0x..." pages.
+  const searchWeight = c.name.startsWith("0x")
+    ? ` data-pagefind-weight="0.25"`
+    : "";
+
   return `---
 title: ${displayName}
 description: Reference documentation for ${displayName} meta class${patchFrontmatter}
@@ -303,7 +310,7 @@ import ClassDetails from '../../../components/ClassDetails.astro';
 
 <ClassDetails file="/db/classes/${fileName}" />
 
-<div style="position: absolute; visibility: hidden; pointer-events: none;" aria-hidden="true">
+<div style="position: absolute; visibility: hidden; pointer-events: none;" aria-hidden="true"${searchWeight}>
 
 ${propertyAnchors}
 

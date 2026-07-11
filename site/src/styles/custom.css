@@ -35,6 +35,16 @@ pre code {
   font-family: var(--font-mono);
 }
 
+/* Search term highlighting on pages opened from a search result
+   (added by pagefind-highlight.js, see astro.config.mjs head) */
+mark.pagefind-highlight {
+  background-color: var(--sl-color-accent-low);
+  color: var(--sl-color-white);
+  border-radius: 0.2rem;
+  padding: 0 0.15rem;
+  box-shadow: 0 0 0 1px var(--sl-color-accent);
+}
+
 /* Primitive type tooltips */
 .primitive-type {
   position: relative;

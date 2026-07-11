@@ -101,8 +101,11 @@ const processedProperties = await Promise.all(
 );
 ---
 
+<!-- Search indexing: only each property's name and its documentation text are
+     indexed. Type links (other class names), default values, and repeated UI
+     chrome are excluded so pages don't match unrelated searches. -->
 <section class="properties-section not-content">
-  <h2 class="section-title">Properties</h2>
+  <h2 class="section-title" data-pagefind-ignore>Properties</h2>
   <div class="properties-grid">
     {
       processedProperties.map((p) => (
@@ -111,10 +114,11 @@ const processedProperties = await Promise.all(
             <h2 class="property-name">{p.name}</h2>
             <code
               class="type-code"
+              data-pagefind-ignore
               set:html={typeDisplay(p.ft, p.vt, p.kt, p.kh, classIndex)}
             />
             {(p.removedIn || p.since) && (
-              <div class="property-chips">
+              <div class="property-chips" data-pagefind-ignore>
                 {p.removedIn && (
                   <Pill
                     variant="danger"
@@ -150,7 +154,7 @@ const processedProperties = await Promise.all(
 
           {p.kt !== "0x0" &&
             !["Link", "Embed", "List", "Map", "Pointer"].includes(p.ft) && (
-              <div class="property-metadata">
+              <div class="property-metadata" data-pagefind-ignore>
                 <div class="metadata-item">
                   <label class="metadata-label">Key Type</label>
                   <span class="metadata-value chip">{p.kt}</span>
@@ -159,14 +163,14 @@ const processedProperties = await Promise.all(
             )}
 
           {p.highlightedDefaultValue && (
-            <div class="default-value-container">
+            <div class="default-value-container" data-pagefind-ignore>
               <label class="metadata-label">Default Value</label>
               <div class="default-value" set:html={p.highlightedDefaultValue} />
             </div>
           )}
 
           {p.history && p.history.length > 1 && (
-            <details class="type-history">
+            <details class="type-history" data-pagefind-ignore>
               <summary>Type history ({p.history.length} revisions)</summary>
               <ul>
                 {p.history.map((h) => (
@@ -185,7 +189,7 @@ const processedProperties = await Promise.all(
           )}
 
           <div class="property-docs">
-            <div class="docs-header">
+            <div class="docs-header" data-pagefind-ignore>
               <label class="docs-label">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -238,7 +242,7 @@ const processedProperties = await Promise.all(
                   )}
                 </div>
               ) : (
-                <p class="docs-placeholder">
+                <p class="docs-placeholder" data-pagefind-ignore>
                   No documentation available yet. Click "Add documentation" to
                   contribute!
                 </p>

@@ -19,7 +19,7 @@ const hasContent = docs?.description || (docs?.examples && docs.examples.length 
 ---
 
 <section class="class-documentation">
-  <div class="docs-header">
+  <div class="docs-header" data-pagefind-ignore>
     <h2 class="section-title">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -71,7 +71,7 @@ const hasContent = docs?.description || (docs?.examples && docs.examples.length 
         )}
       </div>
     ) : (
-      <p class="docs-placeholder">
+      <p class="docs-placeholder" data-pagefind-ignore>
         No class documentation available yet. Click "Add documentation" to contribute!
       </p>
     )}
