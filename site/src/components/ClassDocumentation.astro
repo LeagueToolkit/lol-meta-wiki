@@ -87,47 +87,49 @@ const hasContent = docs?.description || (docs?.examples && docs.examples.length 
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
   }
 
   .section-title {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 1.25rem;
+    font-weight: 600;
     margin: 0;
     color: var(--sl-color-white, #1f2937);
   }
 
   .section-title svg {
     color: var(--sl-color-accent, #7c3aed);
+    width: 18px;
+    height: 18px;
   }
 
   .docs-content {
     background: var(--sl-color-bg-nav, #ffffff);
     border: 1px solid var(--sl-color-gray-5, #e5e7eb);
-    border-radius: 0.75rem;
-    padding: 1.5rem;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
     box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
   }
 
   .docs-placeholder {
     margin: 0;
     color: var(--sl-color-gray-3, #9ca3af);
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     font-style: italic;
   }
 
   .docs-text {
-    font-size: 0.938rem;
+    font-size: 0.8125rem;
     line-height: 1.6;
     color: var(--sl-color-white, #1f2937);
   }
 
   .docs-description {
-    margin: 0 0 1rem 0;
-    font-size: 1rem;
+    margin: 0 0 0.75rem 0;
+    font-size: 0.875rem;
   }
 
   .docs-section {

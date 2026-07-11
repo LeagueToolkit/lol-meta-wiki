@@ -199,6 +199,8 @@
     file: string;
     bases: string[];
     propCount: number;
+    since?: string;
+    removed?: boolean;
   }
 
   interface IndexData {
@@ -238,22 +240,26 @@
       const response = await fetch('/db/index.json');
       const data: IndexData = await response.json();
       
+      // Stats and listings only cover classes that still exist in the game;
+      // removed classes keep their pages but shouldn't inflate the counts
+      const liveClasses = data.classes.filter(c => !c.removed);
+
       // Calculate children count for each class
       const childrenCount = new Map<string, number>();
-      for (const cls of data.classes) {
+      for (const cls of liveClasses) {
         for (const base of cls.bases) {
           childrenCount.set(base, (childrenCount.get(base) || 0) + 1);
         }
       }
 
       // Update stats
-      const baseClasses = data.classes.filter(c => c.bases.length === 0).length;
-      document.getElementById('total-classes')!.textContent = data.total.toLocaleString();
+      const baseClasses = liveClasses.filter(c => c.bases.length === 0).length;
+      document.getElementById('total-classes')!.textContent = liveClasses.length.toLocaleString();
       document.getElementById('documented-count')!.textContent = '2';
       document.getElementById('base-count')!.textContent = baseClasses.toLocaleString();
 
       // Popular base classes (most inherited)
-      const popularBases = data.classes
+      const popularBases = liveClasses
         .map(cls => ({ cls, children: childrenCount.get(cls.name) || 0 }))
         .filter(item => item.children > 0)
         .sort((a, b) => b.children - a.children)

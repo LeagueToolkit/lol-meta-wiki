@@ -1,0 +1,41 @@
+name: Update Meta DB
+
+on:
+  # Weekly, shortly after lol-meta-classes' Sunday sync
+  schedule:
+    - cron: '0 6 * * 0'
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Fetch latest meta.db.json
+        run: bun scripts/update-db.ts
+
+      - name: Commit and push if changed
+        run: |
+          set -e
+          if git diff --quiet -- db/meta.db.json; then
+            echo "Database is already up to date."
+            exit 0
+          fi
+
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          PATCH=$(python3 -c "import json; db = json.load(open('db/meta.db.json')); print(db['versions'][-1]['patch'])")
+          git add db/meta.db.json
+          git commit -m "chore: update meta db to patch ${PATCH}"
+          git push

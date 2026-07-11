@@ -2,7 +2,8 @@
   "name": "lol-meta-wiki-root",
   "private": true,
   "scripts": {
-    "generate-db": "bun scripts/generate-db.ts --in db/database.py --out site/public/db --pretty 1",
+    "generate-db": "bun scripts/generate-db.ts --in db/meta.db.json --out site/public/db --pretty 1",
+    "update-db": "bun scripts/update-db.ts",
     "dev": "pnpm --filter site dev",
     "build": "pnpm --filter site build",
     "prepare": "husky"

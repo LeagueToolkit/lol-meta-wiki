@@ -27,18 +27,40 @@ const classIndex: Record<string, string> = JSON.parse(
 // const mermaidDiagram = generateInheritanceDiagram(data, classIndex);
 ---
 
+{
+  data.removedIn && (
+    <div class="class-banner class-banner-removed">
+      <strong>Removed:</strong> this class no longer exists in the game as of
+      patch {data.removedIn}.
+    </div>
+  )
+}
+{
+  data.since && !data.removedIn && (
+    <div class="class-banner class-banner-added">
+      Added in patch {data.since}
+    </div>
+  )
+}
+
 <InheritanceTree
   currentClass={data.name}
-  bases={data.bases}
-  directChildren={data.directChildren}
-  ancestors={data.ancestors}
-  descendants={data.descendants}
+  ancestorLevels={data.ancestorLevels}
+  descendantTree={data.descendantTree}
   classIndex={classIndex}
 />
 
 <ClassDocumentation className={data.name} docs={data.docs} />
 
-<PropertiesSection properties={data.properties} classIndex={classIndex} className={data.name} />
+{
+  data.properties.length > 0 && (
+    <PropertiesSection
+      properties={data.properties}
+      classIndex={classIndex}
+      className={data.name}
+    />
+  )
+}
 
 <!-- For Mermaid diagram (future use):
 <InheritanceDiagram
@@ -49,3 +71,27 @@ const classIndex: Record<string, string> = JSON.parse(
 />
 <MermaidLoader />
 -->
+
+<style>
+  .class-banner {
+    padding: 0.5rem 0.875rem;
+    border-radius: 0.5rem;
+    font-size: 0.8125rem;
+    margin-bottom: 1rem;
+  }
+
+  .class-banner-removed {
+    background: color-mix(in srgb, #ef4444 12%, transparent);
+    border: 1px solid color-mix(in srgb, #ef4444 40%, transparent);
+    color: var(--sl-color-white, #7f1d1d);
+  }
+
+  .class-banner-added {
+    display: inline-block;
+    background: var(--sl-color-gray-6, #f9fafb);
+    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+    color: var(--sl-color-gray-3, #6b7280);
+    font-size: 0.75rem;
+    padding: 0.25rem 0.625rem;
+  }
+</style>
