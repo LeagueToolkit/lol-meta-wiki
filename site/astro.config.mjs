@@ -2,7 +2,6 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import mdx from "@astrojs/mdx";
-import react from "@astrojs/react";
 
 import tailwindcss from "@tailwindcss/vite";
 
@@ -43,7 +42,8 @@ export default defineConfig({
       ],
       editLink: {
         // Enable "Edit this page" linking to GitHub for PRs
-        baseUrl: 'https://github.com/LeagueToolkit/lol-meta-wiki/edit/main/site/src/content',
+        // (Starlight appends src/content/docs/<page> to this)
+        baseUrl: 'https://github.com/LeagueToolkit/lol-meta-wiki/edit/main/site',
       },
       social: [
         {
@@ -74,7 +74,6 @@ export default defineConfig({
       ],
     }),
     mdx(),
-    react(),
   ],
 
   vite: {

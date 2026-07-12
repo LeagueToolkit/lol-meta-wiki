@@ -399,6 +399,7 @@ async function main() {
   let jsonChanged = 0;
   let mdxChanged = 0;
   const generatedMDX = new Set<string>();
+  const generatedJSON = new Set<string>();
 
   for (const c of classes) {
     const ancestorLevels = getAncestorLevels(c.name);
@@ -432,6 +433,7 @@ async function main() {
     const filePath = join(classDir, fileName);
     const didJson = await writeIfChanged(filePath, json);
     if (didJson) jsonChanged++;
+    generatedJSON.add(fileName);
 
     // Generate MDX file (lowercase for Starlight URL compatibility)
     const mdxFileName = `${safeName(c.name).toLowerCase()}.mdx`;
@@ -459,6 +461,21 @@ async function main() {
       if (file.endsWith(".mdx") && !generatedMDX.has(file) && file !== "index.mdx") {
         await unlink(join(mdxDir, file));
         mdxDeleted++;
+      }
+    }
+  } catch {
+    // Directory might not exist yet, that's fine
+  }
+
+  // Clean up stale class JSON files (content hash changes rename the file,
+  // leaving the old one behind — and it would get deployed)
+  let jsonDeleted = 0;
+  try {
+    const existingJSON = await readdir(classDir);
+    for (const file of existingJSON) {
+      if (file.endsWith(".json") && !generatedJSON.has(file)) {
+        await unlink(join(classDir, file));
+        jsonDeleted++;
       }
     }
   } catch {
@@ -497,7 +514,9 @@ async function main() {
   console.log(
     `[ok] Loaded ${classes.length} classes (${removedCount} removed) from patch ${latestPatch} db`
   );
-  console.log(`     - JSON: ${jsonChanged} changed, wrote to ${outDir}`);
+  console.log(
+    `     - JSON: ${jsonChanged} changed, ${jsonDeleted} deleted, wrote to ${outDir}`
+  );
   console.log(
     `     - MDX:  ${mdxChanged} changed, ${mdxDeleted} deleted, wrote to ${mdxDir}`
   );

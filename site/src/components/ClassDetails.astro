@@ -23,6 +23,14 @@ const classIndex: Record<string, string> = JSON.parse(
   fs.readFileSync(classIndexUrl, "utf8")
 );
 
+// Whether a hand-written docs file exists for this class decides if the
+// documentation buttons link to GitHub's edit flow or its create-file flow
+const docsFileUrl = new URL(
+  `../../../db/docs/${data.name}.yaml`,
+  import.meta.url
+);
+const docExists = fs.existsSync(docsFileUrl);
+
 // For Mermaid diagram (future use):
 // const mermaidDiagram = generateInheritanceDiagram(data, classIndex);
 ---
@@ -34,14 +42,15 @@ const classIndex: Record<string, string> = JSON.parse(
   classIndex={classIndex}
 />
 
-<ClassDocumentation className={data.name} docs={data.docs} />
+<ClassDocumentation name={data.name} docs={data.docs} docExists={docExists} />
 
 {
   data.properties.length > 0 && (
     <PropertiesSection
       properties={data.properties}
       classIndex={classIndex}
-      className={data.name}
+      name={data.name}
+      docExists={docExists}
     />
   )
 }

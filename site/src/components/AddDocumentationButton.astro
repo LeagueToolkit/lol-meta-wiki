@@ -1,0 +1,74 @@
+---
+import { getDocUrl } from "../config/repo";
+
+interface Props {
+  /** Class name — deliberately not `className`, which Astro's scoped
+   *  styles would rewrite like a `class` attribute */
+  name: string;
+  propertyName?: string;
+  /** Whether db/docs/<name>.yaml exists (edit vs. create flow) */
+  docExists: boolean;
+  /** Whether docs content is already shown for this class/property */
+  documented: boolean;
+}
+
+const { name, propertyName, docExists, documented } = Astro.props;
+
+const href = getDocUrl(name, docExists, propertyName);
+const label = documented ? "Edit documentation" : "Add documentation";
+const subject = propertyName ? `${name}.${propertyName}` : name;
+---
+
+<a
+  class="add-docs-button"
+  href={href}
+  target="_blank"
+  rel="noopener noreferrer"
+  title={`${label} for ${subject} on GitHub`}
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="11"
+    height="11"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+  </svg>
+  {label}
+</a>
+
+<style>
+  .add-docs-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.125rem 0.5rem;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--sl-color-accent, #7c3aed);
+    background: transparent;
+    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+    border-radius: 0.375rem;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+      border-color 0.2s ease,
+      background 0.2s ease;
+  }
+
+  .add-docs-button:hover {
+    border-color: var(--sl-color-accent, #7c3aed);
+    background: var(--sl-color-accent-low, #e0e7ff);
+  }
+
+  .add-docs-button svg {
+    flex-shrink: 0;
+  }
+</style>

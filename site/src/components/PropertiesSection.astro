@@ -2,7 +2,7 @@
 import { typeDisplay, refChip } from "../utils/typeLinker";
 import Pill from "./Pill.astro";
 import PropertyScrollHandler from "./PropertyScrollHandler.astro";
-import AddDocumentationButton from "./AddDocumentationButton";
+import AddDocumentationButton from "./AddDocumentationButton.astro";
 import { codeToHtml } from "shiki";
 
 interface PropertyDocs {
@@ -37,10 +37,11 @@ interface Property {
 interface Props {
   properties: Property[];
   classIndex: Record<string, string>;
-  className: string;
+  name: string;
+  docExists: boolean;
 }
 
-const { properties, classIndex, className } = Astro.props;
+const { properties, classIndex, name, docExists } = Astro.props;
 
 // Helper to format default values for display
 function formatDefaultValue(defaultValue: string): string {
@@ -211,9 +212,10 @@ const processedProperties = await Promise.all(
                 Documentation
               </label>
               <AddDocumentationButton
-                className={className}
+                name={name}
                 propertyName={p.name}
-                client:load
+                docExists={docExists}
+                documented={!!p.docs?.description}
               />
             </div>
             <div class="docs-content">

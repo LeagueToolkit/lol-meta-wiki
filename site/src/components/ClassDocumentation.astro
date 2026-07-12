@@ -1,5 +1,5 @@
 ---
-import AddDocumentationButton from "./AddDocumentationButton";
+import AddDocumentationButton from "./AddDocumentationButton.astro";
 
 interface ClassDocs {
   description?: string;
@@ -8,11 +8,12 @@ interface ClassDocs {
 }
 
 interface Props {
-  className: string;
+  name: string;
   docs: ClassDocs | null;
+  docExists: boolean;
 }
 
-const { className, docs } = Astro.props;
+const { name, docs, docExists } = Astro.props;
 
 // Only show if there's documentation or always show to allow adding docs
 const hasContent = docs?.description || (docs?.examples && docs.examples.length > 0) || (docs?.notes && docs.notes.length > 0);
@@ -40,7 +41,11 @@ const hasContent = docs?.description || (docs?.examples && docs.examples.length 
       </svg>
       Class Documentation
     </h2>
-    <AddDocumentationButton className={className} client:load />
+    <AddDocumentationButton
+      name={name}
+      docExists={docExists}
+      documented={!!hasContent}
+    />
   </div>
 
   <div class="docs-content">
