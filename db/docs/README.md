@@ -31,12 +31,14 @@ properties:
 
 ## Example Files
 
-- `Turret.yaml` - Complete example with class and property documentation
+- `VfxSystemDefinitionData.yaml` / `VfxEmitterDefinitionData.yaml` - The reference examples of the content standard
 - `AiBaseClient.yaml` - Template for adding new documentation
 
 ## Contributing
 
-Please see [CONTRIBUTING.md](../../CONTRIBUTING.md) for detailed instructions on how to add documentation.
+- [CONTENT_GUIDELINES.md](CONTENT_GUIDELINES.md) - What to write: content standards for wiki documentation
+- [MARKDOWN_GUIDE.md](MARKDOWN_GUIDE.md) - How to format it: YAML and Markdown mechanics
+- [CONTRIBUTING.md](../../CONTRIBUTING.md) - How to submit: workflow and PR instructions
 
 ## Workflow
 

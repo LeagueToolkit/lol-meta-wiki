@@ -109,10 +109,12 @@ properties:
 
 ### Writing Good Documentation
 
-1. **Be Clear and Concise**: Write descriptions that are easy to understand for both developers and modders
-2. **Provide Context**: Explain how the property/class is used in the game
-3. **Include Examples**: Real-world examples help users understand the practical application
-4. **Note Edge Cases**: Mention any special behaviors, limitations, or version-specific information
+**Read [db/docs/CONTENT_GUIDELINES.md](db/docs/CONTENT_GUIDELINES.md) before writing** — it defines the content standard for the wiki. The short version:
+
+1. **Describe engine behavior, not game trivia**: Explain what the engine does with the value — when it's read, what it affects, what values mean
+2. **Be complete but not padded**: Explain context fully once, then reference it; don't restate what the reader can already see
+3. **State units and defaults**: Seconds, world units, degrees; note the default value when known
+4. **Document only verified behavior**: Mark unknowns explicitly instead of guessing
 5. **Use Proper Formatting**: Follow the YAML format exactly to avoid parsing errors
 
 ### What to Document
@@ -127,6 +129,7 @@ properties:
 
 - ❌ Don't include copyrighted game content (dialogue, lore, etc.)
 - ❌ Don't add speculative or unverified information
+- ❌ Don't write player-facing gameplay/balance descriptions — this is an engine-data wiki
 - ❌ Don't use offensive or inappropriate language
 - ❌ Don't break the YAML formatting (the build will fail)
 

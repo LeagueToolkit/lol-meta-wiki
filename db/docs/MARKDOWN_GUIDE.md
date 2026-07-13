@@ -146,14 +146,13 @@ properties:
 - Use **bold** for important terms on first use
 - Use `code formatting` for property names, values, and technical terms
 - Break long descriptions into sections with bullet points
+- Use Markdown tables for bitfields, enums, and value→behavior mappings
 - Add links to external resources when helpful
-- Use emojis sparingly for warnings and tips (⚠️, 💡, 🔧)
 
 ### DON'T ❌
 - Don't use excessive formatting
-- Don't use Markdown tables (they're hard to read in YAML)
+- Don't use emojis in class/property documentation
 - Don't use images (not supported in this context)
-- Don't overuse emojis
 - Don't nest lists too deeply
 
 ## YAML Syntax Reminders

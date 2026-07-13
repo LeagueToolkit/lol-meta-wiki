@@ -1,0 +1,361 @@
+---
+import { typeDisplay } from "../utils/typeLinker";
+import {
+  formatDefaultValue,
+  highlightDefaultValue,
+} from "../utils/defaultValue";
+import Pill from "./Pill.astro";
+import PropertyDocs from "./PropertyDocs.astro";
+import CirclePlusIcon from "./icons/CirclePlusIcon.astro";
+import type { Property } from "../types";
+
+interface Props {
+  property: Property;
+  classIndex: Record<string, string>;
+  name: string;
+  docExists: boolean;
+}
+
+const { property: p, classIndex, name, docExists } = Astro.props;
+
+// Short defaults render as an inline chip in the header; multi-line ones
+// become a collapsible highlighted block
+const formattedDefault = p.defaultValue
+  ? formatDefaultValue(p.defaultValue, p.ft)
+  : null;
+const inlineDefault =
+  formattedDefault !== null && !formattedDefault.includes("\n")
+    ? formattedDefault
+    : null;
+const highlightedDefault =
+  formattedDefault !== null && inlineDefault === null
+    ? await highlightDefaultValue(formattedDefault)
+    : null;
+
+const showKeyType =
+  p.kt !== "0x0" && !["Link", "Embed", "List", "Map", "Pointer"].includes(p.ft);
+---
+
+<article class="property-card">
+  <div class="property-header">
+    <h2 class="property-name">{p.name}</h2>
+    <code
+      class="type-code"
+      data-pagefind-ignore
+      set:html={typeDisplay(p.ft, p.vt, p.kt, p.kh, classIndex)}
+    />
+    {
+      inlineDefault && (
+        <code class="default-chip" data-pagefind-ignore title="Default value">
+          <span class="default-chip-eq">=</span>
+          {inlineDefault}
+        </code>
+      )
+    }
+    {
+      (p.removedIn || p.since) && (
+        <div class="property-chips" data-pagefind-ignore>
+          {p.removedIn && (
+            <Pill
+              variant="danger"
+              title={`This property no longer exists in the game as of patch ${p.removedIn}`}
+            >
+              Removed in {p.removedIn}
+            </Pill>
+          )}
+          {p.since && (
+            <Pill variant="success" title={`Added in patch ${p.since}`}>
+              <CirclePlusIcon slot="icon" size={12} strokeWidth={2.5} />
+              {p.since}
+            </Pill>
+          )}
+        </div>
+      )
+    }
+  </div>
+
+  {
+    showKeyType && (
+      <div class="property-metadata" data-pagefind-ignore>
+        <div class="metadata-item">
+          <label class="metadata-label">Key Type</label>
+          <span class="metadata-value chip">{p.kt}</span>
+        </div>
+      </div>
+    )
+  }
+
+  {
+    highlightedDefault && (
+      <details class="default-value-details" data-pagefind-ignore>
+        <summary>Default value</summary>
+        <div class="default-value" set:html={highlightedDefault} />
+      </details>
+    )
+  }
+
+  {
+    p.history && p.history.length > 1 && (
+      <details class="type-history" data-pagefind-ignore>
+        <summary>Type history ({p.history.length} revisions)</summary>
+        <ul>
+          {p.history.map((h) => (
+            <li>
+              <span class="history-range">
+                {h.until ? `${h.since} - ${h.until}` : `since ${h.since}`}
+              </span>
+              <code
+                class="type-code"
+                set:html={typeDisplay(h.ft, h.vt, h.kt, h.kh, classIndex)}
+              />
+            </li>
+          ))}
+        </ul>
+      </details>
+    )
+  }
+
+  <PropertyDocs
+    docs={p.docs}
+    name={name}
+    propertyName={p.name}
+    docExists={docExists}
+  />
+</article>
+
+<style>
+  .property-card {
+    min-width: 0;
+    background: var(--sl-color-bg-nav, #ffffff);
+    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  }
+
+  .property-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.375rem 0.75rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--sl-color-gray-6, #f3f4f6);
+  }
+
+  .property-chips {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin-left: auto;
+  }
+
+  .property-name {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--sl-color-white, #111827);
+    letter-spacing: -0.02em;
+  }
+
+  .type-code {
+    font-size: 0.8125rem;
+    color: var(--sl-color-white, #1f2937);
+    font-weight: 500;
+    border-radius: 0.375rem;
+    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+    /* not-content opts out of Starlight's inline-code styling; restore it */
+    background: var(--sl-color-bg-inline-code, #f3f4f6);
+    padding: 0.125rem 0.5rem;
+  }
+
+  .default-chip {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--sl-color-gray-2, #4b5563);
+    border-radius: 0.375rem;
+    border: 1px dashed var(--sl-color-gray-5, #e5e7eb);
+    padding: 0.125rem 0.5rem;
+    white-space: nowrap;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .default-chip-eq {
+    color: var(--sl-color-gray-3, #9ca3af);
+    margin-right: 0.125rem;
+    user-select: none;
+  }
+
+  .property-metadata {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--sl-color-bg, #fefefe);
+    border-radius: 0.375rem;
+    border: 1px dashed var(--sl-color-gray-5, #e5e7eb);
+  }
+
+  .metadata-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+    min-width: 150px;
+  }
+
+  .metadata-label {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--sl-color-gray-3, #6b7280);
+    margin-bottom: 0.375rem;
+  }
+
+  .metadata-value {
+    font-size: 0.813rem;
+    color: var(--sl-color-white, #374151);
+  }
+
+  .chip {
+    display: inline-block;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    background: var(--sl-color-gray-6, #f3f4f6);
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .default-value-details {
+    margin-bottom: 0.5rem;
+    border: none;
+    padding: 0;
+  }
+
+  .default-value-details summary {
+    cursor: pointer;
+    color: var(--sl-color-gray-3, #6b7280);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .default-value-details[open] summary {
+    margin-bottom: 0.375rem;
+  }
+
+  .default-value {
+    display: block;
+    overflow-x: auto;
+    max-width: 100%;
+    border-radius: 0.375rem;
+    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+  }
+
+  .default-value :global(pre) {
+    margin: 0;
+    padding: 0.5rem;
+    background: transparent !important;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    overflow-x: auto;
+  }
+
+  .default-value :global(code) {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco,
+      "Cascadia Code", "Roboto Mono", Consolas, "Liberation Mono", "Courier New",
+      monospace;
+    font-size: 0.75rem;
+  }
+
+  .type-history {
+    margin-bottom: 0.5rem;
+    font-size: 0.813rem;
+    border: none;
+    padding: 0;
+  }
+
+  .type-history summary {
+    cursor: pointer;
+    color: var(--sl-color-gray-3, #6b7280);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .type-history ul {
+    list-style: none;
+    margin: 0.375rem 0 0 0.75rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .type-history li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .type-history .type-code {
+    font-size: 0.75rem;
+  }
+
+  .history-range {
+    font-size: 0.75rem;
+    color: var(--sl-color-gray-3, #6b7280);
+    min-width: 7rem;
+  }
+
+  /* Links produced by typeLinker (set:html, so :global is required) */
+  :global(.type-chip) {
+    font-size: inherit;
+  }
+
+  :global(.type-chip .type-link) {
+    color: var(--sl-color-accent, #4f46e5);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+  }
+
+  :global(.type-chip .type-link:hover) {
+    color: var(--sl-color-accent-high, #3730a3);
+    text-decoration: underline;
+  }
+
+  /* Responsive design */
+  @media (max-width: 640px) {
+    .property-card {
+      padding: 1rem;
+    }
+
+    .property-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .property-name {
+      font-size: 1.125rem;
+    }
+
+    .property-metadata {
+      flex-direction: column;
+    }
+
+    .metadata-item {
+      min-width: 100%;
+    }
+  }
+</style>

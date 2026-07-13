@@ -3,53 +3,44 @@ import AddDocumentationButton from "./AddDocumentationButton.astro";
 import FileTextIcon from "./icons/FileTextIcon.astro";
 import InfoIcon from "./icons/InfoIcon.astro";
 import { renderMarkdown, renderMarkdownSnippet } from "../utils/markdown";
-
-interface ClassDocs {
-  description?: string;
-  examples?: string[];
-  notes?: string[];
-}
+import type { PropertyDocumentation } from "../types";
 
 interface Props {
+  docs?: PropertyDocumentation | null;
   name: string;
-  docs: ClassDocs | null;
+  propertyName: string;
   docExists: boolean;
 }
 
-const { name, docs, docExists } = Astro.props;
-
-const hasBody = !!(docs?.description || (docs?.examples && docs.examples.length > 0));
-const hasNotes = !!(docs?.notes && docs.notes.length > 0);
-// Only show if there's documentation or always show to allow adding docs
-const hasContent = hasBody || hasNotes;
+const { docs, name, propertyName, docExists } = Astro.props;
 ---
 
-<section class="class-documentation">
+<div class="property-docs">
   <div class="docs-header" data-pagefind-ignore>
-    <h2 class="section-title">
-      <FileTextIcon size={20} />
-      Class Documentation
-    </h2>
+    <label class="docs-label">
+      <FileTextIcon />
+      Documentation
+    </label>
     <AddDocumentationButton
       name={name}
+      propertyName={propertyName}
       docExists={docExists}
-      documented={!!hasContent}
+      documented={!!docs?.description}
     />
   </div>
-
-  {(hasBody || !hasNotes) && (
-    <div class="docs-content">
-      {hasBody ? (
-        <div class="docs-text not-content">
-          {docs?.description && (
-            <div class="docs-description" set:html={renderMarkdown(docs.description)} />
-          )}
-
-          {docs?.examples && docs.examples.length > 0 && (
+  <div class="docs-content">
+    {
+      docs?.description ? (
+        <div class="docs-text">
+          <div
+            class="docs-description"
+            set:html={renderMarkdown(docs.description)}
+          />
+          {docs.examples && docs.examples.length > 0 && (
             <div class="docs-section">
               <strong>Examples:</strong>
               <ul>
-                {docs.examples.map((ex) => (
+                {docs.examples.map((ex: string) => (
                   <li set:html={renderMarkdownSnippet(ex)} />
                 ))}
               </ul>
@@ -58,74 +49,44 @@ const hasContent = hasBody || hasNotes;
         </div>
       ) : (
         <p class="docs-placeholder" data-pagefind-ignore>
-          No class documentation available yet. Click "Add documentation" to contribute!
+          No documentation available yet. Click "Add documentation" to
+          contribute!
         </p>
-      )}
-    </div>
-  )}
-
-  {hasNotes && (
-    <aside class="docs-notes docs-text not-content">
-      <div class="notes-label" data-pagefind-ignore>
-        <InfoIcon />
-        Notes
-      </div>
-      <ul class="notes-list">
-        {docs?.notes?.map((note) => (
-          <li set:html={renderMarkdownSnippet(note)} />
-        ))}
-      </ul>
-    </aside>
-  )}
-</section>
+      )
+    }
+  </div>
+  {
+    docs?.notes && docs.notes.length > 0 && (
+      <aside class="docs-notes docs-text">
+        <div class="notes-label" data-pagefind-ignore>
+          <InfoIcon />
+          Notes
+        </div>
+        <ul class="notes-list">
+          {docs.notes.map((note: string) => (
+            <li set:html={renderMarkdownSnippet(note)} />
+          ))}
+        </ul>
+      </aside>
+    )
+  }
+</div>
 
 <style>
-  .class-documentation {
-    margin-bottom: 2rem;
+  .property-docs {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--sl-color-gray-6, #f3f4f6);
   }
 
   .docs-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.375rem;
   }
 
-  .section-title {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin: 0;
-    color: var(--sl-color-white, #1f2937);
-  }
-
-  /* Icons come from child components, so scope with :global */
-  .section-title :global(svg) {
-    color: var(--sl-color-accent, #7c3aed);
-    width: 18px;
-    height: 18px;
-  }
-
-  .docs-content {
-    /* Match the recessed documentation panels inside property cards */
-    background: var(--sl-color-bg, #ffffff);
-    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
-    border-radius: 0.5rem;
-    padding: 0.75rem 1rem;
-    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
-  }
-
-  .docs-notes {
-    margin-top: 0.75rem;
-    padding: 0.625rem 1rem;
-    background: var(--sl-color-accent-low, #e0e7ff);
-    border-left: 3px solid var(--sl-color-accent, #4f46e5);
-    border-radius: 0.5rem;
-  }
-
-  .notes-label {
+  .docs-label {
     display: flex;
     align-items: center;
     gap: 0.25rem;
@@ -133,40 +94,69 @@ const hasContent = hasBody || hasNotes;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--sl-color-accent-high, #3730a3);
+    color: var(--sl-color-gray-3, #6b7280);
     margin-bottom: 0.375rem;
   }
 
+  .docs-content {
+    /* Darker than the card (bg-nav is gray-6 in dark mode) so the
+       documentation reads as a recessed panel inside the card */
+    background: var(--sl-color-bg, #f9fafb);
+    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .docs-notes {
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--sl-color-accent-low, #e0e7ff);
+    border-left: 3px solid var(--sl-color-accent, #4f46e5);
+    border-radius: 0.375rem;
+  }
+
+  .notes-label {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--sl-color-accent-high, #3730a3);
+    margin-bottom: 0.25rem;
+  }
+
+  /* Icons come from child components, so scope with :global */
   .notes-label :global(svg) {
     flex-shrink: 0;
   }
 
   .notes-list {
     margin: 0;
-    padding-left: 1.5rem;
+    padding-left: 1.25rem;
   }
 
   .docs-notes li {
-    margin: 0.25rem 0;
+    margin: 0.125rem 0;
   }
 
   .docs-placeholder {
     margin: 0;
     color: var(--sl-color-gray-3, #9ca3af);
-    font-size: 0.8125rem;
+    font-size: 0.813rem;
     font-style: italic;
   }
 
   .docs-text {
-    font-size: 0.8125rem;
-    line-height: 1.6;
+    font-size: 0.813rem;
+    line-height: 1.5;
     color: var(--sl-color-white, #1f2937);
     overflow-wrap: break-word;
   }
 
   .docs-description {
-    margin: 0 0 0.75rem 0;
-    font-size: 0.875rem;
+    margin: 0 0 0.5rem 0;
   }
 
   .docs-description:last-child {
@@ -175,7 +165,7 @@ const hasContent = hasBody || hasNotes;
 
   /* Markdown content (set:html, so :global is required) */
   .docs-text :global(p) {
-    margin: 0 0 0.625rem 0;
+    margin: 0 0 0.5rem 0;
   }
 
   .docs-text :global(p:last-child) {
@@ -201,13 +191,13 @@ const hasContent = hasBody || hasNotes;
   }
 
   .docs-text :global(pre) {
-    margin: 0 0 0.625rem 0;
+    margin: 0 0 0.5rem 0;
     padding: 0.5rem 0.75rem;
     background: var(--sl-color-gray-6, #f9fafb);
     border: 1px solid var(--sl-color-gray-5, #e5e7eb);
     border-radius: 0.375rem;
     overflow-x: auto;
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     line-height: 1.5;
   }
 
@@ -219,8 +209,8 @@ const hasContent = hasBody || hasNotes;
 
   .docs-text :global(ul),
   .docs-text :global(ol) {
-    margin: 0 0 0.625rem 0;
-    padding-left: 1.5rem;
+    margin: 0 0 0.5rem 0;
+    padding-left: 1.25rem;
   }
 
   .docs-text :global(ul:last-child),
@@ -231,7 +221,7 @@ const hasContent = hasBody || hasNotes;
   .docs-text :global(.md-table-scroll) {
     max-width: 100%;
     overflow-x: auto;
-    margin: 0 0 0.625rem 0;
+    margin: 0 0 0.5rem 0;
   }
 
   .docs-text :global(.md-table-scroll:last-child) {
@@ -241,13 +231,13 @@ const hasContent = hasBody || hasNotes;
   .docs-text :global(table) {
     border-collapse: collapse;
     margin: 0;
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
   }
 
   .docs-text :global(th),
   .docs-text :global(td) {
     border: 1px solid var(--sl-color-gray-5, #e5e7eb);
-    padding: 0.25rem 0.625rem;
+    padding: 0.25rem 0.5rem;
     text-align: left;
   }
 
@@ -262,8 +252,8 @@ const hasContent = hasBody || hasNotes;
   }
 
   .docs-text :global(blockquote) {
-    margin: 0 0 0.625rem 0;
-    padding: 0.125rem 0 0.125rem 0.75rem;
+    margin: 0 0 0.5rem 0;
+    padding: 0.125rem 0 0.125rem 0.625rem;
     border-left: 3px solid var(--sl-color-gray-5, #e5e7eb);
     color: var(--sl-color-gray-2, #6b7280);
   }
@@ -272,32 +262,28 @@ const hasContent = hasBody || hasNotes;
   .docs-text :global(h2),
   .docs-text :global(h3),
   .docs-text :global(h4) {
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     font-weight: 600;
-    margin: 0.75rem 0 0.375rem 0;
+    margin: 0.625rem 0 0.375rem 0;
     color: var(--sl-color-white, #111827);
   }
 
   .docs-section {
-    margin-top: 1rem;
+    margin-top: 0.5rem;
   }
 
   .docs-section strong {
     display: block;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
     color: var(--sl-color-white, #111827);
-    font-size: 0.875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
   }
 
   .docs-section ul {
     margin: 0;
-    padding-left: 1.5rem;
+    padding-left: 1.25rem;
   }
 
   .docs-section li {
-    margin: 0.375rem 0;
+    margin: 0.125rem 0;
   }
 </style>
-
