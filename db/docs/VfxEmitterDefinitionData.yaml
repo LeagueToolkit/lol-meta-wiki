@@ -1,0 +1,497 @@
+# VfxEmitterDefinitionData Documentation
+
+class:
+  description: |
+    The definition of a single **emitter** inside a
+    [VfxSystemDefinitionData](/classes/vfxsystemdefinitiondata) particle system.
+    An emitter spawns particles over time and defines everything about them:
+    emission timing and rate, birth state (velocity, rotation, scale, color),
+    over-lifetime evolution, the rendered primitive (billboard quad, mesh, beam,
+    trail, …), texturing/UV animation, blending, and per-emitter audio and child
+    effects.
+
+    Systems reference emitters through two lists: `ComplexEmitterDefinitionData`
+    (full feature set) and `SimpleEmitterDefinitionData` (lightweight path).
+
+    Many properties come in **`Birth*` / non-`Birth` pairs**: the `Birth*` property is
+    evaluated once when a particle spawns (its initial value, often with a random
+    range), while the non-`Birth` counterpart evolves the value over the particle's
+    lifetime. Most of these use a *value-with-dynamics* embed: a `ConstantValue`
+    plus optional `Dynamics` (keyframed/randomized curves).
+  notes:
+    - "Class hash `0x9CDE442`."
+    - "Whether an emitter is actually instantiated is gated by `Disabled`, `Importance` (vs. the `EffectsQuality` setting), `ColorblindVisibility` (vs. colorblind mode), and `ChanceToNotExist`."
+
+properties:
+  EmitterName:
+    description: "The emitter's name, used for identification and by overrides that target emitters by name."
+
+  Disabled:
+    description: "Kill switch - a disabled emitter is skipped entirely when the effect is loaded."
+
+  Importance:
+    description: |
+      Quality-culling priority, checked against the `EffectsQuality` video setting
+      (0-4) when the system instantiates its emitters:
+
+      | EffectsQuality | Skipped importance values |
+      |---|---|
+      | 0-1 (Very Low / Low) | 0, 1, 5 |
+      | 2 (Medium) | 0, 1 |
+      | 3 (High) | 0, 4 |
+      | 4 (Very High) | 4 |
+
+      So `0`-`3` ascend in priority (`3` = gameplay-critical, never culled), `4` is a
+      low-quality substitute shown **only** on low settings, and `5` is shown only on
+      Medium and above.
+    notes:
+      - "Default `2`."
+      - "Systems with `Flags` bit `0x800` opt into an aggressive low-spec mode that strips everything except importance 3 and 4."
+
+  ColorblindVisibility:
+    description: |
+      Filters the emitter by colorblind mode: `0` = always visible (default),
+      `1` = only in normal mode, `2` = only in colorblind mode.
+
+  ChanceToNotExist:
+    description: "Probability (0-1) that the emitter is skipped when the system is instantiated."
+
+  # --- Emission timing ---
+
+  Rate:
+    description: |
+      Emission rate in particles per second (value-with-dynamics). For
+      single-particle emitters (`IsSingleParticle`) the rate instead controls the
+      particle count.
+
+  Lifetime:
+    description: "How long the emitter emits, in seconds. Unset (default) makes the emitter run for the life of the system."
+
+  Period:
+    description: "Length of one emission cycle, in seconds, for looping emitters."
+
+  TimeActiveDuringPeriod:
+    description: "How much of each `Period` the emitter actually emits, in seconds. Unset = active for the whole period."
+
+  TimeBeforeFirstEmission:
+    description: "Delay, in seconds, before the emitter starts emitting."
+
+  ParticleLifetime:
+    description: "How long each particle lives, in seconds (value-with-dynamics). Default 3."
+
+  ParticleLinger:
+    description: "Extra time particles are allowed to live out after the emitter stops, in seconds."
+
+  ParticleLingerType:
+    description: "Selects how lingering particles behave after the emitter stops (see `ParticleLinger`)."
+
+  EmitterLinger:
+    description: "Extra time the emitter lingers after the system is deactivated, letting existing particles finish."
+
+  Linger:
+    description: "Pointer to an extended linger definition with more detailed control over post-deactivation behavior than the plain `ParticleLinger` / `EmitterLinger` values."
+
+  IsSingleParticle:
+    description: "The emitter maintains a single (or fixed set of) persistent particle(s) instead of streaming them over time."
+
+  HasVariableStartTime:
+    description: "Randomizes the emitter's start phase so multiple instances of a looping effect don't visibly sync up."
+
+  DoesLifetimeScale:
+    description: "Whether the emitter's lifetime scales when the owning effect's duration is scaled."
+
+  DoesParticleLifetimeScale:
+    description: "Whether particle lifetime scales when the owning effect's duration is scaled."
+
+  RateByVelocityFunction:
+    description: "Scales emission rate by the emitter's movement speed (input/output mapping) - e.g. dust trails that only emit while moving."
+
+  MaximumRateByVelocity:
+    description: "Upper clamp for the velocity-driven emission rate (see `RateByVelocityFunction`)."
+
+  # --- Spawn placement ---
+
+  EmitterPosition:
+    description: "The emitter's position offset relative to the system (value-with-dynamics)."
+
+  SpawnShape:
+    description: "Pointer to a spawn-shape object that distributes particle birth positions (and optionally velocities) over a shape instead of a single point."
+
+  EmissionMeshName:
+    description: |
+      Name of a mesh whose surface is used for particle emission. Only resolved for
+      **complex** emitters.
+
+  EmissionMeshScale:
+    description: "Scale applied to the emission mesh. Default `1`."
+
+  UseEmissionMeshNormalForBirth:
+    description: "Orient/emit particles along the emission-mesh surface normals. Default `true`."
+
+  EmissionSurfaceDefinition:
+    description: "Pointer to an emission-surface definition used to spawn particles across a surface."
+
+  TranslationOverride:
+    description: "Overrides the emitter's translation within the system."
+
+  RotationOverride:
+    description: "Overrides the emitter's rotation within the system (degrees per axis)."
+
+  ScaleOverride:
+    description: "Overrides the emitter's scale within the system. Default `[1, 1, 1]`."
+
+  # --- Space & orientation ---
+
+  IsLocalOrientation:
+    description: "Orient the emitter in the space of what the system is attached to instead of world space. Default `true`."
+
+  ParticleIsLocalOrientation:
+    description: "Orient individual particles in local (attachment) space instead of world space."
+
+  IsEmitterSpace:
+    description: "Simulate particles in emitter space, so already-spawned particles move with the emitter, rather than being left behind in world space."
+
+  BindWeight:
+    description: |
+      How strongly existing particles follow the moving emitter (value-with-dynamics,
+      0 = fully world-space, 1 = fully emitter-bound) - a blend between the two
+      behaviors of `IsEmitterSpace`.
+
+  IsFollowingTerrain:
+    description: "Particles follow the terrain height instead of keeping their spawn height."
+
+  IsGroundLayer:
+    description: "Renders the emitter as part of the ground layer (projected onto the ground, e.g. AoE indicators and decal-like effects)."
+
+  UseNavmeshMask:
+    description: "Masks the effect using the navigation mesh (e.g. so ground effects don't render over walls)."
+
+  IsDirectionOriented:
+    description: "Orient particles along their movement direction."
+
+  DirectionVelocityScale:
+    description: "How much particles stretch along their movement direction with speed (used with `IsDirectionOriented`)."
+
+  DirectionVelocityMinScale:
+    description: "Minimum stretch factor for velocity-oriented particles. Default `1`."
+
+  HasPostRotateOrientation:
+    description: "Applies an extra fixed rotation after the particle's normal orientation is computed, around `PostRotateOrientationAxis`."
+
+  PostRotateOrientationAxis:
+    description: "Axis for the post-orientation rotation (see `HasPostRotateOrientation`)."
+
+  # --- Motion ---
+
+  BirthVelocity:
+    description: "Initial particle velocity at spawn, per axis (value-with-dynamics; dynamics give each particle a random value in a range)."
+
+  Velocity:
+    description: "Velocity applied over the particle's lifetime, on top of its integrated birth velocity."
+
+  BirthAcceleration:
+    description: "Initial particle acceleration at spawn, per axis."
+
+  Acceleration:
+    description: "Acceleration over the particle's lifetime, in emitter/particle space."
+
+  WorldAcceleration:
+    description: "Acceleration applied in **world space** regardless of particle orientation - typically gravity (negative Y)."
+
+  BirthDrag:
+    description: "Initial per-axis drag (velocity damping) assigned at spawn."
+
+  Drag:
+    description: |
+      Per-axis drag over the particle's lifetime - velocity is damped proportionally
+      to this value.
+    notes:
+      - "Systems with `Flags` bit `0x100` use velocity and drag analytically: the particle moves in closed form toward the fixed displacement `BirthVelocity / Drag` instead of integrating."
+
+  BirthOrbitalVelocity:
+    description: "Initial orbital velocity - particles revolve around the emitter origin, per-axis, in degrees per second."
+
+  BirthRotation0:
+    description: "Initial particle rotation at spawn, in degrees per axis."
+
+  Rotation0:
+    description: "Particle rotation over lifetime, in degrees per axis."
+
+  BirthRotationalVelocity0:
+    description: "Initial particle spin rate at spawn, in degrees per second per axis."
+
+  BirthRotationalAcceleration:
+    description: "Particle spin acceleration, in degrees per second squared per axis."
+
+  IsRotationEnabled:
+    description: "Enables particle rotation (the `*Rotation*` properties)."
+
+  # --- Size ---
+
+  BirthScale0:
+    description: "Initial particle scale at spawn, per axis. Default `[1, 1, 1]`."
+
+  Scale0:
+    description: "Particle scale over lifetime, multiplied with the birth scale. Default `[1, 1, 1]`."
+
+  IsUniformScale:
+    description: "Use a single uniform scale (X drives all axes) instead of independent per-axis scale."
+
+  OffsetLifetimeScaling:
+    description: "Scales particle lifetime by the particle's spawn offset from the emitter, per axis."
+
+  OffsetLifeScalingSymmetryMode:
+    description: "How the offset-based lifetime scaling treats negative offsets (see `OffsetLifetimeScaling`)."
+
+  # --- Color ---
+
+  BirthColor:
+    description: "Initial particle color/alpha (RGBA) at spawn. Default `[1, 1, 1, 1]`."
+
+  Color:
+    description: "Particle color/alpha (RGBA) over lifetime, multiplied with the birth color. Default `[1, 1, 1, 1]`."
+
+  ParticleColorTexture:
+    description: |
+      Gradient texture sampled to color particles (commonly over lifetime).
+      The lookup axes are configured with `ColorLookUpTypeX` / `ColorLookUpTypeY`
+      and shaped with `ColorLookUpScales` / `ColorLookUpOffsets`.
+    notes:
+      - "Default `ASSETS/Shared/Particles/DefaultColorOverlifetime.png`."
+
+  ColorLookUpTypeX:
+    description: "What drives the X axis of the `ParticleColorTexture` lookup (e.g. particle lifetime). Default `1`."
+
+  ColorLookUpTypeY:
+    description: "What drives the Y axis of the `ParticleColorTexture` lookup. Default `0`."
+
+  ColorLookUpScales:
+    description: "Scale applied to the color-lookup coordinates. Default `[1, 1]`."
+
+  ColorLookUpOffsets:
+    description: "Offset applied to the color-lookup coordinates."
+
+  FalloffTexture:
+    description: "Falloff texture used by the emitter's shading. Default `ASSETS/Shared/Particles/DefaultFalloff.png`."
+
+  ModulationFactor:
+    description: "RGBA modulation factor applied to the emitter's output. Default `[1, 1, 1, 1]`."
+
+  CensorModulateValue:
+    description: "RGBA modulation applied when censored/toned-down visuals are active (regional content restrictions). Default `[1, 1, 1, 1]`."
+
+  # --- Texturing & UVs ---
+
+  Texture:
+    description: "The emitter's main texture."
+
+  TextureMult:
+    description: "Optional secondary texture multiplied over the main texture, with its own UV controls."
+
+  TexDiv:
+    description: "Columns × rows the texture is divided into for flipbook animation (see `NumFrames`, `FrameRate`). Default `[1, 1]`."
+
+  NumFrames:
+    description: "Number of flipbook frames in the texture (laid out per `TexDiv`). Default `1`."
+
+  FrameRate:
+    description: "Flipbook playback rate, in frames per second."
+
+  BirthFrameRate:
+    description: "Flipbook frame-rate multiplier assigned at particle spawn (value-with-dynamics). Default `1`."
+
+  StartFrame:
+    description: "First flipbook frame to play."
+
+  IsRandomStartFrame:
+    description: "Each particle starts on a random flipbook frame."
+
+  TextureFlipU:
+    description: "Flip the texture horizontally."
+
+  TextureFlipV:
+    description: "Flip the texture vertically."
+
+  IsTexturePixelated:
+    description: "Use nearest-neighbor (pixelated) texture filtering instead of bilinear."
+
+  TexAddressModeBase:
+    description: "Texture addressing mode (wrap/clamp) for the base texture."
+
+  UvMode:
+    description: "Selects how UVs are generated/interpreted for the primitive."
+
+  UvScale:
+    description: "UV scale (value-with-dynamics). Default `[1, 1]`."
+
+  BirthUvoffset:
+    description: "Initial UV offset assigned at particle spawn."
+
+  UvRotation:
+    description: "UV rotation, in degrees, around `UvTransformCenter`."
+
+  BirthUvRotateRate:
+    description: "Initial UV rotation speed assigned at particle spawn, in degrees per second."
+
+  ParticleUvRotateRate:
+    description: "Per-particle UV rotation speed over lifetime, in degrees per second."
+
+  UvTransformCenter:
+    description: "Pivot for UV rotation/scaling. Default `[0.5, 0.5]` (texture center)."
+
+  BirthUvScrollRate:
+    description: "Initial UV scroll speed assigned at particle spawn, in UVs per second."
+
+  EmitterUvScrollRate:
+    description: "UV scroll speed applied uniformly by the emitter, in UVs per second."
+
+  ParticleUvScrollRate:
+    description: "Per-particle UV scroll speed over lifetime, in UVs per second."
+
+  UvScrollClamp:
+    description: "Clamp scrolled UVs instead of wrapping them."
+
+  UvParallaxScale:
+    description: "Strength of a view-dependent UV parallax offset."
+
+  # --- Rendering ---
+
+  Primitive:
+    description: |
+      Pointer to the **primitive** the emitter renders - the object that defines
+      particle geometry (camera-facing quad billboards by default, or meshes, beams,
+      trails, planar projections, arbitrary quads, …). Unset means the default
+      billboard quad.
+
+  BlendMode:
+    description: "How the emitter's output is blended with the scene (alpha-blend, additive and related modes)."
+
+  RenderPhaseOverride:
+    description: "Overrides which render phase the emitter draws in. Default `7` (no override)."
+
+  Pass:
+    description: "Sort key for draw order among emitters; higher/lower values shift when this emitter renders relative to others."
+
+  AlphaRef:
+    description: "Alpha-test threshold (0-255): pixels with alpha below this are discarded. Default `5`."
+
+  WriteAlphaOnly:
+    description: "Write only to the alpha channel of the render target."
+
+  DisableBackfaceCull:
+    description: "Render both faces of the primitive instead of culling back faces."
+
+  DoesCastShadow:
+    description: "The emitter's geometry casts shadows."
+
+  DepthBiasFactors:
+    description: "Depth-bias slope/constant factors applied when rendering, to fight z-fighting with nearby geometry."
+
+  MiscRenderFlags:
+    description: "Additional low-level render flags."
+
+  ColorRenderFlags:
+    description: "Render flags controlling color output."
+
+  MeshRenderFlags:
+    description: "Render flags for mesh primitives. Default `1`."
+
+  StencilMode:
+    description: "Stencil-buffer mode used when rendering the emitter."
+
+  StencilRef:
+    description: "Stencil reference value used with `StencilMode`."
+
+  StencilReferenceId:
+    description: "Hash identifying a named stencil reference shared between effects."
+
+  SortEmittersByPos:
+    description: "Sort this emitter against others by position for correct transparency ordering."
+
+  SoftParticleParams:
+    description: "Pointer to soft-particle parameters - fades particles where they intersect scene geometry to avoid hard clipping edges."
+
+  DistortionDefinition:
+    description: "Pointer to a screen-distortion definition - the emitter warps the scene behind it (heat haze, shockwaves) instead of/in addition to normal rendering."
+
+  AlphaErosionDefinition:
+    description: "Pointer to an alpha-erosion definition - dissolves particles via an erosion texture/threshold over lifetime."
+
+  ReflectionDefinition:
+    description: "Pointer to a reflection definition (fresnel/environment reflection parameters) for the emitter's shading."
+
+  PaletteDefinition:
+    description: "Pointer to a palette definition used to recolor the emitter via a palette texture."
+
+  CustomMaterial:
+    description: "Pointer to a custom material used instead of the stock particle shading."
+
+  MaterialOverrideDefinitions:
+    description: "Material overrides applied to this emitter (per-submesh/priority overrides of textures or materials)."
+
+  # --- Attached data & behaviors ---
+
+  ChildParticleSetDefinition:
+    description: "Pointer to a child-particle set - child VFX systems spawned from this emitter's particles (e.g. on particle death or over its life)."
+
+  Audio:
+    description: "Pointer to the emitter's audio definition (sound events tied to the emitter/particles)."
+
+  FieldCollectionDefinition:
+    description: "Pointer to a collection of force fields (attraction, acceleration, drag, noise) that act on this emitter's particles."
+
+  Filtering:
+    description: "Pointer to filtering settings that further gate the emitter's visibility (e.g. by keyword/context)."
+
+  LegacySimple:
+    description: "Pointer to the legacy simple-emitter parameter block, used by emitters in the system's `SimpleEmitterDefinitionData` list."
+
+  ParticlesShareRandomValue:
+    description: "All particles of the emitter share one random roll instead of rolling per particle (synchronizes randomized dynamics)."
+
+  # --- Flex overrides ---
+
+  FlexBirthVelocity:
+    description: |
+      Flex-driven override of `BirthVelocity`. **Flex** properties scale or replace
+      their base property depending on an externally provided flex value (identified
+      by a flex ID), letting one effect definition adapt to spell rank, character
+      size, or similar parameters.
+
+  FlexBirthRotationalVelocity0:
+    description: "Flex-driven override of `BirthRotationalVelocity0` (see `FlexBirthVelocity` for how flex properties work)."
+
+  FlexBirthUvoffset:
+    description: "Flex-driven override of `BirthUvoffset`."
+
+  FlexBirthUvScrollRate:
+    description: "Flex-driven override of `BirthUvScrollRate`."
+
+  FlexScaleBirthScale:
+    description: "Flex-driven scale applied to `BirthScale0`."
+
+  FlexInstanceScale:
+    description: "Flex-driven scale applied to the whole emitter instance."
+
+  FlexParticleLifetime:
+    description: "Flex-driven override of `ParticleLifetime`."
+
+  FlexRate:
+    description: "Flex-driven override of `Rate`."
+
+  FlexShapeDefinition:
+    description: "Flex-driven spawn-shape parameters."
+
+  FlexOffset:
+    description: "Flex-driven emitter offset. Removed from current builds."
+
+  # --- Removed / legacy ---
+
+  Shape:
+    description: "Legacy embedded spawn-shape (emit offsets/rotations and birth translation). Removed from current builds - superseded by `SpawnShape`."
+
+  Material:
+    description: "Legacy link to a material. Removed from current builds - superseded by `CustomMaterial` / `MaterialOverrideDefinitions`."
+
+  MaterialDrivers:
+    description: "Legacy map of named material drivers. Removed from current builds."

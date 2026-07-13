@@ -4,6 +4,7 @@ import starlight from "@astrojs/starlight";
 import mdx from "@astrojs/mdx";
 
 import tailwindcss from "@tailwindcss/vite";
+import generateDb from "./integrations/generate-db.mjs";
 
 // https://astro.build/config
 export default defineConfig({
@@ -11,6 +12,7 @@ export default defineConfig({
 
   // Remove 'base' when using custom domain (no subpath needed)
   integrations: [
+    generateDb(),
     starlight({
       title: "LoL Meta Wiki",
       logo: {
@@ -77,7 +79,6 @@ export default defineConfig({
   ],
 
   vite: {
-    // @ts-expect-error - Vite plugin type compatibility issue between dependencies
     plugins: [tailwindcss()],
   },
 });

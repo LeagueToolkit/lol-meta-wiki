@@ -1,5 +1,6 @@
 ---
 import AddDocumentationButton from "./AddDocumentationButton.astro";
+import { renderMarkdown, renderMarkdownSnippet } from "../utils/markdown";
 
 interface ClassDocs {
   description?: string;
@@ -15,8 +16,10 @@ interface Props {
 
 const { name, docs, docExists } = Astro.props;
 
+const hasBody = !!(docs?.description || (docs?.examples && docs.examples.length > 0));
+const hasNotes = !!(docs?.notes && docs.notes.length > 0);
 // Only show if there's documentation or always show to allow adding docs
-const hasContent = docs?.description || (docs?.examples && docs.examples.length > 0) || (docs?.notes && docs.notes.length > 0);
+const hasContent = hasBody || hasNotes;
 ---
 
 <section class="class-documentation">
@@ -48,39 +51,60 @@ const hasContent = docs?.description || (docs?.examples && docs.examples.length 
     />
   </div>
 
-  <div class="docs-content">
-    {hasContent ? (
-      <div class="docs-text">
-        {docs?.description && <p class="docs-description">{docs.description}</p>}
-        
-        {docs?.examples && docs.examples.length > 0 && (
-          <div class="docs-section">
-            <strong>Examples:</strong>
-            <ul>
-              {docs.examples.map((ex) => (
-                <li>{ex}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-        
-        {docs?.notes && docs.notes.length > 0 && (
-          <div class="docs-section">
-            <strong>Notes:</strong>
-            <ul>
-              {docs.notes.map((note) => (
-                <li>{note}</li>
-              ))}
-            </ul>
-          </div>
-        )}
+  {(hasBody || !hasNotes) && (
+    <div class="docs-content">
+      {hasBody ? (
+        <div class="docs-text not-content">
+          {docs?.description && (
+            <div class="docs-description" set:html={renderMarkdown(docs.description)} />
+          )}
+
+          {docs?.examples && docs.examples.length > 0 && (
+            <div class="docs-section">
+              <strong>Examples:</strong>
+              <ul>
+                {docs.examples.map((ex) => (
+                  <li set:html={renderMarkdownSnippet(ex)} />
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      ) : (
+        <p class="docs-placeholder" data-pagefind-ignore>
+          No class documentation available yet. Click "Add documentation" to contribute!
+        </p>
+      )}
+    </div>
+  )}
+
+  {hasNotes && (
+    <aside class="docs-notes docs-text not-content">
+      <div class="notes-label" data-pagefind-ignore>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="16" x2="12" y2="12" />
+          <line x1="12" y1="8" x2="12.01" y2="8" />
+        </svg>
+        Notes
       </div>
-    ) : (
-      <p class="docs-placeholder" data-pagefind-ignore>
-        No class documentation available yet. Click "Add documentation" to contribute!
-      </p>
-    )}
-  </div>
+      <ul class="notes-list">
+        {docs?.notes?.map((note) => (
+          <li set:html={renderMarkdownSnippet(note)} />
+        ))}
+      </ul>
+    </aside>
+  )}
 </section>
 
 <style>
@@ -112,11 +136,45 @@ const hasContent = docs?.description || (docs?.examples && docs.examples.length 
   }
 
   .docs-content {
-    background: var(--sl-color-bg-nav, #ffffff);
+    /* Match the recessed documentation panels inside property cards */
+    background: var(--sl-color-bg, #ffffff);
     border: 1px solid var(--sl-color-gray-5, #e5e7eb);
     border-radius: 0.5rem;
     padding: 0.75rem 1rem;
     box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  }
+
+  .docs-notes {
+    margin-top: 0.75rem;
+    padding: 0.625rem 1rem;
+    background: var(--sl-color-accent-low, #e0e7ff);
+    border-left: 3px solid var(--sl-color-accent, #4f46e5);
+    border-radius: 0.5rem;
+  }
+
+  .notes-label {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--sl-color-accent-high, #3730a3);
+    margin-bottom: 0.375rem;
+  }
+
+  .notes-label svg {
+    flex-shrink: 0;
+  }
+
+  .notes-list {
+    margin: 0;
+    padding-left: 1.5rem;
+  }
+
+  .docs-notes li {
+    margin: 0.25rem 0;
   }
 
   .docs-placeholder {
@@ -130,11 +188,121 @@ const hasContent = docs?.description || (docs?.examples && docs.examples.length 
     font-size: 0.8125rem;
     line-height: 1.6;
     color: var(--sl-color-white, #1f2937);
+    overflow-wrap: break-word;
   }
 
   .docs-description {
     margin: 0 0 0.75rem 0;
     font-size: 0.875rem;
+  }
+
+  .docs-description:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Markdown content (set:html, so :global is required) */
+  .docs-text :global(p) {
+    margin: 0 0 0.625rem 0;
+  }
+
+  .docs-text :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .docs-text :global(a) {
+    color: var(--sl-color-accent, #4f46e5);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .docs-text :global(a:hover) {
+    text-decoration: underline;
+  }
+
+  .docs-text :global(code) {
+    font-size: 0.9em;
+    background: var(--sl-color-bg-inline-code, #f3f4f6);
+    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+    border-radius: 0.25rem;
+    padding: 0.0625rem 0.3125rem;
+  }
+
+  .docs-text :global(pre) {
+    margin: 0 0 0.625rem 0;
+    padding: 0.5rem 0.75rem;
+    background: var(--sl-color-gray-6, #f9fafb);
+    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+    border-radius: 0.375rem;
+    overflow-x: auto;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  .docs-text :global(pre code) {
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
+
+  .docs-text :global(ul),
+  .docs-text :global(ol) {
+    margin: 0 0 0.625rem 0;
+    padding-left: 1.5rem;
+  }
+
+  .docs-text :global(ul:last-child),
+  .docs-text :global(ol:last-child) {
+    margin-bottom: 0;
+  }
+
+  .docs-text :global(.md-table-scroll) {
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 0 0 0.625rem 0;
+  }
+
+  .docs-text :global(.md-table-scroll:last-child) {
+    margin-bottom: 0;
+  }
+
+  .docs-text :global(table) {
+    border-collapse: collapse;
+    margin: 0;
+    font-size: 0.8125rem;
+  }
+
+  .docs-text :global(th),
+  .docs-text :global(td) {
+    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+    padding: 0.25rem 0.625rem;
+    text-align: left;
+  }
+
+  .docs-text :global(th) {
+    background: var(--sl-color-gray-6, #f9fafb);
+    font-weight: 600;
+  }
+
+  /* Code tokens in table cells must not break mid-token; the wrapper scrolls instead */
+  .docs-text :global(table code) {
+    white-space: nowrap;
+  }
+
+  .docs-text :global(blockquote) {
+    margin: 0 0 0.625rem 0;
+    padding: 0.125rem 0 0.125rem 0.75rem;
+    border-left: 3px solid var(--sl-color-gray-5, #e5e7eb);
+    color: var(--sl-color-gray-2, #6b7280);
+  }
+
+  .docs-text :global(h1),
+  .docs-text :global(h2),
+  .docs-text :global(h3),
+  .docs-text :global(h4) {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    margin: 0.75rem 0 0.375rem 0;
+    color: var(--sl-color-white, #111827);
   }
 
   .docs-section {
