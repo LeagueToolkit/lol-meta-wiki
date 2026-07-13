@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "prebuild": "bun ../scripts/generate-db.ts --in ../db/meta.db.json --out public/db --mdx src/content/docs/classes --docs ../db/docs --pretty 1",
+    "prebuild": "bun ../scripts/generate-db.ts --in ../db/meta.db.json --out public/db --classes-out db-data/classes --mdx src/content/docs/classes --docs ../db/docs --pretty 1",
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
@@ -11,16 +11,16 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/mdx": "4.3.9",
-    "@astrojs/starlight": "^0.36.1",
-    "@tailwindcss/vite": "^4.1.17",
-    "astro": "^5.6.1",
+    "@astrojs/mdx": "^7.0.2",
+    "@astrojs/starlight": "^0.41.3",
+    "@tailwindcss/vite": "^4.3.2",
+    "astro": "^7.0.7",
     "marked": "^18.0.6",
     "sharp": "^0.34.2",
-    "shiki": "^3.15.0",
-    "tailwindcss": "^4.1.17"
+    "shiki": "^4.3.1",
+    "tailwindcss": "^4.3.2"
   },
   "devDependencies": {
-    "@pagefind/default-ui": "^1.4.0"
+    "@pagefind/default-ui": "^1.5.2"
   }
 }

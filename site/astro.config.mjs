@@ -10,6 +10,11 @@ import generateDb from "./integrations/generate-db.mjs";
 export default defineConfig({
   site: 'https://meta-wiki.leaguetoolkit.dev',
 
+  // Astro 7 changed the default to 'jsx', which strips whitespace between
+  // inline elements on separate lines. Keep the v6 behavior to avoid subtle
+  // spacing regressions across generated pages.
+  compressHTML: true,
+
   // Remove 'base' when using custom domain (no subpath needed)
   integrations: [
     generateDb(),
@@ -63,16 +68,17 @@ export default defineConfig({
       sidebar: [
         {
           label: "Guides",
-          autogenerate: { directory: "guides" },
+          items: [{ autogenerate: { directory: "guides" } }],
         },
         {
           label: "Reference",
-          autogenerate: { directory: "reference" },
+          items: [{ autogenerate: { directory: "reference" } }],
         },
-        {
-          label: "Classes",
-          autogenerate: { directory: "classes" },
-        },
+        // The ~5,300 "Classes" links are NOT part of the static sidebar:
+        // rendering them into every page made each HTML file ~850KB (4.3GB
+        // dist) and dominated build time. The Sidebar override
+        // (ResizableSidebar.astro) renders the group client-side from
+        // /db/classIndex.json instead.
       ],
     }),
     mdx(),

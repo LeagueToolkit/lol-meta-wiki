@@ -10,6 +10,7 @@ build/
 
 # Generated database files
 site/public/db/
+site/db-data/
 
 # Environment variables
 .env

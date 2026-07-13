@@ -4,12 +4,15 @@
  *
  * Input:   db/meta.db.json  (versioned database from LeagueToolkit/lol-meta-classes;
  *          see its docs/meta-db-format.md — refresh with `pnpm update-db`)
- * Output:  outDir/classes/<ClassName>.<sha12>.json
- *          outDir/index.json
+ * Output:  classesOutDir/<ClassName>.<sha12>.json (build-time only, NOT in
+ *          public/ — copying 5k+ files into dist every build was a major
+ *          build-time cost)
+ *          outDir/index.json (fetched client-side)
+ *          outDir/classIndex.json (fetched client-side)
  *          mdxDir/<ClassName>.mdx (Starlight docs)
  *
  * Usage:
- *   bun run scripts/generate-db.ts --in db/meta.db.json --out site/public/db --mdx site/src/content/docs/classes
+ *   bun run scripts/generate-db.ts --in db/meta.db.json --out site/public/db --classes-out site/db-data/classes --mdx site/src/content/docs/classes
  *
  * Notes:
  * - Everything in meta.db.json is keyed by FNV-1a hash; resolved names are
@@ -116,6 +119,7 @@ for (let i = 2; i < process.argv.length; i++) {
 }
 const inFile = args.get("in") ?? "db/meta.db.json";
 const outDir = args.get("out") ?? "site/public/db";
+const classesOutDir = args.get("classes-out") ?? "site/db-data/classes";
 const mdxDir = args.get("mdx") ?? "site/src/content/docs/classes";
 const docsDir = args.get("docs") ?? "db/docs";
 const pretty = args.get("pretty") === "true" || args.get("pretty") === "1";
@@ -385,8 +389,10 @@ async function main() {
     return nodes;
   }
 
-  // Emit per-class JSON
-  const classDir = join(outDir, "classes");
+  // Emit per-class JSON (read only at build time by ClassDetails.astro, so
+  // they live outside public/ — the "/db/classes/..." paths in MDX and
+  // index.json are stable identifiers mapped to classesOutDir at build time)
+  const classDir = classesOutDir;
   const index: {
     name: string;
     file: string;
