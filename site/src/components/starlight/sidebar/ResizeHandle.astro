@@ -1,0 +1,142 @@
+---
+/**
+ * Draggable handle to resize the sidebar; the chosen width persists in
+ * localStorage. Rendered *before* the sidebar (the handle is position:fixed,
+ * so DOM order doesn't matter visually) so the is:inline restore script runs
+ * ahead of the sidebar markup and the saved width applies before first paint.
+ */
+---
+
+<script is:inline>
+  // Restore the saved width immediately to prevent a flash of default width.
+  // Key duplicated in the module script below - keep in sync.
+  try {
+    const savedWidth = localStorage.getItem("starlight-sidebar-width");
+    if (savedWidth) {
+      document.documentElement.style.setProperty(
+        "--sl-sidebar-width",
+        savedWidth,
+      );
+    }
+  } catch {}
+</script>
+
+<div id="sidebar-resize-handle" class="resize-handle" aria-hidden="true">
+  <div class="resize-handle-line"></div>
+</div>
+
+<script>
+  const WIDTH_KEY = "starlight-sidebar-width";
+  const MIN_WIDTH = 200;
+
+  class SidebarResizer {
+    handle: HTMLElement;
+    isResizing = false;
+    startX = 0;
+    startWidth = 0;
+
+    constructor(handle: HTMLElement) {
+      this.handle = handle;
+
+      this.handle.addEventListener("mousedown", this.startResize.bind(this));
+      document.addEventListener("mousemove", this.resize.bind(this));
+      document.addEventListener("mouseup", this.stopResize.bind(this));
+
+      // Reset to the default width on double click
+      this.handle.addEventListener("dblclick", () => {
+        document.documentElement.style.removeProperty("--sl-sidebar-width");
+        localStorage.removeItem(WIDTH_KEY);
+      });
+    }
+
+    startResize(e: MouseEvent) {
+      this.isResizing = true;
+      this.startX = e.clientX;
+      this.startWidth = this.currentWidthPx();
+      this.handle.classList.add("resizing");
+
+      // Prevent text selection during resize
+      document.body.style.userSelect = "none";
+      document.body.style.cursor = "col-resize";
+    }
+
+    /** Current --sl-sidebar-width in pixels (Starlight's default is in rem). */
+    currentWidthPx(): number {
+      const rootStyle = getComputedStyle(document.documentElement);
+      const width = rootStyle.getPropertyValue("--sl-sidebar-width").trim();
+      if (width.endsWith("px")) return parseFloat(width);
+      if (width.endsWith("rem")) {
+        return parseFloat(width) * (parseFloat(rootStyle.fontSize) || 16);
+      }
+      return 288;
+    }
+
+    resize(e: MouseEvent) {
+      if (!this.isResizing) return;
+
+      const newWidth = this.startWidth + (e.clientX - this.startX);
+      if (newWidth < MIN_WIDTH || newWidth > window.innerWidth * 0.5) return;
+
+      document.documentElement.style.setProperty(
+        "--sl-sidebar-width",
+        `${newWidth}px`,
+      );
+    }
+
+    stopResize() {
+      if (!this.isResizing) return;
+
+      this.isResizing = false;
+      this.handle.classList.remove("resizing");
+      document.body.style.userSelect = "";
+      document.body.style.cursor = "";
+
+      const currentWidth =
+        document.documentElement.style.getPropertyValue("--sl-sidebar-width");
+      if (currentWidth) localStorage.setItem(WIDTH_KEY, currentWidth);
+    }
+  }
+
+  const handle = document.getElementById("sidebar-resize-handle");
+  if (handle) new SidebarResizer(handle);
+</script>
+
+<style>
+  .resize-handle {
+    position: fixed;
+    top: var(--sl-nav-height, 3.5rem);
+    bottom: 0;
+    left: var(--sl-sidebar-width);
+    width: 12px;
+    margin-left: -6px; /* Center on the line */
+    cursor: col-resize;
+    z-index: 2000; /* Ensure it's above most things */
+    display: none; /* Hidden by default (mobile) */
+    align-items: center;
+    justify-content: center;
+    touch-action: none;
+  }
+
+  /* Only show on desktop */
+  @media (min-width: 50rem) {
+    /* 800px - Starlight mobile breakpoint */
+    .resize-handle {
+      display: flex;
+    }
+  }
+
+  .resize-handle-line {
+    width: 2px;
+    height: 100%;
+    background-color: transparent;
+    transition: background-color 0.2s;
+  }
+
+  .resize-handle:hover .resize-handle-line,
+  .resize-handle.resizing .resize-handle-line {
+    background-color: var(
+      --sl-color-accent,
+      var(--color-brand-primary, #7c3aed)
+    );
+  }
+</style>

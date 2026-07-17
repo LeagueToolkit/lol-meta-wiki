@@ -85,3 +85,23 @@ export interface ChangelogIndexEntry {
   builds: number[];
   counts: ChangelogCounts;
 }
+
+// --- class sidebar shapes ---
+// Grouped class list for the client-rendered "Classes" sidebar group
+// (ResizableSidebar.astro), emitted as classSidebar.json. Grouping is
+// computed at generate time; the sidebar script is a dumb renderer.
+export type ClassSidebarEntry = [name: string, href: string];
+
+export interface ClassSidebarGroup {
+  label: string;
+  entries: ClassSidebarEntry[];
+}
+
+export interface ClassSidebar {
+  /** First-word buckets large enough to be collapsible groups, A→Z. */
+  groups: ClassSidebarGroup[];
+  /** Named classes whose bucket was too small, flat, A→Z. */
+  other: ClassSidebarEntry[];
+  /** Unresolved 0x… names, sorted numerically — rendered last, collapsed. */
+  hashed: ClassSidebarEntry[];
+}

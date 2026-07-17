@@ -18,6 +18,26 @@
   --cl-summary-height: 3.5rem;
 }
 
+/* Sidebar menu items: background highlight on hover/keyboard-focus (Starlight
+   only shifts text color, which is easy to miss). Applies to both the static
+   groups and the client-injected Classes group (same markup, same container).
+   The current page keeps its accent background, hence the :not().
+   Translucent overlay of the theme's text color rather than a gray token:
+   in dark mode the sidebar background IS --sl-color-gray-6, so any fixed
+   gray disappears against it. */
+#starlight__sidebar a:not([aria-current="page"]):hover,
+#starlight__sidebar a:not([aria-current="page"]):focus-visible,
+#starlight__sidebar summary:hover,
+#starlight__sidebar summary:focus-visible {
+  background-color: color-mix(in srgb, var(--sl-color-white) 8%, transparent);
+}
+
+/* Links already have this radius from Starlight; give group headers the same
+   so the hover highlight matches. */
+#starlight__sidebar summary {
+  border-radius: 0.25rem;
+}
+
 /* Compact previous/next pagination links (Starlight defaults are huge:
    1rem padding + 2xl titles) */
 .pagination-links a {

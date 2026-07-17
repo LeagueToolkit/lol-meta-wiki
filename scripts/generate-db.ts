@@ -9,6 +9,7 @@
  *          build-time cost)
  *          outDir/index.json (fetched client-side)
  *          outDir/classIndex.json (fetched client-side)
+ *          outDir/classSidebar.json (fetched client-side, grouped sidebar view)
  *          mdxDir/<ClassName>.mdx (Starlight docs)
  *
  * Usage:
@@ -37,6 +38,9 @@ import type {
   ChangelogBuildGroup,
   ChangelogCounts,
   ChangelogPatch,
+  ClassSidebar,
+  ClassSidebarEntry,
+  ClassSidebarGroup,
 } from "../site/src/types";
 
 // --- meta.db.json types ---
@@ -796,6 +800,56 @@ async function main() {
   await writeIfChanged(
     classIndexPath,
     JSON.stringify(classIndex, null, pretty ? 2 : 0)
+  );
+
+  // Emit classSidebar.json - the grouped view the client-rendered "Classes"
+  // sidebar group consumes (ResizableSidebar.astro). Named classes bucket by
+  // first PascalCase word; buckets of MIN_GROUP_SIZE+ become collapsible
+  // groups, stragglers stay flat, and unresolved 0x… names sort last so they
+  // stop burying the readable classes (issue #6).
+  const MIN_GROUP_SIZE = 5;
+  const isHashName = (n: string) => /^0x[0-9a-fA-F]+$/.test(n);
+  const firstWord = (n: string) =>
+    n.match(/^(?:[A-Z]+(?![a-z])|[A-Z][a-z0-9]*|[a-z0-9]+)/)?.[0] ?? n;
+  const byName = (a: ClassSidebarEntry, b: ClassSidebarEntry) =>
+    a[0].localeCompare(b[0], "en", { sensitivity: "base" });
+
+  const buckets = new Map<string, ClassSidebarEntry[]>();
+  const hashed: ClassSidebarEntry[] = [];
+  for (const [name, href] of Object.entries(classIndex)) {
+    if (isHashName(name)) {
+      hashed.push([name, href]);
+    } else {
+      const word = firstWord(name);
+      let bucket = buckets.get(word);
+      if (!bucket) buckets.set(word, (bucket = []));
+      bucket.push([name, href]);
+    }
+  }
+  hashed.sort((a, b) => parseInt(a[0], 16) - parseInt(b[0], 16));
+
+  const sidebarGroups: ClassSidebarGroup[] = [];
+  const sidebarOther: ClassSidebarEntry[] = [];
+  for (const [label, entries] of buckets) {
+    if (entries.length >= MIN_GROUP_SIZE) {
+      sidebarGroups.push({ label, entries: entries.sort(byName) });
+    } else {
+      sidebarOther.push(...entries);
+    }
+  }
+  sidebarGroups.sort((a, b) =>
+    a.label.localeCompare(b.label, "en", { sensitivity: "base" })
+  );
+  sidebarOther.sort(byName);
+
+  const classSidebar: ClassSidebar = {
+    groups: sidebarGroups,
+    other: sidebarOther,
+    hashed,
+  };
+  await writeIfChanged(
+    join(outDir, "classSidebar.json"),
+    JSON.stringify(classSidebar, null, pretty ? 2 : 0)
   );
 
   // --- changelog: per-patch JSON (build-time only, outside public/ like the
