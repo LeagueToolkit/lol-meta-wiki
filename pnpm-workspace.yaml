@@ -1,9 +1,10 @@
 packages:
   - site
 
-# Native deps allowed to run install/build scripts. esbuild and sharp both
-# need their platform binary compiled; sharp is used for image optimization
-# during the Astro build.
+allowBuilds:
+  esbuild: true
+  sharp: true
+
 onlyBuiltDependencies:
   - esbuild
   - sharp
