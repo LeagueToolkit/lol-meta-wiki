@@ -1,0 +1,78 @@
+---
+// One property-level change inside a changed class: the property name (anchored
+// to its heading on the class page) plus the shape of the change.
+//   added / re-added → tag + new type
+//   removed          → tag + old type
+//   typechanged      → old type → new type, no tag
+import { classIndex } from "../../utils/classIndex";
+import { typeDisplay } from "../../utils/typeLinker";
+import type { PropChange, ChangeTuple } from "../../types";
+
+interface Props {
+  change: PropChange;
+  classHref: string; // base href of the owning class; the prop anchor hangs off it
+}
+
+const { change, classHref } = Astro.props;
+
+const tuple = (t: ChangeTuple) => typeDisplay(t, classIndex);
+
+// added/re-added/removed carry a colored tag; a plain type change shows no tag.
+// Keyed lookup instead of one near-identical branch per kind.
+const tag = {
+  added: { label: "added", cls: "tag-added" },
+  readded: { label: "re-added", cls: "tag-added" },
+  removed: { label: "removed", cls: "tag-removed" },
+}[change.kind as "added" | "readded" | "removed"];
+---
+
+<div class={`change-detail prop-change prop-${change.kind}`}>
+  <a class="prop-name" href={`${classHref}#${change.slug}`}>{change.name}</a>
+  {tag && <span class={`prop-tag ${tag.cls}`}>{tag.label}</span>}
+  {
+    change.kind === "typechanged" ? (
+      <>
+        {change.oldType && (
+          <code class="type-code" set:html={tuple(change.oldType)} />
+        )}
+        <span class="arrow">→</span>
+        {change.newType && (
+          <code class="type-code" set:html={tuple(change.newType)} />
+        )}
+      </>
+    ) : change.kind === "removed" ? (
+      change.oldType && <code class="type-code" set:html={tuple(change.oldType)} />
+    ) : (
+      change.newType && <code class="type-code" set:html={tuple(change.newType)} />
+    )
+  }
+</div>
+
+<style>
+  .prop-name {
+    font-family: var(--sl-font-mono);
+    font-weight: 600;
+    font-size: 0.8125rem;
+    color: var(--sl-color-white, #374151);
+    text-decoration: none;
+  }
+  .prop-name:hover {
+    text-decoration: underline;
+  }
+  .prop-tag {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.05rem 0.35rem;
+    border-radius: 0.25rem;
+  }
+  .tag-added {
+    color: var(--sl-color-green-high, #15803d);
+    background: color-mix(in srgb, var(--sl-color-green, #22c55e) 14%, transparent);
+  }
+  .tag-removed {
+    color: var(--sl-color-red-high, #b91c1c);
+    background: color-mix(in srgb, var(--sl-color-red, #ef4444) 14%, transparent);
+  }
+</style>

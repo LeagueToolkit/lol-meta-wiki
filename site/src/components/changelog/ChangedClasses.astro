@@ -1,0 +1,40 @@
+---
+// The "Changed classes" section: a titled list of ChangedClassCards.
+import ChangedClassCard from "./ChangedClassCard.astro";
+import type { ClassChange } from "../../types";
+
+interface Props {
+  entries: ClassChange[];
+  headingLevel: number; // 2 on single-build patches, 3 under a build heading
+  anchor: boolean; // this section owns the #sec-changed jump target
+}
+
+const { entries, headingLevel, anchor } = Astro.props;
+const Htag = `h${headingLevel}`;
+---
+
+{
+  entries.length > 0 && (
+    <div class="change-section" id={anchor ? "sec-changed" : undefined}>
+      <Htag class="change-title change-title-changed">
+        Changed classes <span class="count">{entries.length}</span>
+      </Htag>
+      <ul class="changed-list">
+        {entries.map((e) => (
+          <ChangedClassCard entry={e} />
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+<style>
+  .changed-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+</style>

@@ -14,6 +14,9 @@ const { title, removedIn, since } = Astro.locals.starlightRoute.entry.data as {
 	removedIn?: string;
 	since?: string;
 };
+
+// Each patch pill links to that patch's changelog page (slug = dots → dashes)
+const changelogHref = (patch: string) => `/changelog/${patch.replace(/\./g, "-")}/`;
 ---
 
 <div class="page-title">
@@ -22,19 +25,23 @@ const { title, removedIn, since } = Astro.locals.starlightRoute.entry.data as {
 		(removedIn || since) && (
 			<div class="title-pills">
 				{removedIn && (
-					<Pill
-						variant="danger"
-						title={`This class no longer exists in the game as of patch ${removedIn}`}
-					>
-						<TrashIcon slot="icon" size={12} strokeWidth={2.5} />
-						Removed in <b>{removedIn}</b>
-					</Pill>
+					<a class="pill-link" href={changelogHref(removedIn)}>
+						<Pill
+							variant="danger"
+							title={`This class no longer exists in the game as of patch ${removedIn} - see the changelog`}
+						>
+							<TrashIcon slot="icon" size={12} strokeWidth={2.5} />
+							Removed in <b>{removedIn}</b>
+						</Pill>
+					</a>
 				)}
 				{since && (
-					<Pill variant="success" title={`Added in patch ${since}`}>
-						<CirclePlusIcon slot="icon" size={12} strokeWidth={2.5} />
-						{since}
-					</Pill>
+					<a class="pill-link" href={changelogHref(since)}>
+						<Pill variant="success" title={`Added in patch ${since} - see the changelog`}>
+							<CirclePlusIcon slot="icon" size={12} strokeWidth={2.5} />
+							{since}
+						</Pill>
+					</a>
 				)}
 			</div>
 		)
@@ -54,6 +61,22 @@ const { title, removedIn, since } = Astro.locals.starlightRoute.entry.data as {
 		display: flex;
 		align-items: center;
 		gap: 0.375rem;
+	}
+
+	.pill-link {
+		text-decoration: none;
+		border-radius: 0.4rem;
+		transition: filter 0.15s;
+	}
+
+	.pill-link:hover {
+		text-decoration: none;
+		filter: brightness(1.08);
+	}
+
+	/* Hint the pill is now interactive */
+	.pill-link :global(.pill) {
+		cursor: pointer;
 	}
 
 	h1 {

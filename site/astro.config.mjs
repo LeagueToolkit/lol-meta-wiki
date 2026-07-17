@@ -74,6 +74,13 @@ export default defineConfig({
           label: "Reference",
           items: [{ autogenerate: { directory: "reference" } }],
         },
+        {
+          label: "Changelog",
+          // Ordered by each page's sidebar.order frontmatter (overview at 0,
+          // then patches newest-first) - generate-db assigns it since patch
+          // strings don't sort lexicographically.
+          items: [{ autogenerate: { directory: "changelog" } }],
+        },
         // The ~5,300 "Classes" links are NOT part of the static sidebar:
         // rendering them into every page made each HTML file ~850KB (4.3GB
         // dist) and dominated build time. The Sidebar override
