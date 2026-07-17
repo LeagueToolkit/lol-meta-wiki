@@ -80,7 +80,7 @@ const firstWith = {
      unique styles scoped locally. */
   :global(.patch-changelog .change-section) {
     /* Clear the fixed site header + sticky jump-nav when anchoring to a section */
-    scroll-margin-top: calc(var(--sl-nav-height, 4rem) + 3.5rem);
+    scroll-margin-top: calc(var(--sl-nav-height, 3.75rem) + var(--cl-summary-height));
     margin-bottom: 1.75rem;
   }
 
@@ -94,10 +94,10 @@ const firstWith = {
     color: var(--sl-color-white, #1f2937);
   }
   :global(.patch-changelog .change-title-added svg) {
-    color: var(--sl-color-green, #22c55e);
+    color: var(--cl-added);
   }
   :global(.patch-changelog .change-title-removed svg) {
-    color: var(--sl-color-red, #ef4444);
+    color: var(--cl-removed);
   }
   :global(.patch-changelog .change-title .count) {
     font-size: 0.75rem;
@@ -128,7 +128,7 @@ const firstWith = {
     font-size: 0.75rem;
     padding: 0.1rem 0.4rem;
     border-radius: 0.3rem;
-    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+    border: var(--cl-border);
     background: var(--sl-color-bg-inline-code, #f3f4f6);
   }
   :global(.patch-changelog .base-old) {

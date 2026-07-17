@@ -1,5 +1,23 @@
 /* Custom global styles */
 
+/* Changelog semantic colors - added / changed / removed. Aliased to Starlight's
+   theme-aware palette (auto-adapts to light/dark) so the changelog components
+   reference one name instead of repeating the raw --sl-color-* + hex fallback. */
+:root {
+  --cl-added: var(--sl-color-green, #22c55e);
+  --cl-added-text: var(--sl-color-green-high, #15803d);
+  --cl-changed: var(--sl-color-orange, #f97316);
+  --cl-changed-text: var(--sl-color-orange-high, #c2410c);
+  --cl-removed: var(--sl-color-red, #ef4444);
+  --cl-removed-text: var(--sl-color-red-high, #b91c1c);
+
+  /* Shared changelog metrics (the border repeats on every card/chip; the
+     summary height couples the sticky bar to the section scroll-margin so
+     anchored sections clear both the site nav and the sticky summary). */
+  --cl-border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+  --cl-summary-height: 3.5rem;
+}
+
 /* Compact previous/next pagination links (Starlight defaults are huge:
    1rem padding + 2xl titles) */
 .pagination-links a {

@@ -84,27 +84,27 @@ const meta = {
     font-size: 0.8125rem;
     font-weight: 500;
     text-decoration: none;
-    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+    border: var(--cl-border);
     transition: border-color 0.15s, background 0.15s;
   }
   .class-chip:hover {
     text-decoration: none;
   }
   .chip-added {
-    color: var(--sl-color-green-high, #15803d);
-    background: color-mix(in srgb, var(--sl-color-green, #22c55e) 8%, transparent);
-    border-color: color-mix(in srgb, var(--sl-color-green, #22c55e) 30%, transparent);
+    color: var(--cl-added-text);
+    background: color-mix(in srgb, var(--cl-added) 8%, transparent);
+    border-color: color-mix(in srgb, var(--cl-added) 30%, transparent);
   }
   .chip-added:hover {
-    background: color-mix(in srgb, var(--sl-color-green, #22c55e) 18%, transparent);
+    background: color-mix(in srgb, var(--cl-added) 18%, transparent);
   }
   .chip-removed {
-    color: var(--sl-color-red-high, #b91c1c);
-    background: color-mix(in srgb, var(--sl-color-red, #ef4444) 8%, transparent);
-    border-color: color-mix(in srgb, var(--sl-color-red, #ef4444) 30%, transparent);
+    color: var(--cl-removed-text);
+    background: color-mix(in srgb, var(--cl-removed) 8%, transparent);
+    border-color: color-mix(in srgb, var(--cl-removed) 30%, transparent);
   }
   .chip-removed:hover {
-    background: color-mix(in srgb, var(--sl-color-red, #ef4444) 18%, transparent);
+    background: color-mix(in srgb, var(--cl-removed) 18%, transparent);
   }
   .readded-tag {
     font-size: 0.65rem;

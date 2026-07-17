@@ -66,7 +66,7 @@ const maxTotal = Math.max(
   .cl-table {
     display: flex;
     flex-direction: column;
-    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+    border: var(--cl-border);
     border-radius: 0.5rem;
     overflow: hidden;
   }
@@ -129,13 +129,13 @@ const maxTotal = Math.max(
     text-align: right;
   }
   .cl-added {
-    color: var(--sl-color-green-high, #15803d);
+    color: var(--cl-added-text);
   }
   .cl-changed {
-    color: var(--sl-color-orange-high, #c2410c);
+    color: var(--cl-changed-text);
   }
   .cl-removed {
-    color: var(--sl-color-red-high, #b91c1c);
+    color: var(--cl-removed-text);
   }
 
   .cl-bar {
@@ -152,13 +152,13 @@ const maxTotal = Math.max(
     height: 100%;
   }
   .seg-added {
-    background: var(--sl-color-green, #22c55e);
+    background: var(--cl-added);
   }
   .seg-changed {
-    background: var(--sl-color-orange, #f97316);
+    background: var(--cl-changed);
   }
   .seg-removed {
-    background: var(--sl-color-red, #ef4444);
+    background: var(--cl-removed);
   }
 
   @media (max-width: 640px) {
