@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "prebuild": "bun ../scripts/generate-db.ts --in ../db/meta.db.json --out public/db --classes-out db-data/classes --mdx src/content/docs/classes --docs ../db/docs --pretty 1",
+    "prebuild": "bun ../scripts/generate-db.ts --in ../db/meta.db.json --out public/db --classes-out db-data/classes --mdx src/content/docs/classes --changelog-out db-data/changelog --changelog-mdx src/content/docs/changelog --docs ../db/docs --pretty 1",
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",

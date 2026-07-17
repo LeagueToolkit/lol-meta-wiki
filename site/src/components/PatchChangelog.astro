@@ -1,0 +1,148 @@
+---
+import fs from "node:fs";
+import { root } from "astro:config/server";
+import ChangelogSummary from "./changelog/ChangelogSummary.astro";
+import BuildGroup from "./changelog/BuildGroup.astro";
+import type { ChangelogPatch, ClassChange } from "../types";
+
+// Props: { file: string } e.g. "/db/changelog/16-13.<sha12>.json"
+const { file } = Astro.props;
+
+// Read the patch data at build time (server-side only), same as
+// ClassDetails.astro: the "/db/changelog/<file>" identifier maps to
+// site/db-data/changelog/, which lives outside public/ so the per-patch JSON
+// isn't copied into dist. Paths anchor to project dirs (astro:config/server),
+// not import.meta.url - after bundling this module lives in dist/.prerender/.
+const dataUrl = new URL(
+  `./db-data/changelog/${file.replace(/^\/db\/changelog\//, "")}`,
+  root
+);
+const cp = JSON.parse(fs.readFileSync(dataUrl, "utf8")) as ChangelogPatch;
+
+const multiBuild = cp.builds.length > 1;
+
+// Split a build's entries into the three display buckets (re-added classes
+// show under "New").
+function bucket(entries: ClassChange[]) {
+  return {
+    added: entries.filter((e) => e.kind === "added" || e.kind === "readded"),
+    removed: entries.filter((e) => e.kind === "removed"),
+    changed: entries.filter((e) => e.kind === "changed"),
+  };
+}
+const groups = cp.buildGroups.map((g) => ({
+  build: g.build,
+  ...bucket(g.entries),
+}));
+
+// The summary stats double as jump-links (see ChangelogSummary). Anchor each
+// category to the first build group that contains it - categories can recur
+// across build groups on multi-build patches, so only the first gets the id.
+const firstWith = {
+  added: groups.findIndex((g) => g.added.length),
+  changed: groups.findIndex((g) => g.changed.length),
+  removed: groups.findIndex((g) => g.removed.length),
+};
+---
+
+<div class="patch-changelog" data-pagefind-ignore>
+  <ChangelogSummary
+    added={cp.counts.added}
+    changed={cp.counts.changed}
+    removed={cp.counts.removed}
+  />
+
+  {
+    groups.map((g, i) => (
+      <BuildGroup
+        build={g.build}
+        showBuildHeading={multiBuild}
+        added={g.added}
+        removed={g.removed}
+        changed={g.changed}
+        anchors={{
+          added: i === firstWith.added,
+          removed: i === firstWith.removed,
+          changed: i === firstWith.changed,
+        }}
+      />
+    ))
+  }
+</div>
+
+<style>
+  .patch-changelog {
+    margin-top: 1rem;
+  }
+
+  /* Structural styles shared across the changelog sub-components live here as
+     globals scoped under .patch-changelog; each sub-component keeps its own
+     unique styles scoped locally. */
+  :global(.patch-changelog .change-section) {
+    /* Clear the fixed site header + sticky jump-nav when anchoring to a section */
+    scroll-margin-top: calc(var(--sl-nav-height, 4rem) + 3.5rem);
+    margin-bottom: 1.75rem;
+  }
+
+  :global(.patch-changelog .change-title) {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0 0 0.75rem;
+    color: var(--sl-color-white, #1f2937);
+  }
+  :global(.patch-changelog .change-title-added svg) {
+    color: var(--sl-color-green, #22c55e);
+  }
+  :global(.patch-changelog .change-title-removed svg) {
+    color: var(--sl-color-red, #ef4444);
+  }
+  :global(.patch-changelog .change-title .count) {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--sl-color-gray-3, #6b7280);
+    background: var(--sl-color-gray-6, #f3f4f6);
+    border-radius: 999px;
+    padding: 0.05rem 0.5rem;
+  }
+
+  :global(.patch-changelog .change-detail) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.4rem;
+    font-size: 0.8125rem;
+  }
+  :global(.patch-changelog .arrow) {
+    color: var(--sl-color-gray-3, #9ca3af);
+    font-weight: 600;
+  }
+
+  :global(.patch-changelog .type-code),
+  :global(.patch-changelog .base-old),
+  :global(.patch-changelog .base-new) {
+    font-family: var(--sl-font-mono);
+    font-size: 0.75rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 0.3rem;
+    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+    background: var(--sl-color-bg-inline-code, #f3f4f6);
+  }
+  :global(.patch-changelog .base-old) {
+    text-decoration: line-through;
+    opacity: 0.7;
+  }
+
+  /* Type links produced by typeLinker (set:html, so :global is required) */
+  :global(.patch-changelog .type-chip .type-link) {
+    color: var(--sl-color-accent, #4f46e5);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  :global(.patch-changelog .type-chip .type-link:hover) {
+    text-decoration: underline;
+  }
+</style>

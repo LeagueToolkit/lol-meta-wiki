@@ -1,0 +1,56 @@
+---
+// One changed class: its name (linked) plus every base-list change and
+// property-level change recorded for it in this build.
+import { classIndex } from "../../utils/classIndex";
+import PropChangeRow from "./PropChangeRow.astro";
+import type { ClassChange } from "../../types";
+
+interface Props {
+  entry: ClassChange;
+}
+
+const { entry } = Astro.props;
+
+// Hash-only names render as their raw hex - a class page still exists for them.
+const classHref = classIndex[entry.name] ?? `/classes/${entry.slug}`;
+---
+
+<li class="changed-item">
+  <a class="changed-name" href={classHref}>{entry.name}</a>
+  {
+    entry.baseChange && (
+      <div class="change-detail base-change">
+        <span class="detail-label">extends</span>
+        <code class="base-old">{entry.baseChange.old.join(", ") || "-"}</code>
+        <span class="arrow">→</span>
+        <code class="base-new">{entry.baseChange.new.join(", ") || "-"}</code>
+      </div>
+    )
+  }
+  {entry.propChanges.map((pc) => <PropChangeRow change={pc} classHref={classHref} />)}
+</li>
+
+<style>
+  .changed-item {
+    margin: 0;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+    border-radius: 0.5rem;
+    background: var(--sl-color-bg-nav, transparent);
+  }
+  .changed-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--sl-color-accent, #4f46e5);
+    text-decoration: none;
+  }
+  .changed-name:hover {
+    text-decoration: underline;
+  }
+  .detail-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--sl-color-gray-3, #6b7280);
+  }
+</style>

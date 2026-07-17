@@ -42,7 +42,7 @@ const showKeyType =
     <code
       class="type-code"
       data-pagefind-ignore
-      set:html={typeDisplay(p.ft, p.vt, p.kt, p.kh, classIndex)}
+      set:html={typeDisplay(p, classIndex)}
     />
     {
       inlineDefault && (
@@ -106,7 +106,7 @@ const showKeyType =
               </span>
               <code
                 class="type-code"
-                set:html={typeDisplay(h.ft, h.vt, h.kt, h.kh, classIndex)}
+                set:html={typeDisplay(h, classIndex)}
               />
             </li>
           ))}

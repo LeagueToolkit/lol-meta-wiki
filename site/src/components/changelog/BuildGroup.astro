@@ -1,0 +1,66 @@
+---
+// One build's worth of changes: an optional build heading (only on multi-build
+// patches, where per-build subsections keep intra-patch churn visible) followed
+// by the New / Removed / Changed sections.
+import ClassChipSection from "./ClassChipSection.astro";
+import ChangedClasses from "./ChangedClasses.astro";
+import type { ClassChange } from "../../types";
+
+interface Props {
+  build: number;
+  showBuildHeading: boolean;
+  added: ClassChange[];
+  removed: ClassChange[];
+  changed: ClassChange[];
+  // Whether this group owns each section's #sec-* jump target (categories can
+  // recur across build groups; only the first occurrence gets the anchor).
+  anchors: { added: boolean; removed: boolean; changed: boolean };
+}
+
+const { build, showBuildHeading, added, removed, changed, anchors } =
+  Astro.props;
+
+// Single-build patches put the section titles directly under the page <h1>, so
+// they must be <h2> (avoids an h1 -> h3 skip). Multi-build patches add an <h2>
+// build heading and drop the section titles to <h3> beneath it.
+const headingLevel = showBuildHeading ? 3 : 2;
+---
+
+<section class="build-group">
+  {showBuildHeading && <h2 class="build-heading">Build {build}</h2>}
+
+  <ClassChipSection
+    kind="added"
+    entries={added}
+    headingLevel={headingLevel}
+    anchor={anchors.added}
+  />
+  <ClassChipSection
+    kind="removed"
+    entries={removed}
+    headingLevel={headingLevel}
+    anchor={anchors.removed}
+  />
+  <ChangedClasses
+    entries={changed}
+    headingLevel={headingLevel}
+    anchor={anchors.changed}
+  />
+</section>
+
+<style>
+  .build-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .build-heading {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--sl-color-gray-3, #6b7280);
+    border-bottom: 1px solid var(--sl-color-gray-5, #e5e7eb);
+    padding-bottom: 0.35rem;
+    margin: 1.5rem 0 1rem;
+  }
+</style>

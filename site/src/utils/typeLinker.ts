@@ -111,15 +111,18 @@ export function linkType(
 }
 
 /**
- * Create a type display with proper linking for field types
+ * Create a type display with proper linking for field types.
+ *
+ * Takes the field-type tuple as an object rather than four positional strings:
+ * `ft`, `kt`, `vt`, `kh` are all strings and easy to transpose, and any
+ * consumer already holds them together (Property, TypeHistoryEntry, ChangeTuple
+ * all satisfy this shape).
  */
 export function typeDisplay(
-  ft: string,
-  vt: string,
-  kt: string,
-  kh: string,
+  t: { ft: string; kt: string; vt: string; kh: string },
   classIndex: Record<string, string>
 ): string {
+  const { ft, kt, vt, kh } = t;
   let display = linkType(ft, classIndex);
 
   // Types that should show hash reference as generic parameter

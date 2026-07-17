@@ -1,0 +1,115 @@
+---
+// One "New classes" or "Removed classes" section: a titled list of class chips.
+// Both variants share this component, parameterized by `kind`.
+import { classIndex } from "../../utils/classIndex";
+import CirclePlusIcon from "../icons/CirclePlusIcon.astro";
+import TrashIcon from "../icons/TrashIcon.astro";
+import type { ClassChange } from "../../types";
+
+interface Props {
+  kind: "added" | "removed";
+  entries: ClassChange[];
+  headingLevel: number; // 2 on single-build patches, 3 under a build heading
+  anchor: boolean; // this section owns the #sec-<kind> jump target
+}
+
+const { kind, entries, headingLevel, anchor } = Astro.props;
+
+// Hash-only names render as their raw hex - a class page still exists for
+// them, so the link resolves either way.
+const classHref = (c: { name: string; slug: string }) =>
+  classIndex[c.name] ?? `/classes/${c.slug}`;
+
+const Htag = `h${headingLevel}`;
+const meta = {
+  added: {
+    title: "New classes",
+    sectionId: "sec-added",
+    titleClass: "change-title-added",
+    chipClass: "chip-added",
+  },
+  removed: {
+    title: "Removed classes",
+    sectionId: "sec-removed",
+    titleClass: "change-title-removed",
+    chipClass: "chip-removed",
+  },
+}[kind];
+---
+
+{
+  entries.length > 0 && (
+    <div class="change-section" id={anchor ? meta.sectionId : undefined}>
+      <Htag class={`change-title ${meta.titleClass}`}>
+        {kind === "added" ? (
+          <CirclePlusIcon size={16} strokeWidth={2.5} />
+        ) : (
+          <TrashIcon size={16} strokeWidth={2.5} />
+        )}
+        {meta.title} <span class="count">{entries.length}</span>
+      </Htag>
+      <ul class="class-chips">
+        {entries.map((e) => (
+          <li>
+            <a class={`class-chip ${meta.chipClass}`} href={classHref(e)}>
+              {e.name}
+              {e.kind === "readded" && <span class="readded-tag">re-added</span>}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+<style>
+  .class-chips {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+  }
+  .class-chips li {
+    margin: 0;
+    padding: 0;
+  }
+  .class-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 0.4rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .class-chip:hover {
+    text-decoration: none;
+  }
+  .chip-added {
+    color: var(--sl-color-green-high, #15803d);
+    background: color-mix(in srgb, var(--sl-color-green, #22c55e) 8%, transparent);
+    border-color: color-mix(in srgb, var(--sl-color-green, #22c55e) 30%, transparent);
+  }
+  .chip-added:hover {
+    background: color-mix(in srgb, var(--sl-color-green, #22c55e) 18%, transparent);
+  }
+  .chip-removed {
+    color: var(--sl-color-red-high, #b91c1c);
+    background: color-mix(in srgb, var(--sl-color-red, #ef4444) 8%, transparent);
+    border-color: color-mix(in srgb, var(--sl-color-red, #ef4444) 30%, transparent);
+  }
+  .chip-removed:hover {
+    background: color-mix(in srgb, var(--sl-color-red, #ef4444) 18%, transparent);
+  }
+  .readded-tag {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    opacity: 0.7;
+  }
+</style>
