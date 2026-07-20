@@ -1,0 +1,15 @@
+---
+title: Caching and fair use
+description: Cache behavior, rate-limit policy, and good-citizen guidelines for API consumers.
+sidebar:
+  order: 3
+---
+
+- Responses are edge-cached and marked `max-age=3600` - the dataset only
+  changes when a new patch is ingested, so cache freely and honor
+  `Cache-Control`.
+- There are no hard rate limits today. Be a good citizen: cache what you fetch,
+  use `/v1/db` for bulk needs instead of crawling every class, and identify
+  your tool with a `User-Agent`.
+- Access controls (limits, keys) may be added operationally if needed; they do
+  not restrict what you may do with content you have lawfully obtained.

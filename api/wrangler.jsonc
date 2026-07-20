@@ -1,10 +1,10 @@
-// LoL Meta Wiki API — Cloudflare Worker serving the generated dataset as
+// LoL Meta Wiki API - Cloudflare Worker serving the generated dataset as
 // static assets behind clean /v1/* routes (see src/index.ts).
 //
 // Deployed automatically by .github/workflows/deploy.yml on every push to main,
 // so the API never lags the site. To deploy by hand: `pnpm --filter api deploy`
 // (runs build-assets first). The asset tree under dist/assets is rebuilt from
-// the generated site data on every deploy — run `bun scripts/generate-db.ts` at
+// the generated site data on every deploy - run `bun scripts/generate-db.ts` at
 // the repo root beforehand.
 {
   "$schema": "node_modules/wrangler/config-schema.json",

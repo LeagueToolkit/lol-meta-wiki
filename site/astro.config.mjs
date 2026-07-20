@@ -75,6 +75,12 @@ export default defineConfig({
           items: [{ autogenerate: { directory: "reference" } }],
         },
         {
+          label: "API",
+          // Ordered by sidebar.order frontmatter: overview, names-and-hashes,
+          // endpoints, caching, licensing.
+          items: [{ autogenerate: { directory: "api" } }],
+        },
+        {
           label: "Changelog",
           // Ordered by each page's sidebar.order frontmatter (overview at 0,
           // then patches newest-first) - generate-db assigns it since patch

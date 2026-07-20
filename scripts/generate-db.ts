@@ -91,6 +91,13 @@ const pretty = args.get("pretty") === "true" || args.get("pretty") === "1";
 function sha12(s: string) {
   return createHash("sha256").update(s).digest("hex").slice(0, 12);
 }
+// Content hash for hashed filenames. Always hashes the minified serialization
+// so the hash (and the MDX stubs embedding it) is identical with and without
+// --pretty - dev/prebuild pass --pretty 1 while the bare CLI doesn't, and the
+// two must not churn each other's output.
+function contentHash(value: unknown) {
+  return sha12(JSON.stringify(value));
+}
 function safeName(name: string) {
   // Keep hex and identifiers; sanitize anything weird just in case
   return name.replace(/[^A-Za-z0-9._-]/g, "_");
@@ -660,7 +667,7 @@ async function main() {
       docs: classDocs || null,
     };
     const json = JSON.stringify(classJson, null, pretty ? 2 : 0);
-    const hash = sha12(json);
+    const hash = contentHash(classJson);
     const fileName = `${safeName(c.name)}.${hash}.json`;
     const filePath = join(classDir, fileName);
     const didJson = await writeIfChanged(filePath, json);
@@ -809,7 +816,7 @@ async function main() {
   for (let i = 0; i < changelog.length; i++) {
     const cp = changelog[i];
     const json = JSON.stringify(cp, null, pretty ? 2 : 0);
-    const hash = sha12(json);
+    const hash = contentHash(cp);
     const fileName = `${cp.slug}.${hash}.json`;
     if (await writeIfChanged(join(changelogOutDir, fileName), json)) clJsonChanged++;
     generatedChangelogJSON.add(fileName);

@@ -1,17 +1,17 @@
-# CLAUDE.md — LoL Meta Wiki
+# CLAUDE.md - LoL Meta Wiki
 
 Engineering conventions for the **code** in this repo (the Astro site and the
 build script). For documentation-content rules (the `db/docs/*.yaml` files) see
-`CONTRIBUTING.md` — different audience, different rules.
+`CONTRIBUTING.md` - different audience, different rules.
 
 ## Layout in one breath
 
-- `scripts/generate-db.ts` — Bun script. Reads `db/meta.db.json` and emits
+- `scripts/generate-db.ts` - Bun script. Reads `db/meta.db.json` and emits
   per-class + per-patch JSON (`site/db-data/…`, outside `public/`) and MDX stubs
   (`site/src/content/docs/…`). This is the **producer** of the site's data.
-- `site/` — Astro + Starlight wiki. Components are the **consumers**: they read
+- `site/` - Astro + Starlight wiki. Components are the **consumers**: they read
   the generated JSON at build time and render it.
-- `site/src/types.ts` — the shared data shapes both sides agree on.
+- `site/src/types.ts` - the shared data shapes both sides agree on.
 
 Data flows one way: `meta.db.json → generate-db.ts → JSON/MDX → components`.
 Never fetch or transform the raw DB in a component; consume the generated shape.
@@ -58,7 +58,7 @@ Follow it:
 
 8. **Shared data shapes live once, in `site/src/types.ts`.** That file is the
    generator↔component contract. `scripts/generate-db.ts` imports these types
-   (type-only) so the producer can't drift from the consumer — do **not**
+   (type-only) so the producer can't drift from the consumer - do **not**
    redeclare a shape in both places. Add new generated fields to `types.ts` and
    import them where produced.
 
@@ -74,19 +74,19 @@ Follow it:
 
 10. **Scope styles per component by default.** Astro hashes each `<style>` block
     to its component, so scoped rules can't be shared. "Sharing" means either
-    sharing *values* (tokens) or opting a rule out of scoping — pick by what
+    sharing *values* (tokens) or opting a rule out of scoping - pick by what
     you're actually sharing (next two rules).
 
 11. **Share values with design tokens, never copied hex.** Foundational tokens
     live in `src/styles/global.css` (`@theme { --color-success, --color-error, … }`,
     Tailwind v4); Starlight's theme-aware palette (`--sl-color-*`) is also
     available. For a feature's semantic colors, alias them once and reference the
-    alias from scoped styles — see the changelog's `--cl-added` / `--cl-changed` /
+    alias from scoped styles - see the changelog's `--cl-added` / `--cl-changed` /
     `--cl-removed` (+ `-text` variants) in `src/styles/custom.css`. Don't repeat
-    `var(--sl-color-green, #22c55e)` across components — that was the old smell.
+    `var(--sl-color-green, #22c55e)` across components - that was the old smell.
     Same rule for any non-color value **repeated across a feature's components**
     (e.g. `--cl-border`, `--cl-summary-height`). But only lift *shared, semantic*
-    values — leave incidental one-off sizings (`0.4rem`, `0.8125rem`) inline
+    values - leave incidental one-off sizings (`0.4rem`, `0.8125rem`) inline
     rather than minting a token per magic number, and don't snap off-scale values
     onto the `--spacing-*` / `--radius-*` scale in passing (that's a visual change,
     not a refactor).
@@ -95,13 +95,13 @@ Follow it:
     Starlight already loads `src/styles/custom.css` + `global.css` (see
     `astro.config.mjs` → `customCss`); namespaced shared rules belong there, or
     in a co-located feature stylesheet imported by the components that need it
-    (`import "./changelog.css"` — bundled once). Tailwind v4 utilities are also
+    (`import "./changelog.css"` - bundled once). Tailwind v4 utilities are also
     available for layout/color. Reserve `:global(.feature-root …)` in a parent
     for a *small* set of rules you deliberately want kept beside the orchestrator
-    — it works (see `PatchChangelog.astro`), but it's the exception, not the rule.
+    - it works (see `PatchChangelog.astro`), but it's the exception, not the rule.
 
 13. **Indentation follows `.editorconfig`** (2-space, LF). No Prettier is wired
-    up yet — match the file you're editing and the editorconfig.
+    up yet - match the file you're editing and the editorconfig.
 
 ---
 
@@ -110,7 +110,7 @@ Follow it:
 14. Components read generated JSON at build time via
     `fs.readFileSync(new URL("./db-data/…", root))` using `root` from
     `astro:config/server` (see `ClassDetails.astro` / `PatchChangelog.astro`).
-    The `db-data/` tree lives **outside** `public/` on purpose — copying 5k+ JSON
+    The `db-data/` tree lives **outside** `public/` on purpose - copying 5k+ JSON
     files into `dist/` every build was a major cost. Don't move generated JSON
     into `public/`, and don't re-read a large shared index per page: parse it once
     at module scope (see `utils/classIndex.ts`).
@@ -119,7 +119,7 @@ Follow it:
 
 ## Verify before you call it done
 
-- `bun scripts/generate-db.ts` should be **idempotent** — a second run reports
+- `bun scripts/generate-db.ts` should be **idempotent** - a second run reports
   `0 changed, 0 deleted`. If it churns every file on a re-run, the output isn't
   deterministic; fix that before shipping.
 - `pnpm --filter site build` must pass with no errors and the expected page count.

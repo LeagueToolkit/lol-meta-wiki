@@ -1,0 +1,141 @@
+---
+title: Endpoints
+description: Every API route grouped by what it serves - discovery, classes, lookup tables, changelogs, and documentation prose.
+sidebar:
+  order: 2
+---
+
+All endpoints are `GET` (plus `HEAD`/`OPTIONS`), return JSON, and live under
+`https://meta-api.leaguetoolkit.dev/v1`. A trailing slash is tolerated on any
+route. Errors come back as JSON too - `404` responses include a `hint` and a
+pointer back to `/v1`. Class names are exact and case-sensitive; hashes are
+accepted in any spelling (see [Names and hashes](/api/names-and-hashes/)).
+
+## Discovery
+
+| Endpoint | Returns |
+|---|---|
+| `/v1` | API metadata: the dataset window (first and latest tracked patch/build), class and patch counts, hash format, and a map of every endpoint. Start here. |
+| `/v1/openapi` | The OpenAPI 3.1 document describing every endpoint and schema - point a Swagger or Redoc viewer at it. |
+
+## Classes
+
+| Endpoint | Returns |
+|---|---|
+| `/v1/classes` | The full class list: `{ count, classes: [name, …] }`. Unnamed classes appear as canonical hashes. |
+| `/v1/classes/{name-or-hash}` | One class: hash, `interface`/`value` flags, bases, lifetime, ancestor/descendant trees, and its **own** properties with types, defaults, and history. |
+| `/v1/classes/{name-or-hash}?inherited=1` | The same class in the precomputed flattened view: properties from all ancestors merged in, each stamped with a `from` field. |
+
+### Class shape
+
+```sh
+curl https://meta-api.leaguetoolkit.dev/v1/classes/VfxEmitterDefinitionData
+```
+
+```json
+{
+  "name": "VfxEmitterDefinitionData",
+  "hash": "0x09cde442",
+  "interface": false,
+  "value": true,
+  "bases": [],
+  "since": null,
+  "removedIn": null,
+  "properties": [
+    {
+      "name": "primitive",
+      "hash": "0x007b14f6",
+      "ft": "Pointer",
+      "kt": null,
+      "vt": null,
+      "kh": "0x60c24094",
+      "khName": null,
+      "khKind": "class",
+      "defaultValue": "{}"
+    }
+  ],
+  "ancestorLevels": [],
+  "descendantTree": []
+}
+```
+
+Property type fields are the tuple the wiki renders: `ft` (field type), `kt` /
+`vt` (aux key/value types for containers and maps, `null` when not
+applicable), and the link target resolved three ways:
+
+- **`kh`** - the canonical hash of the referenced type, or `null` when the
+  property links nothing.
+- **`khName`** - the resolved name, or `null` when unknown.
+- **`khKind`** - what the hash is: `"class"` (fetchable via
+  `/v1/classes/{kh}`), `"external"` (an engine type outside the dumped class
+  set), or `"unknown"`.
+
+Properties whose type changed over time carry a `history` array of the same
+tuple with `since`/`until` patch bounds.
+
+**Dataset window:** tracking begins at the `dataset.firstPatch` reported by
+`/v1` (currently patch 13.15). `since: null` means *already present when
+tracking began*, *not* "has always existed"; `since: "14.1"` means the class
+or property first appeared in that patch.
+
+**Inheritance:** by default `properties` lists only the class's own
+properties, with the full ancestry in `ancestorLevels` (nearest level first)
+and subclasses in `descendantTree`. With `?inherited=1`, properties from all
+ancestors are merged in (the nearest definition wins on a name conflict) and
+every property gains a `from` field naming the class that defines it.
+
+## Lookup tables
+
+| Endpoint | Returns |
+|---|---|
+| `/v1/hashes` | Canonical hash → resolved name for every class (`null` = unnamed) and external type. Use it to translate hashes and names in bulk. |
+| `/v1/index` | Class name → absolute wiki page URL, for linking back to the site. |
+| `/v1/versions` | The full patch ↔ build-number map, for translating the raw `build` numbers that appear in changelog entries and `/v1/db`. |
+
+## Changelogs
+
+| Endpoint | Returns |
+|---|---|
+| `/v1/changelog` | Patch index, newest first, with per-patch change counts. |
+| `/v1/changelog/{slug}` | Full changelog for one patch: classes and properties added, removed, or changed. The slug is the patch with a hyphen - `16-13` for patch 16.13. |
+
+## Bulk download
+
+| Endpoint | Returns |
+|---|---|
+| `/v1/db` | The complete raw meta database in one download (~3.5 MB, ~700 KB compressed). Unpadded hashes, per-build revisions. Prefer the per-class endpoints unless you genuinely need everything. |
+
+## Documentation
+
+The endpoints above serve structural facts extracted from the game.
+Documentation endpoints add the community-written prose on top - fetch the
+facts for a class, then merge the prose in by property name.
+
+| Endpoint | Returns |
+|---|---|
+| `/v1/docs` | Which classes have written documentation: `{ count, classes: [name, …] }`. |
+| `/v1/docs/{name-or-hash}` | The prose for one class: `{ name, class: {…}, properties: { propName: {…} } }`, where each entry holds `description`, `notes`, and `examples`. |
+| `/v1/docs/all` | Every documented class's prose in one download - for tools bundling a documentation snapshot. |
+
+```sh
+curl https://meta-api.leaguetoolkit.dev/v1/docs/AbilityObject
+```
+
+```json
+{
+  "name": "AbilityObject",
+  "class": null,
+  "properties": {
+    "AbilityTraits": {
+      "description": "Gameplay-behavior tags for the ability…",
+      "notes": ["Stored as a 4-byte (`U32`) bitmask."]
+    }
+  }
+}
+```
+
+Prose also updates on a different cadence than facts: facts change only when
+a game patch is ingested, while prose changes whenever a documentation PR is
+merged. Note that `/v1/docs*` is the only surface serving licensed
+human-authored content - see [Licensing](/api/licensing/) if you redistribute
+it.

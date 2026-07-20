@@ -1,0 +1,43 @@
+---
+title: Public API
+description: How to consume the LoL Meta Wiki dataset programmatically - a public, read-only JSON API with no authentication.
+sidebar:
+  order: 0
+  label: Overview
+---
+
+The wiki's dataset is served through a public, read-only JSON API. It exposes the
+same generated data the site itself is built from: per-class property
+metadata, patch changelogs, and the raw meta database.
+
+**Base URL:** `https://meta-api.leaguetoolkit.dev`
+
+The API also answers on `https://api.meta-wiki.leaguetoolkit.dev` as an alias;
+both hostnames serve identical responses. Prefer the canonical base URL above.
+
+No authentication or API key is required. All endpoints are `GET`, return
+`application/json`, and send permissive CORS headers, so the API is usable
+directly from browsers, editors, and scripts. A machine-readable
+[OpenAPI 3.1 description](https://meta-api.leaguetoolkit.dev/v1/openapi)
+of every endpoint and schema is served at `/v1/openapi` - point any Swagger or
+Redoc viewer at it.
+
+## First request
+
+```sh
+curl https://meta-api.leaguetoolkit.dev/v1
+```
+
+`/v1` returns the API metadata: the dataset window (first and latest tracked
+patch), class and patch counts, and a map of every endpoint.
+
+## In this section
+
+- [Names and hashes](/api/names-and-hashes/) - how the dataset is keyed and
+  how to look things up by name or FNV-1a hash.
+- [Endpoints](/api/endpoints/) - every route, with the class and
+  documentation response shapes.
+- [Caching and fair use](/api/caching/) - cache behavior and good-citizen
+  guidelines.
+- [Licensing](/api/licensing/) - which endpoints serve unrestricted factual
+  data and which serve CC BY-SA prose.

@@ -59,10 +59,9 @@ Deploy the `site/dist/` directory to any static hosting service.
 
 ### Public API
 
-The dataset is also served through a public JSON API — a Cloudflare Worker in
+The dataset is also served through a public JSON API - a Cloudflare Worker in
 `api/` that repackages the generated data behind clean `/v1/*` routes. See the
-[API reference](site/src/content/docs/reference/api.mdx) for endpoints and
-licensing.
+[API docs](site/src/content/docs/api/) for endpoints and licensing.
 
 It deploys automatically alongside the site on every push to `main`, so the two
 never serve different data. The commands below are for local work and for the

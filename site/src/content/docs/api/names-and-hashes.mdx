@@ -1,0 +1,21 @@
+---
+title: Names and hashes
+description: How the API keys the dataset - canonical FNV-1a 32-bit hashes with names resolved on top.
+sidebar:
+  order: 1
+---
+
+Everything in the dataset is keyed by **FNV-1a 32-bit hashes**; names are
+resolved on top of them. The API always emits hashes in **canonical form** -
+`0x` followed by 8 lowercase, zero-padded hex digits (`0x0006516a`) - and any
+route that takes a class accepts either the exact, case-sensitive name or a
+hash in any spelling (unpadded and mixed-case hashes are canonicalized):
+
+```sh
+curl https://meta-api.leaguetoolkit.dev/v1/classes/AbilityObject
+curl https://meta-api.leaguetoolkit.dev/v1/classes/0x6516a   # same class as…
+curl https://meta-api.leaguetoolkit.dev/v1/classes/0x0006516a
+```
+
+Classes whose real name is unknown appear under their canonical hash. Use
+[`/v1/hashes`](/api/endpoints/) to translate between hashes and names in bulk.

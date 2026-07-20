@@ -1,0 +1,31 @@
+---
+title: Licensing
+description: The structural license split - unrestricted facts endpoints versus CC BY-SA documentation prose.
+sidebar:
+  order: 4
+---
+
+The license split is **structural**: which endpoint you call determines what
+obligations you take on. The authoritative terms are the
+[documentation policy](https://github.com/LeagueToolkit/lol-meta-wiki/blob/main/DOCUMENTATION_LICENSE.md)
+in the repository; this page is the summary.
+
+- **Facts endpoints** (`/v1/classes*`, `/v1/changelog*`, `/v1/hashes`,
+  `/v1/index`, `/v1/versions`, `/v1/db`) serve only factual metadata about
+  the game's structures - names, numeric values, types, inheritance,
+  defaults. This is **not restricted** by the documentation license. If your
+  tool never calls `/v1/docs`, it never ingests licensed content.
+- **`/v1/docs*`** is the only surface serving human-authored prose
+  (`description`, `notes`, `examples`), licensed under **CC BY-SA 4.0** with
+  the **League Toolkit Developer Tooling Exception**: developer tooling (LSP
+  servers, editor plugins, linters, validators) may embed or fetch the prose
+  with attribution only, while republishing it *as documentation* (a mirror,
+  dataset API, or doc site) stays under full BY-SA terms.
+
+Attribution is "LoL Meta Wiki" with a link to
+[meta-wiki.leaguetoolkit.dev](https://meta-wiki.leaguetoolkit.dev) - a credit
+in your tool's README or about screen is enough.
+
+*The LoL Meta Wiki is an unofficial fan project and is not affiliated with,
+endorsed by, or sponsored by Riot Games. League of Legends and its game data
+are the property of Riot Games, Inc.*
