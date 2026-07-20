@@ -1,0 +1,15 @@
+{
+  // The build script runs under Bun (import.meta.dir, node: builtins); the
+  // Worker's tsconfig next door is workers-types-only, so scripts get their own.
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["bun-types"],
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "include": ["."]
+}

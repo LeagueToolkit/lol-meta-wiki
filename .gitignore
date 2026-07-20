@@ -12,6 +12,11 @@ build/
 site/public/db/
 site/db-data/
 
+# API worker build output + wrangler state
+api/dist/
+api/.wrangler/
+api/src/generated/
+
 # Environment variables
 .env
 .env.local

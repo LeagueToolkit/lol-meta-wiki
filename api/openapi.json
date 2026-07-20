@@ -1,0 +1,487 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "LoL Meta Wiki API",
+    "version": "1.0.0",
+    "summary": "Read-only JSON API over the LoL Meta Wiki dataset: class metadata, patch changelogs, and human-authored documentation.",
+    "description": "All endpoints are GET, unauthenticated, and CORS-enabled.\n\nHashes are FNV-1a 32-bit and are always emitted in canonical form: `0x` + 8 lowercase, zero-padded hex digits (e.g. `0x0006516a`). Routes accept unpadded and mixed-case hashes and canonicalize them.\n\nThe dataset's observation window starts at the `dataset.firstPatch` reported by `/v1` (currently 13.15). A `since` of `null` means \"already present when tracking began\", not \"has always existed\".\n\nLicensing is structural: the `/v1/docs*` endpoints are the only surface serving human-authored CC BY-SA 4.0 prose; every other endpoint serves unrestricted factual data. See the repository's DOCUMENTATION_LICENSE.md.",
+    "license": {
+      "name": "CC BY-SA 4.0 (docs endpoints only; facts endpoints unrestricted)",
+      "url": "https://github.com/LeagueToolkit/lol-meta-wiki/blob/main/DOCUMENTATION_LICENSE.md"
+    }
+  },
+  "servers": [{ "url": "https://api.meta-wiki.leaguetoolkit.dev" }],
+  "paths": {
+    "/v1": {
+      "get": {
+        "operationId": "getMeta",
+        "summary": "API metadata: dataset window, counts, endpoint map.",
+        "responses": {
+          "200": {
+            "description": "API metadata",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Meta" } } }
+          }
+        }
+      }
+    },
+    "/v1/openapi": {
+      "get": {
+        "operationId": "getOpenApi",
+        "summary": "This OpenAPI document.",
+        "responses": { "200": { "description": "OpenAPI 3.1 document" } }
+      }
+    },
+    "/v1/classes": {
+      "get": {
+        "operationId": "listClasses",
+        "summary": "All class names, sorted.",
+        "responses": {
+          "200": {
+            "description": "Class name list",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/NameList" } } }
+          }
+        }
+      }
+    },
+    "/v1/classes/{nameOrHash}": {
+      "get": {
+        "operationId": "getClass",
+        "summary": "One class: hash, flags, bases, lifetime, and its properties with types, defaults, and history.",
+        "description": "Accepts a resolved class name (exact, case-sensitive) or a class hash (any hex length/case). By default `properties` contains only the class's own properties; pass `inherited=1` to get the precomputed flattened view, where properties from all ancestors are merged in (nearest ancestor wins on a name conflict) and each property carries `from`, the class that defines it.",
+        "parameters": [
+          { "$ref": "#/components/parameters/nameOrHash" },
+          {
+            "name": "inherited",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "enum": ["1", "true"] },
+            "description": "Serve the flattened variant with inherited properties included."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Class detail",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Class" } } }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/hashes": {
+      "get": {
+        "operationId": "getHashIndex",
+        "summary": "Canonical hash → resolved name for every class and external type.",
+        "description": "`classes` maps every dumped class hash to its resolved name, or `null` when the name is unknown; every key is fetchable via `/v1/classes/{hash}`. `externals` maps engine/external type hashes that appear as type references but are not dumped classes.",
+        "responses": {
+          "200": {
+            "description": "Hash index",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/HashIndex" } } }
+          }
+        }
+      }
+    },
+    "/v1/index": {
+      "get": {
+        "operationId": "getWikiIndex",
+        "summary": "Class name → absolute wiki page URL, for linking back to the site.",
+        "responses": {
+          "200": {
+            "description": "Name → URL map",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object", "additionalProperties": { "type": "string", "format": "uri" } }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/versions": {
+      "get": {
+        "operationId": "getVersions",
+        "summary": "The patch ↔ build-number map for the whole observation window.",
+        "responses": {
+          "200": {
+            "description": "Version map",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Versions" } } }
+          }
+        }
+      }
+    },
+    "/v1/changelog": {
+      "get": {
+        "operationId": "listChangelog",
+        "summary": "Patch index, newest first, with per-patch change counts.",
+        "responses": {
+          "200": {
+            "description": "Changelog index",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ChangelogIndex" } } }
+          }
+        }
+      }
+    },
+    "/v1/changelog/{slug}": {
+      "get": {
+        "operationId": "getChangelogPatch",
+        "summary": "Full changelog for one patch.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "pattern": "^\\d+-\\d+$" },
+            "description": "Patch slug: `16-13` for patch 16.13.",
+            "example": "16-13"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Patch changelog",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ChangelogPatch" } } }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/db": {
+      "get": {
+        "operationId": "getRawDb",
+        "summary": "The complete raw meta database in one download (~3.5 MB).",
+        "description": "The unprocessed source dataset, keyed by unpadded hash, with full per-build revision history. Prefer the per-class endpoints unless you genuinely need everything.",
+        "responses": { "200": { "description": "Raw meta DB" } }
+      }
+    },
+    "/v1/docs": {
+      "get": {
+        "operationId": "listDocs",
+        "summary": "Which classes have written documentation.",
+        "responses": {
+          "200": {
+            "description": "Documented class list",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/NameList" } } }
+          }
+        }
+      }
+    },
+    "/v1/docs/{nameOrHash}": {
+      "get": {
+        "operationId": "getDocs",
+        "summary": "The CC BY-SA prose for one class.",
+        "parameters": [{ "$ref": "#/components/parameters/nameOrHash" }],
+        "responses": {
+          "200": {
+            "description": "Class documentation",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ClassDocs" } } }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/docs/all": {
+      "get": {
+        "operationId": "getAllDocs",
+        "summary": "Every documented class's prose in one download.",
+        "responses": {
+          "200": {
+            "description": "All documentation, keyed by class name",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object", "additionalProperties": { "$ref": "#/components/schemas/ClassDocs" } }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "nameOrHash": {
+        "name": "nameOrHash",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$" },
+        "description": "Resolved class name (exact, case-sensitive) or FNV-1a 32-bit class hash (`0x…`, any length/case).",
+        "example": "AbilityObject"
+      }
+    },
+    "responses": {
+      "NotFound": {
+        "description": "Unknown name, hash, or patch slug.",
+        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+      }
+    },
+    "schemas": {
+      "Hash": {
+        "type": "string",
+        "pattern": "^0x[0-9a-f]{8}$",
+        "description": "Canonical FNV-1a 32-bit hash: 0x + 8 lowercase, zero-padded hex digits."
+      },
+      "TypeRef": {
+        "type": "object",
+        "description": "A reference to the linked class/type of a property (`kh`), resolved three ways: the canonical hash, the resolved name when known, and what kind of thing the hash is. `khKind: \"class\"` means `/v1/classes/{kh}` is fetchable.",
+        "properties": {
+          "kh": { "oneOf": [{ "$ref": "#/components/schemas/Hash" }, { "type": "null" }] },
+          "khName": { "type": ["string", "null"] },
+          "khKind": { "type": ["string", "null"], "enum": ["class", "external", "unknown", null] }
+        }
+      },
+      "TypeHistoryEntry": {
+        "allOf": [
+          { "$ref": "#/components/schemas/TypeRef" },
+          {
+            "type": "object",
+            "properties": {
+              "since": { "type": "string", "description": "First patch with this definition." },
+              "until": { "type": ["string", "null"], "description": "Last patch seen; null = current." },
+              "ft": { "type": "string" },
+              "kt": { "type": ["string", "null"] },
+              "vt": { "type": ["string", "null"] },
+              "defaultValue": { "type": "string" }
+            },
+            "required": ["since", "until", "ft", "kt", "vt"]
+          }
+        ]
+      },
+      "Property": {
+        "allOf": [
+          { "$ref": "#/components/schemas/TypeRef" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "description": "Resolved field name, or the canonical hash when unknown." },
+              "hash": { "$ref": "#/components/schemas/Hash" },
+              "ft": { "type": "string", "description": "Field type (Bool, I32, List, Pointer, Map, …)." },
+              "kt": { "type": ["string", "null"], "description": "Aux type: container size / Map key type; null when not applicable." },
+              "vt": { "type": ["string", "null"], "description": "Aux value type for containers/Map; null when not applicable." },
+              "since": { "type": "string", "description": "Patch the property was added in. Absent when it appeared with the class or predates the observation window." },
+              "removedIn": { "type": "string" },
+              "defaultValue": { "type": "string", "description": "Default value, JSON-encoded." },
+              "history": { "type": "array", "items": { "$ref": "#/components/schemas/TypeHistoryEntry" } },
+              "from": { "type": "string", "description": "Only in the `inherited=1` view: the class this property is defined on." }
+            },
+            "required": ["name", "hash", "ft", "kt", "vt"]
+          }
+        ]
+      },
+      "DescendantNode": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "children": { "type": "array", "items": { "$ref": "#/components/schemas/DescendantNode" } }
+        },
+        "required": ["name", "children"]
+      },
+      "Class": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "Resolved class name, or the canonical hash when unknown." },
+          "hash": { "$ref": "#/components/schemas/Hash" },
+          "interface": { "type": "boolean" },
+          "value": { "type": "boolean", "description": "Whether this is a value type." },
+          "bases": { "type": "array", "items": { "type": "string" } },
+          "since": { "type": ["string", "null"], "description": "Patch the class was added in; null = present when tracking began (see dataset.firstPatch)." },
+          "removedIn": { "type": ["string", "null"] },
+          "properties": { "type": "array", "items": { "$ref": "#/components/schemas/Property" } },
+          "ancestorLevels": {
+            "type": "array",
+            "items": { "type": "array", "items": { "type": "string" } },
+            "description": "Full inheritance chain, nearest level first; each level lists the base classes at that depth."
+          },
+          "descendantTree": { "type": "array", "items": { "$ref": "#/components/schemas/DescendantNode" } },
+          "flattened": { "type": "boolean", "description": "Present (true) only in the `inherited=1` view." }
+        },
+        "required": ["name", "hash", "interface", "value", "bases", "since", "removedIn", "properties", "ancestorLevels", "descendantTree"]
+      },
+      "DocEntry": {
+        "type": "object",
+        "properties": {
+          "description": { "type": "string" },
+          "notes": { "type": "array", "items": { "type": "string" } },
+          "examples": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "ClassDocs": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "class": { "oneOf": [{ "$ref": "#/components/schemas/DocEntry" }, { "type": "null" }] },
+          "properties": { "type": "object", "additionalProperties": { "$ref": "#/components/schemas/DocEntry" } }
+        },
+        "required": ["name", "class", "properties"]
+      },
+      "NameList": {
+        "type": "object",
+        "properties": {
+          "count": { "type": "integer" },
+          "classes": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": ["count", "classes"]
+      },
+      "HashIndex": {
+        "type": "object",
+        "properties": {
+          "format": { "type": "string" },
+          "count": { "type": "integer" },
+          "classes": { "type": "object", "additionalProperties": { "type": ["string", "null"] } },
+          "externals": { "type": "object", "additionalProperties": { "type": "string" } }
+        },
+        "required": ["format", "count", "classes", "externals"]
+      },
+      "Versions": {
+        "type": "object",
+        "properties": {
+          "latestPatch": { "type": "string" },
+          "latestBuild": { "type": "integer" },
+          "count": { "type": "integer" },
+          "versions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": { "patch": { "type": "string" }, "build": { "type": "integer" } },
+              "required": ["patch", "build"]
+            }
+          }
+        },
+        "required": ["latestPatch", "latestBuild", "count", "versions"]
+      },
+      "ChangeTuple": {
+        "allOf": [
+          { "$ref": "#/components/schemas/TypeRef" },
+          {
+            "type": "object",
+            "properties": {
+              "ft": { "type": "string" },
+              "kt": { "type": ["string", "null"] },
+              "vt": { "type": ["string", "null"] }
+            },
+            "required": ["ft", "kt", "vt"]
+          }
+        ]
+      },
+      "PropChange": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "kind": { "type": "string", "enum": ["added", "readded", "removed", "typechanged"] },
+          "oldType": { "$ref": "#/components/schemas/ChangeTuple" },
+          "newType": { "$ref": "#/components/schemas/ChangeTuple" }
+        },
+        "required": ["name", "kind"]
+      },
+      "ClassChange": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "kind": { "type": "string", "enum": ["added", "readded", "removed", "changed"] },
+          "build": { "type": "integer", "description": "Game build this change appeared in; translate via /v1/versions." },
+          "baseChange": {
+            "type": "object",
+            "properties": {
+              "old": { "type": "array", "items": { "type": "string" } },
+              "new": { "type": "array", "items": { "type": "string" } }
+            },
+            "required": ["old", "new"]
+          },
+          "propChanges": { "type": "array", "items": { "$ref": "#/components/schemas/PropChange" } }
+        },
+        "required": ["name", "kind", "build", "propChanges"]
+      },
+      "ChangelogCounts": {
+        "type": "object",
+        "properties": {
+          "added": { "type": "integer" },
+          "readded": { "type": "integer" },
+          "removed": { "type": "integer" },
+          "changed": { "type": "integer" }
+        },
+        "required": ["added", "readded", "removed", "changed"]
+      },
+      "ChangelogPatch": {
+        "type": "object",
+        "properties": {
+          "patch": { "type": "string" },
+          "slug": { "type": "string" },
+          "builds": { "type": "array", "items": { "type": "integer" } },
+          "counts": { "$ref": "#/components/schemas/ChangelogCounts" },
+          "buildGroups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "build": { "type": "integer" },
+                "entries": { "type": "array", "items": { "$ref": "#/components/schemas/ClassChange" } }
+              },
+              "required": ["build", "entries"]
+            }
+          }
+        },
+        "required": ["patch", "slug", "builds", "counts", "buildGroups"]
+      },
+      "ChangelogIndex": {
+        "type": "object",
+        "properties": {
+          "generatedAt": { "type": "string", "format": "date-time" },
+          "latestPatch": { "type": "string" },
+          "patches": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "patch": { "type": "string" },
+                "slug": { "type": "string" },
+                "builds": { "type": "array", "items": { "type": "integer" } },
+                "counts": { "$ref": "#/components/schemas/ChangelogCounts" }
+              },
+              "required": ["patch", "slug", "builds", "counts"]
+            }
+          }
+        },
+        "required": ["generatedAt", "latestPatch", "patches"]
+      },
+      "Meta": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "version": { "type": "string" },
+          "site": { "type": "string", "format": "uri" },
+          "baseUrl": { "type": "string", "format": "uri" },
+          "generatedAt": { "type": "string", "format": "date-time" },
+          "hashFormat": { "type": "string" },
+          "dataset": {
+            "type": "object",
+            "properties": {
+              "firstPatch": { "type": "string" },
+              "firstBuild": { "type": "integer" },
+              "latestPatch": { "type": "string" },
+              "latestBuild": { "type": "integer" },
+              "fetchedAt": { "type": ["string", "null"], "format": "date-time" }
+            },
+            "required": ["firstPatch", "firstBuild", "latestPatch", "latestBuild", "fetchedAt"]
+          },
+          "counts": {
+            "type": "object",
+            "properties": {
+              "classes": { "type": "integer" },
+              "namedClasses": { "type": "integer" },
+              "documentedClasses": { "type": "integer" },
+              "patches": { "type": "integer" }
+            },
+            "required": ["classes", "namedClasses", "documentedClasses", "patches"]
+          },
+          "endpoints": { "type": "object", "additionalProperties": { "type": "string" } }
+        },
+        "required": ["name", "version", "site", "baseUrl", "generatedAt", "hashFormat", "dataset", "counts", "endpoints"]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": { "type": "string" },
+          "hint": { "type": "string" },
+          "meta": { "type": "string" }
+        },
+        "required": ["error"]
+      }
+    }
+  }
+}

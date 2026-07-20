@@ -1,0 +1,16 @@
+{
+  "name": "api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "bun scripts/build-assets.ts",
+    "dev": "bun scripts/build-assets.ts && wrangler dev",
+    "deploy": "bun scripts/build-assets.ts && wrangler deploy",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250712.0",
+    "typescript": "^5.8.3",
+    "wrangler": "^4.24.3"
+  }
+}

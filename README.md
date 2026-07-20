@@ -57,6 +57,23 @@ pnpm build
 
 Deploy the `site/dist/` directory to any static hosting service.
 
+### Public API
+
+The dataset is also served through a public JSON API — a Cloudflare Worker in
+`api/` that repackages the generated data behind clean `/v1/*` routes. See the
+[API reference](site/src/content/docs/reference/api.mdx) for endpoints and
+licensing.
+
+It deploys automatically alongside the site on every push to `main`, so the two
+never serve different data. The commands below are for local work and for the
+rare manual deploy:
+
+```bash
+pnpm generate-db     # the API repackages this output
+pnpm api:dev         # local dev server (wrangler)
+pnpm api:deploy      # deploy to Cloudflare (needs a wrangler login)
+```
+
 ## Contributing Documentation
 
 You can add documentation for classes and properties:
@@ -94,6 +111,21 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines and [db/docs/MARK
 - [Astro](https://astro.build/) + [Starlight](https://starlight.astro.build/) - Static site framework
 - [TypeScript](https://www.typescriptlang.org/) - Type-safe development
 - [YAML](https://yaml.org/) - Documentation format
+
+## Acknowledgements
+
+The class data this wiki is built on comes from
+[lol-meta-classes](https://github.com/LeagueToolkit/lol-meta-classes), which in
+turn builds on the original meta dumper created by
+[moonshadow](https://github.com/moonshadow565):
+
+- [lolmetadumper3](https://github.com/moonshadow565/lolmetadumper3)
+- [lolmetadumper2](https://github.com/moonshadow565/lolmetadumper2)
+- [LeagueToolkit/LeagueHashes](https://github.com/LeagueToolkit/LeagueHashes)
+
+Credits:
+- Huge thank you to moon for the original project - none of this would be possible otherwise.
+- [CommunityDragon](https://communitydragon.org/) for maintaining their hashtables and keeping track of game files.
 
 ## License
 

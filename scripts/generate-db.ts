@@ -28,9 +28,10 @@ import { mkdir, readFile, readdir, writeFile, unlink } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { basename, dirname, join } from "node:path";
 import { parse as parseYAML } from "yaml";
-// Changelog output shapes are the generator↔component contract - defined once
-// in the site package and imported here so the producer can't drift from the
-// consumer. Type-only, so it's erased at runtime (no cross-package dep).
+// Output shapes are the generator↔consumer contract - defined once in the
+// site package and imported here so the producer can't drift from the
+// consumers (components and api/scripts). Type-only, so it's erased at
+// runtime (no cross-package dep).
 import type {
   ChangeTuple,
   PropChange,
@@ -38,83 +39,26 @@ import type {
   ChangelogBuildGroup,
   ChangelogCounts,
   ChangelogPatch,
+  ClassDocumentation,
+  ClassJson,
   ClassSidebar,
   ClassSidebarEntry,
   ClassSidebarGroup,
+  DescendantNode,
+  Property,
+  PropertyDocumentation,
+  TypeHistoryEntry,
 } from "../site/src/types";
+// Raw meta.db.json shapes, shared with api/scripts.
+import type { MetaDb, PropRevision } from "./meta-db";
 
-// --- meta.db.json types ---
-type MetaVersion = { patch: string; build: number };
-
-type ClassRevision = {
-  from: number;
-  to?: number;
-  bases: string[];
-  interface: boolean;
-  value: boolean;
-};
-
-type PropRevision = {
-  from: number;
-  to?: number;
-  type: [string, string, string, string]; // (ft, kt, vt, kh) - kh is a raw hash
-  default?: unknown;
-};
-
-type MetaProperty = { name?: string; revisions: PropRevision[] };
-type MetaClass = {
-  name?: string;
-  revisions: ClassRevision[];
-  properties: Record<string, MetaProperty>;
-};
-
-type MetaDb = {
-  formatVersion: number;
-  latest: number;
-  versions: MetaVersion[];
-  externalTypeNames: Record<string, string>;
-  classes: Record<string, MetaClass>;
-};
-
-// --- output types ---
-type TypeHistoryEntry = {
-  since: string; // patch of first build with this definition
-  until: string | null; // patch of last build seen, null = current
-  ft: string;
-  kt: string;
-  vt: string;
-  kh: string;
-  defaultValue?: string;
-};
-
-type FieldTuple = {
-  name: string; // resolved field name or raw hex
-  ft: string; // field type (Bool, I32, List2, Pointer, Map, ...)
-  kt: string; // aux type or 0x0 (size for containers, key type for Map)
-  vt: string; // aux value type or 0x0 (value type for containers/Map)
-  kh: string; // referenced class/type or 0x0
-  since?: string; // patch the property was added in (omitted when it appeared with the class)
-  removedIn?: string; // patch the property was removed in (omitted when the whole class is removed)
-  defaultValue?: string; // optional default value as JSON string
-  history?: TypeHistoryEntry[]; // present when the definition changed over time
-};
-
-type PropertyDocumentation = {
-  description?: string;
-  examples?: string[];
-  notes?: string[];
-};
-
-type ClassDocumentation = {
-  description?: string;
-  examples?: string[];
-  notes?: string[];
-};
-
+// --- intermediate build shape ---
+// The generator's working shape before ancestors/descendants and docs are
+// attached to form the emitted ClassJson.
 type ClassDoc = {
   name: string; // resolved type name or raw hex
   bases: string[]; // zero or more base names (resolved or hex)
-  properties: FieldTuple[];
+  properties: Property[];
   since?: string; // patch the class was added in
   removedIn?: string; // patch the class was removed in
 };
@@ -254,7 +198,7 @@ function loadMetaDb(db: MetaDb): ClassDoc[] {
       const current = revs[revs.length - 1];
       const [ft, kt, vt, khRaw] = current.type;
 
-      const prop: FieldTuple = {
+      const prop: Property = {
         name: metaProp.name ?? fhash,
         ft,
         kt,
@@ -660,7 +604,6 @@ async function main() {
   // Full descendant tree. With multiple inheritance a class could appear
   // under several parents; the visited set keeps each subtree rendered once
   // (under the first parent encountered).
-  type DescendantNode = { name: string; children: DescendantNode[] };
   function getDescendantTree(
     className: string,
     visited: Set<string>
@@ -706,20 +649,17 @@ async function main() {
       docs: propertyDocs[prop.name] || null,
     }));
 
-    const json = JSON.stringify(
-      {
-        name: c.name,
-        bases: c.bases,
-        since: c.since ?? null,
-        removedIn: c.removedIn ?? null,
-        properties: propertiesWithDocs,
-        ancestorLevels,
-        descendantTree,
-        docs: classDocs || null,
-      },
-      null,
-      pretty ? 2 : 0
-    );
+    const classJson: ClassJson = {
+      name: c.name,
+      bases: c.bases,
+      since: c.since ?? null,
+      removedIn: c.removedIn ?? null,
+      properties: propertiesWithDocs,
+      ancestorLevels,
+      descendantTree,
+      docs: classDocs || null,
+    };
+    const json = JSON.stringify(classJson, null, pretty ? 2 : 0);
     const hash = sha12(json);
     const fileName = `${safeName(c.name)}.${hash}.json`;
     const filePath = join(classDir, fileName);
