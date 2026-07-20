@@ -142,12 +142,15 @@ async function loadDocs(className: string, docsDir: string): Promise<{
     // Extract class-level docs
     const classDocs = parsed?.class ? (parsed.class as ClassDocumentation) : null;
 
-    // Extract property docs
+    // Extract property docs. Keys are lowercased so lookups are
+    // case-insensitive: newer hashtables renamed many fields
+    // PascalCase → camelCase, and docs written against the old casing
+    // must keep applying.
     const propertyDocs: Record<string, PropertyDocumentation> = {};
     if (parsed?.properties && typeof parsed.properties === 'object') {
       for (const [key, value] of Object.entries(parsed.properties)) {
         if (typeof value === 'object' && value !== null) {
-          propertyDocs[key] = value as PropertyDocumentation;
+          propertyDocs[key.toLowerCase()] = value as PropertyDocumentation;
         }
       }
     }
@@ -653,7 +656,7 @@ async function main() {
     // Merge property documentation
     const propertiesWithDocs = c.properties.map(prop => ({
       ...prop,
-      docs: propertyDocs[prop.name] || null,
+      docs: propertyDocs[prop.name.toLowerCase()] || null,
     }));
 
     const classJson: ClassJson = {
