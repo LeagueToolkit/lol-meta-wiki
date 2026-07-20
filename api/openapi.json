@@ -10,7 +10,10 @@
       "url": "https://github.com/LeagueToolkit/lol-meta-wiki/blob/main/DOCUMENTATION_LICENSE.md"
     }
   },
-  "servers": [{ "url": "https://api.meta-wiki.leaguetoolkit.dev" }],
+  "servers": [
+    { "url": "https://meta-api.leaguetoolkit.dev", "description": "Canonical" },
+    { "url": "https://api.meta-wiki.leaguetoolkit.dev", "description": "Alias" }
+  ],
   "paths": {
     "/v1": {
       "get": {

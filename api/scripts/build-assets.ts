@@ -44,7 +44,7 @@ const generatedDir = path.join(apiRoot, "src", "generated");
 
 // Wiki base for the /v1/index links; must match `site` in site/astro.config.mjs.
 const SITE_URL = "https://meta-wiki.leaguetoolkit.dev";
-const API_URL = "https://api.meta-wiki.leaguetoolkit.dev";
+const API_URL = "https://meta-api.leaguetoolkit.dev";
 const HASH_FORMAT = 'FNV-1a 32-bit, "0x" + 8 lowercase hex digits, zero-padded';
 
 // name.<12-hex-content-hash>.json, as emitted by generate-db
