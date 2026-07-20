@@ -1,0 +1,15 @@
+# Force LF in the working tree (matches .editorconfig; overrides core.autocrlf).
+# Without this, Windows checkouts materialize CRLF while generate-db writes LF,
+# so writeIfChanged rewrites every MDX file on each run and Astro rebuilds the
+# whole content collection.
+* text=auto eol=lf
+
+# Binaries
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary

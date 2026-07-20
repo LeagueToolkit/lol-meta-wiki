@@ -9,6 +9,9 @@ export interface PropertyDocumentation {
   notes?: string[];
 }
 
+// Class-level docs share the entry shape with property docs.
+export type ClassDocumentation = PropertyDocumentation;
+
 export interface TypeHistoryEntry {
   since: string;
   until: string | null;
@@ -30,6 +33,30 @@ export interface Property {
   history?: TypeHistoryEntry[];
   docs?: PropertyDocumentation | null;
   defaultValue?: string;
+}
+
+// --- per-class JSON ---
+// The shape of site/db-data/classes/<Name>.<hash>.json, as emitted by
+// scripts/generate-db.ts and read by ClassDetails.astro and api/scripts.
+
+/** One node of the descendant tree; with multiple inheritance a class appears
+ * only under the first parent encountered. */
+export interface DescendantNode {
+  name: string;
+  children: DescendantNode[];
+}
+
+export interface ClassJson {
+  name: string;
+  bases: string[];
+  /** Patch the class was added in; null = present when tracking began. */
+  since: string | null;
+  removedIn: string | null;
+  properties: Property[];
+  /** Full inheritance chain, nearest level first. */
+  ancestorLevels: string[][];
+  descendantTree: DescendantNode[];
+  docs: ClassDocumentation | null;
 }
 
 // --- changelog shapes ---

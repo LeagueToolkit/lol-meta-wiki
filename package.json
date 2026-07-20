@@ -6,6 +6,8 @@
     "update-db": "bun scripts/update-db.ts",
     "dev": "pnpm --filter site dev",
     "build": "pnpm --filter site build",
+    "api:dev": "pnpm --filter api run dev",
+    "api:deploy": "pnpm --filter api run deploy",
     "prepare": "husky"
   },
   "devDependencies": {

@@ -1,6 +1,7 @@
 ---
 import fs from "node:fs";
 import { root } from "astro:config/server";
+import type { ClassJson } from "../types";
 import { classIndex } from "../utils/classIndex";
 import InheritanceTree from "./InheritanceTree.astro";
 import PropertiesSection from "./PropertiesSection.astro";
@@ -21,7 +22,7 @@ const dataUrl = new URL(
   `./db-data/classes/${file.replace(/^\/db\/classes\//, "")}`,
   root
 );
-const data = JSON.parse(fs.readFileSync(dataUrl, "utf8"));
+const data: ClassJson = JSON.parse(fs.readFileSync(dataUrl, "utf8"));
 
 // Whether a hand-written docs file exists for this class decides if the
 // documentation buttons link to GitHub's edit flow or its create-file flow

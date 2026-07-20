@@ -1,9 +1,24 @@
-name: Deploy to GitHub Pages
+name: Deploy
+
+# Publishes both halves of the site from the same commit: the Astro site to
+# GitHub Pages and the Cloudflare Worker serving /v1/*. They deploy in parallel
+# rather than in sequence - an Astro build failure should not hold back the API,
+# and vice versa - so both regenerate the dataset independently.
+#
+# Note this workflow is also started explicitly by update-db.yml: pushes made
+# with GITHUB_TOKEN do not raise `push` events, so its auto-commit cannot rely
+# on the trigger below.
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
+
+# Serialize deploys: two quick merges must not race their wrangler/Pages
+# uploads, or an older dataset can land last and stay live.
+concurrency:
+  group: deploy
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -58,3 +73,36 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  deploy-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: |
+          pnpm install
+          bun install
+          
+      - name: Generate database
+        run: pnpm generate-db
+
+      - name: Deploy worker
+        run: pnpm api:deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

@@ -1,0 +1,25 @@
+// LoL Meta Wiki API — Cloudflare Worker serving the generated dataset as
+// static assets behind clean /v1/* routes (see src/index.ts).
+//
+// Deployed automatically by .github/workflows/deploy.yml on every push to main,
+// so the API never lags the site. To deploy by hand: `pnpm --filter api deploy`
+// (runs build-assets first). The asset tree under dist/assets is rebuilt from
+// the generated site data on every deploy — run `bun scripts/generate-db.ts` at
+// the repo root beforehand.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "lol-meta-wiki-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-07-01",
+  "assets": {
+    "directory": "./dist/assets",
+    "binding": "ASSETS",
+    "run_worker_first": true,
+  },
+  "routes": [
+    { "pattern": "api.meta-wiki.leaguetoolkit.dev", "custom_domain": true },
+  ],
+  "observability": {
+    "enabled": true,
+  },
+}
