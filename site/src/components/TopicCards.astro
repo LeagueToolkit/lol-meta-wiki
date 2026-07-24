@@ -1,0 +1,137 @@
+---
+/**
+ * A grid of link cards with an icon in the header (ported from the LTK wiki, so
+ * both sites route visitors the same way).
+ *
+ * Starlight's `LinkCard` has no icon slot and its own icon set does not cover
+ * this vocabulary, so this renders the same shape with a Phosphor glyph. Icons
+ * are applied as masks rather than inline SVG - the same technique the sidebar
+ * section icons use in styles/custom.css - so each one takes its card's colour
+ * and hover state for free.
+ *
+ * Icon URLs are resolved at build time, which means the set has to be a static
+ * map: add an entry here before referencing its key from a page.
+ */
+import treeStructure from "@phosphor-icons/core/assets/bold/tree-structure-bold.svg";
+import clock from "@phosphor-icons/core/assets/bold/clock-counter-clockwise-bold.svg";
+import code from "@phosphor-icons/core/assets/bold/code-bold.svg";
+import hash from "@phosphor-icons/core/assets/bold/hash-bold.svg";
+import pencil from "@phosphor-icons/core/assets/bold/pencil-simple-line-bold.svg";
+import gitPr from "@phosphor-icons/core/assets/bold/git-pull-request-bold.svg";
+
+import ArrowRightIcon from "./icons/ArrowRightIcon.astro";
+
+const icons = { treeStructure, clock, code, hash, pencil, gitPr } as const;
+
+export type TopicIcon = keyof typeof icons;
+
+export interface Topic {
+  title: string;
+  href: string;
+  description: string;
+  icon: TopicIcon;
+}
+
+interface Props {
+  topics: Topic[];
+}
+
+const { topics } = Astro.props;
+---
+
+<div class="topics not-content">
+  {
+    topics.map((topic) => (
+      <a class="topic" href={topic.href} style={`--icon: url(${icons[topic.icon].src})`}>
+        <span class="head">
+          <span class="glyph" aria-hidden="true" />
+          <span class="title">{topic.title}</span>
+          <span class="arrow">
+            <ArrowRightIcon />
+          </span>
+        </span>
+        <span class="desc">{topic.description}</span>
+      </a>
+    ))
+  }
+</div>
+
+<style>
+  .topics {
+    display: grid;
+    gap: 1rem;
+  }
+
+  @media (min-width: 45rem) {
+    .topics {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .topic {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.25rem 1.375rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: var(--ltk-radius-lg);
+    text-decoration: none;
+    transition:
+      border-color 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  /* No lift on hover: these sit in the same grid as the feature cards above,
+     and raising one card reads as the row coming apart. */
+  .topic:hover {
+    border-color: color-mix(in srgb, var(--sl-color-accent) 50%, transparent);
+    background-color: color-mix(in srgb, var(--sl-color-gray-6) 55%, transparent);
+  }
+
+  .topic:focus-visible {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: 3px;
+  }
+
+  .head {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+  }
+
+  .glyph {
+    flex-shrink: 0;
+    width: 1.125rem;
+    height: 1.125rem;
+    background-color: var(--sl-color-gray-3);
+    mask: var(--icon) center / contain no-repeat;
+    transition: background-color 0.2s ease;
+  }
+
+  .topic:hover .glyph {
+    background-color: var(--sl-color-accent-high);
+  }
+
+  .title {
+    font-weight: var(--ltk-weight-semibold);
+    color: var(--sl-color-white);
+  }
+
+  /* Pushes the arrow to the far edge of the header row. */
+  .arrow {
+    display: inline-flex;
+    margin-inline-start: auto;
+    color: var(--sl-color-gray-3);
+    transition: color 0.2s ease;
+  }
+
+  .topic:hover .arrow {
+    color: var(--sl-color-accent-high);
+  }
+
+  .desc {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--sl-color-gray-2);
+  }
+</style>

@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from "astro/config";
+import { defineConfig, fontProviders } from "astro/config";
 import starlight from "@astrojs/starlight";
 import mdx from "@astrojs/mdx";
 
@@ -14,6 +14,40 @@ export default defineConfig({
   // inline elements on separate lines. Keep the v6 behavior to avoid subtle
   // spacing regressions across generated pages.
   compressHTML: true,
+
+  // Self-hosted via the Fonts API: downloaded at build time, served from
+  // /_astro/, with generated fallback metrics to soften the swap. The
+  // cssVariable values are consumed by the font tokens in custom.css; the
+  // matching <Font> tags render from the Head override component.
+  fonts: [
+    {
+      provider: fontProviders.fontsource(),
+      name: "Geist",
+      cssVariable: "--font-geist",
+      weights: ["100 900"],
+      styles: ["normal"],
+      subsets: ["latin"],
+      fallbacks: ["system-ui", "sans-serif"],
+    },
+    {
+      provider: fontProviders.fontsource(),
+      name: "JetBrains Mono",
+      cssVariable: "--font-jetbrains-mono",
+      weights: ["100 800"],
+      styles: ["normal"],
+      subsets: ["latin"],
+      fallbacks: ["ui-monospace", "monospace"],
+    },
+    {
+      provider: fontProviders.fontsource(),
+      name: "Bricolage Grotesque",
+      cssVariable: "--font-bricolage",
+      weights: ["200 800"],
+      styles: ["normal"],
+      subsets: ["latin"],
+      fallbacks: ["system-ui", "sans-serif"],
+    },
+  ],
 
   // Remove 'base' when using custom domain (no subpath needed)
   integrations: [
@@ -64,6 +98,10 @@ export default defineConfig({
         PageTitle: './src/components/starlight/PageTitle.astro',
         // Copy of Starlight's Search with highlightParam enabled
         Search: './src/components/starlight/Search.astro',
+        // Emits the <Font> tags for the families declared above
+        Head: './src/components/starlight/Head.astro',
+        // Splash-page hero: centred column, no supporting graphic
+        Hero: './src/components/starlight/Hero.astro',
       },
       sidebar: [
         {

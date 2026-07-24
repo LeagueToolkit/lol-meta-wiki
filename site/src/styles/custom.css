@@ -1,95 +1,1009 @@
-/* Custom global styles */
+/*
+ * LoL Meta Wiki - Custom Theme
+ *
+ * Ported from the LTK Wiki theme so both sites share one design language.
+ * Derived from the LeagueToolkit logo palette:
+ *   #7D4BFA (purple), #4B7DFA (blue), #003296 (deep blue)
+ *   #B9E5FB (light blue), #F2FBFE (near white)
+ *
+ * Aesthetic: Dark & Premium
+ * Fonts: Bricolage Grotesque (display) + Geist (body)
+ *        + JetBrains Mono (code)
+ */
 
-/* Changelog semantic colors - added / changed / removed. Aliased to Starlight's
-   theme-aware palette (auto-adapts to light/dark) so the changelog components
-   reference one name instead of repeating the raw --sl-color-* + hex fallback. */
+/* ── Font Stack ─────────────────────────────────────────────── */
+
+/* Bricolage = display (hero + wordmark), Geist = body, JetBrains Mono = code.
+   The --font-* variables come from the Fonts API config in astro.config.mjs. */
 :root {
-  --cl-added: var(--sl-color-green, #22c55e);
-  --cl-added-text: var(--sl-color-green-high, #15803d);
-  --cl-changed: var(--sl-color-orange, #f97316);
-  --cl-changed-text: var(--sl-color-orange-high, #c2410c);
-  --cl-removed: var(--sl-color-red, #ef4444);
-  --cl-removed-text: var(--sl-color-red-high, #b91c1c);
+  --sl-font: var(--font-geist);
+  --sl-font-mono: var(--font-jetbrains-mono);
+  --ltk-font-display: var(--font-bricolage), var(--font-geist);
+}
+
+/* ── Dark Mode (Primary) ────────────────────────────────────── */
+
+:root {
+  --sl-color-accent-low: #1a1640;
+  --sl-color-accent: #4b7dfa;
+  --sl-color-accent-high: #b9e5fb;
+
+  --sl-color-white: #f0f2f8;
+  --sl-color-gray-1: #d3d7e4;
+  --sl-color-gray-2: #aeb4ca;
+  --sl-color-gray-3: #8189a6;
+  --sl-color-gray-4: #33364a;
+  --sl-color-gray-5: #1e2035;
+  --sl-color-gray-6: #14152a;
+  --sl-color-black: #0c0d18;
+}
+
+/* ── Light Mode ─────────────────────────────────────────────── */
+
+:root[data-theme='light'] {
+  --sl-color-accent-low: #e8f0ff;
+  --sl-color-accent: #3a5ec4;
+  --sl-color-accent-high: #1a1640;
+
+  --sl-color-white: #1a1c2e;
+  --sl-color-gray-1: #33364a;
+  --sl-color-gray-2: #5a5e72;
+  --sl-color-gray-3: #8b8fa3;
+  --sl-color-gray-4: #c4c8d4;
+  --sl-color-gray-5: #e0e3ea;
+  --sl-color-gray-6: #f0f2f5;
+  --sl-color-black: #fafbfc;
+}
+
+/* ── Brand Palette ──────────────────────────────────────────── */
+
+/* The logo colours. Theme-invariant: always mixed against a surface,
+   never swapped per theme. */
+:root {
+  --ltk-blue: #4b7dfa;
+  --ltk-violet: #7d4bfa;
+  --ltk-on-brand: #ffffff; /* text on a brand gradient */
+}
+
+/* ── Status Palette ─────────────────────────────────────────── */
+
+/* Semantic state colours. Theme-invariant except --ltk-required, which
+   flips for contrast. */
+:root {
+  --ltk-success: #22c55e;
+  --ltk-warning: #f59e0b;
+  --ltk-danger: #ef4444;
+  --ltk-required: #f193a9;
+}
+
+:root[data-theme='light'] {
+  --ltk-required: #ad3a58;
+}
+
+/* ── Corner Radius ──────────────────────────────────────────── */
+
+/* One scale for every rounded corner. Pill shapes (chips, badges, dots)
+   are exempt: they use 1rem/999px/50% for geometry. */
+:root {
+  --ltk-radius-lg: 0.5rem; /* cards, tables, asides, code blocks */
+  --ltk-radius-md: 0.375rem; /* buttons, inputs, inner panels */
+  --ltk-radius-sm: 0.25rem; /* nav rows, tags, keys */
+}
+
+/* ── Font Weights ───────────────────────────────────────────── */
+
+/* Pick from these, never a raw number. Body copy rides the face default (400). */
+:root {
+  --ltk-weight-medium: 500; /* labels, secondary emphasis */
+  --ltk-weight-semibold: 600; /* headings, UI emphasis */
+  --ltk-weight-bold: 700; /* page title, hero, strongest voice */
+}
+
+/* ── Glass Surfaces ─────────────────────────────────────────── */
+
+/* One recipe for every frosted surface: a translucent fill paired with a
+   backdrop blur. Always take the fill and the blur from the same tier.
+
+   - chrome: the nav bar. Near-opaque so content stays illegible behind it
+     even where a browser skips the blur; saturated so colour bleeds richly.
+   - panel: floating UI such as the sticky changelog summary. Thinner fill -
+     pair it with an @supports guard and a solid fallback.
+
+   Both mix from theme-aware bases, so either mode frosts correctly. */
+:root {
+  --ltk-glass-chrome-fill: color-mix(in srgb, var(--sl-color-black) 97%, transparent);
+  --ltk-glass-chrome-blur: blur(24px) saturate(140%);
+  --ltk-glass-panel-fill: color-mix(in srgb, var(--sl-color-gray-5) 70%, transparent);
+  --ltk-glass-panel-blur: blur(10px);
+}
+
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  :root {
+    --ltk-glass-chrome-fill: color-mix(in srgb, var(--sl-color-black) 65%, transparent);
+  }
+}
+
+/* ── Changelog Palette ──────────────────────────────────────── */
+
+/* Semantic colours for the changelog's added / changed / removed states,
+   aliased once here so the changelog components reference a name instead of
+   repeating a raw value. The fills come from the shared status palette; the
+   text variants ride Starlight's hue-derived `-high` tokens, which already
+   carry enough contrast on both themes. */
+:root {
+  --cl-added: var(--ltk-success);
+  --cl-added-text: var(--sl-color-green-high);
+  --cl-changed: var(--ltk-warning);
+  --cl-changed-text: var(--sl-color-orange-high);
+  --cl-removed: var(--ltk-danger);
+  --cl-removed-text: var(--sl-color-red-high);
 
   /* Shared changelog metrics (the border repeats on every card/chip; the
      summary height couples the sticky bar to the section scroll-margin so
      anchored sections clear both the site nav and the sticky summary). */
-  --cl-border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+  --cl-border: 1px solid var(--sl-color-gray-5);
   --cl-summary-height: 3.5rem;
 }
 
-/* Sidebar menu items: background highlight on hover/keyboard-focus (Starlight
-   only shifts text color, which is easy to miss). Applies to both the static
-   groups and the client-injected Classes group (same markup, same container).
-   The current page keeps its accent background, hence the :not().
-   Translucent overlay of the theme's text color rather than a gray token:
-   in dark mode the sidebar background IS --sl-color-gray-6, so any fixed
-   gray disappears against it. */
-#starlight__sidebar a:not([aria-current="page"]):hover,
-#starlight__sidebar a:not([aria-current="page"]):focus-visible,
-#starlight__sidebar summary:hover,
-#starlight__sidebar summary:focus-visible {
-  background-color: color-mix(in srgb, var(--sl-color-white) 8%, transparent);
+/* ── Typography Refinements ─────────────────────────────────── */
+
+:root {
+  --sl-text-h1: clamp(1.75rem, 4vw, 2.25rem);
+  --sl-text-h2: clamp(1.375rem, 3vw, 1.625rem);
+  --sl-text-h3: clamp(1.125rem, 2.5vw, 1.25rem);
+  --sl-text-body: 0.9375rem;
+  --sl-line-height-headings: 1.2;
 }
 
-/* Links already have this radius from Starlight; give group headers the same
-   so the hover highlight matches. */
-#starlight__sidebar summary {
-  border-radius: 0.25rem;
+/* Tighter heading tracking */
+.sl-markdown-content h1,
+.sl-markdown-content h2,
+.sl-markdown-content h3 {
+  letter-spacing: -0.02em;
+  font-weight: var(--ltk-weight-semibold);
 }
 
-/* Compact previous/next pagination links (Starlight defaults are huge:
-   1rem padding + 2xl titles) */
+.sl-markdown-content h1 {
+  font-weight: var(--ltk-weight-bold);
+}
+
+/* Plain prose only: classed elements are component parts with their own
+   line-height, and this unlayered rule would beat theirs. */
+.sl-markdown-content p:not([class]),
+.sl-markdown-content li:not([class]) {
+  line-height: 1.7;
+}
+
+/* ── Lists ──────────────────────────────────────────────────── */
+
+/* Tailwind's preflight (@layer base) strips list styles; these unlayered
+   rules win them back. Every rule needs BOTH guards: `:not([class])` skips
+   component lists that style themselves, `.not-content` skips components
+   built from bare ul/li. */
+.sl-markdown-content :is(ul, ol):not([class]):not(:where(.not-content *)) {
+  padding-inline-start: 1.5rem;
+}
+
+.sl-markdown-content ul:not([class]):not(:where(.not-content *)) {
+  list-style-type: disc;
+}
+
+.sl-markdown-content ol:not([class]):not(:where(.not-content *)) {
+  list-style-type: decimal;
+}
+
+/* Distinct marker per nesting level. */
+.sl-markdown-content ul ul:not([class]):not(:where(.not-content *)) {
+  list-style-type: circle;
+}
+
+.sl-markdown-content ul ul ul:not([class]):not(:where(.not-content *)) {
+  list-style-type: square;
+}
+
+.sl-markdown-content ol ol:not([class]):not(:where(.not-content *)) {
+  list-style-type: lower-alpha;
+}
+
+.sl-markdown-content ol ol ol:not([class]):not(:where(.not-content *)) {
+  list-style-type: lower-roman;
+}
+
+/* Space between siblings, and between an item and its nested list. */
+.sl-markdown-content :is(ul, ol):not([class]):not(:where(.not-content *)) > li + li,
+.sl-markdown-content li > :is(ul, ol):not([class]):not(:where(.not-content *)) {
+  margin-top: 0.5rem;
+}
+
+.sl-markdown-content :is(ul, ol):not([class]):not(:where(.not-content *)) > li::marker {
+  color: var(--sl-color-gray-2);
+}
+
+/* ── Code Blocks ────────────────────────────────────────────── */
+
+:root {
+  --sl-color-bg-inline-code: var(--sl-color-gray-5);
+  --ec-brdRad: var(--ltk-radius-lg);
+}
+
+.expressive-code .frame {
+  --header-border-radius: var(--ec-brdRad);
+}
+
+/* Preflight's @layer base mono stack beats Starlight's layered
+   --sl-font-mono rule; unlayered wins over both. */
+.sl-markdown-content code {
+  font-family: var(--sl-font-mono);
+}
+
+/* Disable JetBrains Mono's code ligatures - readers copy what they see. */
+.sl-markdown-content code,
+.expressive-code,
+starlight-file-tree {
+  font-feature-settings:
+    'calt' 0,
+    'liga' 0;
+}
+
+/* Inline code pills. em insets scale with the pill's font size (tables
+   shrink code to 0.75rem); the margin keeps prose off the border. */
+.sl-markdown-content :not(pre) > code:not(:where(.not-content *)) {
+  border: 1px solid var(--sl-color-gray-4);
+  border-radius: var(--ltk-radius-sm);
+  padding-block: 0.1em;
+  padding-inline: 0.3em;
+  margin-inline: 0.1em;
+}
+
+/* Tint the border like Starlight tints aside code fills. */
+.sl-markdown-content .starlight-aside :not(pre) > code:not(:where(.not-content *)) {
+  border-color: color-mix(in srgb, var(--sl-color-asides-text-accent) 25%, transparent);
+}
+
+/* ── Badges ─────────────────────────────────────────────────── */
+
+/* Badges are kind-labels, so mono like code spans - Starlight points them at
+   the system mono instead of the theme token. Own padding because Starlight
+   shapes sidebar and .small badges differently; em keeps it proportional. No
+   letter-spacing: it trails the last glyph and eats the right inset. */
+/* nowrap because the sidebar's overflow-wrap: anywhere otherwise breaks a
+   squeezed chip mid-word; a chip must stay one line and let the label wrap. */
+.sl-badge {
+  font-family: var(--sl-font-mono);
+  padding: 0.2em 0.45em;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+/* Gap on the chip, not Starlight's label-span margin (that also spaces
+   group carets). */
+.sidebar-content .sl-badge {
+  font-size: var(--sl-text-2xs);
+  margin-inline-start: 0.45em;
+}
+
+/* ── Tables ─────────────────────────────────────────────────── */
+
+/* display: block makes the table its own scroll container; fit-content
+   keeps the frame hugging the rows. Narrow tables don't stretch to the
+   column - the accepted trade for not needing a wrapper element. */
+.sl-markdown-content table {
+  display: block;
+  overflow-x: auto;
+  width: fit-content;
+  max-width: 100%;
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: var(--ltk-radius-lg);
+  font-size: 0.875rem;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.sl-markdown-content th,
+.sl-markdown-content td {
+  padding: 0.625rem 1rem;
+}
+
+.sl-markdown-content th {
+  font-weight: var(--ltk-weight-semibold);
+  text-transform: none;
+  letter-spacing: 0;
+  background: var(--sl-color-gray-6);
+  border-bottom: 1px solid var(--sl-color-gray-5);
+}
+
+.sl-markdown-content td {
+  border-bottom: 1px solid var(--sl-color-gray-5);
+}
+
+.sl-markdown-content tr:last-child td {
+  border-bottom: none;
+}
+
+.sl-markdown-content table code {
+  font-size: 0.75rem;
+}
+
+/* Required-field markers in reference tables. Rose so "must provide"
+   reads apart from links and code pills. */
+.sl-markdown-content .field-required {
+  font-weight: var(--ltk-weight-semibold);
+  color: var(--ltk-required);
+}
+
+/* ── File Tree ──────────────────────────────────────────────── */
+
+/* Starlight leaves the frame's corners square (@layer starlight.components);
+   unlayered wins. */
+starlight-file-tree {
+  border-radius: var(--ltk-radius-lg);
+}
+
+/* ── Header ─────────────────────────────────────────────────── */
+
+/* Starlight gives the nav bar and sidebar the same fill, merging them into
+   one slab. Separate the bar: translucent blur over --sl-color-black (which
+   flips per theme), closed by a brand-gradient hairline. */
+/* Keep -webkit-backdrop-filter BEFORE the standard property, here and for
+   every backdrop-filter in the repo:
+
+   1. the minifier collapses the pair into whichever declaration comes last;
+   2. Chromium and Firefox never aliased -webkit-backdrop-filter (it is
+      Safari-only), so a bundle keeping only the prefixed form ships no
+      blur at all outside Safari. */
+header.header {
+  border-bottom: 0;
+  background-color: var(--ltk-glass-chrome-fill);
+  -webkit-backdrop-filter: var(--ltk-glass-chrome-blur);
+  backdrop-filter: var(--ltk-glass-chrome-blur);
+}
+
+/* Brand wash bleeding in from the leading edge, under the wordmark. */
+header.header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    60rem 8rem at 0% 50%,
+    color-mix(in srgb, var(--ltk-blue) 12%, transparent),
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+header.header::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--ltk-blue) 55%, transparent) 22%,
+    color-mix(in srgb, var(--ltk-violet) 45%, transparent) 62%,
+    transparent
+  );
+  pointer-events: none;
+}
+
+/* Paint the bar's contents above the washes. */
+header.header > * {
+  position: relative;
+}
+
+/* Social icons rest neutral and brighten on hover - Starlight rests them
+   on the accent, which fights the wordmark beside them. */
+header.header .social-icons a {
+  color: var(--sl-color-gray-2);
+  transition: color 0.15s ease;
+}
+
+header.header .social-icons a:hover {
+  color: var(--sl-color-white);
+}
+
+/* Light mode runs both harder: the dark-mode mixes wash out on near-white. */
+:root[data-theme='light'] header.header::before {
+  background: radial-gradient(
+    60rem 8rem at 0% 50%,
+    color-mix(in srgb, var(--ltk-blue) 8%, transparent),
+    transparent 70%
+  );
+}
+
+:root[data-theme='light'] header.header::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--ltk-blue) 70%, transparent) 22%,
+    color-mix(in srgb, var(--ltk-violet) 60%, transparent) 62%,
+    transparent
+  );
+}
+
+/* Search rides the header here (LTK moves it to the sidebar), so give the
+   trigger the same glass pill treatment - solid fill first, upgraded under
+   @supports, per the Glass Surfaces contract. Below 50rem Starlight collapses
+   it to a bare icon button; leave that alone. */
+@media (min-width: 50rem) {
+  header.header button[data-open-modal] {
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 999px;
+    padding: 0.4rem 0.875rem;
+    font-size: var(--sl-text-sm);
+    background-color: var(--sl-color-gray-6);
+    color: var(--sl-color-gray-2);
+    transition:
+      border-color 0.15s ease,
+      color 0.15s ease;
+  }
+
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    header.header button[data-open-modal] {
+      background-color: var(--ltk-glass-panel-fill);
+      -webkit-backdrop-filter: var(--ltk-glass-panel-blur);
+      backdrop-filter: var(--ltk-glass-panel-blur);
+    }
+  }
+
+  header.header button[data-open-modal]:hover {
+    border-color: color-mix(in srgb, var(--sl-color-accent) 55%, transparent);
+    color: var(--sl-color-white);
+  }
+
+  /* Keycap hint pushed to the pill's end; the wrapper goes naked so the pill
+     shows through, and the key glyphs become tiny keycaps on the radius
+     scale. */
+  header.header button[data-open-modal] > kbd {
+    margin-inline-start: auto;
+    background-color: transparent;
+    padding: 0;
+  }
+
+  header.header button[data-open-modal] kbd kbd {
+    border: 1px solid var(--sl-color-gray-4);
+    border-radius: var(--ltk-radius-sm);
+    background-color: var(--sl-color-gray-5);
+    padding-inline: 0.35rem;
+  }
+}
+
+/* ── Sidebar ────────────────────────────────────────────────── */
+
+/* Brand-gradient washes instead of Starlight's inverted current-page slab;
+   hover is a lighter degree of the current-page treatment. */
+:root {
+  --ltk-nav-hover: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--ltk-blue) 14%, transparent),
+    color-mix(in srgb, var(--ltk-violet) 9%, transparent) 55%,
+    transparent
+  );
+  --ltk-nav-current: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--ltk-blue) 30%, transparent),
+    color-mix(in srgb, var(--ltk-violet) 18%, transparent) 55%,
+    transparent
+  );
+}
+
+.sidebar-content a {
+  border-radius: var(--ltk-radius-sm);
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.sidebar-content a:hover,
+.sidebar-content a:focus-visible {
+  background: var(--ltk-nav-hover);
+  color: var(--sl-color-white);
+}
+
+.sidebar-content a[aria-current='page'] {
+  font-weight: var(--ltk-weight-semibold);
+  background: var(--ltk-nav-current);
+  color: var(--sl-color-white);
+}
+
+/* Chips ride the row's end so the labels read as one column. Links go
+   flex for it; group labels grow to fill the summary so their chip lands
+   next to the caret. */
+.sidebar-content a {
+  display: flex;
+  align-items: center;
+}
+
+.sidebar-content summary > .group-label {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.sidebar-content :is(a, .group-label) > .sl-badge {
+  margin-inline-start: auto;
+}
+
+/* Leaf rows have no caret, so their chips would overshoot the group rows'
+   by the caret box. Reserve that width (1.25rem, the caret's Icon size in
+   Starlight's SidebarSublist) so every chip ends on one shared column and
+   the carets form their own outer lane. */
+.sidebar-content a > .sl-badge {
+  margin-inline-end: 1.25rem;
+}
+
+/* Chips are quiet at rest - no fill, variant-tinted outline, neutral
+   text - so the labels lead; the full variant colours return when the
+   row is hovered or current. */
+.sidebar-content .sl-badge {
+  background-color: transparent;
+  border-color: color-mix(in srgb, var(--sl-color-border-badge) 50%, transparent);
+  color: var(--sl-color-gray-2);
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.sidebar-content :is(a:hover, a[aria-current='page'], summary:hover) .sl-badge {
+  background-color: var(--sl-color-bg-badge);
+  border-color: var(--sl-color-border-badge);
+  color: var(--sl-color-text-badge);
+}
+
+/* Starlight ghosts the badge variables on the current-page row (white
+   outline, no fill - built for its solid accent row). Restore each
+   variant's colours so the active rule above has real values to use.
+   Per-variant because the ghost rule overrides the variant custom
+   properties on the same element, and there is no way to reference "the
+   variant's own value" generically. */
+
+.sidebar-content a[aria-current='page'] > .sl-badge.default {
+  --sl-color-bg-badge: var(--sl-badge-default-bg);
+  --sl-color-border-badge: var(--sl-badge-default-border);
+}
+
+.sidebar-content a[aria-current='page'] > .sl-badge.note {
+  --sl-color-bg-badge: var(--sl-badge-note-bg);
+  --sl-color-border-badge: var(--sl-badge-note-border);
+}
+
+.sidebar-content a[aria-current='page'] > .sl-badge.tip {
+  --sl-color-bg-badge: var(--sl-badge-tip-bg);
+  --sl-color-border-badge: var(--sl-badge-tip-border);
+}
+
+.sidebar-content a[aria-current='page'] > .sl-badge.caution {
+  --sl-color-bg-badge: var(--sl-badge-caution-bg);
+  --sl-color-border-badge: var(--sl-badge-caution-border);
+}
+
+.sidebar-content a[aria-current='page'] > .sl-badge.success {
+  --sl-color-bg-badge: var(--sl-badge-success-bg);
+  --sl-color-border-badge: var(--sl-badge-success-border);
+}
+
+.sidebar-content a[aria-current='page'] > .sl-badge.danger {
+  --sl-color-bg-badge: var(--sl-badge-danger-bg);
+  --sl-color-border-badge: var(--sl-badge-danger-border);
+}
+
+/* Group headers are `summary`, not links, but need the same hover affordance. */
+.sidebar-content summary {
+  border-radius: var(--ltk-radius-sm);
+  transition: background 0.15s ease;
+}
+
+.sidebar-content summary:hover,
+.sidebar-content summary:focus-visible {
+  background: var(--ltk-nav-hover);
+}
+
+/* Animate group expand/collapse. Geometry is unconditional so collapsed
+   groups paint right on the first frame; only the transition waits for
+   .sl-sidebar-loaded, else every group animates shut on each navigation. */
+.sidebar-pane {
+  interpolate-size: allow-keywords;
+}
+
+.sidebar-pane details::details-content {
+  overflow: clip;
+  height: 0;
+  opacity: 0;
+}
+
+.sidebar-pane details[open]::details-content {
+  height: auto;
+  opacity: 1;
+}
+
+.sidebar-pane.sl-sidebar-loaded details::details-content {
+  transition:
+    height 0.2s ease-out,
+    opacity 0.2s ease-out,
+    content-visibility 0.2s allow-discrete;
+}
+
+/* Group carets: dimmed at rest so the label leads, brightened with the
+   row hover. The transition restates Starlight's transform tween - this
+   unlayered rule replaces it, so dropping transform would snap the
+   open/close rotation. */
+.sidebar-pane summary .caret {
+  color: var(--sl-color-gray-3);
+  transition:
+    transform 0.2s ease-in-out,
+    color 0.15s ease;
+}
+
+.sidebar-pane summary:hover .caret {
+  color: var(--sl-color-white);
+}
+
+/* Top-level section icons. Starlight's sidebar config has no icon field, so
+   they attach here - keyed on a contained link, not :nth-child, so reordering
+   the sidebar cannot reassign them. Phosphor SVGs applied as masks: each icon
+   takes the label's colour and states for free.
+
+   The "Classes" group is injected client-side (see sidebar/ClassesGroup.astro)
+   but clones a server-rendered group, so it matches these selectors too. */
+.sidebar-pane ul.top-level > li > details > summary > .group-label,
+.sidebar-pane ul.top-level > li > a.large {
+  display: flex;
+  align-items: center;
+}
+
+.sidebar-pane ul.top-level > li > details > summary > .group-label::before,
+.sidebar-pane ul.top-level > li > a.large::before {
+  content: '';
+  flex-shrink: 0;
+  width: 1.125em;
+  height: 1.125em;
+  margin-inline-end: 0.5em;
+  background-color: currentColor;
+  opacity: 0.7;
+  mask: var(--ltk-section-icon) center / contain no-repeat;
+}
+
+.sidebar-pane ul.top-level > li:hover > details > summary > .group-label::before,
+.sidebar-pane ul.top-level > li > a.large:hover::before,
+.sidebar-pane ul.top-level > li > a.large[aria-current='page']::before {
+  opacity: 1;
+}
+
+/* Fallback so a group added to the sidebar without a mapping below still gets
+   a glyph - an unset --ltk-section-icon would leave the mask empty and paint
+   the ::before as a solid square. */
+.sidebar-pane ul.top-level > li {
+  --ltk-section-icon: url('@phosphor-icons/core/assets/bold/file-text-bold.svg');
+}
+
+.sidebar-pane ul.top-level > li:has(a[href^='/guides/']) {
+  --ltk-section-icon: url('@phosphor-icons/core/assets/bold/book-open-text-bold.svg');
+}
+
+.sidebar-pane ul.top-level > li:has(a[href^='/reference/']) {
+  --ltk-section-icon: url('@phosphor-icons/core/assets/bold/books-bold.svg');
+}
+
+.sidebar-pane ul.top-level > li:has(a[href^='/api/']) {
+  --ltk-section-icon: url('@phosphor-icons/core/assets/bold/code-bold.svg');
+}
+
+.sidebar-pane ul.top-level > li:has(a[href^='/changelog/']) {
+  --ltk-section-icon: url('@phosphor-icons/core/assets/bold/clock-counter-clockwise-bold.svg');
+}
+
+.sidebar-pane ul.top-level > li:has(a[href^='/classes/']) {
+  --ltk-section-icon: url('@phosphor-icons/core/assets/bold/tree-structure-bold.svg');
+}
+
+/* The skeleton stand-in for the Classes group carries no links yet, so the
+   rules above can't key an icon onto it - name it directly. */
+.sidebar-pane ul.top-level > li[data-wiki-classes-skeleton] {
+  --ltk-section-icon: url('@phosphor-icons/core/assets/bold/tree-structure-bold.svg');
+}
+
+/* Indent guide lines for nested sidebar items */
+.sidebar-pane ul ul li {
+  border-inline-start-color: var(--sl-color-gray-4);
+  transition: border-inline-start-color 0.15s ease;
+}
+
+.sidebar-pane ul ul li:hover {
+  border-inline-start-color: var(--sl-color-gray-3);
+}
+
+.sidebar-pane ul ul li:has(a[aria-current='page']) {
+  border-inline-start-color: var(--sl-color-accent);
+}
+
+.sidebar-pane ul ul ul li {
+  border-inline-start-color: var(--sl-color-gray-5);
+}
+
+.sidebar-pane ul ul ul li:hover {
+  border-inline-start-color: var(--sl-color-gray-3);
+}
+
+.sidebar-pane ul ul ul li:has(a[aria-current='page']) {
+  border-inline-start-color: var(--sl-color-accent);
+}
+
+/* ── Not-content spacing ───────────────────────────────────── */
+
+/* Starlight strips the margin between headings and .not-content islands;
+   restore a gap. */
+.sl-markdown-content .sl-heading-wrapper + .not-content {
+  margin-top: 1rem;
+}
+
+/* ── Wordmark Gradient ──────────────────────────────────────── */
+
+/* Shared by the header title and splash headline. Stops sit at similar
+   lightness so the short ramp fades instead of banding.
+
+   The lead-in stop is only a *hint* of light, not near-white: the header
+   wordmark shows the ramp at `background-size: 160%` from position 0%, so it
+   only ever renders the leftmost ~62% of it. A pale first stop therefore reads
+   as a washed-out word rather than a highlight, and the early midpoint (34%,
+   not 50%) gets the ramp into brand blue before the second syllable. */
+:root {
+  --ltk-wordmark: linear-gradient(105deg, #9ec8fb 0%, #6f97ff 34%, #a482ff 100%);
+}
+
+:root[data-theme='light'] {
+  --ltk-wordmark: linear-gradient(105deg, #27397f 0%, #2f4bb0 34%, #6a45d8 100%);
+}
+
+.ltk-wordmark,
+.site-title span {
+  background: var(--ltk-wordmark);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.site-title span {
+  font-family: var(--ltk-font-display);
+  font-weight: var(--ltk-weight-bold);
+  letter-spacing: -0.02em;
+  background-image:
+    linear-gradient(
+      105deg,
+      transparent 40%,
+      color-mix(in srgb, var(--ltk-on-brand) 20%, transparent) 50%,
+      transparent 60%
+    ),
+    var(--ltk-wordmark);
+  background-size:
+    200% 100%,
+    160% 100%;
+  background-position:
+    -30% 50%,
+    0% 50%;
+  transition:
+    background-position 0.7s ease,
+    filter 0.7s ease;
+}
+
+/* Hover slides the gradient and sweeps the highlight band across the letters.
+   The glow is drop-shadow (text-shadow would show through the clipped fill),
+   split blue-left / violet-right to echo the ramp, over a wide ambient bloom. */
+.site-title:hover span {
+  background-position:
+    130% 50%,
+    100% 50%;
+  filter: drop-shadow(-0.3rem 0 0.5rem color-mix(in srgb, var(--ltk-blue) 35%, transparent))
+    drop-shadow(0.3rem 0 0.5rem color-mix(in srgb, var(--ltk-violet) 35%, transparent))
+    drop-shadow(0 0 1.5rem color-mix(in srgb, var(--ltk-blue) 20%, transparent));
+}
+
+:root[data-theme='light'] .site-title:hover span {
+  filter: drop-shadow(-0.3rem 0 0.5rem color-mix(in srgb, var(--ltk-blue) 20%, transparent))
+    drop-shadow(0.3rem 0 0.5rem color-mix(in srgb, var(--ltk-violet) 20%, transparent))
+    drop-shadow(0 0 1.5rem color-mix(in srgb, var(--ltk-blue) 12%, transparent));
+}
+
+/* ── Splash Page ────────────────────────────────────────────── */
+
+/* Scoped on the hero so these only ever affect the landing page. */
+
+body:has(.ltk-hero) .sl-markdown-content h2 {
+  font-family: var(--ltk-font-display);
+  font-size: clamp(1.5rem, 3vw, 1.875rem);
+  font-weight: var(--ltk-weight-bold);
+  letter-spacing: -0.03em;
+  margin-top: 4rem;
+}
+
+/* Short accent rule above each section title. */
+body:has(.ltk-hero) .sl-markdown-content h2::before {
+  content: '';
+  display: block;
+  width: 2.25rem;
+  height: 2px;
+  margin-bottom: 0.875rem;
+  border-radius: 1px;
+  background: linear-gradient(90deg, var(--ltk-violet), var(--ltk-blue));
+}
+
+/* Border-only hover, deliberately: the cards sit in a grid, and lifting one on
+   hover reads as the row coming apart. */
+body:has(.ltk-hero) .sl-link-card,
+body:has(.ltk-hero) .card {
+  border-radius: var(--ltk-radius-lg);
+  transition: border-color 0.2s ease;
+}
+
+body:has(.ltk-hero) .sl-link-card:hover,
+body:has(.ltk-hero) .card:hover {
+  border-color: color-mix(in srgb, var(--sl-color-accent) 55%, transparent);
+}
+
+/* ── Content Width ──────────────────────────────────────────── */
+
+:root {
+  --sl-content-width: 48rem;
+  --ltk-toc-width: 14rem;
+}
+
+/* Starlight's TwoColumnContent keys the TOC column on --sl-sidebar-width;
+   these restate its width formulas with the narrower --ltk-toc-width. */
+@media (min-width: 72rem) {
+  .right-sidebar-container {
+    width: max(
+      var(--ltk-toc-width),
+      calc(var(--ltk-toc-width) + (100% - var(--sl-content-width) - var(--ltk-toc-width)) / 2)
+    );
+  }
+
+  [data-has-sidebar][data-has-toc] .main-pane {
+    width: min(
+      calc(100% - var(--ltk-toc-width)),
+      calc(var(--sl-content-width) + (100% - var(--sl-content-width) - var(--ltk-toc-width)) / 2)
+    );
+  }
+
+  .right-sidebar-panel .sl-container {
+    width: calc(var(--ltk-toc-width) - 2 * var(--sl-sidebar-pad-x));
+  }
+}
+
+/* ── Links ──────────────────────────────────────────────────── */
+
+/* Starlight only colours content links and Tailwind's preflight strips the
+   UA underline, so the underline must be drawn here. Kept translucent at
+   rest so links read without shouting; hover strengthens text and underline
+   together (accent-high inverts per theme: light blue on dark, deep navy
+   on light). The colour pulls the theme's text-accent toward brand blue for
+   extra saturation - the mix stays AA on both themes' backgrounds. */
+.sl-markdown-content a:not([class]) {
+  color: color-mix(in srgb, var(--sl-color-text-accent) 60%, var(--ltk-blue));
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+  transition:
+    color 0.15s ease,
+    text-decoration-color 0.15s ease;
+}
+
+.sl-markdown-content a:not([class]):hover {
+  color: var(--sl-color-accent-high);
+  text-decoration-color: currentColor;
+}
+
+/* ── Pagination ─────────────────────────────────────────────── */
+
+/* Starlight's stock prev/next cards ship 2xl titles, 1.5rem arrows, and
+   18rem-minimum grid tracks that make the pair stack early. Bring them
+   down to the site's card scale: smaller type, hairline hover matching
+   .sl-link-card, side by side except on narrow phones. */
+.pagination-links {
+  grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr));
+}
+
 .pagination-links a {
-  padding: 0.5rem 0.875rem;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--ltk-radius-lg);
   box-shadow: none;
+  font-size: var(--sl-text-xs);
+  color: var(--sl-color-gray-3);
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
 }
 
-.pagination-links a > span {
-  font-size: 0.7rem;
+.pagination-links a:hover {
+  border-color: color-mix(in srgb, var(--sl-color-accent) 55%, transparent);
+  transform: translateY(-2px);
 }
 
 .pagination-links .link-title {
-  font-size: 0.9375rem;
-  font-weight: 600;
+  font-size: var(--sl-text-base);
+  font-weight: var(--ltk-weight-medium);
 }
 
-.pagination-links a svg {
-  font-size: 1.1rem;
+.pagination-links svg {
+  font-size: 1rem;
 }
 
-/* Use a nicer monospace font for code elements */
-code {
-  font-family: var(--font-mono);
+@media (prefers-reduced-motion: reduce) {
+  .pagination-links a:hover {
+    transform: none;
+  }
 }
 
-/* Ensure inline code also uses the font */
-:not(pre) > code {
-  font-family: var(--font-mono);
+/* ── Horizontal Rules ───────────────────────────────────────── */
+
+.sl-markdown-content hr {
+  border-color: var(--sl-color-gray-5);
+  margin-block: 2.5rem;
 }
 
-/* Code blocks */
-pre code {
-  font-family: var(--font-mono);
+/* ── Blockquotes ────────────────────────────────────────────── */
+
+.sl-markdown-content blockquote {
+  border-left: 3px solid var(--sl-color-accent);
+  padding-left: 1rem;
+  color: var(--sl-color-gray-2);
 }
 
-/* Search term highlighting on pages opened from a search result
-   (added by pagefind-highlight.js, see astro.config.mjs head) */
+/* ── Asides ─────────────────────────────────────────────────── */
+
+/* Align note (blue) and tip (purple) hues with the logo palette. */
+:root {
+  --sl-hue-blue: 223;
+  --sl-hue-purple: 257;
+}
+
+/* Card treatment instead of Starlight's flat panels. The stripe is a
+   ::before overlay, not a border-inline-start - a border curves and tapers
+   at the rounded corners; overflow: hidden clips the band's ends instead. */
+.starlight-aside {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--sl-color-asides-border) 30%, transparent);
+  border-radius: var(--ltk-radius-lg);
+  background-color: color-mix(in srgb, var(--sl-color-asides-border) 8%, var(--sl-color-gray-6));
+}
+
+.starlight-aside::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 3px;
+  background: var(--sl-color-asides-border);
+}
+
+.starlight-aside code {
+  background-color: color-mix(in srgb, var(--sl-color-asides-border) 15%, var(--sl-color-gray-6));
+}
+
+/* ── Search Highlighting ────────────────────────────────────── */
+
+/* Terms highlighted on the destination page when arriving from a search
+   result (added by pagefind-highlight.js, see astro.config.mjs head). */
 mark.pagefind-highlight {
   background-color: var(--sl-color-accent-low);
   color: var(--sl-color-white);
-  border-radius: 0.2rem;
+  border-radius: var(--ltk-radius-sm);
   padding: 0 0.15rem;
   box-shadow: 0 0 0 1px var(--sl-color-accent);
 }
 
-/* Primitive type tooltips */
+/* ── Primitive Type Tooltips ────────────────────────────────── */
+
+/* Applied by utils/typeLinker.ts to primitive type names in property tables. */
 .primitive-type {
   position: relative;
   cursor: help;
   text-decoration: underline;
   text-decoration-style: dotted;
-  text-decoration-color: var(--color-gray-400);
+  text-decoration-color: var(--sl-color-gray-3);
   text-underline-offset: 2px;
 }
 
@@ -99,22 +1013,26 @@ mark.pagefind-highlight {
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
-  margin-bottom: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-md);
-  background-color: var(--color-gray-800);
-  color: var(--color-gray-50);
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-snug);
-  border-radius: var(--radius-md);
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background-color: var(--ltk-glass-panel-fill);
+  -webkit-backdrop-filter: var(--ltk-glass-panel-blur);
+  backdrop-filter: var(--ltk-glass-panel-blur);
+  border: 1px solid var(--sl-color-gray-4);
+  color: var(--sl-color-white);
+  font-family: var(--sl-font);
+  font-size: var(--sl-text-xs);
+  line-height: 1.375;
+  border-radius: var(--ltk-radius-md);
   white-space: nowrap;
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.4);
   opacity: 0;
   visibility: hidden;
-  transition: opacity var(--duration-normal) var(--ease-out), 
-              visibility var(--duration-normal) var(--ease-out);
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
   pointer-events: none;
-  z-index: var(--z-tooltip);
-  font-family: var(--font-sans);
+  z-index: 10;
 }
 
 .primitive-type::after {
@@ -125,13 +1043,14 @@ mark.pagefind-highlight {
   transform: translateX(-50%);
   margin-bottom: 2px;
   border: 6px solid transparent;
-  border-top-color: var(--color-gray-800);
+  border-top-color: var(--sl-color-gray-4);
   opacity: 0;
   visibility: hidden;
-  transition: opacity var(--duration-normal) var(--ease-out), 
-              visibility var(--duration-normal) var(--ease-out);
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
   pointer-events: none;
-  z-index: var(--z-tooltip);
+  z-index: 10;
 }
 
 .primitive-type:hover::before,
@@ -140,115 +1059,44 @@ mark.pagefind-highlight {
   visibility: visible;
 }
 
-/* Dark mode adjustments */
-:root[data-theme='dark'] .primitive-type::before {
-  background-color: var(--color-gray-700);
-  color: var(--color-gray-50);
+/* ── Scrollbars ────────────────────────────────────────────── */
+
+/* Modern browsers (Firefox) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--sl-color-gray-4) transparent;
 }
 
-:root[data-theme='dark'] .primitive-type::after {
-  border-top-color: var(--color-gray-700);
+/* Webkit (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-/**
- * Common Utility Patterns
- * Reusable component patterns using our theme
- */
-
-@layer utilities {
-  /* Card Patterns */
-  .card-base {
-    background: var(--color-bg-primary);
-    border: var(--border-width) solid var(--color-border);
-    border-radius: var(--radius-lg);
-    padding: var(--spacing-lg);
-    box-shadow: var(--shadow-sm);
-    transition: all var(--duration-normal) var(--ease-out);
-  }
-  
-  .card-elevated {
-    box-shadow: var(--shadow-md);
-  }
-  
-  .card-elevated:hover {
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-2px);
-  }
-  
-  /* Button Patterns */
-  .btn-base {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-sm) var(--spacing-lg);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
-    border-radius: var(--radius-md);
-    transition: all var(--duration-normal) var(--ease-out);
-    cursor: pointer;
-  }
-  
-  .btn-primary {
-    background: var(--color-brand-primary);
-    color: white;
-    border: none;
-  }
-  
-  .btn-primary:hover {
-    background: var(--color-brand-highlight);
-    box-shadow: var(--shadow-md);
-  }
-  
-  .btn-secondary {
-    background: transparent;
-    color: var(--color-brand-primary);
-    border: var(--border-width) solid var(--color-brand-primary);
-  }
-  
-  .btn-secondary:hover {
-    background: var(--color-brand-primary);
-    color: white;
-  }
-  
-  /* Badge Patterns */
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-    padding: var(--spacing-xs) var(--spacing-sm);
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-medium);
-    border-radius: var(--radius-md);
-  }
-  
-  .badge-primary {
-    background: var(--color-brand-primary);
-    color: white;
-  }
-  
-  .badge-neutral {
-    background: var(--color-gray-100);
-    color: var(--color-gray-800);
-  }
-  
-  .badge-success {
-    background: var(--color-success);
-    color: white;
-  }
-  
-  /* Section Patterns */
-  .section-title {
-    font-size: var(--font-size-3xl);
-    font-weight: var(--font-weight-bold);
-    color: var(--color-text-primary);
-    margin-bottom: var(--spacing-xl);
-  }
-  
-  .section-subtitle {
-    font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text-primary);
-    margin-bottom: var(--spacing-lg);
-  }
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
+::-webkit-scrollbar-thumb {
+  background: var(--sl-color-gray-4);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--sl-color-gray-3);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* ── Reduced Motion ─────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,28 @@
+---
+/**
+ * Trailing "go here" arrow, used by the splash hero actions and topic cards.
+ * Drawn on a 16-grid rather than the 24-grid the other icons use: it renders at
+ * 13-14px beside text, where a 24-grid stroke looks spindly.
+ */
+interface Props {
+  size?: number;
+  strokeWidth?: number;
+}
+
+const { size = 14, strokeWidth = 1.75 } = Astro.props;
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width={size}
+  height={size}
+  viewBox="0 0 16 16"
+  fill="none"
+  stroke="currentColor"
+  stroke-width={strokeWidth}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+>
+  <path d="M2 8h11M9 4l4 4-4 4" />
+</svg>

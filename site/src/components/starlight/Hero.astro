@@ -1,0 +1,173 @@
+---
+/**
+ * Splash-page hero (ported from the LTK wiki so both sites open the same way).
+ *
+ * Replaces Starlight's default hero (oversized logo + pill buttons) with a
+ * single centred column. There is deliberately no supporting graphic: a wiki's
+ * subject is its writing, and the cards immediately below the fold are the real
+ * entry points, so anything sitting beside the headline would be filler.
+ *
+ * Copy comes from the page's `hero` frontmatter, so index.mdx stays the single
+ * place to edit wording.
+ */
+// Starlight's PAGE_TITLE_ID, inlined: the constant lives behind an internal
+// specifier that is not exported from the package.
+const PAGE_TITLE_ID = "_top";
+
+import ArrowRightIcon from "../icons/ArrowRightIcon.astro";
+
+const { data } = Astro.locals.starlightRoute.entry;
+const { title = data.title, tagline, actions = [] } = data.hero || {};
+---
+
+<div class="ltk-hero">
+  <h1 id={PAGE_TITLE_ID} data-page-title set:html={title} />
+  {tagline && <p class="tagline" set:html={tagline} />}
+  {
+    actions.length > 0 && (
+      <div class="actions">
+        {actions.map(({ link: href, text, variant }) => (
+          <a {href} class:list={["action", variant === "primary" ? "primary" : "ghost"]}>
+            {text}
+            <span class="arrow">
+              <ArrowRightIcon />
+            </span>
+          </a>
+        ))}
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .ltk-hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    /* Bottom padding is deliberately short: the feature cards directly below
+       are the hero's real call to action and should sit close to it. */
+    padding-block: clamp(3rem, 11vmin, 7rem) clamp(2rem, 5vmin, 3rem);
+  }
+
+  /* Ambient wash behind the headline so the page opens in light rather than on
+     a flat field. Sized off the hero box, clipped by the page container. */
+  .ltk-hero::before {
+    content: "";
+    position: absolute;
+    inset-block: -30% 20%;
+    inset-inline: -10%;
+    background: radial-gradient(
+      ellipse 55% 60% at 50% 40%,
+      color-mix(in srgb, var(--ltk-violet) 16%, transparent),
+      transparent 70%
+    );
+    pointer-events: none;
+  }
+
+  /* The wash is a sibling in flow order, so everything after it needs its own
+     stacking position to paint on top. */
+  .ltk-hero > * {
+    position: relative;
+  }
+
+  .ltk-hero h1 {
+    margin: 0;
+    font-family: var(--ltk-font-display);
+    font-size: clamp(2.5rem, 7vw, 4.5rem);
+    font-weight: var(--ltk-weight-bold);
+    line-height: 1.03;
+    letter-spacing: -0.035em;
+    color: var(--sl-color-white);
+    text-wrap: balance;
+  }
+
+  /* Set by index.mdx on the part of the headline that carries the brand
+     gradient. The ramp itself lives in styles/custom.css, shared with the
+     header wordmark. */
+  .ltk-hero h1 :global(.accent) {
+    background: var(--ltk-wordmark);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .tagline {
+    max-width: 62ch;
+    margin: 1.5rem 0 0;
+    font-size: clamp(1rem, 1.4vw, 1.125rem);
+    line-height: 1.6;
+    text-wrap: pretty;
+    color: var(--sl-color-gray-2);
+  }
+
+  /* ── Actions ──────────────────────────────────────────────── */
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 2.25rem;
+  }
+
+  .action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.35rem;
+    border: 1px solid transparent;
+    border-radius: var(--ltk-radius-md);
+    font-size: 0.9375rem;
+    font-weight: var(--ltk-weight-semibold);
+    text-decoration: none;
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.2s ease,
+      border-color 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .action:hover {
+    transform: translateY(-1px);
+  }
+
+  .arrow {
+    display: inline-flex;
+    transition: transform 0.15s ease;
+  }
+
+  .action:hover .arrow {
+    transform: translateX(2px);
+  }
+
+  .ghost .arrow {
+    color: var(--sl-color-gray-3);
+  }
+
+  .primary {
+    background: linear-gradient(135deg, var(--ltk-violet), var(--ltk-blue));
+    color: var(--ltk-on-brand);
+    box-shadow: 0 0.5rem 1.5rem -0.5rem rgba(75, 125, 250, 0.7);
+  }
+
+  .primary:hover {
+    box-shadow: 0 0.75rem 2rem -0.5rem rgba(125, 75, 250, 0.85);
+  }
+
+  .ghost {
+    border-color: var(--sl-color-gray-4);
+    color: var(--sl-color-white);
+  }
+
+  .ghost:hover {
+    border-color: var(--sl-color-gray-3);
+    background-color: var(--sl-color-gray-6);
+  }
+
+  .action:focus-visible {
+    outline: 2px solid var(--sl-color-accent-high);
+    outline-offset: 3px;
+  }
+</style>

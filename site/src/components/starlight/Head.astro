@@ -1,0 +1,16 @@
+---
+import Default from "@astrojs/starlight/components/Head.astro";
+import { Font } from "astro:assets";
+---
+
+{
+  /* The families are declared in the `fonts` config in astro.config.mjs; each
+    <Font> emits its @font-face rules and, when asked, a preload link. Geist
+    (body) and Bricolage Grotesque (display: wordmark + splash hero) are on
+    every paint, so they preload; JetBrains Mono only matters once a code block
+    or a property table scrolls in. */
+}
+<Default><slot /></Default>
+<Font cssVariable="--font-geist" preload />
+<Font cssVariable="--font-jetbrains-mono" />
+<Font cssVariable="--font-bricolage" preload />
