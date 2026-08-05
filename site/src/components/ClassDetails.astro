@@ -5,6 +5,7 @@ import type { ClassJson } from "../types";
 import { classIndex } from "../utils/classIndex";
 import InheritanceTree from "./InheritanceTree.astro";
 import PropertiesSection from "./PropertiesSection.astro";
+import ReferencedBySection from "./ReferencedBySection.astro";
 import ClassDocumentation from "./ClassDocumentation.astro";
 // import InheritanceDiagram from "./InheritanceDiagram.astro";
 // import MermaidLoader from "./MermaidLoader.astro";
@@ -50,6 +51,12 @@ const docExists = fs.existsSync(docsFileUrl);
       name={data.name}
       docExists={docExists}
     />
+  )
+}
+
+{
+  data.usedBy.length > 0 && (
+    <ReferencedBySection usedBy={data.usedBy} classIndex={classIndex} />
   )
 }
 

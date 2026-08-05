@@ -57,6 +57,25 @@ export interface ClassJson {
   ancestorLevels: string[][];
   descendantTree: DescendantNode[];
   docs: ClassDocumentation | null;
+  /** Classes whose live properties reference this class, A→Z. */
+  usedBy: UsedByClass[];
+}
+
+// --- referenced-by shapes ---
+// Reverse references computed by generate-db.ts: for each class, the classes
+// whose properties use it as a type (through any slot of the type tuple).
+// Rendered by ReferencedBySection.astro.
+
+/** One property through which a class references the current class. */
+export interface UsedByProp extends ChangeTuple {
+  name: string;
+  /** Heading anchor on the owning class page (anchorSlug semantics). */
+  slug: string;
+}
+
+export interface UsedByClass {
+  name: string;
+  props: UsedByProp[];
 }
 
 // --- changelog shapes ---
@@ -131,4 +150,19 @@ export interface ClassSidebar {
   other: ClassSidebarEntry[];
   /** Unresolved 0x… names, sorted numerically — rendered last, collapsed. */
   hashed: ClassSidebarEntry[];
+}
+
+// --- symbol search index ---
+// Compact identifier index for the client-side symbol search in the search
+// modal (Search.astro + utils/symbolSearch.ts), emitted as symbols.json.
+
+export type SymbolClassEntry = [name: string, href: string];
+
+/** Deduped property name; owners are indices into SymbolsIndex.classes. */
+export type SymbolPropEntry = [name: string, owners: number[]];
+
+export interface SymbolsIndex {
+  /** All classes, A→Z (same order as the per-class emit loop). */
+  classes: SymbolClassEntry[];
+  props: SymbolPropEntry[];
 }

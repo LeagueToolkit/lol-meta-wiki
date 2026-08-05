@@ -47,7 +47,10 @@ import type {
   DescendantNode,
   Property,
   PropertyDocumentation,
+  SymbolsIndex,
   TypeHistoryEntry,
+  UsedByClass,
+  UsedByProp,
 } from "../site/src/types";
 // Raw meta.db.json shapes, shared with api/scripts.
 import type { MetaDb, PropRevision } from "./meta-db";
@@ -594,6 +597,40 @@ async function main() {
     }
   }
 
+  // Reverse references: class → classes whose properties use it as a type.
+  // Only the kh slot can hold a class: ft/kt/vt are always BinType kind names
+  // ("Map", "F32", …), and a class named "Map" exists - matching those slots
+  // against class names would hand it every Map<…> property in the db.
+  // Removed classes and removed properties are skipped: the section answers
+  // "who uses this type in the current game build". Inheritance is *not*
+  // a reference here - the inheritance tree already covers it.
+  const usedByMap = new Map<string, Map<string, UsedByProp[]>>();
+  for (const c of classes) {
+    if (c.removedIn) continue;
+    for (const p of c.properties) {
+      if (p.removedIn) continue;
+      if (!classMap.has(p.kh)) continue;
+      let byClass = usedByMap.get(p.kh);
+      if (!byClass) usedByMap.set(p.kh, (byClass = new Map()));
+      let props = byClass.get(c.name);
+      if (!props) byClass.set(c.name, (props = []));
+      props.push({
+        name: p.name,
+        slug: anchorSlug(p.name),
+        ft: p.ft,
+        kt: p.kt,
+        vt: p.vt,
+        kh: p.kh,
+      });
+    }
+  }
+  // Classes iterate A→Z and their properties are pre-sorted, so entries land
+  // in order; only the per-class grouping needs an explicit sort.
+  const usedByOf = (name: string): UsedByClass[] =>
+    [...(usedByMap.get(name) ?? [])]
+      .map(([n, props]) => ({ name: n, props }))
+      .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+
   // Ancestors as BFS levels going up: [direct bases, their bases, ...].
   // Multiple inheritance puts several classes on one level; each class
   // appears only once, at its shallowest depth.
@@ -668,6 +705,7 @@ async function main() {
       ancestorLevels,
       descendantTree,
       docs: classDocs || null,
+      usedBy: usedByOf(c.name),
     };
     const json = JSON.stringify(classJson, null, pretty ? 2 : 0);
     const hash = contentHash(classJson);
@@ -751,6 +789,28 @@ async function main() {
     classIndexPath,
     JSON.stringify(classIndex, null, pretty ? 2 : 0)
   );
+
+  // Emit symbols.json - the flat identifier index the search modal's symbol
+  // search fetches (Search.astro + utils/symbolSearch.ts). Property names are
+  // deduped; owners are indices into `classes`. Always minified regardless of
+  // --pretty: it's only ever fetched by the browser, and pretty-printing the
+  // owner arrays (one number per line) would triple the file.
+  const classPos = new Map(classes.map((c, i) => [c.name, i]));
+  const propOwners = new Map<string, number[]>();
+  for (const c of classes) {
+    for (const p of c.properties) {
+      let owners = propOwners.get(p.name);
+      if (!owners) propOwners.set(p.name, (owners = []));
+      owners.push(classPos.get(c.name)!);
+    }
+  }
+  const symbols: SymbolsIndex = {
+    classes: classes.map((c) => [c.name, classIndex[c.name]]),
+    props: [...propOwners.entries()].sort(([a], [b]) =>
+      a < b ? -1 : a > b ? 1 : 0
+    ),
+  };
+  await writeIfChanged(join(outDir, "symbols.json"), JSON.stringify(symbols));
 
   // Emit classSidebar.json - the grouped view the client-rendered "Classes"
   // sidebar group consumes (ResizableSidebar.astro). Named classes bucket by

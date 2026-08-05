@@ -49,7 +49,28 @@ const primitiveDescriptions: Record<string, string> = {
   "Vec3": "3-dimensional vector (x, y, z)",
   "Vec4": "4-dimensional vector (x, y, z, w)",
   "Color": "RGBA color value",
+  "Mtx44": "4×4 transformation matrix",
+  "File": "Reference to a game file",
+  "Option": "Optional value - may be absent",
+  "List": "Ordered collection of values",
+  "List2": "Ordered collection of values",
+  "Map": "Key → value dictionary",
+  "Pointer": "Polymorphic reference - holds any subclass of the target type",
 };
+
+/**
+ * Format a type-kind slot (ft/kt/vt). These are always BinType kind names
+ * ("Map", "F32", …), never classes - a class named "Map" exists, so matching
+ * these slots against the class index would link every Map<…> container to
+ * that class's page. Kinds render as plain text, with a tooltip when known.
+ */
+function formatKind(type: string): string {
+  if (!type || type === "0x0") return "";
+  if (primitiveDescriptions[type]) {
+    return `<span class="primitive-type" data-tooltip="${primitiveDescriptions[type]}">${type}</span>`;
+  }
+  return type;
+}
 
 /**
  * Parse and link types recursively
@@ -123,24 +144,24 @@ export function typeDisplay(
   classIndex: Record<string, string>
 ): string {
   const { ft, kt, vt, kh } = t;
-  let display = linkType(ft, classIndex);
+  // ft is a kind, never a class - only kh can reference one (see formatKind)
+  let display = formatKind(ft);
 
   // Types that should show hash reference as generic parameter
   const genericTypes = new Set(["Link", "Embed", "List", "Map", "Pointer"]);
-  
+
   // For Link, Embed, List, Map, Pointer with hash reference, show as generic
   if (genericTypes.has(ft) && kh !== "0x0") {
     const khLinked = linkType(kh, classIndex);
-    
+
     if (ft === "Map" && kt !== "0x0") {
       // Map<KeyType, ValueType>
-      const ktLinked = linkType(kt, classIndex);
-      display += `&lt;${ktLinked}, ${khLinked}&gt;`;
+      display += `&lt;${formatKind(kt)}, ${khLinked}&gt;`;
     } else {
       // Link<Type>, Embed<Type>, List<Type>, Pointer<Type>
       display += `&lt;${khLinked}&gt;`;
     }
-  } 
+  }
   // For other types with hash reference, show as Container<Link<Type>>
   else if (kh !== "0x0") {
     const khLinked = linkType(kh, classIndex);
@@ -153,7 +174,7 @@ export function typeDisplay(
   else if (vt !== "0x0") {
     // Check if the field type already has generic syntax
     if (!ft.includes("<")) {
-      display += `&lt;${linkType(vt, classIndex)}&gt;`;
+      display += `&lt;${formatKind(vt)}&gt;`;
     }
   }
 
