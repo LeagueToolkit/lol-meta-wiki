@@ -1,0 +1,97 @@
+---
+import ReferenceRow from "./ReferenceRow.astro";
+import type { UsedByClass } from "../types";
+
+interface Props {
+  usedBy: UsedByClass[];
+  classIndex: Record<string, string>;
+}
+
+const { usedBy, classIndex } = Astro.props;
+
+// Hub types are referenced by dozens of classes; keep the section scannable
+// by folding everything past the first rows behind a disclosure.
+const VISIBLE_ROWS = 20;
+const visible = usedBy.slice(0, VISIBLE_ROWS);
+const folded = usedBy.slice(VISIBLE_ROWS);
+const usageCount = usedBy.reduce((n, u) => n + u.props.length, 0);
+---
+
+<!-- data-pagefind-ignore: the rows name dozens of *other* classes; indexing
+     them would make this page match searches for every referencing class. -->
+<section class="referenced-by-section not-content" data-pagefind-ignore>
+  <h2 class="section-title">
+    Referenced by
+    <span class="section-count">
+      {usedBy.length}
+      {usedBy.length === 1 ? "class" : "classes"} · {usageCount}
+      {usageCount === 1 ? "property" : "properties"}
+    </span>
+  </h2>
+  <ul class="ref-list">
+    {visible.map((entry) => <ReferenceRow entry={entry} classIndex={classIndex} />)}
+  </ul>
+  {
+    folded.length > 0 && (
+      <details class="ref-more">
+        <summary>Show {folded.length} more</summary>
+        <ul class="ref-list">
+          {folded.map((entry) => (
+            <ReferenceRow entry={entry} classIndex={classIndex} />
+          ))}
+        </ul>
+      </details>
+    )
+  }
+</section>
+
+<style>
+  .referenced-by-section {
+    margin-top: 1.5rem;
+  }
+
+  .section-title {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.75rem 0;
+    color: var(--sl-color-white, #1f2937);
+  }
+
+  .section-count {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--sl-color-gray-3, #6b7280);
+  }
+
+  .ref-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background: var(--sl-color-bg-nav, #ffffff);
+    border: 1px solid var(--sl-color-gray-5, #e5e7eb);
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  }
+
+  .ref-more {
+    margin-top: 0.5rem;
+    border: none;
+    padding: 0;
+  }
+
+  .ref-more summary {
+    cursor: pointer;
+    color: var(--sl-color-gray-3, #6b7280);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .ref-more[open] summary {
+    margin-bottom: 0.5rem;
+  }
+</style>

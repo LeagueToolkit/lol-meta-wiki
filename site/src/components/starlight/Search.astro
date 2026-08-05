@@ -3,10 +3,16 @@
  * Override of Starlight's built-in Search component (copied from
  * @astrojs/starlight@0.41.3 components/Search.astro).
  *
- * Only change: `highlightParam: 'highlight'` is passed to PagefindUI so that
- * result links carry a `?highlight=<term>` query param. Combined with the
- * pagefind-highlight.js script loaded in astro.config.mjs `head`, the search
- * terms get highlighted on the destination page.
+ * Changes from upstream:
+ * - `highlightParam: 'highlight'` is passed to PagefindUI so result links
+ *   carry a `?highlight=<term>` query param. Combined with the
+ *   pagefind-highlight.js script loaded in astro.config.mjs `head`, the
+ *   search terms get highlighted on the destination page.
+ * - A "Symbols" panel (utils/symbolSearch.ts over /db/symbols.json) renders
+ *   instant class/property matches above the Pagefind results. Pagefind's
+ *   word/prefix matching can't hit the middle of compound identifiers
+ *   ("FollowMovement" → WallFollowMovement); this can. In dev - where
+ *   Pagefind has no index - a standalone input drives the same panel.
  *
  * When upgrading Starlight, diff this file against the upstream component.
  */
@@ -50,11 +56,22 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 			</button>
 			{
 				import.meta.env.DEV ? (
-					<div style="margin: auto; text-align: center; white-space: pre-line;" dir="ltr">
-						<p>{Astro.locals.t('search.devWarning')}</p>
+					<div class="search-container">
+						<input
+							id="wiki-symbols-dev-input"
+							class="wiki-symbols-dev-input"
+							type="search"
+							placeholder="Search classes and properties…"
+							autocomplete="off"
+						/>
+						<div id="wiki-symbols" class="wiki-symbols" hidden />
+						<p class="wiki-symbols-dev-note" dir="ltr">
+							{Astro.locals.t('search.devWarning')}
+						</p>
 					</div>
 				) : (
 					<div class="search-container">
+						<div id="wiki-symbols" class="wiki-symbols" hidden />
 						<div id="starlight__search" />
 					</div>
 				)
@@ -86,6 +103,13 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 
 <script>
 	import { pagefindUserConfig } from 'virtual:starlight/pagefind-config';
+	import {
+		prepareIndex,
+		propAnchor,
+		searchSymbols,
+		type PreparedIndex,
+		type SymbolHit,
+	} from '../../utils/symbolSearch';
 
 	class SiteSearch extends HTMLElement {
 		constructor() {
@@ -113,6 +137,7 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 				this.querySelector('input')?.focus();
 				event?.stopPropagation();
 				window.addEventListener('click', onClick);
+				loadSymbolIndex().then(syncSymbols);
 			};
 
 			const closeModal = () => dialog.close();
@@ -142,6 +167,170 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 			const shouldStrip = this.dataset.stripTrailingSlash !== undefined;
 			const stripTrailingSlash = (path: string) => path.replace(/(.)\/(#.*)?$/, '$1$2');
 			const formatURL = shouldStrip ? stripTrailingSlash : (path: string) => path;
+
+			// --- Symbol search: instant class/property matches above the
+			// Pagefind results (matching lives in utils/symbolSearch.ts) ---
+			const symbolsPanel = this.querySelector<HTMLElement>('#wiki-symbols');
+			const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+			const SYMBOL_LIMIT = 9;
+			const OWNER_LIMIT = 200;
+
+			let symbolIndex: PreparedIndex | null = null;
+			let symbolLoad: Promise<void> | null = null;
+			const loadSymbolIndex = () => {
+				symbolLoad ??= fetch(`${base}/db/symbols.json`)
+					.then((res) => (res.ok ? res.json() : null))
+					.then((raw) => {
+						if (raw) symbolIndex = prepareIndex(raw);
+					})
+					.catch(() => {});
+				return symbolLoad;
+			};
+
+			const queryInput = () =>
+				this.querySelector<HTMLInputElement>(
+					'.pagefind-ui__search-input, #wiki-symbols-dev-input'
+				);
+
+			/** Move the panel between Pagefind's input and its results, once they exist. */
+			const placePanel = () => {
+				if (!symbolsPanel || symbolsPanel.dataset.placed) return;
+				const drawer = this.querySelector('.pagefind-ui__drawer');
+				if (drawer) {
+					drawer.before(symbolsPanel);
+					symbolsPanel.dataset.placed = 'true';
+				}
+			};
+
+			const hideSymbols = () => {
+				if (!symbolsPanel) return;
+				symbolsPanel.hidden = true;
+				symbolsPanel.replaceChildren();
+			};
+
+			const highlightedName = (hit: SymbolHit) => {
+				const span = document.createElement('span');
+				span.className = 'wiki-symbol-name';
+				if (hit.start < 0) {
+					span.textContent = hit.name;
+					return span;
+				}
+				span.append(hit.name.slice(0, hit.start));
+				const mark = document.createElement('mark');
+				mark.textContent = hit.name.slice(hit.start, hit.start + hit.len);
+				span.append(mark, hit.name.slice(hit.start + hit.len));
+				return span;
+			};
+
+			const badge = (kind: 'class' | 'prop') => {
+				const el = document.createElement('span');
+				el.className = `wiki-symbol-badge wiki-symbol-badge-${kind}`;
+				el.textContent = kind;
+				return el;
+			};
+
+			const classUrl = (href: string) => formatURL(`${base}${href}/`);
+			const propUrl = (href: string, prop: string) =>
+				formatURL(`${base}${href}/#${propAnchor(prop)}`);
+
+			const symbolRow = (hit: SymbolHit): HTMLLIElement => {
+				const li = document.createElement('li');
+				if (hit.kind === 'class') {
+					const link = document.createElement('a');
+					link.className = 'wiki-symbol-row';
+					link.href = classUrl(hit.href!);
+					link.append(badge('class'), highlightedName(hit));
+					li.append(link);
+				} else if (hit.owners.length === 1) {
+					const owner = hit.owners[0]!;
+					const link = document.createElement('a');
+					link.className = 'wiki-symbol-row';
+					link.href = propUrl(owner.href, hit.name);
+					const ownerEl = document.createElement('span');
+					ownerEl.className = 'wiki-symbol-owner';
+					ownerEl.textContent = owner.name;
+					link.append(badge('prop'), highlightedName(hit), ownerEl);
+					li.append(link);
+				} else {
+					// Shared property name: fold the owning classes into a disclosure
+					const details = document.createElement('details');
+					const summary = document.createElement('summary');
+					summary.className = 'wiki-symbol-row';
+					const ownerEl = document.createElement('span');
+					ownerEl.className = 'wiki-symbol-owner';
+					ownerEl.textContent = `${hit.owners.length} classes ▾`;
+					summary.append(badge('prop'), highlightedName(hit), ownerEl);
+					const owners = document.createElement('ul');
+					owners.className = 'wiki-symbol-owners';
+					for (const owner of hit.owners.slice(0, OWNER_LIMIT)) {
+						const item = document.createElement('li');
+						const link = document.createElement('a');
+						link.href = propUrl(owner.href, hit.name);
+						link.textContent = owner.name;
+						item.append(link);
+						owners.append(item);
+					}
+					if (hit.owners.length > OWNER_LIMIT) {
+						const more = document.createElement('li');
+						more.className = 'wiki-symbol-owners-more';
+						more.textContent = `…and ${hit.owners.length - OWNER_LIMIT} more`;
+						owners.append(more);
+					}
+					details.append(summary, owners);
+					li.append(details);
+				}
+				return li;
+			};
+
+			const renderSymbols = (value: string) => {
+				if (!symbolsPanel) return;
+				if (!symbolIndex || value.trim().length < 2) {
+					hideSymbols();
+					return;
+				}
+				const { hits, total } = searchSymbols(symbolIndex, value, SYMBOL_LIMIT);
+				if (hits.length === 0) {
+					hideSymbols();
+					return;
+				}
+				placePanel();
+				const header = document.createElement('div');
+				header.className = 'wiki-symbols-header';
+				const title = document.createElement('span');
+				title.textContent = 'Symbols';
+				const count = document.createElement('span');
+				count.className = 'wiki-symbols-count';
+				count.textContent = total === 1 ? '1 match' : `${total} matches`;
+				header.append(title, count);
+				const list = document.createElement('ol');
+				for (const hit of hits) list.append(symbolRow(hit));
+				symbolsPanel.replaceChildren(header, list);
+				symbolsPanel.hidden = false;
+			};
+
+			const syncSymbols = () => renderSymbols(queryInput()?.value ?? '');
+
+			let symbolDebounce: ReturnType<typeof setTimeout> | undefined;
+			dialog.addEventListener('input', (e) => {
+				const target = e.target;
+				if (
+					target instanceof HTMLInputElement &&
+					(target.classList.contains('pagefind-ui__search-input') ||
+						target.id === 'wiki-symbols-dev-input')
+				) {
+					clearTimeout(symbolDebounce);
+					symbolDebounce = setTimeout(() => renderSymbols(target.value), 60);
+				}
+			});
+			// Pagefind's clear button empties the input without an input event
+			dialog.addEventListener('click', (e) => {
+				if (
+					e.target instanceof Element &&
+					e.target.closest('.pagefind-ui__search-clear')
+				) {
+					setTimeout(syncSymbols, 0);
+				}
+			});
 
 			window.addEventListener('DOMContentLoaded', () => {
 				if (import.meta.env.DEV) return;
@@ -253,6 +442,27 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 			flex-grow: 1;
 			gap: 1rem;
 			padding: 1rem;
+		}
+
+		/* Dev-only input driving the symbol panel (Pagefind has no dev index) */
+		.wiki-symbols-dev-input {
+			width: 100%;
+			padding: 0.75rem 1rem;
+			border: 1px solid var(--sl-color-gray-5);
+			border-radius: 0.5rem;
+			background-color: var(--sl-color-black);
+			color: var(--sl-color-white);
+			font-size: var(--sl-text-base);
+		}
+		.wiki-symbols-dev-input:focus {
+			outline: 1px solid var(--sl-color-accent);
+		}
+		.wiki-symbols-dev-note {
+			margin: 1rem 0 0;
+			text-align: center;
+			white-space: pre-line;
+			color: var(--sl-color-gray-3);
+			font-size: var(--sl-text-sm);
 		}
 
 		button[data-close-modal] {
@@ -497,6 +707,132 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 			background-color: var(--sl-color-black);
 			margin-top: 0;
 			padding: var(--sl-search-result-nested-pad-block) var(--sl-search-result-pad-inline-end);
+		}
+
+		/* --- Symbols panel. Its rows are built by the component script, so
+		   the rules must be global; in production the panel is relocated
+		   inside Pagefind's form (between input and results), in dev it sits
+		   under the standalone input. --- */
+		.wiki-symbols {
+			margin-top: calc(20px * var(--pagefind-ui-scale, 1));
+		}
+
+		.wiki-symbols-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: baseline;
+			font-size: calc(14px * var(--pagefind-ui-scale, 1));
+			font-weight: 600;
+			color: var(--sl-color-gray-2);
+			margin-bottom: 0.5rem;
+		}
+
+		.wiki-symbols-count {
+			font-size: calc(12px * var(--pagefind-ui-scale, 1));
+			font-weight: 400;
+			color: var(--sl-color-gray-3);
+		}
+
+		.wiki-symbols ol {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			display: flex;
+			flex-direction: column;
+			gap: 1px;
+		}
+
+		.wiki-symbols ol > li {
+			background-color: var(--sl-color-black);
+		}
+		.wiki-symbols ol > li:first-child {
+			border-radius: 0.3125rem 0.3125rem 0 0;
+		}
+		.wiki-symbols ol > li:last-child {
+			border-radius: 0 0 0.3125rem 0.3125rem;
+		}
+
+		.wiki-symbol-row {
+			display: flex;
+			align-items: center;
+			gap: 0.625rem;
+			padding: 0.5rem 0.9375rem;
+			text-decoration: none;
+			color: var(--sl-color-white);
+			cursor: pointer;
+		}
+		.wiki-symbol-row:hover,
+		.wiki-symbol-row:focus-visible {
+			outline: 1px solid var(--sl-color-accent-high);
+		}
+		summary.wiki-symbol-row {
+			list-style: none;
+		}
+		summary.wiki-symbol-row::-webkit-details-marker {
+			display: none;
+		}
+
+		.wiki-symbol-badge {
+			flex-shrink: 0;
+			font-size: 0.6875rem;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 0.04em;
+			padding: 0.0625rem 0.375rem;
+			border-radius: 0.25rem;
+			background-color: var(--sl-color-gray-5);
+			color: var(--sl-color-gray-1);
+		}
+		.wiki-symbol-badge-class {
+			background-color: var(--sl-color-accent-low);
+			color: var(--sl-color-accent-high);
+		}
+
+		.wiki-symbol-name {
+			font-family: var(--__sl-font-mono, monospace);
+			font-size: calc(14px * var(--pagefind-ui-scale, 1));
+			overflow-wrap: anywhere;
+		}
+
+		#starlight__search .wiki-symbols mark,
+		.wiki-symbols mark {
+			background-color: transparent;
+			color: var(--sl-color-accent);
+			font-weight: 700;
+		}
+
+		.wiki-symbol-owner {
+			margin-inline-start: auto;
+			flex-shrink: 0;
+			font-size: calc(13.5px * var(--pagefind-ui-scale, 1));
+			color: var(--sl-color-gray-3);
+		}
+
+		.wiki-symbol-owners {
+			list-style: none;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.375rem;
+			margin: 0;
+			padding: 0.25rem 0.9375rem 0.75rem;
+		}
+		.wiki-symbol-owners a {
+			display: inline-block;
+			padding: 0.125rem 0.5rem;
+			border-radius: 0.25rem;
+			background-color: var(--sl-color-gray-6);
+			color: var(--sl-color-gray-2);
+			font-size: 0.75rem;
+			text-decoration: none;
+		}
+		.wiki-symbol-owners a:hover {
+			color: var(--sl-color-white);
+			outline: 1px solid var(--sl-color-accent-high);
+		}
+		.wiki-symbol-owners-more {
+			font-size: 0.75rem;
+			color: var(--sl-color-gray-3);
+			align-self: center;
 		}
 	}
 </style>

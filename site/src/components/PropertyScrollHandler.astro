@@ -20,40 +20,48 @@ const propertyMap = properties.reduce(
 ---
 
 <script define:vars={{ propertyMap }}>
-  // Wait for DOM to be ready
+  // The #<slug> ids live on hidden headings at the bottom of the page (they
+  // exist for the TOC and Pagefind sub-results), so every navigation to a
+  // property anchor must be redirected to the matching visible card: TOC
+  // clicks, same-page hash changes (symbol search on the current page), and
+  // cross-page arrivals (#mspeed links from search results or the changelog).
+  const findCard = (slug) => {
+    const actualName = propertyMap[slug];
+    if (!actualName) return null;
+    for (const nameEl of document.querySelectorAll(".property-name")) {
+      if (nameEl.textContent.trim() === actualName) {
+        return nameEl.closest(".property-card");
+      }
+    }
+    return null;
+  };
+
   document.addEventListener("DOMContentLoaded", () => {
-    // Find all TOC links
     const tocLinks = document.querySelectorAll('.right-sidebar a[href^="#"]');
 
     tocLinks.forEach((link) => {
       link.addEventListener("click", (e) => {
         const href = link.getAttribute("href");
         if (!href) return;
-
-        const slug = href.slice(1); // Remove the #
-        const actualName = propertyMap[slug];
-
-        if (actualName) {
+        const targetCard = findCard(href.slice(1));
+        if (targetCard) {
           e.preventDefault();
-
-          // Find by searching through all property-name elements
-          const allPropertyNames = document.querySelectorAll(".property-name");
-          let targetCard = null;
-
-          for (const nameEl of allPropertyNames) {
-            if (nameEl.textContent.trim() === actualName) {
-              targetCard = nameEl.closest(".property-card");
-              break;
-            }
-          }
-
-          if (targetCard) {
-            targetCard.scrollIntoView({ behavior: "smooth", block: "start" });
-            // Update URL hash
-            history.pushState(null, "", href);
-          }
+          targetCard.scrollIntoView({ behavior: "smooth", block: "start" });
+          // Update URL hash
+          history.pushState(null, "", href);
         }
       });
     });
+
+    // Arriving with a property hash: the browser scrolled to the hidden
+    // heading (page bottom) - correct to the real card once layout settles.
+    const correctHashScroll = () => {
+      const targetCard = findCard(location.hash.slice(1));
+      if (targetCard) {
+        targetCard.scrollIntoView({ behavior: "auto", block: "start" });
+      }
+    };
+    if (location.hash) requestAnimationFrame(correctHashScroll);
+    window.addEventListener("hashchange", correctHashScroll);
   });
 </script>
