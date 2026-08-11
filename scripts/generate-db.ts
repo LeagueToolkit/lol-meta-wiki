@@ -10,6 +10,7 @@
  *          outDir/index.json (fetched client-side)
  *          outDir/classIndex.json (fetched client-side)
  *          outDir/classSidebar.json (fetched client-side, grouped sidebar view)
+ *          outDir/classHashes.json (fetched client-side by the 404 resolver)
  *          mdxDir/<ClassName>.mdx (Starlight docs)
  *
  * Usage:
@@ -40,6 +41,7 @@ import type {
   ChangelogCounts,
   ChangelogPatch,
   ClassDocumentation,
+  ClassHashIndex,
   ClassJson,
   ClassSidebar,
   ClassSidebarEntry,
@@ -60,6 +62,7 @@ import type { MetaDb, PropRevision } from "./meta-db";
 // attached to form the emitted ClassJson.
 type ClassDoc = {
   name: string; // resolved type name or raw hex
+  hash: string; // canonical class hash (see canonHash)
   bases: string[]; // zero or more base names (resolved or hex)
   properties: Property[];
   since?: string; // patch the class was added in
@@ -108,6 +111,13 @@ function safeName(name: string) {
 // Class page slug - must match classIndex ("/classes/<slug>") in the wiki
 function classSlug(name: string) {
   return safeName(name).toLowerCase();
+}
+// Canonical spelling of a hash: "0x" + 8 lowercase, zero-padded hex digits.
+// meta.db.json stores unpadded hex ("0x6516a"), so the same class is spelled
+// two ways across the project; the API canonicalizes the same way (see
+// api/scripts/lib/resolver.ts) and classHashes.json is keyed by this form.
+function canonHash(hash: string) {
+  return "0x" + hash.slice(2).toLowerCase().padStart(8, "0");
 }
 // Heading anchor slug for a property, matching the ids rehype-slug assigns to
 // the "## <name>" headings generateMDX emits (github-slugger semantics:
@@ -200,6 +210,7 @@ function loadMetaDb(db: MetaDb): ClassDoc[] {
 
     const doc: ClassDoc = {
       name: klass.name ?? khash,
+      hash: canonHash(khash),
       bases: currentClass.bases.map(nameOf),
       properties: [],
     };
@@ -781,13 +792,28 @@ async function main() {
   // Emit classIndex.json for type auto-linking
   const classIndex: Record<string, string> = {};
   for (const c of classes) {
-    const slug = safeName(c.name).toLowerCase();
-    classIndex[c.name] = `/classes/${slug}`;
+    classIndex[c.name] = `/classes/${classSlug(c.name)}`;
   }
   const classIndexPath = join(outDir, "classIndex.json");
   await writeIfChanged(
     classIndexPath,
     JSON.stringify(classIndex, null, pretty ? 2 : 0)
+  );
+
+  // Emit classHashes.json - canonical hash → page slug for every class, the
+  // lookup table behind the 404 resolver (components/NotFound.astro). A page
+  // only exists under its display name, so every other spelling of the same
+  // class (its hash once the name was resolved, a padded/unprefixed hash, the
+  // name in the wrong case) 404s without it. Sorted by hash so the diff is
+  // stable when a name resolves. Always minified regardless of --pretty: it's
+  // only ever fetched by the browser; /v1/hashes is the readable form.
+  const classHashes: ClassHashIndex = {};
+  for (const c of [...classes].sort((a, b) => (a.hash < b.hash ? -1 : 1))) {
+    classHashes[c.hash] = classSlug(c.name);
+  }
+  await writeIfChanged(
+    join(outDir, "classHashes.json"),
+    JSON.stringify(classHashes)
   );
 
   // Emit symbols.json - the flat identifier index the search modal's symbol

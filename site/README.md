@@ -82,13 +82,23 @@ Three components in `src/components/starlight/` replace Starlight's own, configu
 `astro.config.mjs`:
 
 - **`ResizableSidebar.astro`** - adds the drag-to-resize handle, and renders the Classes group
-  **client-side** from `/db/classIndex.json`. This is the important one: putting ~5,300 class links
+  **client-side** from `/db/classSidebar.json`. This is the important one: putting ~5,300 class links
   into the static sidebar meant every HTML file carried them, at roughly 850 KB per page and a 4.3 GB
   `dist/`. Do not move that group back into the `sidebar` config in `astro.config.mjs`.
 - **`Search.astro`** - Starlight's search with `highlightParam` enabled, so results link with
   `?highlight=<term>` and the term is highlighted on arrival. The `/pagefind/` bundle only exists in
   production builds, so the highlight script is guarded and silently skipped in dev.
 - **`PageTitle.astro`** - class page titles.
+
+## The 404 page
+
+`src/content/docs/404.mdx` overrides Starlight's built-in 404 route, which is what GitHub Pages
+serves for every unknown path. Besides the recovery links, `components/NotFound.astro` rescues class
+lookups: a class page exists only under its display name, so `/classes/<x>` 404s whenever `<x>` is
+another spelling of the same class - its hash once the name has been resolved from the hash tables,
+a padded or unprefixed hash, or the name in the wrong case. The script canonicalizes the segment
+(`utils/classHash.ts`), looks it up in `/db/classHashes.json`, and redirects to the real page,
+carrying the query and anchor along. Anything it cannot resolve falls back to the plain 404 text.
 
 ## Conventions
 

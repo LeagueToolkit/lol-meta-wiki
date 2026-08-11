@@ -1,0 +1,124 @@
+---
+/**
+ * Body of the 404 page (content/docs/404.mdx), which GitHub Pages serves for
+ * every unknown path.
+ *
+ * Beyond the generic recovery links it rescues class lookups: a class page
+ * exists only under its display name, so `/classes/<x>` 404s whenever `<x>`
+ * is any other spelling of the same class - its hash once the name has been
+ * resolved from the hash tables, a padded or unprefixed hash, or the name in
+ * the wrong case. classHashes.json maps every canonical hash onto the slug
+ * the page is really at, so those all resolve client-side and redirect.
+ */
+---
+
+<div class="not-found">
+  <p class="nf-status" data-nf-status hidden aria-live="polite"></p>
+
+  <div data-nf-generic>
+    <p>
+      That page doesn't exist. If you followed a link to a class, its name may
+      have changed since - press <kbd>Ctrl</kbd> <kbd>K</kbd> to search every
+      class and property on the site.
+    </p>
+    <p class="nf-links">
+      <a href="/classes/">Class reference</a>
+      <a href="/changelog/">Patch changelog</a>
+      <a href="/">Home</a>
+    </p>
+  </div>
+</div>
+
+<script>
+  import type { ClassHashIndex } from "../types";
+  import { parseClassHash } from "../utils/classHash";
+
+  const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+  const status = document.querySelector<HTMLElement>("[data-nf-status]");
+  const generic = document.querySelector<HTMLElement>("[data-nf-generic]");
+
+  /** "/classes/0x6516A/" → "0x6516A"; null when this isn't a class lookup. */
+  function classSegment(): string | null {
+    const path = location.pathname.startsWith(base)
+      ? location.pathname.slice(base.length)
+      : location.pathname;
+    // Case-insensitive: "/Classes/…" is a 404 too, and the redirect below
+    // rebuilds the path from the lowercase form either way.
+    const match = /^\/classes\/([^/]+)\/?$/i.exec(path);
+    if (!match) return null;
+    try {
+      return decodeURIComponent(match[1]!);
+    } catch {
+      return match[1]!;
+    }
+  }
+
+  /** The slug this spelling of a class has a page at, if any. */
+  async function resolveSlug(segment: string): Promise<string | null> {
+    const res = await fetch(`${base}/db/classHashes.json`);
+    if (!res.ok) return null;
+    const hashes: ClassHashIndex = await res.json();
+    // Right name or hash, wrong case: slugs are lowercase, and the index's
+    // values are exactly the set of slugs a page exists at.
+    const slugs = new Set(Object.values(hashes));
+    const lower = segment.toLowerCase();
+    if (slugs.has(lower)) return lower;
+    // Otherwise a hash in some other spelling than the one the page is at.
+    const hash = parseClassHash(segment);
+    return (hash && hashes[hash]) || null;
+  }
+
+  const segment = classSegment();
+  if (segment && status && generic) {
+    const label = document.createElement("code");
+    label.textContent = segment;
+    status.replaceChildren("Looking for ", label, "…");
+    status.hidden = false;
+    generic.hidden = true;
+
+    resolveSlug(segment)
+      .then((slug) => {
+        const target = slug ? `${base}/classes/${slug}/` : null;
+        // Never redirect onto the path we are already on: if the index knows
+        // a slug whose page is missing (a deploy caught mid-flight), bouncing
+        // to it would land back here and loop.
+        if (target && target !== location.pathname) {
+          // replace(), not assign(): Back should return to wherever the stale
+          // link was, not to this page. Query and hash ride along - they may
+          // carry a ?highlight= term or a property anchor.
+          location.replace(target + location.search + location.hash);
+          return;
+        }
+        status.replaceChildren("No class matches ", label, ".");
+        generic.hidden = false;
+      })
+      .catch(() => {
+        status.hidden = true;
+        generic.hidden = false;
+      });
+  }
+</script>
+
+<style>
+  .not-found {
+    max-width: 45rem;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .nf-status {
+    font-size: var(--sl-text-body);
+    color: var(--sl-color-gray-2);
+  }
+
+  .nf-status code {
+    color: var(--sl-color-white);
+  }
+
+  .nf-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1.5rem;
+  }
+</style>
