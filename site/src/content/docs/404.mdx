@@ -1,0 +1,15 @@
+---
+# Overrides Starlight's built-in 404 route (it renders this entry when one
+# exists), which is what GitHub Pages serves for every unknown path.
+title: "404"
+description: The page you were looking for could not be found.
+template: splash
+editUrl: false
+pagefind: false
+hero:
+  tagline: Page not found.
+---
+
+import NotFound from '../../components/NotFound.astro';
+
+<NotFound />

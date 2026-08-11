@@ -152,6 +152,13 @@ export interface ClassSidebar {
   hashed: ClassSidebarEntry[];
 }
 
+// --- class hash index ---
+// Canonical class hash ("0x" + 8 lowercase, zero-padded hex digits) → the
+// class page slug, emitted as classHashes.json. Consumed by the 404 resolver
+// (components/NotFound.astro) to map any spelling of a class - hash or name -
+// onto the one slug a page exists under.
+export type ClassHashIndex = Record<string, string>;
+
 // --- symbol search index ---
 // Compact identifier index for the client-side symbol search in the search
 // modal (Search.astro + utils/symbolSearch.ts), emitted as symbols.json.
