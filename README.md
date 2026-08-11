@@ -137,9 +137,10 @@ bun install
 pnpm dev           # http://localhost:4321
 ```
 
-The dev server generates its data on startup and re-runs the generator whenever `db/meta.db.json` or
-a `db/docs/*.yaml` changes, so editing a documentation file refreshes the page you are looking at.
-`pnpm build` covers the same ground through the site's `prebuild` script.
+Every Astro command generates the site's data before it reads the content collection - the class and
+changelog pages are generated, not tracked in git - and the dev server additionally re-runs the
+generator whenever `db/meta.db.json` or a `db/docs/*.yaml` changes, so editing a documentation file
+refreshes the page you are looking at.
 
 ```bash
 pnpm generate-db   # run the generator on its own (the API build needs its output)

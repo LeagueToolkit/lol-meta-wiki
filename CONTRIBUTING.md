@@ -148,17 +148,16 @@ Before submitting a PR, you can test your documentation locally:
    pnpm install
    ```
 
-3. **Generate the database with your documentation**
-   ```bash
-   pnpm generate-db
-   ```
-
-4. **Run the development server**
+3. **Run the development server**
    ```bash
    pnpm dev
    ```
+   It builds the wiki data from `db/meta.db.json` and your `db/docs/*.yaml` before it
+   starts, and rebuilds it whenever you save a documentation file, so an edit shows up
+   on the page you are looking at without a restart. You never need to run the
+   generator by hand.
 
-5. **View your changes at** `http://localhost:4321`
+4. **View your changes at** `http://localhost:4321`
 
 ## Commit Message Guidelines
 
