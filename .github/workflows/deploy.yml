@@ -54,7 +54,22 @@ jobs:
       - name: Build site
         working-directory: ./site
         run: pnpm run build
-      
+
+      # The class pages are generated MDX that is not tracked in git, so a
+      # generator that skipped or died halfway no longer breaks the build by
+      # itself - it just produces a smaller site. Compare what was built
+      # against the class count the generator recorded in index.json.
+      - name: Check every class page was built
+        working-directory: ./site
+        run: |
+          expected=$(jq -r '.total' public/db/index.json)
+          built=$(find dist/classes -mindepth 2 -maxdepth 2 -name index.html | wc -l)
+          echo "class pages built: $built (expected $expected)"
+          if [ "$built" != "$expected" ]; then
+            echo "::error::class page count mismatch - generation was skipped or partial"
+            exit 1
+          fi
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

@@ -1,0 +1,83 @@
+---
+/**
+ * Starlight `EditLink` override (see astro.config.mjs -> components.EditLink).
+ *
+ * Every page under `classes/` and `changelog/` except the two hand-written
+ * `index.mdx` files is a stub emitted by scripts/generate-db.ts and is not
+ * tracked in git, so Starlight's default target (`.../edit/main/site/src/
+ * content/docs/<page>`) points at a file that isn't in the repository - and
+ * even while it was, an edit made there was erased by the next generator run.
+ *
+ * - A class page's prose lives in `db/docs/<ClassName>.yaml`, so those routes
+ *   link to the same edit-or-create flow as the "Add documentation" buttons
+ *   (config/repo.ts).
+ * - A changelog page is derived from `db/meta.db.json` alone. There is nothing
+ *   to edit, so it gets no link.
+ * - Every other route keeps Starlight's own editUrl.
+ */
+import fs from "node:fs";
+import { root } from "astro:config/server";
+import { Icon } from "@astrojs/starlight/components";
+import { classIndex } from "../../utils/classIndex";
+import { getDocUrl } from "../../config/repo";
+
+// Reverse of classIndex (name -> "/classes/<slug>"), built once at module
+// scope: this component renders on every one of the ~5,300 class pages.
+const CLASS_PREFIX = "/classes/";
+const classNameBySlug = new Map(
+  Object.entries(classIndex).map(([name, href]) => [
+    href.slice(CLASS_PREFIX.length),
+    name,
+  ])
+);
+
+const { entry, editUrl } = Astro.locals.starlightRoute;
+
+// filePath is relative to the site root, posix-separated - the same string
+// Starlight appends to editLink.baseUrl.
+const match = /^src\/content\/docs\/(classes|changelog)\/(.+)\.mdx$/.exec(
+  entry.filePath.replace(/\\/g, "/")
+);
+// index.mdx in either directory is hand-written; everything else is a stub.
+const stub =
+  match && match[2] !== "index" ? { dir: match[1], slug: match[2] } : null;
+const className =
+  stub?.dir === "classes" ? classNameBySlug.get(stub.slug) : undefined;
+
+let href = editUrl?.href;
+let label = Astro.locals.t("page.editLink");
+if (className) {
+  // Same existence check ClassDetails.astro makes: an existing YAML opens
+  // GitHub's editor, a missing one opens the prefilled "create file" flow.
+  const docExists = fs.existsSync(new URL(`../db/docs/${className}.yaml`, root));
+  href = getDocUrl(className, docExists);
+  label = "Improve this page's docs";
+} else if (stub) {
+  // A generated page with nothing behind it to edit. Better no link than one
+  // pointing at a file that isn't in the repository.
+  href = undefined;
+}
+---
+
+{
+  href && (
+    <a href={href} class="sl-flex print:hidden">
+      <Icon name="pencil" size="1.2em" />
+      {label}
+    </a>
+  )
+}
+
+<style>
+  @layer starlight.core {
+    a {
+      gap: 0.5rem;
+      align-items: center;
+      text-decoration: none;
+      color: var(--sl-color-gray-3);
+    }
+    a:hover {
+      color: var(--sl-color-white);
+    }
+  }
+</style>

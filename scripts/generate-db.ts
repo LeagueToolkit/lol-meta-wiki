@@ -744,6 +744,25 @@ async function main() {
     });
   }
 
+  // One page and one JSON payload per class in the db, no exceptions. The
+  // generated MDX is not tracked in git, so nothing downstream would notice a
+  // class silently going missing - a slug collision (two names differing only
+  // in case both map to `<name>.mdx`) or a dropped class would just build a
+  // smaller site. Assert before the cleanup passes below, which would happily
+  // delete pages a partial run failed to claim.
+  const expectedClasses = Object.keys(metaDb.classes).length;
+  if (
+    classes.length !== expectedClasses ||
+    generatedMDX.size !== expectedClasses ||
+    generatedJSON.size !== expectedClasses
+  ) {
+    throw new Error(
+      `Emitted ${generatedMDX.size} MDX pages and ${generatedJSON.size} JSON files ` +
+      `for ${classes.length} loaded classes, but ${basename(inFile)} has ` +
+      `${expectedClasses} - a class was dropped or two share a file name.`
+    );
+  }
+
   // Clean up old MDX files that no longer exist
   let mdxDeleted = 0;
   try {

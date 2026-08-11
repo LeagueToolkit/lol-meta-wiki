@@ -12,6 +12,12 @@ build/
 site/public/db/
 site/db-data/
 
+# Generated Starlight pages (index.mdx in each dir is hand-written)
+site/src/content/docs/classes/*.mdx
+!site/src/content/docs/classes/index.mdx
+site/src/content/docs/changelog/*.mdx
+!site/src/content/docs/changelog/index.mdx
+
 # API worker build output + wrangler state
 api/dist/
 api/.wrangler/

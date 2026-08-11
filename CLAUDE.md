@@ -122,4 +122,9 @@ Follow it:
 - `bun scripts/generate-db.ts` should be **idempotent** - a second run reports
   `0 changed, 0 deleted`. If it churns every file on a re-run, the output isn't
   deterministic; fix that before shipping.
-- `pnpm --filter site build` must pass with no errors and the expected page count.
+- `pnpm --filter site build` must pass with no errors. The class pages are
+  generated MDX that is **not tracked in git** (the Astro integration regenerates
+  them for every command), so "it built" no longer implies "it built everything":
+  the page count is guarded instead - `generate-db.ts` asserts one page per class
+  in the db, and `deploy.yml` compares `dist/classes/*/index.html` against `total`
+  in `public/db/index.json`. Don't weaken either check to make a build go green.

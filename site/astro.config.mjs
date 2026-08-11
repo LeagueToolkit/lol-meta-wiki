@@ -102,6 +102,9 @@ export default defineConfig({
         Head: './src/components/starlight/Head.astro',
         // Splash-page hero: centred column, no supporting graphic
         Hero: './src/components/starlight/Hero.astro',
+        // Class and changelog pages are generated stubs, not repo files: a
+        // class links to its db/docs YAML instead, a changelog page to nothing
+        EditLink: './src/components/starlight/EditLink.astro',
       },
       sidebar: [
         {
