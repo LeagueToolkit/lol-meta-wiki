@@ -507,6 +507,34 @@ header.header .social-icons a:hover {
   color: var(--sl-color-white);
 }
 
+/* Classes the game no longer ships. The sidebar is the one place a reader
+   scans hundreds of class names at once, so the state has to read from the
+   row itself - a muted label and a dot, the same pair the inheritance tree
+   uses. Nothing is drawn over the name: these rows are dense identifiers and
+   a strikethrough costs more legibility than the state is worth. The rows
+   are built by the client-side Classes group (sidebar/ClassesGroup.astro),
+   which scoped styles never reach. Placed after the state rules above so a
+   removed class stays marked while hovered or current. */
+.sidebar-content a.wiki-class-removed {
+  color: var(--sl-color-gray-3);
+}
+
+.sidebar-content a.wiki-class-removed:is(:hover, :focus-visible, [aria-current='page']) {
+  color: var(--sl-color-gray-2);
+}
+
+/* Rides the chip lane so the dots line up in their own column, clear of the
+   labels (see the .sl-badge rules below for the same 1.25rem caret inset). */
+.sidebar-content .wiki-class-removed-dot {
+  margin-inline-start: auto;
+  margin-inline-end: 1.25rem;
+  width: 0.375rem;
+  height: 0.375rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ltk-danger) 85%, transparent);
+}
+
 /* Chips ride the row's end so the labels read as one column. Links go
    flex for it; group labels grow to fill the summary so their chip lands
    next to the caret. */

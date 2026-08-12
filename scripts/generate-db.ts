@@ -7,6 +7,8 @@
  * Output:  classesOutDir/<ClassName>.<sha12>.json (build-time only, NOT in
  *          public/ - copying 5k+ files into dist every build was a major
  *          build-time cost)
+ *          graphOutFile (build-time only: the inheritance graph + removed set,
+ *          read once per build by the class pages)
  *          outDir/index.json (fetched client-side)
  *          outDir/classIndex.json (fetched client-side)
  *          outDir/classSidebar.json (fetched client-side, grouped sidebar view)
@@ -41,6 +43,7 @@ import type {
   ChangelogCounts,
   ChangelogPatch,
   ClassDocumentation,
+  ClassGraph,
   ClassHashIndex,
   ClassJson,
   ClassSidebar,
@@ -49,6 +52,7 @@ import type {
   DescendantNode,
   Property,
   PropertyDocumentation,
+  SymbolClassEntry,
   SymbolsIndex,
   TypeHistoryEntry,
   UsedByClass,
@@ -85,6 +89,7 @@ for (let i = 2; i < process.argv.length; i++) {
 const inFile = args.get("in") ?? "db/meta.db.json";
 const outDir = args.get("out") ?? "site/public/db";
 const classesOutDir = args.get("classes-out") ?? "site/db-data/classes";
+const graphOutFile = args.get("graph-out") ?? "site/db-data/classGraph.json";
 const mdxDir = args.get("mdx") ?? "site/src/content/docs/classes";
 const changelogOutDir =
   args.get("changelog-out") ?? "site/db-data/changelog";
@@ -819,6 +824,35 @@ async function main() {
     JSON.stringify(classIndex, null, pretty ? 2 : 0)
   );
 
+  // Removed classes, name → the patch they disappeared in. Shared by the
+  // graph file, the sidebar and the symbol index: all three mark a removed
+  // class so it can be recognised without opening its page.
+  const removedByName: Record<string, string> = {};
+  for (const c of classes) {
+    if (c.removedIn) removedByName[c.name] = c.removedIn;
+  }
+
+  // Emit classGraph.json - the inheritance graph as one build-time file (it
+  // lives beside the per-class JSON, outside public/: only the class pages
+  // read it, and only at build time). A class page needs its *siblings* (the
+  // other subclasses of its bases) and the removed flag for every class in
+  // its tree; both are graph-wide facts, so baking them into each class JSON
+  // would duplicate ~105k names and make one new subclass rewrite every file
+  // in its family. Keys sorted so the file is stable and diffable.
+  const graphChildren: Record<string, string[]> = {};
+  for (const base of [...children.keys()].sort()) {
+    const kids = children.get(base)!;
+    if (kids.size > 0) graphChildren[base] = [...kids].sort();
+  }
+  const classGraph: ClassGraph = {
+    children: graphChildren,
+    removedIn: removedByName,
+  };
+  await writeIfChanged(
+    graphOutFile,
+    JSON.stringify(classGraph, null, pretty ? 2 : 0)
+  );
+
   // Emit classHashes.json - canonical hash → page slug for every class, the
   // lookup table behind the 404 resolver (components/NotFound.astro). A page
   // only exists under its display name, so every other spelling of the same
@@ -849,8 +883,12 @@ async function main() {
       owners.push(classPos.get(c.name)!);
     }
   }
+  const symbolClass = (name: string): SymbolClassEntry =>
+    removedByName[name]
+      ? [name, classIndex[name], removedByName[name]]
+      : [name, classIndex[name]];
   const symbols: SymbolsIndex = {
-    classes: classes.map((c) => [c.name, classIndex[c.name]]),
+    classes: classes.map((c) => symbolClass(c.name)),
     props: [...propOwners.entries()].sort(([a], [b]) =>
       a < b ? -1 : a > b ? 1 : 0
     ),
@@ -869,16 +907,19 @@ async function main() {
   const byName = (a: ClassSidebarEntry, b: ClassSidebarEntry) =>
     a[0].localeCompare(b[0], "en", { sensitivity: "base" });
 
+  const sidebarEntry = (name: string, href: string): ClassSidebarEntry =>
+    removedByName[name] ? [name, href, removedByName[name]] : [name, href];
+
   const buckets = new Map<string, ClassSidebarEntry[]>();
   const hashed: ClassSidebarEntry[] = [];
   for (const [name, href] of Object.entries(classIndex)) {
     if (isHashName(name)) {
-      hashed.push([name, href]);
+      hashed.push(sidebarEntry(name, href));
     } else {
       const word = firstWord(name);
       let bucket = buckets.get(word);
       if (!bucket) buckets.set(word, (bucket = []));
-      bucket.push([name, href]);
+      bucket.push(sidebarEntry(name, href));
     }
   }
   hashed.sort((a, b) => parseInt(a[0], 16) - parseInt(b[0], 16));

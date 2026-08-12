@@ -1,13 +1,15 @@
 ---
-interface DescendantNode {
-  name: string;
-  children: DescendantNode[];
-}
+import type { DescendantNode } from "../types";
+import type { Sibling } from "../utils/classGraph";
 
 interface Props {
   currentClass: string;
   ancestorLevels: string[][];
   descendantTree: DescendantNode[];
+  /** Other subclasses of this class's bases, A→Z (see utils/classGraph). */
+  siblings: Sibling[];
+  /** Removed class name → the patch it disappeared in. */
+  removedIn: Record<string, string>;
   classIndex: Record<string, string>;
 }
 
@@ -15,6 +17,8 @@ const {
   currentClass,
   ancestorLevels = [],
   descendantTree = [],
+  siblings = [],
+  removedIn,
   classIndex,
 } = Astro.props;
 
@@ -27,15 +31,36 @@ function subtreeSize(node: DescendantNode): number {
   return 1 + node.children.reduce((n, c) => n + subtreeSize(c), 0);
 }
 
-// Class chip with an optional descendant count baked into the chip itself
+const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
+
+// Class chip with an optional descendant count baked into the chip itself.
+// A class the game no longer ships is marked with a dot and says so -
+// otherwise the only way to tell is to open its page. The mark sits beside
+// the name rather than across it: these are mono identifiers, and a rule
+// through them costs more legibility than the state is worth.
 function nodeChip(name: string, count?: number): string {
   const countHtml =
-    count !== undefined ? `<span class="chip-count">${count}</span>` : "";
+    count !== undefined
+      ? `<span class="chip-count" title="${plural(count, "descendant")}">${count}</span>`
+      : "";
+  const removedPatch = removedIn[name];
+  // Screen readers get no signal from the dot or the tooltip
+  const noteHtml = removedPatch
+    ? `<span class="chip-note"> (removed in patch ${removedPatch})</span>`
+    : "";
+  const dotHtml = removedPatch
+    ? `<span class="chip-dot" aria-hidden="true"></span>`
+    : "";
+  const attrs = removedPatch
+    ? ` title="Removed from the game in patch ${removedPatch}"`
+    : "";
+  const cls = removedPatch ? "chip chip-removed" : "chip";
+  const body = `${dotHtml}<span class="chip-name">${name}${noteHtml}</span>${countHtml}`;
   const href = classIndex[name];
   if (href) {
-    return `<a href="${href}" class="chip chip-link">${name}${countHtml}</a>`;
+    return `<a href="${href}" class="${cls} chip-link"${attrs}>${body}</a>`;
   }
-  return `<span class="chip">${name}${countHtml}</span>`;
+  return `<span class="${cls}"${attrs}>${body}</span>`;
 }
 
 const descendantCount = descendantTree.reduce((n, c) => n + subtreeSize(c), 0);
@@ -60,11 +85,29 @@ function nodeHtml(node: DescendantNode): string {
 
 // Current class node: never collapsible, its children always visible
 const childrenHtml = descendantTree.map(nodeHtml).join("");
-let treeHtml =
+const currentLi =
   `<li><span class="node-row"><span class="twisty-spacer"></span>` +
   `<span class="current-class">${currentClass}<span class="badge">current</span></span></span>` +
   (childrenHtml ? `<ul>${childrenHtml}</ul>` : "") +
   `</li>`;
+
+// Siblings sit in the same list as the current class, in their shared A→Z
+// order: the base's subclasses read as one list with "you are here" marked
+// in it, which is what a tree is for. They carry a descendant count but no
+// twisty - their own branches live on their pages.
+let treeHtml = currentLi;
+if (siblings.length > 0) {
+  const rows = siblings.map((s) => ({
+    name: s.name,
+    html:
+      `<li><span class="node-row"><span class="twisty-spacer"></span>` +
+      `${nodeChip(s.name, s.descendants > 0 ? s.descendants : undefined)}</span></li>`,
+  }));
+  rows.push({ name: currentClass, html: currentLi });
+  // Same plain sort the generator orders descendants with
+  rows.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+  treeHtml = rows.map((r) => r.html).join("");
+}
 
 // Wrap ancestor levels around it, deepest ancestor outermost. A level with
 // several classes (multiple inheritance) renders its chips side by side.
@@ -79,11 +122,44 @@ for (const level of ancestorLevels) {
 treeHtml = `<ul class="tree-root">${treeHtml}</ul>`;
 
 const countsLabel = [
-  ancestorCount > 0 ? `${ancestorCount} ancestor${ancestorCount === 1 ? "" : "s"}` : null,
-  descendantCount > 0 ? `${descendantCount} descendant${descendantCount === 1 ? "" : "s"}` : null,
+  ancestorCount > 0 ? plural(ancestorCount, "ancestor") : null,
+  siblings.length > 0 ? plural(siblings.length, "sibling") : null,
+  descendantCount > 0 ? plural(descendantCount, "descendant") : null,
 ]
   .filter(Boolean)
   .join(" · ");
+
+// A crowded base can own hundreds of rows even with its deep branches
+// folded. Past roughly a screenful the tree gets its own scroller, so it
+// stops pushing the properties - the reason most readers are here - off the
+// page, and the inline script below parks that scroller on the current class.
+const openRows =
+  ancestorLevels.length +
+  1 +
+  siblings.length +
+  (expandAll ? descendantCount : descendantTree.length);
+const tall = openRows > 26;
+
+// A scrolling tree opens at the top - on a crowded base that is a screenful
+// of siblings with the current class somewhere below the fold. Park the
+// scroller on it instead. Emitted as raw HTML (rather than an Astro
+// <script>) so it stays right where it sits and runs while the page is
+// still parsing: a deferred module script would show the jump. Only tall
+// trees carry it; the other ~5,000 class pages get nothing.
+const scrollScript = tall
+  ? `<script>
+  (() => {
+    const tree = document.querySelector(".tree-tall");
+    const current = tree && tree.querySelector(".current-class");
+    if (!current) return;
+    tree.scrollTop =
+      current.getBoundingClientRect().top -
+      tree.getBoundingClientRect().top +
+      tree.scrollTop -
+      tree.clientHeight / 2;
+  })();
+</script>`
+  : "";
 ---
 
 <!-- data-pagefind-ignore: the tree names dozens of *other* classes; indexing it
@@ -94,7 +170,8 @@ const countsLabel = [
     {countsLabel && <span class="counts">{countsLabel}</span>}
   </h2>
 
-  <div class="tree" set:html={treeHtml} />
+  <div class:list={["tree", { "tree-tall": tall }]} set:html={treeHtml} />
+  <Fragment set:html={scrollScript} />
 </div>
 
 <style>
@@ -125,6 +202,14 @@ const countsLabel = [
     border: 1px solid var(--sl-color-gray-5);
     font-size: 0.8125rem;
     overflow-x: auto;
+  }
+
+  /* Keep a crowded family inside its own pane instead of letting it run the
+     length of the page; contain stops the scroll chaining to the document. */
+  .tree-tall {
+    max-height: min(32rem, 70vh);
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
   .tree :global(ul) {
@@ -278,4 +363,36 @@ const countsLabel = [
     border-color: var(--sl-color-accent);
     color: var(--sl-color-accent);
   }
+
+  /* Gone from the game: a status dot on a muted, dash-outlined chip. Two
+     signals besides the colour (the dot's presence and the dashed border),
+     so the state survives a colourblind read without the name paying for
+     it. */
+  .tree :global(.chip-removed) {
+    border-style: dashed;
+    color: var(--sl-color-gray-3);
+  }
+
+  .tree :global(.chip-dot) {
+    width: 0.34rem;
+    height: 0.34rem;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--ltk-danger) 85%, transparent);
+  }
+
+  .tree :global(a.chip-removed:hover) {
+    color: var(--sl-color-text);
+  }
+
+  /* The removal is announced, not just drawn */
+  .tree :global(.chip-note) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
 </style>

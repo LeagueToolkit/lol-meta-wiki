@@ -132,11 +132,28 @@ export interface ChangelogIndexEntry {
   counts: ChangelogCounts;
 }
 
+// --- class graph index ---
+// The whole inheritance graph in one build-time-only file (classGraph.json,
+// emitted next to the per-class JSON, outside public/). It lets a class page
+// render the *siblings* of its class - the other classes deriving from its
+// bases - and flag removed classes anywhere in its tree, without every class
+// JSON carrying a copy of its family (~105k duplicated names, and one new
+// subclass would rewrite every file in the family). Read once at module
+// scope by utils/classGraph.ts.
+export interface ClassGraph {
+  /** Base name → its direct subclasses, A→Z. Bases with none are absent. */
+  children: Record<string, string[]>;
+  /** Removed class name → the patch it disappeared in. */
+  removedIn: Record<string, string>;
+}
+
 // --- class sidebar shapes ---
 // Grouped class list for the client-rendered "Classes" sidebar group
 // (ResizableSidebar.astro), emitted as classSidebar.json. Grouping is
 // computed at generate time; the sidebar script is a dumb renderer.
-export type ClassSidebarEntry = [name: string, href: string];
+// The third slot is present only for removed classes, so the sidebar can
+// mark them without a second fetch.
+export type ClassSidebarEntry = [name: string, href: string, removedIn?: string];
 
 export interface ClassSidebarGroup {
   label: string;
@@ -163,7 +180,8 @@ export type ClassHashIndex = Record<string, string>;
 // Compact identifier index for the client-side symbol search in the search
 // modal (Search.astro + utils/symbolSearch.ts), emitted as symbols.json.
 
-export type SymbolClassEntry = [name: string, href: string];
+/** Third slot present only for removed classes, same as the sidebar entries. */
+export type SymbolClassEntry = [name: string, href: string, removedIn?: string];
 
 /** Deduped property name; owners are indices into SymbolsIndex.classes. */
 export type SymbolPropEntry = [name: string, owners: number[]];

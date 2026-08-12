@@ -208,9 +208,25 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 				symbolsPanel.replaceChildren();
 			};
 
+			// Classes the game no longer ships get a muted label and a trailing
+			// dot wherever the panel names one, so a result can be judged
+			// without opening it. The mark goes beside the name, never across
+			// it - identifiers are hard enough to read at a glance.
+			const markRemoved = (el: HTMLElement, removedIn: string | undefined) => {
+				if (!removedIn) return el;
+				el.classList.add('wiki-symbol-removed');
+				el.title = `Removed from the game in patch ${removedIn}`;
+				const dot = document.createElement('span');
+				dot.className = 'wiki-symbol-removed-dot';
+				dot.setAttribute('aria-hidden', 'true');
+				el.append(dot);
+				return el;
+			};
+
 			const highlightedName = (hit: SymbolHit) => {
 				const span = document.createElement('span');
 				span.className = 'wiki-symbol-name';
+				if (hit.kind === 'class') markRemoved(span, hit.removedIn);
 				if (hit.start < 0) {
 					span.textContent = hit.name;
 					return span;
@@ -249,6 +265,7 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 					const ownerEl = document.createElement('span');
 					ownerEl.className = 'wiki-symbol-owner';
 					ownerEl.textContent = owner.name;
+					markRemoved(ownerEl, owner.removedIn);
 					link.append(badge('prop'), highlightedName(hit), ownerEl);
 					li.append(link);
 				} else {
@@ -267,6 +284,7 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 						const link = document.createElement('a');
 						link.href = propUrl(owner.href, hit.name);
 						link.textContent = owner.name;
+						markRemoved(link, owner.removedIn);
 						item.append(link);
 						owners.append(item);
 					}
@@ -792,6 +810,24 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 			font-family: var(--__sl-font-mono, monospace);
 			font-size: calc(14px * var(--pagefind-ui-scale, 1));
 			overflow-wrap: anywhere;
+		}
+
+		/* Removed classes, wherever the panel names one: the result row, the
+		   owner of a property, an owner chip. Matches the sidebar and the
+		   inheritance tree - muted label, dot alongside, nothing drawn over
+		   the identifier. */
+		.wiki-symbol-removed {
+			color: var(--sl-color-gray-3);
+		}
+
+		.wiki-symbol-removed-dot {
+			display: inline-block;
+			width: 0.375rem;
+			height: 0.375rem;
+			margin-inline-start: 0.4rem;
+			vertical-align: middle;
+			border-radius: 50%;
+			background: color-mix(in srgb, var(--ltk-danger) 85%, transparent);
 		}
 
 		#starlight__search .wiki-symbols mark,
