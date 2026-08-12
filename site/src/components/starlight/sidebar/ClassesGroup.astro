@@ -33,7 +33,7 @@
       if (!topLevel || topLevel.querySelector("[data-wiki-classes-group]"))
         return;
 
-      const cached = sessionStorage.getItem("wiki-classes-group-html-v2");
+      const cached = sessionStorage.getItem("wiki-classes-group-html-v4");
       if (!cached) {
         injectSkeleton(topLevel);
         return;
@@ -153,7 +153,9 @@
 
   // Duplicated in the is:inline fast-path script above - keep in sync.
   const OPEN_STATE_KEY = "wiki-classes-group-open";
-  const HTML_CACHE_KEY = "wiki-classes-group-html-v2";
+  // Bump the version whenever a rendered row changes shape - a stale cache
+  // would keep re-injecting the old markup for the life of the tab.
+  const HTML_CACHE_KEY = "wiki-classes-group-html-v4";
 
   interface Templates {
     /** A collapsible group <li> - cloned for the group and its subgroups. */
@@ -216,7 +218,7 @@
     const currentPath = normalizePath(location.pathname);
     let currentLink: HTMLAnchorElement | null = null;
 
-    const makeLink = ([name, href]: ClassSidebarEntry): HTMLElement => {
+    const makeLink = ([name, href, removedIn]: ClassSidebarEntry): HTMLElement => {
       const li = templates.link.cloneNode(true) as HTMLElement;
       const a = li.querySelector("a")!;
       a.setAttribute("href", `${href}/`);
@@ -225,6 +227,17 @@
       const span = a.querySelector("span");
       a.replaceChildren(span ?? document.createElement("span"));
       (a.firstElementChild as HTMLElement).textContent = name;
+      // Classes the game no longer ships get a dot in the sidebar's chip
+      // lane (styled in custom.css) so a reader scanning the list can tell
+      // without opening the page. Both the class and the dot survive the
+      // sessionStorage cache with the row.
+      if (removedIn) {
+        a.classList.add("wiki-class-removed");
+        a.title = `Removed from the game in patch ${removedIn}`;
+        const dot = document.createElement("span");
+        dot.className = "wiki-class-removed-dot";
+        a.append(dot);
+      }
       if (normalizePath(new URL(a.href).pathname) === currentPath) {
         a.setAttribute("aria-current", "page");
         currentLink = a;

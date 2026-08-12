@@ -40,6 +40,7 @@ for instance.
 ```text
 db/meta.db.json ─┐
 db/docs/*.yaml ──┴─> scripts/generate-db.ts ─┬─> db-data/{classes,changelog}/*.json  (build-time reads)
+                                             ├─> db-data/classGraph.json             (build-time reads)
                                              ├─> src/content/docs/{classes,changelog}/*.mdx  (pages)
                                              └─> public/db/*.json  (client-side reads)
 ```
@@ -67,8 +68,14 @@ Two placement rules matter, and both exist for build cost:
 - **`db-data/` sits outside `public/`.** Components read it with `fs.readFileSync` at build time
   using `root` from `astro:config/server`. Copying 5,000+ JSON files into `dist/` on every build was
   a major cost. Only data the browser actually fetches belongs in `public/db/`.
-- **Parse a shared index once at module scope**, as `utils/classIndex.ts` does. Re-reading a large
-  index per page multiplies across ~5,300 pages.
+- **Parse a shared index once at module scope**, as `utils/classIndex.ts` and `utils/classGraph.ts`
+  do. Re-reading a large index per page multiplies across ~5,300 pages.
+
+A shared index is also the answer to graph-wide facts. A class page shows its *siblings* - the other
+subclasses of its bases - and marks every class in its tree that the game no longer ships; both are
+facts about the whole graph, so they live in one `db-data/classGraph.json` instead of being copied
+into 5,300 class files (~105k duplicated names, and one new subclass would rewrite every file in its
+family).
 
 ## Layout
 

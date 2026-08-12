@@ -14,6 +14,8 @@ import type { SymbolsIndex } from "../types";
 export interface SymbolOwner {
   name: string;
   href: string;
+  /** Patch the class was removed in, absent while it still ships. */
+  removedIn?: string;
 }
 
 export interface SymbolHit {
@@ -21,6 +23,8 @@ export interface SymbolHit {
   name: string;
   /** Class page href (classes only). */
   href: string | null;
+  /** Patch the class was removed in (classes only, absent while it ships). */
+  removedIn?: string;
   /** Owning classes (properties only). */
   owners: SymbolOwner[];
   /** Matched span in `name` for highlighting; start -1 = initials match. */
@@ -37,6 +41,7 @@ interface PreparedName {
 
 interface PreparedClass extends PreparedName {
   href: string;
+  removedIn?: string;
 }
 
 interface PreparedProp extends PreparedName {
@@ -79,9 +84,10 @@ function prepareName(name: string): PreparedName {
 
 export function prepareIndex(raw: SymbolsIndex): PreparedIndex {
   return {
-    classes: raw.classes.map(([name, href]) => ({
+    classes: raw.classes.map(([name, href, removedIn]) => ({
       ...prepareName(name),
       href,
+      removedIn,
     })),
     props: raw.props.map(([name, owners]) => ({
       ...prepareName(name),
@@ -168,6 +174,7 @@ export function searchSymbols(
         kind: "class",
         name: c.name,
         href: c.href,
+        removedIn: c.removedIn,
         owners: [],
         start: h.start,
         len: h.len,
@@ -179,8 +186,8 @@ export function searchSymbols(
       name: p.name,
       href: null,
       owners: p.owners.map((i) => {
-        const [name, href] = index.entries[i];
-        return { name, href };
+        const [name, href, removedIn] = index.entries[i];
+        return { name, href, removedIn };
       }),
       start: h.start,
       len: h.len,

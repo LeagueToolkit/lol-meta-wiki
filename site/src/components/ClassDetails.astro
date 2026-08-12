@@ -3,6 +3,7 @@ import fs from "node:fs";
 import { root } from "astro:config/server";
 import type { ClassJson } from "../types";
 import { classIndex } from "../utils/classIndex";
+import { removedIn, siblingsOf } from "../utils/classGraph";
 import InheritanceTree from "./InheritanceTree.astro";
 import PropertiesSection from "./PropertiesSection.astro";
 import ReferencedBySection from "./ReferencedBySection.astro";
@@ -38,6 +39,8 @@ const docExists = fs.existsSync(docsFileUrl);
   currentClass={data.name}
   ancestorLevels={data.ancestorLevels}
   descendantTree={data.descendantTree}
+  siblings={siblingsOf(data)}
+  removedIn={removedIn}
   classIndex={classIndex}
 />
 
