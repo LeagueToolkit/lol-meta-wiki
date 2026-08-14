@@ -326,6 +326,32 @@ function buildChangelog(db: MetaDb): ChangelogPatch[] {
     kh: nameOf(t[3]),
   });
 
+  // A class's revision covering a given build, if it existed then.
+  const revAt = (khash: string, build: number) =>
+    db.classes[khash]?.revisions.find(
+      (r) => r.from <= build && (r.to === undefined || build <= r.to)
+    );
+
+  /**
+   * Family = the topmost ancestor of a class's primary (first) base chain, the
+   * key the changelog groups new/removed classes under. Resolved *at the build
+   * of the change*, not from the current graph: ~17% of classes have been
+   * re-parented since they were added, and filing them under today's root would
+   * mis-group an old patch. A base outside db.classes (an external type) has no
+   * revisions, so the walk stops there and names it; `seen` guards a cyclic db.
+   */
+  const familyAt = (khash: string, build: number): string => {
+    let cur = khash;
+    const seen = new Set([cur]);
+    for (;;) {
+      const base = revAt(cur, build)?.bases[0];
+      if (!base || seen.has(base)) break;
+      seen.add(base);
+      cur = base;
+    }
+    return nameOf(cur);
+  };
+
   // Inverted index: build → (classHash → accumulator). We record the class's
   // own change kind and any property changes separately, then reconcile: a new
   // or removed class is a single entry (its properties are not also listed),
@@ -333,6 +359,7 @@ function buildChangelog(db: MetaDb): ChangelogPatch[] {
   type Acc = {
     name: string;
     classKind?: "added" | "readded" | "removed" | "changed";
+    family?: string;
     baseChange?: { old: string[]; new: string[] };
     propChanges: PropChange[];
   };
@@ -360,7 +387,11 @@ function buildChangelog(db: MetaDb): ChangelogPatch[] {
       const rev = revs[i];
       if (i === 0) {
         // First-ever revision at firstBuild = tracking-start noise, skip
-        if (rev.from !== firstBuild) acc(rev.from, khash, name).classKind = "added";
+        if (rev.from !== firstBuild) {
+          const e = acc(rev.from, khash, name);
+          e.classKind = "added";
+          e.family = familyAt(khash, rev.from);
+        }
         continue;
       }
       const prev = revs[i - 1];
@@ -376,7 +407,9 @@ function buildChangelog(db: MetaDb): ChangelogPatch[] {
         }
       } else {
         // Gap before this revision → the class was re-added
-        acc(bcur, khash, name).classKind = "readded";
+        const e = acc(bcur, khash, name);
+        e.classKind = "readded";
+        e.family = familyAt(khash, bcur);
       }
     }
 
@@ -387,7 +420,13 @@ function buildChangelog(db: MetaDb): ChangelogPatch[] {
       const bnext = nextBuild(rev.to);
       const consecutiveNext =
         i + 1 < revs.length && revs[i + 1].from === bnext;
-      if (!consecutiveNext) acc(bnext, khash, name).classKind = "removed";
+      if (!consecutiveNext) {
+        const e = acc(bnext, khash, name);
+        e.classKind = "removed";
+        // The class is already gone at bnext; its family is the one it had at
+        // rev.to, the last build it (and its ancestors) still existed in.
+        e.family = familyAt(khash, rev.to);
+      }
     }
 
     // Property-level changes within the class
@@ -464,7 +503,14 @@ function buildChangelog(db: MetaDb): ChangelogPatch[] {
         e.classKind === "removed"
       ) {
         // Single entry - do not also enumerate its property churn
-        list.push({ name: e.name, slug, kind: e.classKind, build, propChanges: [] });
+        list.push({
+          name: e.name,
+          slug,
+          kind: e.classKind,
+          build,
+          family: e.family,
+          propChanges: [],
+        });
       } else if (e.classKind === "changed" || e.propChanges.length > 0) {
         // Own definition changed and/or some properties changed
         const entry: ClassChange = {
