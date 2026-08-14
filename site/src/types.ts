@@ -101,6 +101,13 @@ export interface ClassChange {
   slug: string;
   kind: "added" | "readded" | "removed" | "changed";
   build: number;
+  /**
+   * Root of the class's primary (first) base chain *as of this build* - the
+   * class itself when it has no bases. The grouping key behind the family
+   * groups in the new/removed chip sections; only emitted for the kinds those
+   * sections render (added / readded / removed).
+   */
+  family?: string;
   baseChange?: { old: string[]; new: string[] };
   propChanges: PropChange[];
 }

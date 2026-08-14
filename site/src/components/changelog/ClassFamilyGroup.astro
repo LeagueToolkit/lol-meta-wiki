@@ -1,0 +1,81 @@
+---
+// One inheritance family inside a "New"/"Removed" section: the root class the
+// members share, then their chips. `family={null}` renders the leftover
+// bucket - the classes whose family has no other member in this section.
+import { classIndex } from "../../utils/classIndex";
+import ClassChipList from "./ClassChipList.astro";
+import HierarchyIcon from "../icons/HierarchyIcon.astro";
+import type { ClassChange } from "../../types";
+
+interface Props {
+  kind: "added" | "removed";
+  /** Root class of the family, or null for the leftover bucket. */
+  family: string | null;
+  entries: ClassChange[];
+  headingLevel: number; // one below the section title (3 or 4)
+}
+
+const { kind, family, entries, headingLevel } = Astro.props;
+
+const Htag = `h${headingLevel}`;
+// Every family root resolves to a class page today, but a base can name a type
+// outside the dumped set - fall back to plain text rather than a dead link.
+const familyHref = family ? classIndex[family] : undefined;
+---
+
+<div class={`family family-${kind}`}>
+  <Htag class="family-title">
+    {family ? <HierarchyIcon size={16} strokeWidth={2} /> : null}
+    {
+      family === null ? (
+        <span class="family-name family-name-other">Other</span>
+      ) : familyHref ? (
+        <a class="family-name" href={familyHref}>
+          {family}
+        </a>
+      ) : (
+        <span class="family-name">{family}</span>
+      )
+    }
+    <span class="count">{entries.length}</span>
+  </Htag>
+  <ClassChipList kind={kind} entries={entries} />
+</div>
+
+<style>
+  .family {
+    /* The accent rail is what makes a family scannable as one block; it takes
+       the colour of the section it sits in. */
+    border-left: 2px solid color-mix(in srgb, var(--family-accent) 35%, transparent);
+    padding-left: 0.7rem;
+  }
+  .family-added {
+    --family-accent: var(--cl-added);
+  }
+  .family-removed {
+    --family-accent: var(--cl-removed);
+  }
+
+  .family-title {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0 0 0.4rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--sl-color-gray-2, #4b5563);
+  }
+  .family-name {
+    color: inherit;
+    text-decoration: none;
+  }
+  a.family-name:hover {
+    color: var(--sl-color-white, #1f2937);
+    text-decoration: underline;
+  }
+  .family-name-other {
+    font-weight: 500;
+    color: var(--sl-color-gray-3, #6b7280);
+  }
+</style>

@@ -1,0 +1,86 @@
+---
+// The chip list itself: one linked chip per class, tinted by the section it
+// belongs to. Rendered either straight under a section title or inside a
+// family group.
+import { classIndex } from "../../utils/classIndex";
+import type { ClassChange } from "../../types";
+
+interface Props {
+  kind: "added" | "removed";
+  entries: ClassChange[];
+}
+
+const { kind, entries } = Astro.props;
+
+// Hash-only names render as their raw hex - a class page still exists for
+// them, so the link resolves either way.
+const classHref = (c: { name: string; slug: string }) =>
+  classIndex[c.name] ?? `/classes/${c.slug}`;
+
+const chipClass = kind === "added" ? "chip-added" : "chip-removed";
+---
+
+<ul class="class-chips">
+  {
+    entries.map((e) => (
+      <li>
+        <a class={`class-chip ${chipClass}`} href={classHref(e)}>
+          {e.name}
+          {e.kind === "readded" && <span class="readded-tag">re-added</span>}
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .class-chips {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+  }
+  .class-chips li {
+    margin: 0;
+    padding: 0;
+  }
+  .class-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 0.4rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: var(--cl-border);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .class-chip:hover {
+    text-decoration: none;
+  }
+  .chip-added {
+    color: var(--cl-added-text);
+    background: color-mix(in srgb, var(--cl-added) 8%, transparent);
+    border-color: color-mix(in srgb, var(--cl-added) 30%, transparent);
+  }
+  .chip-added:hover {
+    background: color-mix(in srgb, var(--cl-added) 18%, transparent);
+  }
+  .chip-removed {
+    color: var(--cl-removed-text);
+    background: color-mix(in srgb, var(--cl-removed) 8%, transparent);
+    border-color: color-mix(in srgb, var(--cl-removed) 30%, transparent);
+  }
+  .chip-removed:hover {
+    background: color-mix(in srgb, var(--cl-removed) 18%, transparent);
+  }
+  .readded-tag {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    opacity: 0.7;
+  }
+</style>

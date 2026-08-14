@@ -99,13 +99,27 @@ const firstWith = {
   :global(.patch-changelog .change-title-removed svg) {
     color: var(--cl-removed);
   }
-  :global(.patch-changelog .change-title .count) {
+  /* The family heading's icon comes from a child component, so it can't be
+     reached from that component's scoped styles - it takes the section tint
+     from the accent variable the family group sets on its wrapper. */
+  :global(.patch-changelog .family-title svg) {
+    flex-shrink: 0;
+    color: color-mix(in srgb, var(--family-accent) 70%, var(--sl-color-gray-3));
+  }
+  /* The same count pill rides the section titles and the family headings
+     inside them, one step smaller. */
+  :global(.patch-changelog .change-title .count),
+  :global(.patch-changelog .family-title .count) {
     font-size: 0.75rem;
     font-weight: 600;
     color: var(--sl-color-gray-3, #6b7280);
     background: var(--sl-color-gray-6, #f3f4f6);
     border-radius: 999px;
     padding: 0.05rem 0.5rem;
+  }
+  :global(.patch-changelog .family-title .count) {
+    font-size: 0.7rem;
+    padding: 0.05rem 0.4rem;
   }
 
   :global(.patch-changelog .change-detail) {
