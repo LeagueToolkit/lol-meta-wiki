@@ -138,6 +138,13 @@ export function linkType(
  * `ft`, `kt`, `vt`, `kh` are all strings and easy to transpose, and any
  * consumer already holds them together (Property, TypeHistoryEntry, ChangeTuple
  * all satisfy this shape).
+ *
+ * The tuple spells a container's element type in `kh` when it resolves to a
+ * class (Embed/Link/Pointer targets) and in `vt` otherwise, so one slot fills
+ * the single generic parameter of List/List2/Option/Link/Embed/Pointer. A Map
+ * carries its key kind in `kt` on top of that, and renders both slots:
+ * `Map<KeyKind, Value>`. `kt` is only a key for maps - on a `List` it is the
+ * fixed element count, so it never reaches the display.
  */
 export function typeDisplay(
   t: { ft: string; kt: string; vt: string; kh: string },
@@ -147,36 +154,13 @@ export function typeDisplay(
   // ft is a kind, never a class - only kh can reference one (see formatKind)
   let display = formatKind(ft);
 
-  // Types that should show hash reference as generic parameter
-  const genericTypes = new Set(["Link", "Embed", "List", "Map", "Pointer"]);
-
-  // For Link, Embed, List, Map, Pointer with hash reference, show as generic
-  if (genericTypes.has(ft) && kh !== "0x0") {
-    const khLinked = linkType(kh, classIndex);
-
-    if (ft === "Map" && kt !== "0x0") {
-      // Map<KeyType, ValueType>
-      display += `&lt;${formatKind(kt)}, ${khLinked}&gt;`;
-    } else {
-      // Link<Type>, Embed<Type>, List<Type>, Pointer<Type>
-      display += `&lt;${khLinked}&gt;`;
-    }
-  }
-  // For other types with hash reference, show as Container<Link<Type>>
-  else if (kh !== "0x0") {
-    const khLinked = linkType(kh, classIndex);
-    // Check if the field type already has generic syntax
-    if (!ft.includes("<")) {
-      display += `&lt;Link&lt;${khLinked}&gt;&gt;`;
-    }
-  }
-  // For containers with value types (fallback for other types)
-  else if (vt !== "0x0") {
-    // Check if the field type already has generic syntax
-    if (!ft.includes("<")) {
-      display += `&lt;${formatKind(vt)}&gt;`;
-    }
-  }
+  // Element slot: the referenced class when the tuple names one, else the
+  // value kind. Empty for a plain scalar field, where both slots are 0x0.
+  const element = kh !== "0x0" ? linkType(kh, classIndex) : formatKind(vt);
+  const params = (ft === "Map" ? [formatKind(kt), element] : [element]).filter(
+    Boolean
+  );
+  if (params.length) display += `&lt;${params.join(", ")}&gt;`;
 
   return `<span class="type-chip">${display}</span>`;
 }
