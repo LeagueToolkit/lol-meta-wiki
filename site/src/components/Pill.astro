@@ -17,21 +17,31 @@ const { variant = "neutral", title } = Astro.props;
 
 <span class:list={["pill", `pill-${variant}`]} title={title}>
   <slot name="icon" />
-  <slot />
+  <span class="pill-label"><slot /></span>
 </span>
 
 <style>
   .pill {
     display: inline-flex;
     align-items: center;
-    gap: 0.3rem;
-    padding: 0.2rem 0.5rem;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
     border-radius: 0.4rem;
     border: 1px solid transparent;
     font-size: 0.75rem;
     font-weight: 500;
-    line-height: 1.2;
+    /* Whole CSS pixels only (1 + 4 + 12 + 4 + 1 = 22px): a fractional inset
+       snaps unevenly at 100% zoom and reads as off-centre content */
+    line-height: 1;
     white-space: nowrap;
+    /* Holds the 22px even when the trim below shrinks an icon-less pill */
+    min-height: calc(1em + 0.5rem + 2px);
+  }
+
+  /* Centres the glyphs rather than their line box, which reserves descent space
+     digits never use and so rides ~1px above the icon */
+  .pill-label {
+    text-box: trim-both cap alphabetic;
   }
 
   /* Slotted icons come from the parent component, so scope with :global */

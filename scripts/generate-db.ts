@@ -579,9 +579,10 @@ function generateMDX(c: ClassDoc, fileName: string): string {
     .map((prop) => `## ${prop.name}`)
     .join("\n\n");
 
-  const patchFrontmatter =
+  const headerFrontmatter =
     (c.since ? `\nsince: "${c.since}"` : "") +
-    (c.removedIn ? `\nremovedIn: "${c.removedIn}"` : "");
+    (c.removedIn ? `\nremovedIn: "${c.removedIn}"` : "") +
+    `\nhash: "${c.hash}"`;
 
   // Hash-named classes stay searchable (by hash and by property name), but
   // their property headings are heavily down-weighted in Pagefind so classes
@@ -592,7 +593,7 @@ function generateMDX(c: ClassDoc, fileName: string): string {
 
   return `---
 title: ${displayName}
-description: Reference documentation for ${displayName} meta class${patchFrontmatter}
+description: Reference documentation for ${displayName} meta class${headerFrontmatter}
 ---
 
 import ClassDetails from '../../../components/ClassDetails.astro';

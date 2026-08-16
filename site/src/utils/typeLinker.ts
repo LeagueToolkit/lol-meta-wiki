@@ -139,12 +139,9 @@ export function linkType(
  * consumer already holds them together (Property, TypeHistoryEntry, ChangeTuple
  * all satisfy this shape).
  *
- * The tuple spells a container's element type in `kh` when it resolves to a
- * class (Embed/Link/Pointer targets) and in `vt` otherwise, so one slot fills
- * the single generic parameter of List/List2/Option/Link/Embed/Pointer. A Map
- * carries its key kind in `kt` on top of that, and renders both slots:
- * `Map<KeyKind, Value>`. `kt` is only a key for maps - on a `List` it is the
- * fixed element count, so it never reaches the display.
+ * A container's element type is in `kh` when it resolves to a class and in `vt`
+ * otherwise; a Map adds its key kind in `kt` and renders both: `Map<Key, Value>`.
+ * On a `List`, `kt` is the fixed element count, so it never reaches the display.
  */
 export function typeDisplay(
   t: { ft: string; kt: string; vt: string; kh: string },

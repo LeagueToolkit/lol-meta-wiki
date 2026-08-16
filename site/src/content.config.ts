@@ -12,6 +12,7 @@ export const collections = {
 				// under the page title (see components/starlight/PageTitle)
 				since: z.string().optional(),
 				removedIn: z.string().optional(),
+				hash: z.string().optional(),
 			}),
 		}),
 	}),

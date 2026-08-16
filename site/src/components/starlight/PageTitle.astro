@@ -1,18 +1,20 @@
 ---
-// Override of Starlight's PageTitle: renders "Added"/"Removed" patch pills
-// under the title for classes (since/removedIn frontmatter).
+// Override of Starlight's PageTitle: renders a class's click-to-copy hash chip
+// and its "Added"/"Removed" patch pills (hash/since/removedIn frontmatter).
 import Pill from '../Pill.astro';
 import CirclePlusIcon from '../icons/CirclePlusIcon.astro';
+import HashIcon from '../icons/HashIcon.astro';
 import TrashIcon from '../icons/TrashIcon.astro';
 
 // Starlight's PAGE_TITLE_ID ('@astrojs/starlight/constants' is not a public
 // export); the skip-link and TOC target the h1 through this id
 const PAGE_TITLE_ID = '_top';
 
-const { title, removedIn, since } = Astro.locals.starlightRoute.entry.data as {
+const { title, removedIn, since, hash } = Astro.locals.starlightRoute.entry.data as {
 	title: string;
 	removedIn?: string;
 	since?: string;
+	hash?: string;
 };
 
 // Each patch pill links to that patch's changelog page (slug = dots → dashes)
@@ -22,8 +24,21 @@ const changelogHref = (patch: string) => `/changelog/${patch.replace(/\./g, "-")
 <div class="page-title">
 	<h1 id={PAGE_TITLE_ID}>{title}</h1>
 	{
-		(removedIn || since) && (
+		(hash || removedIn || since) && (
 			<div class="title-pills">
+				{hash && (
+					<button
+						type="button"
+						class="hash-chip"
+						data-hash={hash}
+						title={`Copy ${hash}`}
+						aria-label={`Copy class hash ${hash}`}
+					>
+						<HashIcon size={12} strokeWidth={2.5} />
+						<span class="hash-value">{hash}</span>
+						<span class="hash-feedback" aria-hidden="true">Copied</span>
+					</button>
+				)}
 				{removedIn && (
 					<a class="pill-link" href={changelogHref(removedIn)}>
 						<Pill
@@ -64,6 +79,10 @@ const changelogHref = (patch: string) => `/changelog/${patch.replace(/\./g, "-")
 	}
 
 	.pill-link {
+		/* Flex, not the blockified default: a block <a> would put its inline-flex
+		   pill on a line box baseline, offsetting it from the hash chip beside it */
+		display: flex;
+		align-items: center;
 		text-decoration: none;
 		border-radius: 0.4rem;
 		transition: filter 0.15s;
@@ -82,8 +101,93 @@ const changelogHref = (patch: string) => `/changelog/${patch.replace(/\./g, "-")
 	h1 {
 		margin: 0;
 		font-size: var(--sl-text-h1);
+		/* The title's height decides where the chip row starts, and h1 x 1.2 is
+		   fractional at every clamp stop - round it so the row lands on the pixel
+		   grid. First declaration is the fallback without round(). */
 		line-height: var(--sl-line-height-headings);
+		line-height: round(calc(var(--sl-line-height-headings) * 1em), 1px);
 		font-weight: 600;
 		color: var(--sl-color-white);
 	}
+
+	/* Identifier chip, not a status pill: monospace and muted, so it reads as
+	   the class's key rather than as another patch badge */
+	.hash-chip {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
+		/* Same box as Pill so the two line up; appearance drops the UA button
+		   styling that would otherwise place the label itself */
+		appearance: none;
+		margin: 0;
+		padding: 0.25rem 0.5rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.4rem;
+		background: var(--sl-color-gray-6);
+		color: var(--sl-color-gray-2);
+		font-family: var(--sl-font-mono);
+		font-size: 0.75rem;
+		font-weight: 500;
+		line-height: 1;
+		cursor: pointer;
+		transition: color 0.15s, border-color 0.15s;
+	}
+
+	.hash-chip:hover,
+	.hash-chip:focus-visible {
+		color: var(--sl-color-white);
+		border-color: var(--sl-color-gray-4);
+	}
+
+	.hash-chip svg {
+		flex-shrink: 0;
+		opacity: 0.7;
+	}
+
+	/* Same glyph-centring trim the patch pills use (see Pill.astro) */
+	.hash-value {
+		text-box: trim-both cap alphabetic;
+	}
+
+	/* Overlays the text instead of replacing it, so a copy doesn't resize the row */
+	.hash-feedback {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: inherit;
+		background: var(--sl-color-gray-6);
+		color: var(--sl-color-green-high);
+		font-family: var(--sl-font);
+		font-weight: 500;
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.15s;
+	}
+
+	.hash-chip[data-copied] .hash-feedback {
+		opacity: 1;
+	}
 </style>
+
+<script>
+	// Click-to-copy for the hash chip; a no-op on pages without one
+	document.querySelectorAll(".hash-chip").forEach((chip) => {
+		let resetTimer;
+		chip.addEventListener("click", async () => {
+			const hash = chip.dataset.hash;
+			if (!hash) return;
+			try {
+				await navigator.clipboard.writeText(hash);
+			} catch {
+				// Clipboard blocked - stay silent rather than claim a copy
+				return;
+			}
+			chip.dataset.copied = "";
+			clearTimeout(resetTimer);
+			resetTimer = setTimeout(() => delete chip.dataset.copied, 1200);
+		});
+	});
+</script>
