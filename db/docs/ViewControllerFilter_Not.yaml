@@ -1,0 +1,12 @@
+# ViewControllerFilter_Not Documentation
+
+class:
+  description: |
+    Negating [filter](/classes/viewcontrollerfilteri) - passes when the inner
+    `Filter` does not. The most common wrapper in shipped `gameplay.bin` data,
+    typically excluding a mode:
+    `Not { Mode = "Maps/Shipping/Map30/Modes/CHERRY" }`.
+
+properties:
+  Filter:
+    description: "The [ViewControllerFilterI](/classes/viewcontrollerfilteri) to negate."

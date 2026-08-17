@@ -1,0 +1,8 @@
+# Vector4Concept Documentation
+
+class:
+  description: "Vector4-valued **concept** channel: script blocks publish a 4-component vector, the driver graph reads it back through the `Raw*`/`Eased*` concept drivers. See [ConceptBase](/classes/conceptbase) for the system and [FloatConcept](/classes/floatconcept) for the shape shared by every concept."
+
+properties:
+  EasingData:
+    description: "Optional easing applied when the value changes, for readers using the `Eased*` driver variants."

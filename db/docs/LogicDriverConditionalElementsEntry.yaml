@@ -1,0 +1,20 @@
+# LogicDriverConditionalElementsEntry Documentation
+
+class:
+  description: |
+    A group of UI elements shown or hidden together by one bool driver, inside
+    a [LogicDriverViewEntry](/classes/logicdriverviewentry). Entries nest: the
+    two unnamed lists (`0xa5aef118`, `0xa606adb5`) hold child entries, so
+    element groups can form a condition tree.
+
+    A per-element meter is the typical use - in the shipped Soul Fighter Sett
+    overlay each grit pip is one entry, gated by a
+    `FloatComparisonMaterialDriver` against the current grit count.
+
+properties:
+  ConditionalElements:
+    description: "Hashes of the UI elements this entry controls."
+  Elements:
+    description: "Legacy name of `ConditionalElements`."
+  EnableCondition:
+    description: "Bool driver deciding whether the elements are visible."

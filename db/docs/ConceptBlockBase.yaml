@@ -1,0 +1,14 @@
+# ConceptBlockBase Documentation
+
+class:
+  description: |
+    Base for **script blocks that write a concept** - the producer side of the
+    [Concept](/classes/conceptbase) system. Running the block publishes a value
+    into the concept it points at, where the driver graph picks it up through
+    the `Raw*`/`Eased*ConceptLogicDriver` readers. This is how a gameplay
+    script hands a value to materials, animation conditions, VFX, and UI
+    without any of them referencing the script.
+
+properties:
+  ConceptObject:
+    description: "The concept instance this block writes to."

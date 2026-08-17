@@ -1,0 +1,13 @@
+# ViewControllerFilter_Mode Documentation
+
+class:
+  description: |
+    [Filter](/classes/viewcontrollerfilteri) testing the current map/mode.
+    Shipped `gameplay.bin` data mostly wraps it in
+    [ViewControllerFilter_Not](/classes/viewcontrollerfilter_not) to exclude a
+    mode from an otherwise broad
+    [ViewControllerSet](/classes/viewcontrollerset).
+
+properties:
+  Mode:
+    description: "Map/mode path to test, e.g. `Maps/Shipping/Map30/Modes/CHERRY`."

@@ -1,0 +1,8 @@
+# ViewControllerFilter_Mobile Documentation
+
+class:
+  description: |
+    Property-less [filter](/classes/viewcontrollerfilteri) for the mobile
+    client. Shipped `gameplay.bin` data uses it on TFT panel lists (composed
+    with a TFT game-type filter via
+    [ViewControllerFilter_And](/classes/viewcontrollerfilter_and)).

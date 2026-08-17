@@ -1,0 +1,26 @@
+# ViewControllerList Documentation
+
+class:
+  description: |
+    A filterable group of view controllers inside a client state's UI content
+    set (linked from [ViewControllerSet](/classes/viewcontrollerset)). If
+    `Filter` evaluates false, the loader skips the whole list. **An absent
+    `Filter` loads unconditionally** - the loader checks `Filter` for null
+    before evaluating it.
+
+    Each `ViewControllers` path becomes a bin chunk named
+    `<statename>.<lastsegment>.bin` - e.g.
+    `ClientStates/Gameplay/UX/LoL/Skins/SettSkin66ViewController` loads
+    `gameplay.settskin66viewcontroller.bin`. The loader resolves the
+    controller object inside by the hash of the full lowercased path.
+  notes:
+    - "This is the entire per-skin gating of Riot's overlay UIs ([LogicDriverViewController](/classes/logicdriverviewcontroller)): a [ViewControllerFilter_Champion](/classes/viewcontrollerfilter_champion) on the skin, nothing else. A modded list with no `Filter` loads a custom controller in every matching game."
+    - "⚠️ The `Filter` doubles as a **data-dependency guard** - see the crash note on [SpellDataNamedValueFloatDriver](/classes/spelldatanamedvaluefloatdriver) before removing or bypassing a champion filter."
+
+properties:
+  Filter:
+    description: |
+      Optional [ViewControllerFilterI](/classes/viewcontrollerfilteri) gating
+      the whole list. Absent (the default): the list always loads.
+  ViewControllers:
+    description: "Paths of the view controllers to load, e.g. `ClientStates/Gameplay/UX/LoL/Skins/SettSkin66ViewController`."

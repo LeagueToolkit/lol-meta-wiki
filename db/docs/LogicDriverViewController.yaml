@@ -1,0 +1,39 @@
+# LogicDriverViewController Documentation
+
+class:
+  description: |
+    A HUD **view controller driven entirely by the logic-driver graph** - the
+    bridge between gameplay-state drivers (`ILogicDriver` family) and UI. Each
+    of its [LogicDriverViewEntry](/classes/logicdriverviewentry) views names a
+    UI scene. The views wire bool drivers to scene/element visibility, float
+    drivers to meter values, and driver-formatted numbers into text. The controller
+    evaluates the drivers against the local player's unit.
+
+    Current game data uses it for **per-skin gameplay overlay UIs**: the
+    shipped instances live in `UI.wad` as `gameplay.<skin>viewcontroller`
+    loadables. For example Soul Fighter Sett's grit meter, whose fill is a
+    [MathDivideFloatDriver](/classes/mathdividefloatdriver) dividing a
+    [BuffCounterDynamicMaterialFloatDriver](/classes/buffcounterdynamicmaterialfloatdriver)
+    by a
+    [SpellDataNamedValueFloatDriver](/classes/spelldatanamedvaluefloatdriver).
+  notes:
+    - "No shipped object links these by hash. A [ViewControllerList](/classes/viewcontrollerlist) in the state's UI content set (`gameplay.bin`) names each controller by path string. The loader derives the chunk name `gameplay.<lastsegment>.bin` from it. A mod can therefore register a controller on a **new** path by adding its own list. Without the content-set edit, overriding an existing `gameplay.*viewcontroller` bin is the only route."
+    - "The list's [ViewControllerFilter_Champion](/classes/viewcontrollerfilter_champion) is also a **data-dependency guard**. Drivers referencing that champion's spells (see [SpellDataNamedValueFloatDriver](/classes/spelldatanamedvaluefloatdriver)) are only safe while the filter guarantees those bins are loaded."
+
+properties:
+  Views:
+    description: |
+      The controller's views, one
+      [LogicDriverViewEntry](/classes/logicdriverviewentry) per UI scene.
+      Replaced the older `ViewEntries` list.
+  ViewEntries:
+    description: "Legacy name of `Views`."
+  Loadable:
+    description: "Link to the loadable that owns the UI scenes and elements the view entries reference."
+  "0xc7e51dac":
+    description: |
+      Button definitions: a list of embeds (`0x26949C34`) with `ButtonType: u8`,
+      `ID: u32`, `name: string`, and `ButtonElement: hash` - clickable elements
+      hosted by this controller. It carries what used to be the only property of
+      the retired `LogicDriverButtonViewController`, which is why button UI needs
+      no separate controller class.

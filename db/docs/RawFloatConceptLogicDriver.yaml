@@ -1,0 +1,19 @@
+# RawFloatConceptLogicDriver Documentation
+
+class:
+  description: |
+    Float logic driver that reads a [FloatConcept](/classes/floatconcept)'s
+    current value **without easing** - the bridge from the
+    [Concept](/classes/conceptbase) system into the driver graph (and from
+    there into materials, animation conditions, and
+    [driver-driven UI](/classes/logicdriverviewcontroller)). The
+    [EasedFloatConceptLogicDriver](/classes/easedfloatconceptlogicdriver)
+    variant reads the same value through the concept's `EasingData`;
+    `Raw`/`Eased` pairs exist for the bool, int, vec3, and vec4 concepts as
+    well.
+  notes:
+    - "No shipped bin uses this class - the machinery exists, but content adoption is untested."
+
+properties:
+  Concept:
+    description: "Link to the [FloatConcept](/classes/floatconcept) to read."

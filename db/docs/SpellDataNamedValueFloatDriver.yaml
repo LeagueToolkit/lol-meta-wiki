@@ -1,0 +1,25 @@
+# SpellDataNamedValueFloatDriver Documentation
+
+class:
+  description: |
+    Float logic driver returning a named **data value** from a specific
+    spell's data, evaluated at a spell level. The spell is the one named by
+    `Spell`, and `ValueName` selects which of its data values to read.
+
+    The driver determines the level per evaluation: if `SpellLevel` is set,
+    the driver evaluates it (against the same owner) and truncates the result
+    to an integer. Otherwise it searches the owner unit's spellbook for the
+    spell by hash and uses the spell's current rank. The driver returns `0`
+    when the spell hash cannot be resolved. It also returns `0` when no level
+    source is available (no `SpellLevel` driver and the owner does not have
+    the spell), and when the resulting level is above `6`.
+  notes:
+    - "⚠️ **Crashes if `Spell` is not resident**: the evaluator dereferences the resolved spell link without a null check. If the referenced spell's bin is not loaded, evaluation is an instant access violation. Shipped content never trips this, because a [ViewControllerFilter_Champion](/classes/viewcontrollerfilter_champion) gates each per-skin overlay and guarantees the champion's bins are loaded. Data loaded outside such a guard (e.g. an unfiltered UI overlay) must not reference champion spells through this class. `BuffCounterDynamicMaterialFloatDriver` null-checks the same resolve and is safe."
+
+properties:
+  ValueName:
+    description: "Name of the spell data value to read, matched by hash (the string is hashed once and cached)."
+  SpellLevel:
+    description: |
+      Optional float driver supplying the spell level explicitly, truncated to
+      an integer. Unset, the owner's current rank of `Spell` is used instead.

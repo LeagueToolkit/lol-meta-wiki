@@ -1,0 +1,20 @@
+# FloatConcept Documentation
+
+class:
+  description: |
+    A float-valued **concept**: a named channel that carries a gameplay value
+    from whatever writes it to everything that reads it, with no direct link
+    between the two ends. Script blocks publish the value; the driver graph
+    reads it back through
+    [RawFloatConceptLogicDriver](/classes/rawfloatconceptlogicdriver) for the
+    current value or
+    [EasedFloatConceptLogicDriver](/classes/easedfloatconceptlogicdriver) for
+    the eased one, and from there it reaches materials, animation conditions,
+    VFX, and [driver-driven UI](/classes/logicdriverviewcontroller). Until
+    something writes it, readers see the concept's default value.
+
+    See [ConceptBase](/classes/conceptbase) for the system as a whole.
+
+properties:
+  EasingData:
+    description: "Optional easing applied when the value changes; only readers using the `Eased*` driver variants (e.g. [EasedFloatConceptLogicDriver](/classes/easedfloatconceptlogicdriver)) see the eased value. Unset, every reader sees the value change instantly."

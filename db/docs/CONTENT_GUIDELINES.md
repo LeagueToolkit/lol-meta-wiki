@@ -22,6 +22,31 @@ Every description should answer: *what does the engine do with this value?*
 
 Balance numbers, champion trivia, and strategy belong on gameplay wikis, not here. Mention gameplay only when it explains *why* the data behaves the way it does (e.g. "gameplay-critical emitters are never culled").
 
+## Don't restate the page
+
+Your text is one block on a generated page. Around it the page already renders
+the class's **inheritance tree**, its **own properties** with types, defaults and
+type history, the **"Added in"/"Removed in"** patches, and the **classes that
+reference it**. All of that comes from the db, so it is always current and never
+needs saying twice - a hand-written copy adds nothing on the first day and is
+wrong on some later one.
+
+❌ **Don't** spend the documentation on structure the page shows:
+
+> Class hash `0x8C9D99D3`, inherits `FloatConceptBase` (`0xCBDD4DDE`) which inherits `ConceptBase`. `FloatConceptBase` adds the typed `DefaultValue: f32`. Has no properties.
+
+✅ **Do** say what the thing is and how it works:
+
+> A float-valued **concept**: a named channel that carries a gameplay value from whatever writes it to everything that reads it. Until something writes it, readers see the concept's default value.
+
+Concretely, keep out of both `description` and `notes`: class hashes, "inherits
+X", "is an interface", "X adds property Y", "has no properties", lists of
+subclasses, and lists of classes that reference this one. Document it the way you
+would document code whose declaration sits right next to the comment: the
+declaration is visible, so write the purpose, the mechanism, the evaluation
+order, the meaning of values, and the interactions - the things the reader cannot
+see for themselves.
+
 ## Anatomy of a good description
 
 Order the information by how the reader needs it:
@@ -49,10 +74,11 @@ A complex one gets paragraphs, and a table if it's a bitfield or enum. Match len
 
 ## Accuracy
 
-- Document only **verified** behavior — from reverse engineering, engine analysis, or in-game testing. If you can't verify it, don't write it.
+- Document only **verified** behavior. Verify it however you can - reverse engineering, engine analysis, in-game testing - but write the *behavior*, not the evidence. If you can't verify it, don't write it.
+- **Keep the evidence out of the page.** Byte offsets, struct layouts, disassembly, register names, and "verified against the client" provenance are how you learned the rule, not the rule itself. The reader is holding a bin file, not a debugger: none of it helps them, and all of it goes stale the moment the layout shifts. State the observable rule instead - "cast instances carrying an internal flag are ignored", not "the flag byte at offset 435 is set".
+- **Don't pin prose to a patch or build number** ("as of 16.16", "from build 6841658"). The db already tracks when every class and property appeared or disappeared, and the site renders that as "Added in"/"Removed in" pills - a version written into the text only contradicts them later. Where version-specific behavior matters, say it in relative terms: "Removed from current builds", "no legacy troybin equivalent".
 - Mark unknowns explicitly rather than guessing: `"Unknown byte, default 5. Purpose not yet identified."` An honest gap is useful; a plausible-sounding guess is misinformation.
 - If something is known only partially, say exactly what is known and stop there.
-- Note version-specific behavior when relevant ("Removed from current builds", "no legacy troybin equivalent").
 
 ## Conventions
 
@@ -66,14 +92,14 @@ A complex one gets paragraphs, and a table if it's a bitfield or enum. Match len
 **Values**
 
 - Always state units: seconds, world units, degrees, particles per second.
-- State the default when known, in `notes`: `"Default 250."`
+- Don't restate the default value - the page prints it next to the type. Explain it only where the value alone doesn't tell the reader what happens: `"The default matches no slot, so the property must be set explicitly."`
 - Write hashes and flag bits in hex (`0x45CD899F`, bit `0x10`); state what unset/sentinel values mean (`-1 (default) disables it`).
 - Name unknown hash properties by their hex key (`"0x9836cd87":`) and document whatever is known about them.
 
 **Field usage**
 
 - `description` — the behavior itself: what it is, how the engine uses it, what values mean.
-- `notes` — short standalone facts: defaults, class hashes, edge cases, legacy-format differences, cross-references.
+- `notes` — short standalone facts that don't belong in the flow of the description: edge cases, caveats, what a sentinel value means, legacy-format differences, cross-references. Not defaults, hashes, or inheritance; the page renders those.
 - `examples` — concrete values or usage scenarios, only when they genuinely clarify. Omit rather than invent.
 
 **Tone**
@@ -88,7 +114,9 @@ A complex one gets paragraphs, and a table if it's a bitfield or enum. Match len
 - [ ] Are units and defaults stated?
 - [ ] Are interactions with other properties/settings named and linked?
 - [ ] Is everything written actually verified?
+- [ ] Is it the behavior on the page rather than the evidence for it - no offsets, disassembly, or patch/build pins?
 - [ ] Are unknowns marked as unknown instead of guessed?
+- [ ] Does the text stay off what the page already renders - hashes, inheritance, defaults, patches, referencing classes?
 - [ ] Is there anything the reader could delete without losing information? Delete it first.
 
 ## Reference examples

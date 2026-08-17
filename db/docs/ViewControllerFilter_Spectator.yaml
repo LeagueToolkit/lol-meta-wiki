@@ -1,0 +1,8 @@
+# ViewControllerFilter_Spectator Documentation
+
+class:
+  description: |
+    Property-less [filter](/classes/viewcontrollerfilteri) for
+    spectator/replay context. Shipped `gameplay.bin` data uses it (composed
+    via [ViewControllerFilter_And](/classes/viewcontrollerfilter_and)) to gate
+    the replay team-frames and spectator-scoreboard controllers.

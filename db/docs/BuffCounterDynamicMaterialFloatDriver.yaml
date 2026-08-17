@@ -1,0 +1,15 @@
+# BuffCounterDynamicMaterialFloatDriver Documentation
+
+class:
+  description: |
+    Float logic driver returning the **stack counter of a buff** on the owner
+    unit, identified by the buff's spell hash. Shipped
+    uses: Soul Fighter Sett's grit meter and pip conditions
+    ([LogicDriverViewController](/classes/logicdriverviewcontroller) UI), and
+    Irelia's passive-stack animation conditions (`ConditionBoolClipData`).
+
+properties:
+  Spell:
+    description: "Hash of the buff (the buff-carrying spell's name) whose stack count the driver reads."
+  mScriptName:
+    description: "Legacy string form of `Spell` - the buff's script name."
