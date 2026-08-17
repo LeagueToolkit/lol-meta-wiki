@@ -1,0 +1,21 @@
+# ViewControllerSet Documentation
+
+class:
+  description: |
+    One entry of a client state's **UI content set**: groups the
+    [ViewControllerList](/classes/viewcontrollerlist)s to load for a client
+    state on specific maps/modes. The shipped instances live in the state's
+    root UI content bin - `gameplay.bin` in `UI.wad` holds eight, all with
+    `ClientState = "Gameplay"`, partitioned by mode. One large set covers
+    SR/ARAM/Arena/Nexus Blitz. Separate sets cover Swarm, TFT, Brawl, the
+    JADE and KIWI modes, and tutorial module 1.
+  notes:
+    - "The Gameplay state's UI loader builds its state name, walks these sets, and processes every list they link. Each of the list's `ViewControllers` paths becomes the chunk `gameplay.<lastsegment>.bin`."
+
+properties:
+  ClientState:
+    description: "Name of the client state this set belongs to (`\"Gameplay\"` in all shipped objects)."
+  SpecifiedGameModes:
+    description: "Map/mode paths the set covers, e.g. `Maps/Shipping/Map11/Modes/CLASSIC`."
+  ListsToLoad:
+    description: "Links to the [ViewControllerList](/classes/viewcontrollerlist) objects to process."

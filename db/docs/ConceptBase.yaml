@@ -1,0 +1,24 @@
+# ConceptBase Documentation
+
+class:
+  description: |
+    Root of the **Concept** system: a concept is a named value channel that
+    decouples the producer of a gameplay value from its consumers. Script
+    blocks write concepts (see
+    [ConceptBlockBase](/classes/conceptblockbase)), and the logic-driver graph
+    reads them back through the `Raw*`/`Eased*ConceptLogicDriver` classes (see
+    [RawFloatConceptLogicDriver](/classes/rawfloatconceptlogicdriver)), from
+    where the value can reach materials, animation conditions, VFX, and
+    [driver-driven UI](/classes/logicdriverviewcontroller). Neither end names
+    the other: both address the channel by its `PathHash`.
+
+    Concepts exist per value type - [BoolConcept](/classes/boolconcept),
+    [IntConcept](/classes/intconcept), [FloatConcept](/classes/floatconcept),
+    [Vector3Concept](/classes/vector3concept),
+    [Vector4Concept](/classes/vector4concept) - each carrying a typed default
+    that readers see until the value is first written, and optional easing that
+    smooths changes for the `Eased*` readers.
+
+properties:
+  PathHash:
+    description: "The concept's identity - the hash writers and readers use to address this channel."

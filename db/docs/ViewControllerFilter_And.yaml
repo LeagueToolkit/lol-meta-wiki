@@ -1,0 +1,14 @@
+# ViewControllerFilter_And Documentation
+
+class:
+  description: |
+    Composite [filter](/classes/viewcontrollerfilteri) - all members of
+    `Filters` must pass. Shipped `gameplay.bin` data uses it e.g. to gate the
+    replay scoreboard controllers on
+    `And { Spectator, Not { Mode = ...CHERRY } }`.
+
+properties:
+  Filters:
+    description: "The composed [ViewControllerFilterI](/classes/viewcontrollerfilteri) members."
+  FilterList:
+    description: "Sibling of `Filters`. Shipped `gameplay.bin` data only sets `Filters`."

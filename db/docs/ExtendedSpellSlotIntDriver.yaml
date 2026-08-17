@@ -1,0 +1,17 @@
+# ExtendedSpellSlotIntDriver Documentation
+
+class:
+  description: |
+    Int logic driver returning the spellbook slot of the owner unit's ongoing
+    spell cast, whatever slot it comes from - no slot-range filter. Returns
+    `-1` while no cast is ongoing.
+
+    Because it reports the raw slot of the active cast instance, it is the
+    tool for discovering which slot a script-cast spell lands in. Feed the
+    found slot to [IsCastingBoolDriver](/classes/iscastingbooldriver) to track
+    that spell. [BasicSpellSlotIntDriver](/classes/basicspellslotintdriver)
+    and [BasicAttackSlotIntDriver](/classes/basicattackslotintdriver) are the
+    range-filtered variants.
+  notes:
+    - "Unlike the range-filtered variants it does not skip cast instances that carry the internal flag those drivers ignore."
+    - "Returns `0` (not `-1`) when the owner handle cannot be resolved."

@@ -1,0 +1,40 @@
+# SpellBookIndex Documentation
+
+class:
+  description: |
+    A **spellbook slot address** in the form the engine uses everywhere a slot
+    is stored in data (keybinds such as `LolSpellSlotKeybind`, script slot
+    references, mode spell registrations). The engine normalizes the
+    `(SpellBook, SlotType, Index)` triple to an absolute slot in the unit's
+    spellbook (the spellbook holds 64 spell entries, slots `0`-`63`).
+
+    Normalization:
+
+    | `SlotType` | Absolute slot | Valid range |
+    |---|---|---|
+    | `0` | `Index` directly | `0`-`5` (abilities and summoner slots) |
+    | `1` | `6 + Index` | up to `44` (item slots first, at `6`-`12`) |
+    | `2` | `45 + Index` | up to `63` |
+    | `3` | `63` (fixed) | the champion **passive** slot |
+    | `4` | `Index` verbatim | any absolute slot, rejected for the summoner book |
+
+    Absolute slot layout: `0`-`3`
+    basic abilities, `4`-`5` summoner spells, `6`-`12` item slots, `63` the
+    champion passive, and `64`-`81` basic-attack casts. Attack casts carry
+    these slot numbers on their cast instance but are not part of the 64-entry
+    spell array. Slot `62` doubles as the "any cast" wildcard in
+    [IsCastingBoolDriver](/classes/iscastingbooldriver), and `255` is the
+    engine's "no slot" sentinel. What occupies the remainder of the two
+    extension blocks (`13`-`44` and `45`-`62`) is data-dependent. Several
+    engine loops process slot `13` together with the item slots.
+  notes:
+    - "`SpellBook`: `0` = the unit's spellbook, `1` = the summoner-spell book. For the summoner book, `SlotType` `0` indices map to absolute slots `4`-`5`, and `SlotType` `4` (absolute) is rejected."
+    - "When the engine resolves a spell by hash rather than slot, it searches slots `0`-`3`, then `63`, then `4`-`5`, then any mode-registered extra slots - abilities and the passive take priority."
+
+properties:
+  Index:
+    description: "Slot index within the block selected by `SlotType` (see the class table for the base each block adds)."
+  SlotType:
+    description: "Which slot block `Index` addresses: `0` = base slots `0`-`5`, `1` = block starting at `6`, `2` = block starting at `45`, `3` = the passive slot `63` (ignores `Index`), `4` = `Index` is already an absolute slot."
+  SpellBook:
+    description: "Which book the address refers to: `0` = the unit's spellbook, `1` = the summoner-spell book."

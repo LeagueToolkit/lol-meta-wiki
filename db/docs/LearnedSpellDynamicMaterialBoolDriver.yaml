@@ -1,0 +1,15 @@
+# LearnedSpellDynamicMaterialBoolDriver Documentation
+
+class:
+  description: |
+    Bool logic driver that is true when the owner unit has **learned** the
+    spell in spellbook slot `mSlot`. Despite the `DynamicMaterial` in its name
+    it is not material-specific: it plugs in anywhere a bool driver is
+    accepted. For the numeric rank instead of a yes/no, see
+    [SpellRankIntDriver](/classes/spellrankintdriver).
+  notes:
+    - "Requires both a learned-state flag on the spellbook entry and a spell actually occupying the slot. If either is missing, the driver returns `false`."
+
+properties:
+  mSlot:
+    description: "Spellbook slot to check. `0`-`3` are the basic ability slots - see [SpellBookIndex](/classes/spellbookindex) for the full addressing scheme."

@@ -1,0 +1,17 @@
+# BasicSpellSlotIntDriver Documentation
+
+class:
+  description: |
+    Int logic driver returning the spellbook slot of the owner unit's ongoing
+    spell cast, if that cast comes from a **basic ability slot** (`0`-`3`).
+    In every other case - no owner, nothing casting, or a cast from any other
+    slot - it returns `-1`.
+
+    See [ExtendedSpellSlotIntDriver](/classes/extendedspellslotintdriver) for
+    the unfiltered variant and
+    [BasicAttackSlotIntDriver](/classes/basicattackslotintdriver) for the
+    attack-slot counterpart.
+    [IsCastingBoolDriver](/classes/iscastingbooldriver) is the bool form for
+    watching one specific slot.
+  notes:
+    - "The driver ignores cast instances carrying an internal flag. The flag's meaning is not yet identified."

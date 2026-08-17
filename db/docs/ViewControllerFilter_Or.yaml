@@ -1,0 +1,15 @@
+# ViewControllerFilter_Or Documentation
+
+class:
+  description: |
+    Composite [filter](/classes/viewcontrollerfilteri) - any member of
+    `Filters` passing is enough. Riot's per-skin overlay gates ship as an `Or`
+    with a single
+    [ViewControllerFilter_Champion](/classes/viewcontrollerfilter_champion)
+    member.
+
+properties:
+  Filters:
+    description: "The composed [ViewControllerFilterI](/classes/viewcontrollerfilteri) members."
+  FilterList:
+    description: "Sibling of `Filters`. Shipped `gameplay.bin` data only sets `Filters`."

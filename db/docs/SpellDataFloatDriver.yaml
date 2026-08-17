@@ -1,0 +1,22 @@
+# SpellDataFloatDriver Documentation
+
+class:
+  description: |
+    Abstract float logic driver for drivers that read values out of a specific
+    **spell's data**, referencing the spell by hash instead of by spellbook
+    slot.
+
+    These drivers read static spell data (per-level data values), not runtime
+    cast state - for "is this spell being cast", see
+    [IsCastingBoolDriver](/classes/iscastingbooldriver).
+  notes:
+    - "⚠️ The concrete implementation dereferences the resolved `Spell` link without a null check - see the crash note on [SpellDataNamedValueFloatDriver](/classes/spelldatanamedvaluefloatdriver)."
+
+properties:
+  Spell:
+    description: |
+      Hash of the spell whose data is read. Resolved through the global spell
+      registry and cached on first evaluation. If the spell cannot be found,
+      the driver evaluates to `0`.
+  ScriptName:
+    description: "Legacy string identifying the spell by script name, superseded by the `Spell` hash."

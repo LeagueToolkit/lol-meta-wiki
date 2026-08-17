@@ -1,0 +1,20 @@
+# ViewControllerFilter_Champion Documentation
+
+class:
+  description: |
+    [Filter](/classes/viewcontrollerfilteri) that passes when the linked
+    champion skin is in the game, gating a
+    [ViewControllerList](/classes/viewcontrollerlist). This is the entire
+    per-skin gating of Riot's overlay UIs - e.g. Soul Fighter Sett's grit
+    meter, filtered on `Characters/Sett/Skins/Skin66`.
+  notes:
+    - "⚠️ Besides visibility, a passing champion filter guarantees the champion's bins are resident. The controllers behind it may hard-depend on that (see the crash note on [SpellDataNamedValueFloatDriver](/classes/spelldatanamedvaluefloatdriver))."
+
+properties:
+  ChampionSkinDataLink:
+    description: "Path of the champion skin to test, e.g. `Characters/Sett/Skins/Skin66`."
+  Relationship:
+    description: |
+      Shipped data only ever sets `2`, on Kai'Sa's visual-announcer overlay.
+      Sett's own-HUD overlay leaves it at the default. The value enum is not
+      yet traced.

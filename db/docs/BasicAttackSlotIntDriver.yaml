@@ -1,0 +1,15 @@
+# BasicAttackSlotIntDriver Documentation
+
+class:
+  description: |
+    Int logic driver returning the spellbook slot of the owner unit's ongoing
+    cast, if that cast is a **basic attack** - attacks go through the
+    spellbook like spells and occupy slots `64`-`81`. Returns `-1` otherwise
+    (no owner, nothing casting, or a cast outside the attack-slot range).
+
+    See [BasicSpellSlotIntDriver](/classes/basicspellslotintdriver) for the
+    ability-slot counterpart and
+    [ExtendedSpellSlotIntDriver](/classes/extendedspellslotintdriver) for the
+    unfiltered variant.
+  notes:
+    - "The driver ignores cast instances carrying an internal flag. The flag's meaning is not yet identified."

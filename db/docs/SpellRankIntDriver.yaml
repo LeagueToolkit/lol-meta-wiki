@@ -1,0 +1,13 @@
+# SpellRankIntDriver Documentation
+
+class:
+  description: |
+    Int logic driver returning the **current rank** of the spell in slot
+    `SpellSlot` of the owner unit's spellbook (`0` = not learned). Returns
+    `-1` when the owner cannot be resolved. For a plain learned/not-learned
+    test, see
+    [LearnedSpellDynamicMaterialBoolDriver](/classes/learnedspelldynamicmaterialbooldriver).
+
+properties:
+  SpellSlot:
+    description: "Spellbook slot whose spell rank is read. `0`-`3` are the basic ability slots - see [SpellBookIndex](/classes/spellbookindex) for the full addressing scheme."

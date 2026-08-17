@@ -1,0 +1,17 @@
+# ViewControllerFilterI Documentation
+
+class:
+  description: |
+    Interface for the conditions gating a
+    [ViewControllerList](/classes/viewcontrollerlist) in a client state's UI
+    content set. Concrete filters test game context - champion skin in use
+    ([ViewControllerFilter_Champion](/classes/viewcontrollerfilter_champion)),
+    map/mode ([ViewControllerFilter_Mode](/classes/viewcontrollerfilter_mode)),
+    spectating
+    ([ViewControllerFilter_Spectator](/classes/viewcontrollerfilter_spectator)) -
+    and compose via
+    [ViewControllerFilter_And](/classes/viewcontrollerfilter_and) /
+    [ViewControllerFilter_Or](/classes/viewcontrollerfilter_or) /
+    [ViewControllerFilter_Not](/classes/viewcontrollerfilter_not).
+  notes:
+    - "A `ViewControllerList` with no filter at all is valid and loads unconditionally."

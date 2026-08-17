@@ -1,0 +1,42 @@
+# IsCastingBoolDriver Documentation
+
+class:
+  description: |
+    Bool logic driver that is **true while the owner unit's spellbook has an
+    ongoing spell cast** in a chosen slot. It reads the spellbook's current
+    cast instance directly, so it tracks the cast itself - independent of any
+    buff or animation the spell may also apply (compare
+    [HasBuffDynamicMaterialBoolDriver](/classes/hasbuffdynamicmaterialbooldriver)
+    and
+    [IsAnimationPlayingDynamicMaterialBoolDriver](/classes/isanimationplayingdynamicmaterialbooldriver)).
+
+    Evaluation: the driver resolves the owner unit it is evaluated against and
+    asks the unit's spellbook for the current cast instance. With no owner or
+    no ongoing cast it returns `false`. Otherwise it returns whether the cast
+    instance's slot equals `SpellSlot`. The driver special-cases the value
+    `62` as a wildcard: true while *any* cast is ongoing - including basic attacks,
+    which are spellbook casts too (slots `64`-`81`).
+
+    "Ongoing" means the window in which the instance is the spellbook's active
+    cast (cast time and channel). Missiles in flight and lingering spell
+    effects are outside that window.
+  notes:
+    - "The `62` wildcard skips cast instances carrying an internal flag. Attack casts leave it clear. Its exact meaning is not yet identified."
+    - "Composable like any bool driver, e.g. through `AllTrueMaterialDriver`, `OneTrueMaterialDriver`, `NotMaterialDriver`, `FixedDurationTriggeredBoolDriver`."
+
+properties:
+  SpellSlot:
+    description: |
+      Spellbook slot to watch. The comparison against the current cast's slot
+      is exact, so the driver only fires for casts from this one slot. `62` is
+      the any-cast wildcard.
+
+      Slot layout: `0`-`3` basic abilities, `4`-`5` summoner spells, `6`-`12`
+      item slots, `63` the champion **passive**, `64`-`81` basic-attack casts.
+      See [SpellBookIndex](/classes/spellbookindex) for the full addressing
+      scheme. A spell cast by script (e.g. a champion `SpellObject` cast from
+      a buff script) occupies whatever slot the script casts it into -
+      [ExtendedSpellSlotIntDriver](/classes/extendedspellslotintdriver)
+      reports the slot of the current cast and can be used to discover it.
+    notes:
+      - "The default matches nothing - no cast instance carries that slot - so the property must be set explicitly."

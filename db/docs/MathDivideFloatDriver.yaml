@@ -1,0 +1,18 @@
+# MathDivideFloatDriver Documentation
+
+class:
+  description: |
+    Float logic driver that computes `value / Denominator`, where both operands are
+    themselves drivers - one of the `MathFloatDriver` arithmetic family
+    (`MathAddFloatDriver`, `MathSubtractFloatDriver`,
+    `MathDivideFloatDriver`) used to compose values inside the driver graph.
+    Its typical job is normalizing a raw count into the `0`-`1` fill a meter
+    wants: Soul Fighter Sett's grit meter divides a
+    [BuffCounterDynamicMaterialFloatDriver](/classes/buffcounterdynamicmaterialfloatdriver)
+    by a
+    [SpellDataNamedValueFloatDriver](/classes/spelldatanamedvaluefloatdriver)
+    inside a [LogicDriverViewController](/classes/logicdriverviewcontroller).
+
+properties:
+  Denominator:
+    description: "Float driver providing the divisor. The dividend is the `value` driver the arithmetic family carries."

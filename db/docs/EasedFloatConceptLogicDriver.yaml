@@ -1,0 +1,14 @@
+# EasedFloatConceptLogicDriver Documentation
+
+class:
+  description: |
+    Float logic driver reading a [FloatConcept](/classes/floatconcept)'s value
+    **through the concept's `EasingData`**, so a value that jumps is delivered
+    to the driver graph as a smooth transition. The unsmoothed counterpart is
+    [RawFloatConceptLogicDriver](/classes/rawfloatconceptlogicdriver); see
+    there for the system overview. With no easing configured on the concept,
+    both read the same value.
+
+properties:
+  Concept:
+    description: "Link to the [FloatConcept](/classes/floatconcept) to read."

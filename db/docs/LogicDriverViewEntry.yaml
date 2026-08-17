@@ -1,0 +1,62 @@
+# LogicDriverViewEntry Documentation
+
+class:
+  description: |
+    One view of a
+    [LogicDriverViewController](/classes/logicdriverviewcontroller): a UI
+    scene plus the **driver bindings** that animate it. A view entry can gate
+    the whole scene, gate individual elements, drive meter-style values, and
+    substitute driver-computed numbers into element text.
+
+    All driver pointers accept any driver of the `ILogicDriver` family,
+    including compositions (`AllTrueMaterialDriver`, `NotMaterialDriver`,
+    `FloatComparisonMaterialDriver`, `MathDivideFloatDriver`, ...). The
+    shipped Soul Fighter Sett overlay uses every mechanism listed here.
+
+properties:
+  Scene:
+    description: "Hash of the UI scene this view controls."
+  EnableCondition:
+    description: |
+      Bool driver gating the whole scene. Sett's overlay uses
+      `AllTrueMaterialDriver { NotMaterialDriver { IsDeadDynamicMaterialBoolDriver }, ... }` -
+      hide when dead, show when the resource is active.
+  TransitionOnState:
+    description: "Hash of the scene state to play when `EnableCondition` turns true."
+  TransitionOffState:
+    description: "Hash of the scene state to play when `EnableCondition` turns false."
+  ConditionalElementsEntries:
+    description: "Legacy list of [LogicDriverConditionalElementsEntry](/classes/logicdriverconditionalelementsentry), superseded by `0x9f6debf3`."
+  "0x9f6debf3":
+    description: |
+      Per-element visibility:
+      [LogicDriverConditionalElementsEntry](/classes/logicdriverconditionalelementsentry)
+      embeds, each pairing a list of element hashes with its own
+      `EnableCondition` bool driver. Sett's overlay gates each meter pip with a
+      `FloatComparisonMaterialDriver` against the grit count here.
+  "0x8d424715":
+    description: |
+      Value bindings (pointers to interface `0x30AA7360`, concrete class
+      `0xFEACEDF2`): each holds a `ValueDriver` (`0x2d6f5674`, float driver),
+      an optional modifier list (`0x7a721423`, e.g. `0x9EBA3F83` with a
+      `DurationDriver` smoothing the value over time), and a list of element
+      bindings (`0x94eea539`) naming the elements that display the value.
+      This is how a float driver becomes a **meter fill** - Sett's grit meter
+      binds `MathDivideFloatDriver(BuffCounter / SpentGritThreshold)` here.
+  "0x40c7c429":
+    description: |
+      Element entries (class `0x4F0AA8A0`): `element: hash`,
+      `ElementAnchor: u8`, tooltip content, and a text-binding list
+      (`0xa620b98f` of `0xD5C5318A`). Each text binding pairs a placeholder
+      token (`0x6815c86c`, e.g. `"@CurrentGrit@"`) with a text source
+      (`0x8E65FB6B`): a `ValueDriver` plus a printf-style `TextFormat`
+      (e.g. `"%01.0f"`). The formatted driver value replaces the placeholder in
+      the element's localized text - **driver-driven numbers in UI text**.
+      A static-string source (`0x9A7DE981`, `value: string`) supplies plain
+      TRA-key text for the same slots.
+  "0x3fe8a3b5":
+    description: |
+      Material-driver entries (class `0x75A22C3`): carry an
+      `IMaterialLogicDriverSource` pointer, feeding the logic-driver graph
+      into **dynamic material parameters on UI elements** - the same
+      mechanism `DynamicMaterialDef` uses on skins.
