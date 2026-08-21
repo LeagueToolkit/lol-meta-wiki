@@ -1,0 +1,16 @@
+# ContextualRule Documentation
+# Format: see CONTRIBUTING.md and db/docs/MARKDOWN_GUIDE.md
+# Descriptions support Markdown. Delete any sections you don't fill in.
+
+class:
+  description: |
+    TODO: Describe ContextualRule.
+  # examples:
+  #   - "..."
+  # notes:
+  #   - "..."
+
+properties:
+  mRuleName:
+    description: |
+      The name of the contextual rule.
