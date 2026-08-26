@@ -1,0 +1,73 @@
+# VfxShimmerEmitterDefinitionData Documentation
+
+class:
+  description: |
+    An emitter definition that carries almost none of its own behavior. Where the
+    complex and simple emitters on
+    [VfxSystemDefinitionData](/classes/vfxsystemdefinitiondata) hold emission,
+    lifetime, physics, material and geometry settings as properties, this one holds a
+    handful of gates and delegates everything else to the **component graph** in its
+    `VfxComponents` property. It is the system's third emitter list, held by
+    `ShimmerEmitterDefinitionData`.
+
+    **An incomplete graph drops the emitter.** While the system is prepared, every
+    entry whose `disabled` is unset is checked for a lifetime component, a physics
+    component, a render component, and a geometry component that resolves to a
+    primitive. An entry missing any of those is discarded there and never reaches the
+    running system; the child component is the only optional slot. The other two
+    emitter lists have no equivalent check, so a misconfigured complex or simple
+    emitter still runs.
+
+    The graph also supplies what gets drawn: the geometry component's primitive names
+    a texture, a mesh and shader parameters, and those are resolved into the emitter's
+    draw setup before the system spawns.
+
+    Per-spawn gates differ from the other lists. `ChanceToNotExist`, the `importance`
+    cull and `colorblindVisibility` all apply, as they do to complex emitters.
+    `Filtering` does not, and no material overrides are bound for these emitters.
+  notes:
+    - "No shipped effect uses this list. The path is present and reachable from the simulation loop, but no authored bin data populates it anywhere in the game, so the behavior here is documented from the engine alone."
+    - "The `EffectsQuality` per-importance emission-rate multiplier does not reach these emitters, because spawn counts come from the component graph rather than from a rate property. The `importance` visibility cull still applies."
+
+properties:
+  VfxComponents:
+    description: |
+      The **component graph** supplying the emitter's entire behavior: lifetime,
+      physics, rendering, geometry, and optionally children.
+
+      Required, and required to be complete. Without a lifetime, physics and render
+      component, and a geometry component that resolves to a primitive, the emitter is
+      discarded while the system is prepared.
+
+  emitterName:
+    description: |
+      Name of the emitter. Passed to the render component while the draw setup is
+      built, so it reaches the renderer as data rather than serving only as an
+      authoring label.
+
+  disabled:
+    description: |
+      Skips the emitter. Tested while the system is prepared, so a disabled entry is
+      never built at all rather than being suppressed per spawn.
+
+  importance:
+    description: |
+      Selects the emitter's slot in the quality cull table: at lower `EffectsQuality`
+      settings the higher-numbered slots are not instantiated.
+    notes:
+      - "Only the cull applies on this path. The per-importance emission-rate multiplier complex and simple emitters get has no effect here."
+
+  ChanceToNotExist:
+    description: |
+      Probability, `0` to `1`, that the emitter is skipped for a given spawn. Rolled
+      once per spawn, so the same effect played twice can differ.
+
+  colorblindVisibility:
+    description: |
+      Restricts the emitter to one color palette. `0` instantiates always, `1` only
+      while the default palette is active, `2` only while the colorblind palette is.
+
+  "0xc26b20bf":
+    description: |
+      A per-axis scale, `1` on each axis meaning unscaled. No engine code reading it
+      has been traced, so what it scales, and at what point, is not confirmed.

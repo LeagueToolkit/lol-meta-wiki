@@ -13,9 +13,10 @@ class:
     the bin format simply exposes more of it (several `Flags` bits and properties have
     no legacy troybin equivalent).
 
-    Emitters are split into two lists, `ComplexEmitterDefinitionData` and
-    `SimpleEmitterDefinitionData`; complex emitters get the full feature set
-    (e.g. emission-mesh geometry resolution), simple ones are a lightweight path.
+    Emitters are split into three lists. `ComplexEmitterDefinitionData` gets the full
+    feature set (e.g. emission-mesh geometry resolution), `SimpleEmitterDefinitionData`
+    is a lightweight path, and `ShimmerEmitterDefinitionData` holds emitters that
+    delegate their behavior to a component graph instead of carrying it as properties.
   notes:
     - "Class hash `0x45CD899F`, inherits `IResource`."
     - "Systems whose `mEyeCandy` is set are hidden by the `[General] HideEyeCandy` game setting."
@@ -35,6 +36,17 @@ properties:
       The system's **simple emitters** - a lightweight emitter path that skips the
       heavier complex-emitter features (no emission-mesh resolution). See also the
       emitter's `LegacySimple` property.
+
+  ShimmerEmitterDefinitionData:
+    description: |
+      The system's **component emitters** - see
+      [VfxShimmerEmitterDefinitionData](/classes/vfxshimmeremitterdefinitiondata).
+      Emitters in this list carry only a few gates of their own and take emission,
+      lifetime, physics, rendering and geometry from a component graph. An entry whose
+      graph does not supply all four of those components is dropped while the system is
+      prepared, rather than running misconfigured.
+    notes:
+      - "No shipped effect populates this list."
 
   ParticleName:
     description: "The system's short name, as authored (e.g. the troy name)."
@@ -151,6 +163,15 @@ properties:
       events it lists fires, named emitters have individual parameters (scale, UV
       scale, emission rate, lifetime, birth velocity) swapped for a computed value,
       either immediately or eased in over a duration.
+
+  EffectorDefinition:
+    description: |
+      Optional **environment effector** carried by the system - see
+      [VfxEffectorDefinition](/classes/vfxeffectordefinition). A system linking one
+      contributes a shaped force to a map-wide environment field for as long as the
+      system lives, affecting the environment rather than the system's own particles.
+    notes:
+      - "Nothing gathers effectors in current builds, so this link currently has no observable effect."
 
   PointLight:
     description: |
