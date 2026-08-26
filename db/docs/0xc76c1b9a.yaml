@@ -3,12 +3,9 @@
 class:
   description: |
     Parameter [override](/classes/0xa41315c0) that eases into its value rather than
-    snapping to it. On installation it takes over the override it displaced and asks
-    it for the parameter's current value, using that as the start of the blend - so
-    installing a second blend while the first is still running continues from wherever
-    the first had reached instead of jumping back.
-  notes:
-    - "All shipped data leaves `duration` and `EasingType` unset, so every authored override in the game is in practice an instant swap and the easing path ships unused."
+    snapping to it. It takes ownership of the override it displaces and starts from
+    that override's current value, so a blend installed while another is still running
+    continues from where the previous one had reached instead of jumping back.
 
 properties:
   duration:

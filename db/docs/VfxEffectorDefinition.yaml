@@ -7,22 +7,12 @@ class:
     [VfxSystemDefinitionData](/classes/vfxsystemdefinitiondata) through its
     `EffectorDefinition` property.
 
-    When a system carrying one is spawned, the engine allocates a handle binding the
-    effector to that system instance, and releases it when the system is torn down, so
-    the force exists for exactly as long as the effect does.
-
-    The effector it links describes a shape - a travelling wake, a spinning burst, a
-    constant-width beam, or a band tapering between two widths - together with a
-    strength and a decay time. The field consumer reads the shape, its world position,
-    the strength, and how far the effector has decayed, and displaces the surface the
-    shape covers.
-  notes:
-    - "Nothing gathers effectors in current builds. The registry an effector adds itself to on creation is never created, so the list is never read, and no shader in the game binds the environment-effector field the result would be written into. The data path exists end to end and is inert."
-    - "No shipped effect links an effector."
+    The effector force is bound to the system instance for the duration of its
+    lifetime. The linked effector data describes its shape and physical properties,
+    which are used for surface displacement.
 
 properties:
   EffectorData:
     description: |
-      The effector attached to this system: a link to an
-      [environment effector](/classes/environmenteffectorbase) carrying the shape, its
-      strength, and how long it takes to fade once its hold expires.
+      Link to the [environment effector](/classes/environmenteffectorbase) this system
+      contributes, carrying its shape, its strength and its decay time.

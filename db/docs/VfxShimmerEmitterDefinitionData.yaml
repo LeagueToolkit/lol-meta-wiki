@@ -2,31 +2,29 @@
 
 class:
   description: |
-    An emitter definition that carries almost none of its own behavior. Where the
-    complex and simple emitters on
-    [VfxSystemDefinitionData](/classes/vfxsystemdefinitiondata) hold emission,
-    lifetime, physics, material and geometry settings as properties, this one holds a
-    handful of gates and delegates everything else to the **component graph** in its
-    `VfxComponents` property. It is the system's third emitter list, held by
-    `ShimmerEmitterDefinitionData`.
+    An emitter definition that delegates its behavior to the **component graph** in its
+    `VfxComponents` property instead of carrying it as properties. It is the third
+    emitter list on [VfxSystemDefinitionData](/classes/vfxsystemdefinitiondata), held
+    by `ShimmerEmitterDefinitionData`, and keeps only a handful of spawn gates of its
+    own; emission, lifetime, physics, material and geometry all come from the graph.
 
     **An incomplete graph drops the emitter.** While the system is prepared, every
-    entry whose `disabled` is unset is checked for a lifetime component, a physics
+    entry whose `disabled` is unset must supply a lifetime component, a physics
     component, a render component, and a geometry component that resolves to a
     primitive. An entry missing any of those is discarded there and never reaches the
     running system; the child component is the only optional slot. The other two
     emitter lists have no equivalent check, so a misconfigured complex or simple
     emitter still runs.
 
-    The graph also supplies what gets drawn: the geometry component's primitive names
-    a texture, a mesh and shader parameters, and those are resolved into the emitter's
+    The graph also supplies what gets drawn: the geometry component's primitive names a
+    texture, a mesh and shader parameters, and those are resolved into the emitter's
     draw setup before the system spawns.
 
     Per-spawn gates differ from the other lists. `ChanceToNotExist`, the `importance`
     cull and `colorblindVisibility` all apply, as they do to complex emitters.
-    `Filtering` does not, and no material overrides are bound for these emitters.
+    [`Filtering`](/classes/vfxemitterdefinitiondata#filtering) does not, and no material
+    overrides are bound for these emitters.
   notes:
-    - "No shipped effect uses this list. The path is present and reachable from the simulation loop, but no authored bin data populates it anywhere in the game, so the behavior here is documented from the engine alone."
     - "The `EffectsQuality` per-importance emission-rate multiplier does not reach these emitters, because spawn counts come from the component graph rather than from a rate property. The `importance` visibility cull still applies."
 
 properties:
@@ -69,5 +67,5 @@ properties:
 
   ParticleScale:
     description: |
-      A per-axis scale, `1` on each axis meaning unscaled. No engine code reading it
-      has been traced, so what it scales, and at what point, is not confirmed.
+      Per-axis scale, `1` on each axis meaning unscaled. What it scales, and at what
+      point, is not yet identified.

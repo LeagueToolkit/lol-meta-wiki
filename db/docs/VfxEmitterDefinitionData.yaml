@@ -19,7 +19,6 @@ class:
     lifetime. Most of these use a *value-with-dynamics* embed: a `ConstantValue`
     plus optional `Dynamics` (keyframed/randomized curves).
   notes:
-    - "Class hash `0x9CDE442`."
     - "Whether an emitter is actually instantiated is gated by `Disabled`, `Importance` (vs. the `EffectsQuality` setting), `ColorblindVisibility` (vs. colorblind mode), and `ChanceToNotExist`."
 
 properties:

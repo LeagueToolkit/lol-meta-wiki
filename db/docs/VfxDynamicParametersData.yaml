@@ -14,9 +14,10 @@ class:
     value. When an event fires, every override beneath it is installed on the live
     system, and each stays in force until something replaces it.
 
-    Emitters are addressed by the FNV-1a-32 hash of their `EmitterName`, not by
-    position in the system's emitter lists, so reordering the lists does not break an
-    entry but renaming an emitter does.
+    Emitters are addressed by the FNV-1a-32 hash of their
+    [`emitterName`](/classes/vfxemitterdefinitiondata#emittername), not by position in
+    the system's emitter lists, so reordering the lists does not break an entry but
+    renaming an emitter does.
 
     The parameter selector is a small integer:
 
@@ -29,13 +30,12 @@ class:
     | `5` | Particle lifetime. |
     | `6` | Birth velocity. |
 
-    An override never stores a finished value. It carries a chain of
-    [modifiers](/classes/ivfxdynamicparametermodifier) that is applied in order to a
+    An override stores no finished value. It carries a chain of
+    [modifiers](/classes/ivfxdynamicparametermodifier) applied in order to a
     four-component vector, and the folded result is what gets installed.
   notes:
-    - "Selectors `0` and `7` are also read by the engine, but the parameters they select have not been identified."
-    - "What fires an event has not been identified. Events are stored as bare hashes and no engine site matching an incoming event against them has been found, so the table's contents are established but its trigger is not."
-    - "Very little authored content uses this table; in the shipped game it is essentially one champion's effects plus a copy of the same system pulled into TFT."
+    - "Selectors `0` and `7` are also accepted, but the parameters they select have not been identified."
+    - "Events are stored as bare hashes, and what fires one has not been identified."
 
 properties:
   "0x1dcc5270":

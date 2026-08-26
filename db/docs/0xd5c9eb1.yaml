@@ -13,5 +13,5 @@ properties:
   "0x1004c9c8":
     description: |
       The emitters this event affects, keyed by the FNV-1a-32 hash of the emitter's
-      `EmitterName`. Each value is the
+      [`emitterName`](/classes/vfxemitterdefinitiondata#emittername). Each value is the
       [set of parameters that emitter changes](/classes/0x56bb851).

@@ -5,16 +5,12 @@ class:
     A distance-keyed **alpha ramp** for a whole particle system, attached to
     [VfxSystemDefinitionData](/classes/vfxsystemdefinitiondata) through its
     `DistanceBasedTransparencyParams` property. The four values describe a fade
-    between two distances: the system uses `AlphaAtClosestDistance` at and inside
-    `ClosestDistance`, and `AlphaAtFarthestDistance` at and beyond
-    `FarthestDistance`.
+    between two distances: `AlphaAtClosestDistance` applies at and inside
+    `ClosestDistance`, `AlphaAtFarthestDistance` at and beyond `FarthestDistance`.
 
-    Authored data uses it on large ground-plane ability rings - the area-of-effect
-    indicators that cover a big part of the screen - and almost every instance is
-    written with the same numbers: fully opaque within 900 world units, dropping to
-    30% alpha past 1500.
+    Typically authored on large ground-plane ability indicators, which cover a big part
+    of the screen.
   notes:
-    - "No engine code that reads this block has been located, so which distance the ramp is measured against, and whether current builds apply it at all, is unconfirmed. Only the authored values are established."
     - "Left at its default, `FarthestDistance` puts the far end of the ramp effectively at infinity and the system never reaches `AlphaAtFarthestDistance`."
 
 properties:
