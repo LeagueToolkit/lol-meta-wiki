@@ -1,0 +1,7 @@
+# VfxDynamicParameterRoundModifier Documentation
+
+class:
+  description: |
+    [Modifier](/classes/ivfxdynamicparametermodifier) that rounds every component of
+    the vector passing through it to the nearest whole number, with halves rounded
+    away from zero.

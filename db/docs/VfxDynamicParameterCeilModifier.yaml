@@ -1,0 +1,6 @@
+# VfxDynamicParameterCeilModifier Documentation
+
+class:
+  description: |
+    [Modifier](/classes/ivfxdynamicparametermodifier) that rounds every component of
+    the vector passing through it up to the next whole number.

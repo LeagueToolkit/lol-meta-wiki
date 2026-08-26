@@ -1,0 +1,14 @@
+# 0x56bb851 Documentation
+
+class:
+  description: |
+    The parameters one emitter changes in response to a single event in a
+    [VfxDynamicParametersData](/classes/vfxdynamicparametersdata) table.
+
+properties:
+  "0xe6d60f41":
+    description: |
+      The [overrides](/classes/0xa41315c0) to install, keyed by the parameter selector
+      listed on
+      [VfxDynamicParametersData](/classes/vfxdynamicparametersdata) (`1` particle
+      scale, `4` emission rate, and so on). At most one override per parameter.

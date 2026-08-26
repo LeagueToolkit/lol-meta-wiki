@@ -1,0 +1,42 @@
+# VfxDynamicParametersData Documentation
+
+class:
+  description: |
+    An **event-driven override table** for a running particle system, attached to
+    [VfxSystemDefinitionData](/classes/vfxsystemdefinitiondata) through its
+    `DynamicParameterData` property. It lets a system change individual emitter
+    parameters part-way through its life instead of fixing them at spawn.
+
+    The table is keyed in three levels: one [entry per event](/classes/0xd5c9eb1),
+    inside it a map from **emitter** to the
+    [parameters that emitter changes](/classes/0x56bb851), and inside that a map from
+    **parameter selector** to the [override](/classes/0xa41315c0) supplying the new
+    value. When an event fires, every override beneath it is installed on the live
+    system, and each stays in force until something replaces it.
+
+    Emitters are addressed by the FNV-1a-32 hash of their `EmitterName`, not by
+    position in the system's emitter lists, so reordering the lists does not break an
+    entry but renaming an emitter does.
+
+    The parameter selector is a small integer:
+
+    | Value | Parameter overridden |
+    |---|---|
+    | `1` | Particle scale, and the linger scale while a particle is lingering. Also applied at emitter level, ahead of the emitter's flex scale. |
+    | `2` | `UvScale` of the emitter's main texture. |
+    | `3` | `UvScale` of the emitter's `TextureMult` layer. |
+    | `4` | Emission rate, in particles per second. |
+    | `5` | Particle lifetime. |
+    | `6` | Birth velocity. |
+
+    An override never stores a finished value. It carries a chain of
+    [modifiers](/classes/ivfxdynamicparametermodifier) that is applied in order to a
+    four-component vector, and the folded result is what gets installed.
+  notes:
+    - "Selectors `0` and `7` are also read by the engine, but the parameters they select have not been identified."
+    - "What fires an event has not been identified. Events are stored as bare hashes and no engine site matching an incoming event against them has been found, so the table's contents are established but its trigger is not."
+    - "Very little authored content uses this table; in the shipped game it is essentially one champion's effects plus a copy of the same system pulled into TFT."
+
+properties:
+  "0x1dcc5270":
+    description: "The table's [per-event entries](/classes/0xd5c9eb1), one per event the system reacts to."

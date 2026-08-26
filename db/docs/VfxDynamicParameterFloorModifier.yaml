@@ -1,0 +1,6 @@
+# VfxDynamicParameterFloorModifier Documentation
+
+class:
+  description: |
+    [Modifier](/classes/ivfxdynamicparametermodifier) that rounds every component of
+    the vector passing through it down to the previous whole number.

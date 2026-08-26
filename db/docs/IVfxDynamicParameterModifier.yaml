@@ -1,0 +1,15 @@
+# IVfxDynamicParameterModifier Documentation
+
+class:
+  description: |
+    One step in the arithmetic chain that produces the value a
+    [VfxDynamicParametersData](/classes/vfxdynamicparametersdata) override installs.
+    The override's `Modifiers` list is applied in order to a four-component vector,
+    each modifier transforming all four components and handing the result to the next.
+
+    The family covers addition
+    ([Add](/classes/vfxdynamicparameteraddmodifier)), multiplication
+    ([Multiplier](/classes/vfxdynamicparametermultipliermodifier)) and three rounding
+    steps ([Ceil](/classes/vfxdynamicparameterceilmodifier),
+    [Floor](/classes/vfxdynamicparameterfloormodifier),
+    [Round](/classes/vfxdynamicparameterroundmodifier)).

@@ -1,0 +1,10 @@
+# VfxDynamicParameterAddModifier Documentation
+
+class:
+  description: |
+    [Modifier](/classes/ivfxdynamicparametermodifier) that adds `value` component-wise
+    to the vector passing through it.
+
+properties:
+  value:
+    description: "The addend. The default is the additive identity, so a modifier left unset passes its input through unchanged."

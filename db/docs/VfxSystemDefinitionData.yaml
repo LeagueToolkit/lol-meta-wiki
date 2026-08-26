@@ -136,15 +136,21 @@ properties:
   SelfIllumination:
     description: "Self-illumination factor applied to the system's rendering. `-1` (default) = unset."
 
-  "0xf97b1289":
+  DistanceBasedTransparencyParams:
     description: |
-      Pointer to an unnamed embedded type (`0x7fb92f53`) holding four floats
-      (defaults `0`, `FLT_MAX`, `1`, `0.1`). Purpose not yet identified.
+      Optional distance-keyed alpha ramp for the whole system - see
+      [VfxDistanceBasedTransparencyParams](/classes/vfxdistancebasedtransparencyparams).
+      Authored almost exclusively on large ground-plane ability rings.
+    notes:
+      - "No engine code reading the block has been located, so it is documented from its authored values only."
 
-  "0x8b301739":
+  DynamicParameterData:
     description: |
-      Pointer to an unnamed table type (`0x75e34c40`) containing a list of
-      *(event name hash → map)* entries - an event-to-data lookup table.
+      Optional event-driven override table - see
+      [VfxDynamicParametersData](/classes/vfxdynamicparametersdata). When one of the
+      events it lists fires, named emitters have individual parameters (scale, UV
+      scale, emission rate, lifetime, birth velocity) swapped for a computed value,
+      either immediately or eased in over a duration.
 
   PointLight:
     description: |

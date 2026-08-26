@@ -1,0 +1,10 @@
+# 0x862bdc3c Documentation
+
+class:
+  description: |
+    Parameter [override](/classes/0xa41315c0) that replaces the emitter parameter
+    outright. It discards whatever the parameter currently holds, so the folded result
+    of its `Modifiers` chain becomes the parameter's value directly, with no
+    transition.
+  notes:
+    - "No authored content uses this form; every override in shipped data is the [timed blend](/classes/0xc76c1b9a) instead."

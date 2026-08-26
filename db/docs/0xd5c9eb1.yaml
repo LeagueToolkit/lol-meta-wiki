@@ -1,0 +1,17 @@
+# 0xd5c9eb1 Documentation
+
+class:
+  description: |
+    One event's entry in a
+    [VfxDynamicParametersData](/classes/vfxdynamicparametersdata) table: the event to
+    react to, plus the emitters that react to it.
+
+properties:
+  EventName:
+    description: "Hash identifying the event this entry responds to. What fires an event has not been identified, so the name behind the hash is unknown."
+
+  "0x1004c9c8":
+    description: |
+      The emitters this event affects, keyed by the FNV-1a-32 hash of the emitter's
+      `EmitterName`. Each value is the
+      [set of parameters that emitter changes](/classes/0x56bb851).

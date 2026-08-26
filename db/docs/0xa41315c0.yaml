@@ -1,0 +1,18 @@
+# 0xa41315c0 Documentation
+
+class:
+  description: |
+    Base for the two kinds of parameter override a
+    [VfxDynamicParametersData](/classes/vfxdynamicparametersdata) entry can install:
+    an [immediate replacement](/classes/0x862bdc3c) and a
+    [timed blend](/classes/0xc76c1b9a).
+
+    Both derive the value they supply the same way, by folding the `Modifiers` chain
+    over a four-component vector; they differ only in how that result reaches the
+    emitter.
+
+properties:
+  Modifiers:
+    description: |
+      The [modifier](/classes/ivfxdynamicparametermodifier) chain, applied in list
+      order. The folded result is the value this override supplies.

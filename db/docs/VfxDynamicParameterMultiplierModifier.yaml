@@ -1,0 +1,14 @@
+# VfxDynamicParameterMultiplierModifier Documentation
+
+class:
+  description: |
+    [Modifier](/classes/ivfxdynamicparametermodifier) that multiplies the vector
+    passing through it by `value`, component-wise.
+
+    Followed by an [Add](/classes/vfxdynamicparameteraddmodifier) step it forms the
+    only chain authored data actually uses: a negative factor and then `1` turns a
+    rising input into a falling parameter.
+
+properties:
+  value:
+    description: "The factor. The default is the multiplicative identity, so a modifier left unset passes its input through unchanged."
