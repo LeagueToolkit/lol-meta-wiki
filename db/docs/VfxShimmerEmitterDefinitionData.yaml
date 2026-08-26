@@ -67,7 +67,7 @@ properties:
       Restricts the emitter to one color palette. `0` instantiates always, `1` only
       while the default palette is active, `2` only while the colorblind palette is.
 
-  "0xc26b20bf":
+  ParticleScale:
     description: |
       A per-axis scale, `1` on each axis meaning unscaled. No engine code reading it
       has been traced, so what it scales, and at what point, is not confirmed.

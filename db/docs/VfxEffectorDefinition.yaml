@@ -21,7 +21,8 @@ class:
     - "No shipped effect links an effector."
 
 properties:
-  "0x399a1c39":
+  EffectorData:
     description: |
-      The effector attached to this system: a link to the shape definition carrying the
-      effector's strength and decay timing.
+      The effector attached to this system: a link to an
+      [environment effector](/classes/environmenteffectorbase) carrying the shape, its
+      strength, and how long it takes to fade once its hold expires.
