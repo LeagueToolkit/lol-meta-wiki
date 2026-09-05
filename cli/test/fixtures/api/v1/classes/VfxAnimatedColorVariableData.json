@@ -1,0 +1,52 @@
+{
+  "name": "VfxAnimatedColorVariableData",
+  "hash": "0x4349c5f5",
+  "interface": false,
+  "value": false,
+  "bases": [
+    "VfxColorBase"
+  ],
+  "since": null,
+  "removedIn": null,
+  "properties": [
+    {
+      "name": "probabilityTables",
+      "hash": "0xa7084719",
+      "ft": "List",
+      "kt": "0x4",
+      "vt": "Pointer",
+      "kh": "0x53a6c97e",
+      "khName": "VfxProbabilityTableData",
+      "khKind": "class",
+      "defaultValue": "[null,null,null,null]"
+    },
+    {
+      "name": "times",
+      "hash": "0x5d68eeb5",
+      "ft": "List",
+      "kt": null,
+      "vt": "F32",
+      "kh": null,
+      "khName": null,
+      "khKind": null,
+      "defaultValue": "[]"
+    },
+    {
+      "name": "values",
+      "hash": "0x34474c3b",
+      "ft": "List",
+      "kt": null,
+      "vt": "Vec4",
+      "kh": null,
+      "khName": null,
+      "khKind": null,
+      "defaultValue": "[]"
+    }
+  ],
+  "ancestorLevels": [
+    [
+      "VfxColorBase"
+    ]
+  ],
+  "descendantTree": []
+}

@@ -1,0 +1,39 @@
+{
+  "name": "@leaguetoolkit/meta-cli",
+  "version": "1.0.0",
+  "description": "Command-line client for the LoL Meta Wiki API (meta-api.leaguetoolkit.dev): property types at a build, hash resolution, class lookups, and type diffs across patches.",
+  "license": "AGPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LeagueToolkit/lol-meta-wiki.git",
+    "directory": "cli"
+  },
+  "homepage": "https://meta-wiki.leaguetoolkit.dev/api/cli/",
+  "type": "module",
+  "bin": {
+    "rito-meta": "dist/rito-meta.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "generate": "bun scripts/generate-types.ts",
+    "typecheck": "bun run generate && tsc --noEmit",
+    "test": "bun run generate && bun test",
+    "build": "bun run generate && bun scripts/build.ts",
+    "smoke": "node test/smoke/run.mjs",
+    "check": "bun run typecheck && bun test && bun scripts/build.ts && node test/smoke/run.mjs",
+    "prepublishOnly": "bun run build"
+  },
+  "devDependencies": {
+    "@types/node": "^24.9.2",
+    "bun-types": "^1.3.1",
+    "openapi-typescript": "^7.13.0",
+    "typescript": "^5.8.3"
+  }
+}

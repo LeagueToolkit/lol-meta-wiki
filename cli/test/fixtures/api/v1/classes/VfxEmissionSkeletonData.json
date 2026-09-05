@@ -1,0 +1,41 @@
+{
+  "name": "VfxEmissionSkeletonData",
+  "hash": "0x3df230bf",
+  "interface": false,
+  "value": false,
+  "bases": [
+    "IVfxEmissionSurface"
+  ],
+  "since": "15.22",
+  "removedIn": null,
+  "properties": [
+    {
+      "name": "JointMask",
+      "hash": "0xb8314653",
+      "ft": "List2",
+      "kt": null,
+      "vt": "Hash",
+      "kh": null,
+      "khName": null,
+      "khKind": null,
+      "defaultValue": "[]"
+    },
+    {
+      "name": "skeletonName",
+      "hash": "0x7012f6cd",
+      "ft": "String",
+      "kt": null,
+      "vt": null,
+      "kh": null,
+      "khName": null,
+      "khKind": null,
+      "defaultValue": "\"\""
+    }
+  ],
+  "ancestorLevels": [
+    [
+      "IVfxEmissionSurface"
+    ]
+  ],
+  "descendantTree": []
+}

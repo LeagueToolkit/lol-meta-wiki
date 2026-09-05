@@ -1,0 +1,11 @@
+{
+  "0x13f50786": "https://meta-wiki.leaguetoolkit.dev/classes/0x13f50786",
+  "IVfxEmissionSource": "https://meta-wiki.leaguetoolkit.dev/classes/ivfxemissionsource",
+  "VfxAnimatedColor": "https://meta-wiki.leaguetoolkit.dev/classes/vfxanimatedcolor",
+  "VfxAnimatedColorVariableData": "https://meta-wiki.leaguetoolkit.dev/classes/vfxanimatedcolorvariabledata",
+  "VfxColorBase": "https://meta-wiki.leaguetoolkit.dev/classes/vfxcolorbase",
+  "VfxEmissionSkeleton": "https://meta-wiki.leaguetoolkit.dev/classes/vfxemissionskeleton",
+  "VfxEmissionSkeletonData": "https://meta-wiki.leaguetoolkit.dev/classes/vfxemissionskeletondata",
+  "VfxProbabilityTableData": "https://meta-wiki.leaguetoolkit.dev/classes/vfxprobabilitytabledata",
+  "VfxVector3DynamicProperty": "https://meta-wiki.leaguetoolkit.dev/classes/vfxvector3dynamicproperty"
+}

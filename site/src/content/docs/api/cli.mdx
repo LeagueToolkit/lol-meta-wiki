@@ -1,0 +1,77 @@
+---
+title: Command-line client
+description: rito-meta, the CLI for the API - one call per lookup, distinct exit codes for absence, JSON on a pipe, and fully offline runs from a pinned database.
+sidebar:
+  order: 5
+---
+
+`rito-meta` is a command-line client for this API, published on npm as
+`@leaguetoolkit/meta-cli`. It exists so scripts and agents stop re-deriving
+the same lookups by hand: a property's type at a build, a hash resolved to a
+name, every property whose type changed between two patches. It runs on
+Node 22 or newer and has no runtime dependencies.
+
+```sh
+npx @leaguetoolkit/meta-cli property VfxEmitterDefinitionData.primitive --at 16.17
+npx @leaguetoolkit/meta-cli hash 0x13f50786
+npx @leaguetoolkit/meta-cli diff 16.16 16.17
+```
+
+## What it answers
+
+| Command                       | Answers                                              |
+|-------------------------------|------------------------------------------------------|
+| `property <Class>.<field>`    | What type this property is, at `--at`                |
+| `class <nameOrHash>`          | Hash, flags, bases, lifetime, properties             |
+| `hash <hashOrName>`           | Name to hash and back, plus the wiki URL             |
+| `search <pattern>`            | Find a class by substring or glob                    |
+| `diff <from> <to>`            | Every property whose type changed across the span    |
+| `changelog [patch]`           | The patch index, or one patch in full                |
+| `versions`                    | The patch to build map, and the newest build covered |
+| `docs <nameOrHash>`           | The CC BY-SA prose for one class                     |
+| `db fetch` / `db check`       | Download the raw database, or compare generations    |
+| `raw <path>`                  | Any endpoint, verbatim                               |
+
+A class or property is accepted as a name or as a hash in any spelling, and
+`--at` takes a build number or a patch - the join through `/v1/versions`
+happens inside the tool, and every answer names both.
+
+## Absence is not approval
+
+The API answers "no such class", "the class exists but has no such property",
+and "the property exists but no revision covers that build" as three different
+things, and so does the CLI, with exit codes a script can branch on without
+parsing prose:
+
+| Code | Meaning                                          |
+|------|--------------------------------------------------|
+| 0    | Answered                                         |
+| 1    | Error: network, bad arguments, unreadable `--db` |
+| 2    | No such class                                    |
+| 3    | Class known, property not described              |
+| 4    | Property known, no revision covers that build    |
+| 5    | Build or patch outside the dataset's window      |
+
+Codes 2 to 5 still print a well-formed JSON payload whose `outcome` field
+names the case, so the detail is never lost.
+
+## Output
+
+On a pipe the output is JSON, on a terminal an aligned table; `--json` and
+`--no-color` force either. Every payload carries `generation` (the
+`dataset.fetchedAt` this API reports at `/v1`) and the API version, so
+captured output stays attributable to a database state. Types are rendered in
+one shape everywhere - `{ name, tag, size?, key?, value?, keyHash? }` - with
+`tag` being the number the bin format writes, which this API does not emit on
+its own.
+
+## Offline
+
+`rito-meta db fetch <path>` writes `/v1/db` to a file and `--db <path>` serves
+every read command except `docs` from it, deriving the same shapes this API
+serves with the same code the Worker is built from. `db check <path>`
+compares the file against the published generation by fetching only `/v1`,
+so a CI job can pin a snapshot and refresh it only when it is stale.
+
+The full reference, including the output contract and caching behavior, is in
+the package's [README](https://github.com/LeagueToolkit/lol-meta-wiki/tree/main/cli#readme).

@@ -1,0 +1,171 @@
+{
+  "name": "VfxAnimatedColor",
+  "hash": "0x6878c1b5",
+  "interface": false,
+  "value": false,
+  "bases": [
+    "VfxColorBase"
+  ],
+  "since": "13.16",
+  "removedIn": null,
+  "properties": [
+    {
+      "name": "InterpModes",
+      "hash": "0x7c9bcfd5",
+      "ft": "List2",
+      "kt": null,
+      "vt": "U8",
+      "kh": null,
+      "khName": null,
+      "khKind": null,
+      "since": "14.8",
+      "defaultValue": "[]",
+      "history": [
+        {
+          "since": "14.8",
+          "until": "16.6",
+          "ft": "List",
+          "kt": null,
+          "vt": "U32",
+          "kh": null,
+          "khName": null,
+          "khKind": null,
+          "defaultValue": "[]"
+        },
+        {
+          "since": "16.7",
+          "until": null,
+          "ft": "List2",
+          "kt": null,
+          "vt": "U8",
+          "kh": null,
+          "khName": null,
+          "khKind": null,
+          "defaultValue": "[]"
+        }
+      ]
+    },
+    {
+      "name": "modes",
+      "hash": "0x938b38b3",
+      "ft": "List2",
+      "kt": null,
+      "vt": "U8",
+      "kh": null,
+      "khName": null,
+      "khKind": null,
+      "removedIn": "14.8",
+      "defaultValue": "[]"
+    },
+    {
+      "name": "probabilityTables",
+      "hash": "0xa7084719",
+      "ft": "List",
+      "kt": "0x4",
+      "vt": "Pointer",
+      "kh": "0x53a6c97e",
+      "khName": "VfxProbabilityTableData",
+      "khKind": "class",
+      "since": "14.8",
+      "defaultValue": "[null,null,null,null]"
+    },
+    {
+      "name": "times",
+      "hash": "0x5d68eeb5",
+      "ft": "List2",
+      "kt": null,
+      "vt": "F32",
+      "kh": null,
+      "khName": null,
+      "khKind": null,
+      "defaultValue": "[]",
+      "history": [
+        {
+          "since": "13.16",
+          "until": "14.7",
+          "ft": "List2",
+          "kt": null,
+          "vt": "F32",
+          "kh": null,
+          "khName": null,
+          "khKind": null,
+          "defaultValue": "[]"
+        },
+        {
+          "since": "14.8",
+          "until": "16.6",
+          "ft": "List",
+          "kt": null,
+          "vt": "F32",
+          "kh": null,
+          "khName": null,
+          "khKind": null,
+          "defaultValue": "[]"
+        },
+        {
+          "since": "16.7",
+          "until": null,
+          "ft": "List2",
+          "kt": null,
+          "vt": "F32",
+          "kh": null,
+          "khName": null,
+          "khKind": null,
+          "defaultValue": "[]"
+        }
+      ]
+    },
+    {
+      "name": "values",
+      "hash": "0x34474c3b",
+      "ft": "List2",
+      "kt": null,
+      "vt": "Vec4",
+      "kh": null,
+      "khName": null,
+      "khKind": null,
+      "defaultValue": "[]",
+      "history": [
+        {
+          "since": "13.16",
+          "until": "14.7",
+          "ft": "List2",
+          "kt": null,
+          "vt": "Vec4",
+          "kh": null,
+          "khName": null,
+          "khKind": null,
+          "defaultValue": "[]"
+        },
+        {
+          "since": "14.8",
+          "until": "16.6",
+          "ft": "List",
+          "kt": null,
+          "vt": "Vec4",
+          "kh": null,
+          "khName": null,
+          "khKind": null,
+          "defaultValue": "[]"
+        },
+        {
+          "since": "16.7",
+          "until": null,
+          "ft": "List2",
+          "kt": null,
+          "vt": "Vec4",
+          "kh": null,
+          "khName": null,
+          "khKind": null,
+          "defaultValue": "[]"
+        }
+      ]
+    }
+  ],
+  "ancestorLevels": [
+    [
+      "VfxColorBase"
+    ]
+  ],
+  "descendantTree": []
+}

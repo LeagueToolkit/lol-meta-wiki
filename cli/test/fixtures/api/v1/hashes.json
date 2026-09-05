@@ -1,0 +1,16 @@
+{
+  "format": "FNV-1a 32-bit, \"0x\" + 8 lowercase hex digits, zero-padded",
+  "count": 9,
+  "classes": {
+    "0x13f50786": null,
+    "0x3df230bf": "VfxEmissionSkeletonData",
+    "0x4349c5f5": "VfxAnimatedColorVariableData",
+    "0x53a6c97e": "VfxProbabilityTableData",
+    "0x67104c43": "VfxVector3DynamicProperty",
+    "0x6878c1b5": "VfxAnimatedColor",
+    "0x7c893a73": "VfxColorBase",
+    "0x8b5022d2": "IVfxEmissionSource",
+    "0xdbd91337": "VfxEmissionSkeleton"
+  },
+  "externals": {}
+}

@@ -1,0 +1,50 @@
+{
+  "name": "VfxProbabilityTableData",
+  "hash": "0x53a6c97e",
+  "interface": false,
+  "value": true,
+  "bases": [],
+  "since": null,
+  "removedIn": null,
+  "properties": [
+    {
+      "name": "keyTimes",
+      "hash": "0x40c351da",
+      "ft": "List",
+      "kt": null,
+      "vt": "F32",
+      "kh": null,
+      "khName": null,
+      "khKind": null,
+      "defaultValue": "[]",
+      "from": "VfxProbabilityTableData"
+    },
+    {
+      "name": "keyValues",
+      "hash": "0xe44b7382",
+      "ft": "List",
+      "kt": null,
+      "vt": "F32",
+      "kh": null,
+      "khName": null,
+      "khKind": null,
+      "defaultValue": "[]",
+      "from": "VfxProbabilityTableData"
+    },
+    {
+      "name": "singleValue",
+      "hash": "0xad345dd6",
+      "ft": "F32",
+      "kt": null,
+      "vt": null,
+      "kh": null,
+      "khName": null,
+      "khKind": null,
+      "defaultValue": "1",
+      "from": "VfxProbabilityTableData"
+    }
+  ],
+  "ancestorLevels": [],
+  "descendantTree": [],
+  "flattened": true
+}

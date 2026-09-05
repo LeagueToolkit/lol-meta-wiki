@@ -1,0 +1,71 @@
+name: CLI
+
+# Checks the rito-meta package: types regenerated from api/openapi.json,
+# typecheck, the Bun test suite, the Node bundle, and a smoke run of that
+# bundle under Node against a fixture server - the one check that catches a
+# Bun-only construct the unit tests would let through.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "cli/**"
+      - "api/openapi.json"
+      - "api/scripts/lib/**"
+      - "scripts/meta-db.ts"
+      - "site/src/types.ts"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/cli.yml"
+  pull_request:
+    paths:
+      - "cli/**"
+      - "api/openapi.json"
+      - "api/scripts/lib/**"
+      - "scripts/meta-db.ts"
+      - "site/src/types.ts"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/cli.yml"
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # The floor the package declares, and the current line.
+        node: ["22", "24"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: "pnpm"
+
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        working-directory: ./cli
+        run: bun run typecheck
+
+      - name: Test
+        working-directory: ./cli
+        run: bun test
+
+      - name: Build the Node bundle
+        working-directory: ./cli
+        run: bun run build
+
+      - name: Smoke-test the bundle under Node ${{ matrix.node }}
+        working-directory: ./cli
+        run: node test/smoke/run.mjs

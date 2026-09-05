@@ -1,0 +1,141 @@
+{
+  "name": "0x13f50786",
+  "hash": "0x13f50786",
+  "interface": false,
+  "value": false,
+  "bases": [],
+  "since": "15.23",
+  "removedIn": null,
+  "properties": [
+    {
+      "name": "0xfd8f8d6e",
+      "hash": "0xfd8f8d6e",
+      "ft": "String",
+      "kt": null,
+      "vt": null,
+      "kh": null,
+      "khName": null,
+      "khKind": null,
+      "defaultValue": "\"\""
+    },
+    {
+      "name": "LocalizedDescription",
+      "hash": "0xfbc94a2c",
+      "ft": "String",
+      "kt": null,
+      "vt": null,
+      "kh": null,
+      "khName": null,
+      "khKind": null,
+      "since": "15.24",
+      "defaultValue": "\"\""
+    },
+    {
+      "name": "LocalizedName",
+      "hash": "0x081f82f1",
+      "ft": "String",
+      "kt": null,
+      "vt": null,
+      "kh": null,
+      "khName": null,
+      "khKind": null,
+      "since": "15.24",
+      "defaultValue": "\"\""
+    },
+    {
+      "name": "VideoPath",
+      "hash": "0xf6ec748b",
+      "ft": "String",
+      "kt": null,
+      "vt": null,
+      "kh": null,
+      "khName": null,
+      "khKind": null,
+      "since": "16.17",
+      "defaultValue": "\"\""
+    },
+    {
+      "name": "contentId",
+      "hash": "0x54d3f7cf",
+      "ft": "String",
+      "kt": null,
+      "vt": null,
+      "kh": null,
+      "khName": null,
+      "khKind": null,
+      "defaultValue": "\"\""
+    },
+    {
+      "name": "imagePath",
+      "hash": "0xf511a169",
+      "ft": "File",
+      "kt": null,
+      "vt": null,
+      "kh": null,
+      "khName": null,
+      "khKind": null,
+      "since": "15.24",
+      "defaultValue": "\"0x0\"",
+      "history": [
+        {
+          "since": "15.24",
+          "until": "16.16",
+          "ft": "String",
+          "kt": null,
+          "vt": null,
+          "kh": null,
+          "khName": null,
+          "khKind": null,
+          "defaultValue": "\"\""
+        },
+        {
+          "since": "16.17",
+          "until": null,
+          "ft": "File",
+          "kt": null,
+          "vt": null,
+          "kh": null,
+          "khName": null,
+          "khKind": null,
+          "defaultValue": "\"0x0\""
+        }
+      ]
+    },
+    {
+      "name": "itemID",
+      "hash": "0x13bddc7b",
+      "ft": "U32",
+      "kt": null,
+      "vt": null,
+      "kh": null,
+      "khName": null,
+      "khKind": null,
+      "defaultValue": "0"
+    },
+    {
+      "name": "path",
+      "hash": "0x84874d36",
+      "ft": "String",
+      "kt": null,
+      "vt": null,
+      "kh": null,
+      "khName": null,
+      "khKind": null,
+      "defaultValue": "\"\""
+    },
+    {
+      "name": "rarity",
+      "hash": "0x4b7f058a",
+      "ft": "U32",
+      "kt": null,
+      "vt": null,
+      "kh": null,
+      "khName": null,
+      "khKind": null,
+      "since": "16.6",
+      "defaultValue": "0"
+    }
+  ],
+  "ancestorLevels": [],
+  "descendantTree": []
+}

@@ -1,0 +1,87 @@
+{
+  "patch": "16.7",
+  "slug": "16-7",
+  "builds": [
+    7584427
+  ],
+  "counts": {
+    "added": 0,
+    "readded": 0,
+    "removed": 0,
+    "changed": 1
+  },
+  "buildGroups": [
+    {
+      "build": 7584427,
+      "entries": [
+        {
+          "name": "VfxAnimatedColor",
+          "kind": "changed",
+          "build": 7584427,
+          "propChanges": [
+            {
+              "name": "InterpModes",
+              "kind": "typechanged",
+              "oldType": {
+                "ft": "List",
+                "kt": null,
+                "vt": "U32",
+                "kh": null,
+                "khName": null,
+                "khKind": null
+              },
+              "newType": {
+                "ft": "List2",
+                "kt": null,
+                "vt": "U8",
+                "kh": null,
+                "khName": null,
+                "khKind": null
+              }
+            },
+            {
+              "name": "times",
+              "kind": "typechanged",
+              "oldType": {
+                "ft": "List",
+                "kt": null,
+                "vt": "F32",
+                "kh": null,
+                "khName": null,
+                "khKind": null
+              },
+              "newType": {
+                "ft": "List2",
+                "kt": null,
+                "vt": "F32",
+                "kh": null,
+                "khName": null,
+                "khKind": null
+              }
+            },
+            {
+              "name": "values",
+              "kind": "typechanged",
+              "oldType": {
+                "ft": "List",
+                "kt": null,
+                "vt": "Vec4",
+                "kh": null,
+                "khName": null,
+                "khKind": null
+              },
+              "newType": {
+                "ft": "List2",
+                "kt": null,
+                "vt": "Vec4",
+                "kh": null,
+                "khName": null,
+                "khKind": null
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

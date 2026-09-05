@@ -1,0 +1,30 @@
+{
+  "name": "VfxEmissionSkeleton",
+  "hash": "0xdbd91337",
+  "interface": false,
+  "value": false,
+  "bases": [
+    "IVfxEmissionSource"
+  ],
+  "since": "16.1",
+  "removedIn": null,
+  "properties": [
+    {
+      "name": "SkeletonData",
+      "hash": "0x78c1a5ee",
+      "ft": "Embed",
+      "kt": null,
+      "vt": null,
+      "kh": "0x3df230bf",
+      "khName": "VfxEmissionSkeletonData",
+      "khKind": "class",
+      "defaultValue": "{\"skeletonName\":\"\",\"JointMask\":[]}"
+    }
+  ],
+  "ancestorLevels": [
+    [
+      "IVfxEmissionSource"
+    ]
+  ],
+  "descendantTree": []
+}

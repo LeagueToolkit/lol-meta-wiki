@@ -1,0 +1,982 @@
+{
+  "generatedAt": "2026-08-27T01:09:23.922Z",
+  "latestPatch": "16.17",
+  "patches": [
+    {
+      "patch": "16.17",
+      "slug": "16-17",
+      "builds": [
+        8104348
+      ],
+      "counts": {
+        "added": 85,
+        "readded": 0,
+        "removed": 4,
+        "changed": 189
+      }
+    },
+    {
+      "patch": "16.16",
+      "slug": "16-16",
+      "builds": [
+        8042660
+      ],
+      "counts": {
+        "added": 33,
+        "readded": 0,
+        "removed": 4,
+        "changed": 34
+      }
+    },
+    {
+      "patch": "16.15",
+      "slug": "16-15",
+      "builds": [
+        7996036
+      ],
+      "counts": {
+        "added": 34,
+        "readded": 6,
+        "removed": 4,
+        "changed": 26
+      }
+    },
+    {
+      "patch": "16.14",
+      "slug": "16-14",
+      "builds": [
+        7945912
+      ],
+      "counts": {
+        "added": 18,
+        "readded": 0,
+        "removed": 25,
+        "changed": 29
+      }
+    },
+    {
+      "patch": "16.13",
+      "slug": "16-13",
+      "builds": [
+        7893741
+      ],
+      "counts": {
+        "added": 45,
+        "readded": 0,
+        "removed": 34,
+        "changed": 44
+      }
+    },
+    {
+      "patch": "16.12",
+      "slug": "16-12",
+      "builds": [
+        7851316
+      ],
+      "counts": {
+        "added": 44,
+        "readded": 0,
+        "removed": 38,
+        "changed": 52
+      }
+    },
+    {
+      "patch": "16.11",
+      "slug": "16-11",
+      "builds": [
+        7794239
+      ],
+      "counts": {
+        "added": 37,
+        "readded": 0,
+        "removed": 5,
+        "changed": 92
+      }
+    },
+    {
+      "patch": "16.10",
+      "slug": "16-10",
+      "builds": [
+        7747445
+      ],
+      "counts": {
+        "added": 31,
+        "readded": 0,
+        "removed": 8,
+        "changed": 41
+      }
+    },
+    {
+      "patch": "16.9",
+      "slug": "16-9",
+      "builds": [
+        7695709,
+        7718383
+      ],
+      "counts": {
+        "added": 85,
+        "readded": 0,
+        "removed": 6,
+        "changed": 55
+      }
+    },
+    {
+      "patch": "16.8",
+      "slug": "16-8",
+      "builds": [
+        7643737
+      ],
+      "counts": {
+        "added": 44,
+        "readded": 1,
+        "removed": 27,
+        "changed": 47
+      }
+    },
+    {
+      "patch": "16.7",
+      "slug": "16-7",
+      "builds": [
+        7584427
+      ],
+      "counts": {
+        "added": 134,
+        "readded": 0,
+        "removed": 17,
+        "changed": 44
+      }
+    },
+    {
+      "patch": "16.6",
+      "slug": "16-6",
+      "builds": [
+        7538272
+      ],
+      "counts": {
+        "added": 62,
+        "readded": 0,
+        "removed": 3,
+        "changed": 55
+      }
+    },
+    {
+      "patch": "16.5",
+      "slug": "16-5",
+      "builds": [
+        7496037,
+        7527101
+      ],
+      "counts": {
+        "added": 35,
+        "readded": 0,
+        "removed": 214,
+        "changed": 32
+      }
+    },
+    {
+      "patch": "16.4",
+      "slug": "16-4",
+      "builds": [
+        7465697
+      ],
+      "counts": {
+        "added": 94,
+        "readded": 0,
+        "removed": 5,
+        "changed": 46
+      }
+    },
+    {
+      "patch": "16.3",
+      "slug": "16-3",
+      "builds": [
+        7426169
+      ],
+      "counts": {
+        "added": 52,
+        "readded": 0,
+        "removed": 5,
+        "changed": 33
+      }
+    },
+    {
+      "patch": "16.2",
+      "slug": "16-2",
+      "builds": [
+        7389684
+      ],
+      "counts": {
+        "added": 22,
+        "readded": 1,
+        "removed": 19,
+        "changed": 36
+      }
+    },
+    {
+      "patch": "16.1",
+      "slug": "16-1",
+      "builds": [
+        7345787,
+        7371049
+      ],
+      "counts": {
+        "added": 70,
+        "readded": 72,
+        "removed": 60,
+        "changed": 206
+      }
+    },
+    {
+      "patch": "15.24",
+      "slug": "15-24",
+      "builds": [
+        7300505,
+        7312566,
+        7347485
+      ],
+      "counts": {
+        "added": 19,
+        "readded": 30,
+        "removed": 74,
+        "changed": 145
+      }
+    },
+    {
+      "patch": "15.23",
+      "slug": "15-23",
+      "builds": [
+        7269074
+      ],
+      "counts": {
+        "added": 57,
+        "readded": 0,
+        "removed": 3,
+        "changed": 45
+      }
+    },
+    {
+      "patch": "15.22",
+      "slug": "15-22",
+      "builds": [
+        7231955
+      ],
+      "counts": {
+        "added": 100,
+        "readded": 0,
+        "removed": 35,
+        "changed": 108
+      }
+    },
+    {
+      "patch": "15.21",
+      "slug": "15-21",
+      "builds": [
+        7200925
+      ],
+      "counts": {
+        "added": 66,
+        "readded": 0,
+        "removed": 35,
+        "changed": 56
+      }
+    },
+    {
+      "patch": "15.20",
+      "slug": "15-20",
+      "builds": [
+        7170001
+      ],
+      "counts": {
+        "added": 58,
+        "readded": 0,
+        "removed": 15,
+        "changed": 49
+      }
+    },
+    {
+      "patch": "15.19",
+      "slug": "15-19",
+      "builds": [
+        7135912
+      ],
+      "counts": {
+        "added": 42,
+        "readded": 0,
+        "removed": 9,
+        "changed": 49
+      }
+    },
+    {
+      "patch": "15.18",
+      "slug": "15-18",
+      "builds": [
+        7102027
+      ],
+      "counts": {
+        "added": 48,
+        "readded": 0,
+        "removed": 5,
+        "changed": 51
+      }
+    },
+    {
+      "patch": "15.17",
+      "slug": "15-17",
+      "builds": [
+        7067412,
+        7079808
+      ],
+      "counts": {
+        "added": 41,
+        "readded": 41,
+        "removed": 26,
+        "changed": 108
+      }
+    },
+    {
+      "patch": "15.16",
+      "slug": "15-16",
+      "builds": [
+        7027993,
+        7041925,
+        7067476
+      ],
+      "counts": {
+        "added": 70,
+        "readded": 13,
+        "removed": 50,
+        "changed": 142
+      }
+    },
+    {
+      "patch": "15.15",
+      "slug": "15-15",
+      "builds": [
+        6997589
+      ],
+      "counts": {
+        "added": 29,
+        "readded": 0,
+        "removed": 2,
+        "changed": 41
+      }
+    },
+    {
+      "patch": "15.14",
+      "slug": "15-14",
+      "builds": [
+        6950646
+      ],
+      "counts": {
+        "added": 67,
+        "readded": 0,
+        "removed": 4,
+        "changed": 43
+      }
+    },
+    {
+      "patch": "15.13",
+      "slug": "15-13",
+      "builds": [
+        6919951
+      ],
+      "counts": {
+        "added": 83,
+        "readded": 0,
+        "removed": 7,
+        "changed": 67
+      }
+    },
+    {
+      "patch": "15.12",
+      "slug": "15-12",
+      "builds": [
+        6877272
+      ],
+      "counts": {
+        "added": 59,
+        "readded": 0,
+        "removed": 2,
+        "changed": 50
+      }
+    },
+    {
+      "patch": "15.11",
+      "slug": "15-11",
+      "builds": [
+        6841658
+      ],
+      "counts": {
+        "added": 64,
+        "readded": 0,
+        "removed": 2,
+        "changed": 73
+      }
+    },
+    {
+      "patch": "15.10",
+      "slug": "15-10",
+      "builds": [
+        6804378
+      ],
+      "counts": {
+        "added": 60,
+        "readded": 0,
+        "removed": 13,
+        "changed": 195
+      }
+    },
+    {
+      "patch": "15.9",
+      "slug": "15-9",
+      "builds": [
+        6774704
+      ],
+      "counts": {
+        "added": 30,
+        "readded": 0,
+        "removed": 2,
+        "changed": 39
+      }
+    },
+    {
+      "patch": "15.8",
+      "slug": "15-8",
+      "builds": [
+        6738244
+      ],
+      "counts": {
+        "added": 48,
+        "readded": 2,
+        "removed": 10,
+        "changed": 33
+      }
+    },
+    {
+      "patch": "15.7",
+      "slug": "15-7",
+      "builds": [
+        6690024
+      ],
+      "counts": {
+        "added": 40,
+        "readded": 0,
+        "removed": 5,
+        "changed": 36
+      }
+    },
+    {
+      "patch": "15.6",
+      "slug": "15-6",
+      "builds": [
+        6649480
+      ],
+      "counts": {
+        "added": 77,
+        "readded": 0,
+        "removed": 1,
+        "changed": 29
+      }
+    },
+    {
+      "patch": "15.5",
+      "slug": "15-5",
+      "builds": [
+        6614445
+      ],
+      "counts": {
+        "added": 21,
+        "readded": 0,
+        "removed": 13,
+        "changed": 51
+      }
+    },
+    {
+      "patch": "15.4",
+      "slug": "15-4",
+      "builds": [
+        6575386
+      ],
+      "counts": {
+        "added": 56,
+        "readded": 0,
+        "removed": 7,
+        "changed": 26
+      }
+    },
+    {
+      "patch": "15.3",
+      "slug": "15-3",
+      "builds": [
+        6540407,
+        6560744
+      ],
+      "counts": {
+        "added": 30,
+        "readded": 0,
+        "removed": 12,
+        "changed": 37
+      }
+    },
+    {
+      "patch": "15.2",
+      "slug": "15-2",
+      "builds": [
+        6509216,
+        6521536
+      ],
+      "counts": {
+        "added": 31,
+        "readded": 0,
+        "removed": 6,
+        "changed": 33
+      }
+    },
+    {
+      "patch": "15.1",
+      "slug": "15-1",
+      "builds": [
+        6478644
+      ],
+      "counts": {
+        "added": 29,
+        "readded": 0,
+        "removed": 2,
+        "changed": 40
+      }
+    },
+    {
+      "patch": "14.24",
+      "slug": "14-24",
+      "builds": [
+        6421879
+      ],
+      "counts": {
+        "added": 120,
+        "readded": 7,
+        "removed": 8,
+        "changed": 45
+      }
+    },
+    {
+      "patch": "14.23",
+      "slug": "14-23",
+      "builds": [
+        6359815
+      ],
+      "counts": {
+        "added": 53,
+        "readded": 0,
+        "removed": 7,
+        "changed": 39
+      }
+    },
+    {
+      "patch": "14.22",
+      "slug": "14-22",
+      "builds": [
+        6318255
+      ],
+      "counts": {
+        "added": 20,
+        "readded": 0,
+        "removed": 5,
+        "changed": 39
+      }
+    },
+    {
+      "patch": "14.21",
+      "slug": "14-21",
+      "builds": [
+        6275678
+      ],
+      "counts": {
+        "added": 27,
+        "readded": 0,
+        "removed": 0,
+        "changed": 43
+      }
+    },
+    {
+      "patch": "14.20",
+      "slug": "14-20",
+      "builds": [
+        6236777
+      ],
+      "counts": {
+        "added": 29,
+        "readded": 0,
+        "removed": 0,
+        "changed": 34
+      }
+    },
+    {
+      "patch": "14.19",
+      "slug": "14-19",
+      "builds": [
+        6206549,
+        6215079
+      ],
+      "counts": {
+        "added": 17,
+        "readded": 0,
+        "removed": 5,
+        "changed": 39
+      }
+    },
+    {
+      "patch": "14.18",
+      "slug": "14-18",
+      "builds": [
+        6161179
+      ],
+      "counts": {
+        "added": 39,
+        "readded": 0,
+        "removed": 0,
+        "changed": 35
+      }
+    },
+    {
+      "patch": "14.17",
+      "slug": "14-17",
+      "builds": [
+        6124791
+      ],
+      "counts": {
+        "added": 30,
+        "readded": 0,
+        "removed": 6,
+        "changed": 41
+      }
+    },
+    {
+      "patch": "14.16",
+      "slug": "14-16",
+      "builds": [
+        6085125
+      ],
+      "counts": {
+        "added": 40,
+        "readded": 0,
+        "removed": 5,
+        "changed": 52
+      }
+    },
+    {
+      "patch": "14.15",
+      "slug": "14-15",
+      "builds": [
+        6048769
+      ],
+      "counts": {
+        "added": 56,
+        "readded": 0,
+        "removed": 0,
+        "changed": 32
+      }
+    },
+    {
+      "patch": "14.14",
+      "slug": "14-14",
+      "builds": [
+        6012857
+      ],
+      "counts": {
+        "added": 49,
+        "readded": 0,
+        "removed": 5,
+        "changed": 23
+      }
+    },
+    {
+      "patch": "14.13",
+      "slug": "14-13",
+      "builds": [
+        5964541,
+        5967996
+      ],
+      "counts": {
+        "added": 33,
+        "readded": 33,
+        "removed": 6,
+        "changed": 60
+      }
+    },
+    {
+      "patch": "14.12",
+      "slug": "14-12",
+      "builds": [
+        5923585,
+        5967495
+      ],
+      "counts": {
+        "added": 19,
+        "readded": 3,
+        "removed": 37,
+        "changed": 65
+      }
+    },
+    {
+      "patch": "14.11",
+      "slug": "14-11",
+      "builds": [
+        5876777
+      ],
+      "counts": {
+        "added": 14,
+        "readded": 0,
+        "removed": 4,
+        "changed": 43
+      }
+    },
+    {
+      "patch": "14.10",
+      "slug": "14-10",
+      "builds": [
+        5837922
+      ],
+      "counts": {
+        "added": 41,
+        "readded": 0,
+        "removed": 3,
+        "changed": 39
+      }
+    },
+    {
+      "patch": "14.9",
+      "slug": "14-9",
+      "builds": [
+        5798615
+      ],
+      "counts": {
+        "added": 26,
+        "readded": 0,
+        "removed": 2,
+        "changed": 47
+      }
+    },
+    {
+      "patch": "14.8",
+      "slug": "14-8",
+      "builds": [
+        5756478
+      ],
+      "counts": {
+        "added": 31,
+        "readded": 0,
+        "removed": 0,
+        "changed": 43
+      }
+    },
+    {
+      "patch": "14.7",
+      "slug": "14-7",
+      "builds": [
+        5715678
+      ],
+      "counts": {
+        "added": 33,
+        "readded": 0,
+        "removed": 3,
+        "changed": 42
+      }
+    },
+    {
+      "patch": "14.6",
+      "slug": "14-6",
+      "builds": [
+        5681102
+      ],
+      "counts": {
+        "added": 45,
+        "readded": 0,
+        "removed": 2,
+        "changed": 50
+      }
+    },
+    {
+      "patch": "14.5",
+      "slug": "14-5",
+      "builds": [
+        5639790
+      ],
+      "counts": {
+        "added": 30,
+        "readded": 0,
+        "removed": 13,
+        "changed": 29
+      }
+    },
+    {
+      "patch": "14.4",
+      "slug": "14-4",
+      "builds": [
+        5606808
+      ],
+      "counts": {
+        "added": 16,
+        "readded": 0,
+        "removed": 11,
+        "changed": 26
+      }
+    },
+    {
+      "patch": "14.3",
+      "slug": "14-3",
+      "builds": [
+        5579166
+      ],
+      "counts": {
+        "added": 26,
+        "readded": 0,
+        "removed": 0,
+        "changed": 28
+      }
+    },
+    {
+      "patch": "14.2",
+      "slug": "14-2",
+      "builds": [
+        5549136
+      ],
+      "counts": {
+        "added": 11,
+        "readded": 0,
+        "removed": 1,
+        "changed": 24
+      }
+    },
+    {
+      "patch": "14.1",
+      "slug": "14-1",
+      "builds": [
+        5516065
+      ],
+      "counts": {
+        "added": 89,
+        "readded": 0,
+        "removed": 10,
+        "changed": 61
+      }
+    },
+    {
+      "patch": "13.24",
+      "slug": "13-24",
+      "builds": [
+        5466062
+      ],
+      "counts": {
+        "added": 28,
+        "readded": 0,
+        "removed": 2,
+        "changed": 21
+      }
+    },
+    {
+      "patch": "13.23",
+      "slug": "13-23",
+      "builds": [
+        5437084
+      ],
+      "counts": {
+        "added": 35,
+        "readded": 0,
+        "removed": 11,
+        "changed": 27
+      }
+    },
+    {
+      "patch": "13.22",
+      "slug": "13-22",
+      "builds": [
+        5409873
+      ],
+      "counts": {
+        "added": 14,
+        "readded": 0,
+        "removed": 5,
+        "changed": 47
+      }
+    },
+    {
+      "patch": "13.21",
+      "slug": "13-21",
+      "builds": [
+        5379010
+      ],
+      "counts": {
+        "added": 35,
+        "readded": 0,
+        "removed": 6,
+        "changed": 33
+      }
+    },
+    {
+      "patch": "13.20",
+      "slug": "13-20",
+      "builds": [
+        5352535
+      ],
+      "counts": {
+        "added": 31,
+        "readded": 0,
+        "removed": 0,
+        "changed": 42
+      }
+    },
+    {
+      "patch": "13.19",
+      "slug": "13-19",
+      "builds": [
+        5329749
+      ],
+      "counts": {
+        "added": 14,
+        "readded": 0,
+        "removed": 3,
+        "changed": 33
+      }
+    },
+    {
+      "patch": "13.18",
+      "slug": "13-18",
+      "builds": [
+        5304653
+      ],
+      "counts": {
+        "added": 34,
+        "readded": 0,
+        "removed": 31,
+        "changed": 42
+      }
+    },
+    {
+      "patch": "13.17",
+      "slug": "13-17",
+      "builds": [
+        5276396
+      ],
+      "counts": {
+        "added": 43,
+        "readded": 0,
+        "removed": 10,
+        "changed": 41
+      }
+    },
+    {
+      "patch": "13.16",
+      "slug": "13-16",
+      "builds": [
+        5253974,
+        5266810
+      ],
+      "counts": {
+        "added": 23,
+        "readded": 0,
+        "removed": 5,
+        "changed": 70
+      }
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  // Source, tests and scripts run under Bun; the shipped bundle runs under
+  // Node 22+, so nothing here may depend on a Bun-only global at runtime.
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["bun-types", "node"],
+    "resolveJsonModule": true,
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "include": ["src", "test", "scripts"]
+}

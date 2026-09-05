@@ -12,6 +12,12 @@ build script). For documentation-content rules (the `db/docs/*.yaml` files) see
 - `site/` - Astro + Starlight wiki. Components are the **consumers**: they read
   the generated JSON at build time and render it.
 - `site/src/types.ts` - the shared data shapes both sides agree on.
+- `api/` - the Cloudflare Worker serving the generated data as `/v1/*`; its
+  `scripts/lib/{resolver,transform}.ts` are pure and shared with the CLI.
+- `cli/` - `rito-meta`, a Node-runnable client for the API. Its types are
+  generated from `api/openapi.json`; it never reads `db/meta.db.json`
+  directly (a `--db` run reads a downloaded `/v1/db` and derives the API
+  shapes with the same transforms). See `cli/README.md`.
 
 Data flows one way: `meta.db.json → generate-db.ts → JSON/MDX → components`.
 Never fetch or transform the raw DB in a component; consume the generated shape.

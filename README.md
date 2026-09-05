@@ -104,6 +104,14 @@ curl https://meta-api.leaguetoolkit.dev/v1/docs/VfxEmitterDefinitionData
 Classes resolve by exact name or by FNV-1a hash. `/v1/openapi` serves an OpenAPI 3.1 description of
 every route and schema. Full reference: [the API docs](https://meta-wiki.leaguetoolkit.dev/api/).
 
+For scripts and agents there is a command-line client, `rito-meta`, that folds the usual lookups
+(a property's type at a build, hash to name, type diffs across patches) into one call each and
+signals "no such thing" with distinct exit codes. See [cli/README.md](cli/README.md).
+
+```sh
+npx @leaguetoolkit/meta-cli property VfxEmitterDefinitionData.primitive --at 16.17
+```
+
 **The license split is structural.** The facts endpoints (`/v1/classes*`, `/v1/changelog*`,
 `/v1/hashes`, `/v1/index`, `/v1/versions`, `/v1/db`) serve factual metadata and carry no
 documentation-license obligations. `/v1/docs*` is the only surface serving human-written prose, and
@@ -118,6 +126,7 @@ db/docs/           the community documentation, one YAML file per class
 scripts/           generate-db.ts (dataset -> site data + MDX), update-db.ts (pull upstream)
 site/              the Astro + Starlight wiki, and the consumer of the generated data
 api/               Cloudflare Worker serving the generated data under /v1/*
+cli/               rito-meta, the command-line client for that API (published as @leaguetoolkit/meta-cli)
 ```
 
 Data flows one way: `db/meta.db.json` → `generate-db.ts` → JSON and MDX under `site/` → components.
@@ -148,6 +157,7 @@ pnpm update-db     # pull the newest meta.db.json from lol-meta-classes
 pnpm build         # production build into site/dist/
 pnpm api:dev       # run the Worker locally (wrangler)
 pnpm api:deploy    # deploy the Worker (needs a wrangler login)
+pnpm cli:check     # typecheck, test, build and smoke-test the CLI
 ```
 
 Before calling a change done:

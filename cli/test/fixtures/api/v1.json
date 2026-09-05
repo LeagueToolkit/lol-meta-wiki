@@ -1,0 +1,37 @@
+{
+  "name": "LoL Meta Wiki API",
+  "version": "v1",
+  "site": "https://meta-wiki.leaguetoolkit.dev",
+  "baseUrl": "https://meta-api.leaguetoolkit.dev",
+  "generatedAt": "2026-08-27T01:09:23.922Z",
+  "hashFormat": "FNV-1a 32-bit, \"0x\" + 8 lowercase hex digits, zero-padded",
+  "dataset": {
+    "firstPatch": "13.15",
+    "firstBuild": 5229820,
+    "latestPatch": "16.17",
+    "latestBuild": 8104348,
+    "fetchedAt": "2026-08-24T03:56:00Z"
+  },
+  "counts": {
+    "classes": 5458,
+    "namedClasses": 3453,
+    "documentedClasses": 52,
+    "patches": 74
+  },
+  "endpoints": {
+    "meta": "/v1",
+    "openapi": "/v1/openapi",
+    "classList": "/v1/classes",
+    "classDetail": "/v1/classes/{name-or-hash}",
+    "classDetailInherited": "/v1/classes/{name-or-hash}?inherited=1",
+    "hashIndex": "/v1/hashes",
+    "wikiUrlIndex": "/v1/index",
+    "versions": "/v1/versions",
+    "changelogIndex": "/v1/changelog",
+    "changelogPatch": "/v1/changelog/{slug}",
+    "bulkDatabase": "/v1/db",
+    "docsIndex": "/v1/docs",
+    "docsDetail": "/v1/docs/{name-or-hash}",
+    "docsBulk": "/v1/docs/all"
+  }
+}

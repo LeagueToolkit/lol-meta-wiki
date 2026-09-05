@@ -1,0 +1,26 @@
+{
+  "name": "VfxVector3DynamicProperty",
+  "hash": "0x67104c43",
+  "interface": false,
+  "value": false,
+  "bases": [],
+  "since": "15.22",
+  "removedIn": null,
+  "properties": [
+    {
+      "name": "Vector3",
+      "hash": "0x27188523",
+      "ft": "Pointer",
+      "kt": null,
+      "vt": null,
+      "kh": "0x505f1532",
+      "khName": "IVfxVector3Driver",
+      "khKind": "class",
+      "defaultValue": "null",
+      "from": "VfxVector3DynamicProperty"
+    }
+  ],
+  "ancestorLevels": [],
+  "descendantTree": [],
+  "flattened": true
+}

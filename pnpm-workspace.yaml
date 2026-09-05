@@ -1,6 +1,7 @@
 packages:
   - site
   - api
+  - cli
 
 allowBuilds:
   esbuild: true

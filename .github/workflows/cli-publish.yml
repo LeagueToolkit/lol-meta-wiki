@@ -1,0 +1,64 @@
+name: Publish CLI
+
+# Publishes @leaguetoolkit/meta-cli to npm from a `meta-cli-v<version>` tag.
+# The tag must match cli/package.json, and the package major must match the
+# API major in api/openapi.json - the CLI's types are generated from that
+# contract, so a 1.x CLI speaks /v1 and nothing else. Needs the NPM_TOKEN
+# secret (an npm automation token with publish rights on the package).
+
+on:
+  push:
+    tags: ["meta-cli-v*"]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # npm provenance
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm"
+          registry-url: "https://registry.npmjs.org"
+
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check the version pins
+        working-directory: ./cli
+        run: |
+          version=$(jq -r .version package.json)
+          api_major=$(jq -r '.info.version | split(".")[0]' ../api/openapi.json)
+          echo "package $version, api major $api_major"
+          if [ "${version%%.*}" != "$api_major" ]; then
+            echo "::error::package major ${version%%.*} does not match the API major $api_major"
+            exit 1
+          fi
+          if [ "${GITHUB_REF_TYPE}" = "tag" ] && [ "${GITHUB_REF_NAME}" != "meta-cli-v${version}" ]; then
+            echo "::error::tag ${GITHUB_REF_NAME} does not match package version ${version}"
+            exit 1
+          fi
+
+      - name: Check, build and smoke-test
+        working-directory: ./cli
+        run: bun run check
+
+      - name: Publish
+        working-directory: ./cli
+        run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

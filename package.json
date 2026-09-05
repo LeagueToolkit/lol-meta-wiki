@@ -8,6 +8,7 @@
     "build": "pnpm --filter site build",
     "api:dev": "pnpm --filter api run dev",
     "api:deploy": "pnpm --filter api run deploy",
+    "cli:check": "pnpm --filter @leaguetoolkit/meta-cli run check",
     "prepare": "husky"
   },
   "devDependencies": {

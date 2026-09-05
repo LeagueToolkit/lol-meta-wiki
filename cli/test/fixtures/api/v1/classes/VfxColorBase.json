@@ -1,0 +1,21 @@
+{
+  "name": "VfxColorBase",
+  "hash": "0x7c893a73",
+  "interface": true,
+  "value": false,
+  "bases": [],
+  "since": "13.16",
+  "removedIn": null,
+  "properties": [],
+  "ancestorLevels": [],
+  "descendantTree": [
+    {
+      "name": "VfxAnimatedColor",
+      "children": []
+    },
+    {
+      "name": "VfxAnimatedColorVariableData",
+      "children": []
+    }
+  ]
+}

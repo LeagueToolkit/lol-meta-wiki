@@ -23,6 +23,12 @@ api/dist/
 api/.wrangler/
 api/src/generated/
 
+# CLI: types generated from api/openapi.json, the built bundle, and the
+# LICENSE copy the build drops beside package.json for npm
+cli/src/generated/
+cli/dist/
+cli/LICENSE
+
 # Environment variables
 .env
 .env.local

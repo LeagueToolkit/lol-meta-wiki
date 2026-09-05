@@ -1,0 +1,68 @@
+{
+  "name": "VfxEmissionSkeleton",
+  "hash": "0xdbd91337",
+  "interface": false,
+  "value": false,
+  "bases": [
+    "IVfxEmissionSource"
+  ],
+  "since": "16.1",
+  "removedIn": null,
+  "properties": [
+    {
+      "name": "SkeletonData",
+      "hash": "0x78c1a5ee",
+      "ft": "Embed",
+      "kt": null,
+      "vt": null,
+      "kh": "0x3df230bf",
+      "khName": "VfxEmissionSkeletonData",
+      "khKind": "class",
+      "defaultValue": "{\"skeletonName\":\"\",\"JointMask\":[]}",
+      "from": "VfxEmissionSkeleton"
+    },
+    {
+      "name": "ShapeCenter",
+      "hash": "0xa8d060cb",
+      "ft": "Embed",
+      "kt": null,
+      "vt": null,
+      "kh": "0x67104c43",
+      "khName": "VfxVector3DynamicProperty",
+      "khKind": "class",
+      "since": "16.1",
+      "from": "IVfxEmissionSource"
+    },
+    {
+      "name": "rotation",
+      "hash": "0x21ac415f",
+      "ft": "Embed",
+      "kt": null,
+      "vt": null,
+      "kh": "0x67104c43",
+      "khName": "VfxVector3DynamicProperty",
+      "khKind": "class",
+      "since": "16.1",
+      "from": "IVfxEmissionSource"
+    },
+    {
+      "name": "scale",
+      "hash": "0x82971c71",
+      "ft": "Embed",
+      "kt": null,
+      "vt": null,
+      "kh": "0x67104c43",
+      "khName": "VfxVector3DynamicProperty",
+      "khKind": "class",
+      "since": "16.1",
+      "from": "IVfxEmissionSource"
+    }
+  ],
+  "ancestorLevels": [
+    [
+      "IVfxEmissionSource"
+    ]
+  ],
+  "descendantTree": [],
+  "flattened": true
+}

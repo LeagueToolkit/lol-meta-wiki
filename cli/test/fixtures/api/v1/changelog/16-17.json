@@ -1,0 +1,59 @@
+{
+  "patch": "16.17",
+  "slug": "16-17",
+  "builds": [
+    8104348
+  ],
+  "counts": {
+    "added": 0,
+    "readded": 0,
+    "removed": 0,
+    "changed": 1
+  },
+  "buildGroups": [
+    {
+      "build": 8104348,
+      "entries": [
+        {
+          "name": "0x13f50786",
+          "kind": "changed",
+          "build": 8104348,
+          "propChanges": [
+            {
+              "name": "VideoPath",
+              "kind": "added",
+              "newType": {
+                "ft": "String",
+                "kt": null,
+                "vt": null,
+                "kh": null,
+                "khName": null,
+                "khKind": null
+              }
+            },
+            {
+              "name": "imagePath",
+              "kind": "typechanged",
+              "oldType": {
+                "ft": "String",
+                "kt": null,
+                "vt": null,
+                "kh": null,
+                "khName": null,
+                "khKind": null
+              },
+              "newType": {
+                "ft": "File",
+                "kt": null,
+                "vt": null,
+                "kh": null,
+                "khName": null,
+                "khKind": null
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

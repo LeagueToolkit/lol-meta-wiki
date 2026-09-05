@@ -1,0 +1,11 @@
+{
+  "name": "BoolConcept",
+  "class": {
+    "description": "Bool-valued **concept** channel: script blocks publish a true/false value, the driver graph reads it back through the `Raw*`/`Eased*` concept drivers. See [ConceptBase](/classes/conceptbase) for the system and [FloatConcept](/classes/floatconcept) for the shape shared by every concept."
+  },
+  "properties": {
+    "EasingData": {
+      "description": "Optional easing applied when the value changes, for readers using the `Eased*` driver variants."
+    }
+  }
+}
