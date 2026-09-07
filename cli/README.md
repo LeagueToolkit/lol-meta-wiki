@@ -199,4 +199,7 @@ recorded API responses under `test/fixtures/`, trimmed to the classes the tests 
 `bun scripts/record-fixtures.ts` when the dataset or the contract changes.
 
 **Publishing.** `.github/workflows/cli-publish.yml` publishes on a `meta-cli-v<version>` tag after
-checking that the tag matches `package.json` and that the package major matches the API major.
+checking that the tag matches `package.json` and that the package major matches the API major. It
+authenticates through npm trusted publishing (GitHub OIDC), so there is no npm token to rotate: the
+package settings on npmjs.com name this repository and `cli-publish.yml` as the trusted publisher,
+and provenance is attached automatically. Bump `version`, commit, tag, push the tag.

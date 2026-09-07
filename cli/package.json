@@ -5,7 +5,7 @@
   "license": "AGPL-3.0-only",
   "repository": {
     "type": "git",
-    "url": "https://github.com/LeagueToolkit/lol-meta-wiki.git",
+    "url": "git+https://github.com/LeagueToolkit/lol-meta-wiki.git",
     "directory": "cli"
   },
   "homepage": "https://meta-wiki.leaguetoolkit.dev/api/cli/",

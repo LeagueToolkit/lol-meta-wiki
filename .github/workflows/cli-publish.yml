@@ -1,10 +1,14 @@
 name: Publish CLI
 
-# Publishes @leaguetoolkit/meta-cli to npm from a `meta-cli-v<version>` tag.
+# Publishes @leaguetoolkit/meta-cli to npm from a `meta-cli-v<version>` tag
+# through npm trusted publishing: the job authenticates with a GitHub OIDC
+# token, so no npm token is stored in this repository. The package's settings
+# on npmjs.com must list this repository and this workflow file (by name) as a
+# trusted publisher; provenance is attached automatically.
+#
 # The tag must match cli/package.json, and the package major must match the
 # API major in api/openapi.json - the CLI's types are generated from that
-# contract, so a 1.x CLI speaks /v1 and nothing else. Needs the NPM_TOKEN
-# secret (an npm automation token with publish rights on the package).
+# contract, so a 1.x CLI speaks /v1 and nothing else.
 
 on:
   push:
@@ -16,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write # npm provenance
+      id-token: write # npm trusted publishing (OIDC)
     steps:
       - uses: actions/checkout@v4
 
@@ -29,7 +33,10 @@ jobs:
         with:
           node-version: "22"
           cache: "pnpm"
-          registry-url: "https://registry.npmjs.org"
+
+      # Trusted publishing needs npm 11.5.1 or later; Node 22 bundles npm 10.
+      - name: Update npm
+        run: npm install -g npm@latest && npm --version
 
       - uses: oven-sh/setup-bun@v1
         with:
@@ -59,6 +66,4 @@ jobs:
 
       - name: Publish
         working-directory: ./cli
-        run: npm publish --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public
