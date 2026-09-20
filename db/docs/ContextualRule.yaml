@@ -1,0 +1,11 @@
+
+class:
+  description: |
+    `ContextualRule` is used to trigger audio, animation, or situation events. These events can be triggered either unconditionally when the `ContextualSituation` occurs, or conditionally by adding [mConditions](https://meta-wiki.leaguetoolkit.dev/classes/contextualrule/#mconditions) to the `ContextualRule`. Currently available `mConditions` can be found on the [**IContextualCondition**](https://meta-wiki.leaguetoolkit.dev/classes/icontextualcondition/) page. `ContextualSituation` respects everything you add inside a `ContextualRule`, meaning that [**mPriority**](https://meta-wiki.leaguetoolkit.dev/classes/contextualrule/#mpriority) can also be used. If two separate `ContextualSituations` collide, the one with the higher `mPriority` value will take precedence and trigger over the other. 
+
+properties:
+  mRuleName:
+    description: |
+      The name of a `ContextualRule`. Its name does not affect the logic, what matters most is the name of a `ContextualSituation`, as it is the primary trigger.
+    examples:
+      mRuleName: string = "Q - Cast"
