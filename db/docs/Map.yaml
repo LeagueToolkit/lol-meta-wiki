@@ -1,0 +1,178 @@
+# Map Documentation
+
+class:
+  description: |
+    The root object of a map's bin, and the client's **manifest for one map number**: which
+    extra WADs to mount, which environment variants ([MapSkin](/classes/mapskin)) exist,
+    which terrain variants the map defines, the unit tables scripts spawn from, and the
+    fog-of-war settings.
+
+    It is fetched by the hash of the literal entry path `Maps/Shipping/Map<N>`, built from
+    the map number the game session supplies, **not** from `mapStringId`. Exactly one `Map`
+    is current at a time; it is loaded as the in-game state is entered, right after the map's
+    own WADs are mounted, and released when that state tears down.
+
+    Very few of these ship: one per playable map, plus a shared `Maps/Shipping/Common` that
+    carries only a character list and fog-of-war settings. Most maps set fewer than half the
+    properties below.
+  notes:
+    - "The `Map` and all of its `MapSkin` objects live in the same bin, `data/maps/shipping/map<N>/map<N>.bin`."
+
+properties:
+  mapStringId:
+    description: |
+      A short textual **code for the map**, used as a match key rather than as text shown to
+      anyone. It backs an "is this map X" test available to data-driven conditions, it is part
+      of a cache key that flushes when the map changes, and it is reported as the `map_id`
+      field in disconnect telemetry.
+
+      The recommended item-set loader shows the intent most clearly: when an item set's `map`
+      value is the current map's **number**, the loader substitutes `mapStringId` before
+      matching, so this is the textual form of the identity that content keys on.
+    examples:
+      - "`SR`, `HA`, `TFT`, `TGR`, `JD` - one per shipped map."
+    notes:
+      - "Not a localisation key and not a display name."
+
+  WadDependencies:
+    description: |
+      Extra WAD archives this map needs, mounted **after** the map's own
+      `Maps/Shipping/Map<N>` WADs and **before** any champion WAD, so their chunks can never
+      shadow the map's own.
+
+      Each entry is transformed rather than used as written: the client **removes the first
+      nine characters unconditionally**, which is the length of the `WadFiles/` prefix the
+      shipped data carries, appends `.wad`, and mounts the result as
+      `DATA/FINAL/<name>.wad.client`. Nothing checks that the removed characters really were
+      `WadFiles/`, so an entry written without that prefix silently loses nine real ones.
+
+      A failed mount is **fatal**: the client reports that the installation is corrupt, names
+      the WAD and the reason, and writes a marker that makes the patcher repair the install
+      on the next launch. Naming a WAD that is not shipped breaks the map outright rather
+      than degrading it.
+    examples:
+      - "`WadFiles/Companions` mounts `DATA/FINAL/Companions.wad.client`. Only the two modes that need companion assets set it, so the rest of the game does not pay for a one-gigabyte archive."
+    notes:
+      - "The list is walked again to unmount when the map is released."
+
+  mapSkins:
+    description: |
+      The map's **environment variants**. One is selected per game by name: the client scans
+      this list in order and takes the first entry whose
+      [`MapSkin.name`](/classes/mapskin#name) is **byte-for-byte equal** to the requested
+      name, so the match is case-sensitive and a duplicate name is decided by list position.
+
+      The requested name comes from the game session. An empty name becomes `Default`, and a
+      comma-separated name is split and one token picked at random. A name that matches
+      nothing leaves the slot empty and the map renders its `Default` entry; if `Default` is
+      missing too, an empty `MapSkin` is allocated, so the map loads with no environment
+      rather than crashing.
+    notes:
+      - "A `MapSkin` object that no entry here links to cannot be selected by name, whatever it contains. Summoner's Rift ships one such orphan and Teamfight Tactics six."
+
+  InitialVisibilityMask:
+    description: |
+      The map's **starting visibility bitmask**: one bit per flag index defined in
+      `VisibilityFlagDefines`, so at most eight variants. It seeds the renderer's active mask
+      when the level loads, seeds the first keyframe of the replay visibility timeline, and
+      is what the mask is reset to when a replay or cinematic camera exits.
+
+      It is a seed, not the authority. In a live match the active mask comes from the game
+      session, and this value only applies where that is absent.
+    examples:
+      - "`1` on Summoner's Rift and Howling Abyss - only bit 0, the base terrain."
+      - "`67` (`0x43`) on the Teamfight Tactics map, which turns on three flags at once."
+
+  VisibilityFlagDefines:
+    description: |
+      Declares the map's **terrain variants**. Each definition binds a name hash to a bit
+      index (0-7), with a public name and a transition time; the active mask (see
+      `InitialVisibilityMask`) is a set of those bits.
+
+      A set bit does two things. It selects which meshes of the environment geometry render,
+      and it selects a per-`MapSkin` asset bundle: the client walks the active map skin's
+      [`mAlternateAssets`](/classes/mapskin#malternateassets), matches each entry's flag name
+      against these definitions, tests the bit, and on a match swaps in that entry's grass
+      tint, fog-of-war overlay, audio banks and resource resolvers. Changing the mask
+      mid-game re-runs those swaps over the definition's transition time.
+
+      Summoner's Rift is the clearest example: the definitions are the elemental drake
+      terrains, `Fire`/`Infernal` on bit 1 through `Void` on bit 7, each with its own
+      transition time.
+    notes:
+      - "The name of the active flag is what crash and session telemetry report as `mapTerrain`."
+      - "`FlagRange` and `SelectRandomVisibilityFlagForMap` have no reader in the client. Summoner's Rift sets the range to bits 1-6, which is exactly the six drake terrains that can be rolled, but the roll itself happens server-side and arrives as a finished mask."
+
+  "0x30eafcaa":
+    description: "Unused. A `u8` paralleling `InitialVisibilityMask`, set to `1` on Summoner's Rift and nowhere else."
+
+  "0xd31ac6ce":
+    description: |
+      Unused, but not empty: Summoner's Rift authors a **complete second flag set** here
+      (`Base`, `Cup`, `Tunnel`, `Upgraded`, with its own range and random-pick flag) alongside
+      the drake terrains in `VisibilityFlagDefines`. Every consumer reads the first block, so
+      this one never reaches the renderer.
+
+  RequiredLocations:
+    description: |
+      Named locations, grouped into
+      [MapPlaceableContainer](/classes/mapplaceablecontainer) buckets. The outer key only
+      groups; it is never looked up.
+
+      After the map loads the client flattens every placed object in every bucket into one
+      index keyed by **each object's own name hash**, and script blocks resolve a location
+      name through it - to read a position, to read an object off it, or to name the spot a
+      spawn block spawns at. A name that is not in the index resolves to nothing, and the
+      block that reads a position does not check, so asking for a location the map does not
+      define is a crash rather than a no-op.
+
+      No shipped map sets this property.
+
+  "0x31af8e97":
+    description: |
+      The map's **unit tables**: a two-level lookup where the outer key names a group and the
+      group's own `units` map keys the individual entries. Each entry carries a character
+      record path, an optional unit-logic value and a skin table mapping an integer to a skin
+      path.
+
+      Two script blocks use it. The preload block takes a group and preloads every unit in it,
+      attaching each one's character script; the spawn block takes a group key plus a unit key
+      from here and a location name from `RequiredLocations`. This, not the character-list
+      properties below, is what the client drives map-owned units from.
+    examples:
+      - "Summoner's Rift ships three groups, `turrets`, `MINIONS` and one whose name is not recovered. The turret group maps a key to `Characters/Turret/CharacterRecords/SR_Outer` with skins `100` and `200` pointing at different turret skins."
+
+  characterLists:
+    description: |
+      Unused by the client. Each [MapCharacterList](/classes/mapcharacterlist) is a bare set
+      of character links with no positions and no spawn rules; Summoner's Rift ships eighteen
+      of them. The table the client actually drives map-owned units from is `0x31af8e97`.
+
+  SharedCharacterLists:
+    description: "Unused by the client, which has no type for the element class at all. One shipped map sets it, to a single empty object."
+
+  "0x5e015628":
+    description: |
+      Unused by the client. A third list of `MapCharacterList` links alongside
+      `characterLists`; the two maps that set it both point at the same list of companion
+      characters, the same two maps that pull in the companions WAD through
+      `WadDependencies`.
+
+      The hash is FNV-1a of `additionalcharacterlists`; the casing is a convention, not
+      attested.
+
+  BasedOnMap:
+    description: "Unused, and never set in shipped data. There is no inheritance between `Map` objects at runtime, so a map carries its whole manifest itself."
+
+  FogOfWarProperties:
+    description: |
+      The parameters the **fog-of-war subsystem** is rebuilt from when the map loads: the
+      fogged and edge colours, the fade and blur scalars, and the alpha applied to objects
+      inside fog that have no override of their own.
+
+      It also carries the fog texture table. The client reads the `FOWTexture` level property
+      and looks that name up in the properties object's mutator-to-texture map, so which fog
+      texture a map uses is chosen by mutator rather than fixed here; the per-terrain override
+      from `VisibilityFlagDefines` is applied on top.
+    notes:
+      - "Every shipped map sets it, including the shared `Common` map. A link may resolve into a different bin - one map's link points at an object defined in `common.bin`."

@@ -1,0 +1,109 @@
+# MapContainer Documentation
+
+class:
+  description: |
+    One **baked environment variant** of a map: a geometry file, its material table, the
+    features attached to it and the placed objects that go with it. Swapping which container a
+    map loads is what turns Summoner's Rift into an event map, so a
+    [MapSkin](/classes/mapskin) is in practice a container reference plus a few overrides.
+
+    Each container ships in its own bin, `data/maps/mapgeometry/<map>/<name>.materials.bin`,
+    next to the `<name>.mapgeo` it describes, and the pairing is strictly one to one: every
+    `.mapgeo` has one `.materials.bin`, and every `.materials.bin` holds exactly one
+    `MapContainer`. It is never fetched by path: every `MapContainer`
+    **registers itself as it is constructed**, so any loaded bin can contribute one, and the
+    manager then finds containers by comparing `mapPath`. The string it is compared against is
+    the same string the loader turns into file paths, which for the base map is
+    [`MapSkin.mMapContainerLink`](/classes/mapskin#mmapcontainerlink).
+
+    A map can be **instanced**: the same container bound several times at different world-space
+    offsets, each instance getting its own copy of the placed objects and its own world bounding
+    box. The first container registered is the base map and owns instance 0.
+  notes:
+    - "`lowestWalkableHeight`, `MeshCombineRadius` and `ConvertStreamsToHalfFloat` are unused at runtime. Maps still author them, but their effect is already fixed in the `.mapgeo`."
+
+properties:
+  mapPath:
+    description: |
+      The container's **identity**, and the only way anything selects it. The manager scans its
+      containers and takes the first whose `mapPath` is byte-for-byte equal to the requested
+      name, so the match is **case-sensitive** and duplicates are resolved by registration
+      order.
+
+      It is not itself turned into a file path. The geometry and material paths are built from
+      the *requesting* string, and `mapPath` is what makes a container answer to it, so the two
+      must agree exactly. Shipped containers set it to their own entry path.
+    examples:
+      - "`Maps/MapGeometry/Map11/Base`, which pairs with `DATA/Maps/MapGeometry/Map11/Base.mapgeo` and its `.materials.bin`."
+
+  components:
+    description: |
+      Feature blocks attached to this environment. The loader does not iterate them generically:
+      for each feature it needs it walks the list and takes the **first entry that casts to the
+      type it wants**, so a second component of the same type is ignored and order only matters
+      within a type.
+
+      | Component | Effect |
+      |---|---|
+      | `MapSunProperties` | Sun direction and colour, sky and ground light, fog. Present on every shipped container. |
+      | `MapBakeProperties` | Loads the baked light grid it names, and applies `StationaryLightChannelAssignments`: each placed object is looked up in that table, a hit stamps its light channel, **a miss removes the object from the render lists**. Present on every shipped container. |
+      | `MapNavGrid` | Its `NavGridPath` file is opened and handed to the pathfinding manager for this map instance. |
+      | `MapNavGridOverlaysComponent` | Registers its overlays with the navigation system. |
+      | `MapQualityLodComponent` | Its `LodQualities` bitmask is tested against the current graphics-quality level; a match changes the geometry asset key to `<container>.LOD<n>`. |
+      | `MapMinimap` | Supplies the minimap texture and receives the map instance's world bounding box, which is what maps world positions onto it. |
+      | `MapTerrainPaint`, `MapChunkVisibility`, `MapLightingV2`, `MapSSAO`, `MapThemeMusic`, `MapAntiAliasing`, `MapContainsOtherMaps` | Consumed by their own subsystems. |
+
+      A container with no `MapNavGrid` logs a warning and **continues with no navigation grid
+      for that instance** - there is no fallback and no abort.
+    notes:
+      - "Most shipped lists contain a null element, and an empty component of an unnamed class appears on two containers, which suggests at least one feature is a marker the engine tests for rather than a settings holder."
+      - "A `PTCH` property patch can overwrite an element of this list but cannot append one, so adding a feature means replacing an existing entry."
+
+  chunks:
+    description: |
+      The placed objects of this environment, grouped into
+      [MapPlaceableContainer](/classes/mapplaceablecontainer) buckets under authored names such
+      as `Geometry`, `Particles`, `Ground_Base` or `SRX_Fire`. Each key is the hash of the last
+      segment of the bucket's own path, so a bucket at `Maps/MapGeometry/Map11/Chunks/Geometry`
+      is keyed by `Geometry`.
+
+      The engine treats a chunk as a **grouping unit, not a spatial cell**: the key is never
+      read, nothing compares it against a coordinate or an index, and the buckets are simply
+      concatenated. The keys that do matter are the ones **inside** each bucket. Those are
+      flattened into one sorted table per map instance and binary-searched by hash, which is
+      how a mesh in the `.mapgeo` finds the bin object it belongs to - a mesh's region hash is
+      the key of an entry in one of these buckets.
+
+      On the base map instance the buckets are used as deserialized. For every further map
+      instance each object is **cloned**, shifted by that instance's world offset and stamped
+      with the instance index, so instances do not share state.
+
+  boundsMin:
+    description: |
+      Lower corner of the environment's horizontal extent, in world units. The pair `(x, y)` is
+      the world **X** and **Z** axes; there is no vertical component.
+
+      At registration the bounds become a flat 3D bounding box per map instance, offset by that
+      instance's world position. That box decides **which map instance a world position belongs
+      to** (nearest box centre wins), centres a camera on the map, and is what the minimap
+      component is handed. The container's own bounds are additionally read to convert a world
+      position into normalized map space.
+
+      Most containers leave it at the origin and set only `boundsMax`.
+
+  boundsMax:
+    description: |
+      Upper corner of the environment's horizontal extent, in world units, paired with
+      `boundsMin`; see that property for how the pair is consumed. Every shipped container sets
+      it, including the ones whose size happens to match the default.
+    examples:
+      - "`{14820.525, 14881.497}` on Summoner's Rift, `{12849.096, 12858.497}` on Howling Abyss, `{5000, 5000}` on an Arena sub-map."
+
+  lowestWalkableHeight:
+    description: "Unused. Maps still author it (`-100` on Summoner's Rift, `-220` on Howling Abyss)."
+
+  MeshCombineRadius:
+    description: "Unused. A bake parameter, in world units, for how far apart meshes could be and still be merged; the merge is already final in the `.mapgeo`."
+
+  ConvertStreamsToHalfFloat:
+    description: "Unused. A bake flag for vertex stream precision, which the `.mapgeo` already carries. Every container that sets it sets it to `false`."
