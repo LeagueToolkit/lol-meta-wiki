@@ -1,0 +1,215 @@
+# MapSkin Documentation
+
+class:
+  description: |
+    One **environment variant of a map**: which baked geometry to render, and the textures,
+    particles, minimap and post-processing that go with it. Every seasonal, event and Worlds
+    version of a map is one of these objects.
+
+    A map's variants live in [`Map.mapSkins`](/classes/map#mapskins) and exactly one is chosen
+    per game **by name**. The name comes from the game session, so which skin a player gets is
+    a server decision, but everything the name resolves to is client data. An empty name means
+    `Default`, and a comma-separated name is split and one token picked at random.
+
+    The client holds two skins at once, the **selected** one and `Default`, and every property
+    below is read through the same gate: use the selected skin, unless it is missing or the
+    player has disabled it, in which case use `Default`. Disabling needs **two** keys set
+    together - a `MapSkinOptionDisable<Name>` level property supplied by the mode, and the
+    matching key in the player's `game.cfg` `[MapSkinOptions]` section. Only a hardcoded set of
+    names has a settings-menu entry, so most skins can never be switched off by a player even
+    though the mechanism is generic.
+
+    Everything is applied when the map loads and re-applied when the option is toggled; nothing
+    here is read per frame except the presence test on `mColorizationPostEffect`.
+  notes:
+    - "Two skins on the same map usually differ by very few properties. The newest Summoner's Rift skins differ from `Default` by `mMapContainerLink` alone, which is why swapping that one string is the whole of a map reskin."
+
+properties:
+  name:
+    description: |
+      The **selection key**. The requested name is compared against this field byte-for-byte,
+      so the match is case-sensitive, and the object's own entry path is never used to select
+      it. `Default` is reserved as the fallback; if no entry carries that name the client
+      synthesises an empty skin rather than failing.
+
+  mMapContainerLink:
+    description: |
+      Which **baked environment** to render, and the one property that makes a map look like a
+      different map. Despite the name it is a plain string, not a link: the client formats it
+      into `DATA/<value>.mapgeo`, loads that geometry with its `.materials.bin` sibling, and
+      matches the same string against
+      [`MapContainer.mapPath`](/classes/mapcontainer#mappath) to find the container carrying
+      that environment's components and placed objects. Nothing is hashed and no bin lookup
+      happens, so the string has to equal the container's `mapPath` exactly.
+
+      Several skins can share one container, and a skin may point at a container outside its
+      own map's folder.
+    examples:
+      - "`Maps/MapGeometry/Map11/Base_SRX`, shared by four Summoner's Rift skins."
+      - "`Maps/MapGeometry/SR/UltBook`, a container outside the map's own folder."
+    notes:
+      - "Nine shipped skins leave it unset."
+
+  MaterialSwap:
+    description: |
+      A table of material replacements keyed by name, handed to the geometry loader together
+      with the container so the substitution happens while the environment's materials are
+      bound. It restyles the same geometry without a second `.mapgeo`.
+
+      Exactly one shipped skin sets it, and the table it sets is empty.
+
+  mMinimapBackgroundConfig:
+    description: |
+      The **minimap background** for this skin: a default texture, a table of alternate
+      backgrounds each with its own size, and a second table of overlay textures. The minimap
+      looks a key up in the alternates table and, on a hit, uses that entry's texture and size;
+      on a miss it falls back to the default texture and the global default size and position.
+      The two keyed tables are only loaded when the config's gate flag is set, otherwise just
+      the default texture is acquired.
+
+      Summoner's Rift is the elaborate case, with eighteen alternate backgrounds and a handful
+      of overlays; most skins set only the default texture.
+    notes:
+      - "Textures stay loaded for both the selected skin and `Default`, so toggling the skin does not have to re-acquire them."
+
+  mAlternateAssets:
+    description: |
+      Asset bundles switched on by the map's **terrain variants**. Each entry names a flag
+      defined in [`Map.VisibilityFlagDefines`](/classes/map#visibilityflagdefines) and is
+      active when that flag's bit is in the currently active mask; an active entry substitutes
+      its own grass tint, fog-of-war overlay texture, audio bank set and particle resource
+      resolver for the skin's own.
+
+      This is the elemental drake mechanism on Summoner's Rift: one entry per drake terrain,
+      each naming its flag and carrying that terrain's tint, fog overlay and sound banks. The
+      mask comes from the game session and defaults to all bits when absent, and because it can
+      change mid-match the substitutions are re-applied live rather than only at load.
+
+  mMapObjectsCFG:
+    description: |
+      Path to the map's object configuration file, copied into the game configuration when the
+      map loads. Maps ship one variant per skin family.
+
+      Worth knowing when reasoning about the disable option: this is the one property whose
+      accessor **ignores the user disable toggle**. It is taken from the selected skin even in
+      a game where everything else has fallen back to `Default`.
+    examples:
+      - "`ASSETS/Maps/Deprecated/Map11/CFG/objectcfg_SRX.cfg`"
+
+  mNavigationMesh:
+    description: |
+      Legacy. Almost every shipped skin carries an `.aimesh_ngrid` path here, but the
+      navigation grid the client loads comes from the `MapNavGrid` component on the
+      [MapContainer](/classes/mapcontainer#components), which names the same file.
+
+      One consequence is worth knowing: because pathing follows the container, and Summoner's
+      Rift skins share a navigation mesh, swapping `mMapContainerLink` between them changes the
+      look and leaves pathing alone.
+
+  mMapSkinServerConstants:
+    description: "Unused, and never set in shipped data. The client gets its `GameModeConstants` from a separate provider, never through the map skin."
+
+  "0xd0a4e40b":
+    description: |
+      The map's **environment cubemap**, used for reflections. The client acquires a handle for
+      it as the geometry finishes loading. This is the live cubemap slot; the separately named
+      `mSkyboxCubemapTexture` is not set by anything that ships.
+    examples:
+      - "`assets/maps/deprecated/map11/env_cubemap.dds`"
+
+  mWorldParticlesINI:
+    description: |
+      Path to an **INI file of global world-particle effects**, and the route that actually
+      runs. The client reads `MaxIdentifier` from the file's `[GlobalEffects]` section, then
+      walks `EffectName<n>` and `FileName<n>` pairs to build a lookup from the hashed effect
+      name to its file. When the skin's INI does not carry the key,
+      `DATA/Particles/ParticlesDefault.ini` is used instead.
+    examples:
+      - "`ASSETS/Maps/Particles/Deprecated/Map11/Particles_SRX.ini`"
+
+  WorldParticles:
+    description: |
+      The bin-authored alternative to `mWorldParticlesINI`. Its presence acts as a route
+      switch: with it set, per-object world particles resolve from this table instead of the
+      name lookup built from the INI.
+
+      Nothing that ships sets it, so in practice every map takes the INI route.
+
+  mColorizationPostEffect:
+    description: |
+      A colour grade applied to the whole scene. Only the leading four floats are consumed -
+      the RGB multipliers and the saturation multiplier - and they are pushed into the render
+      environment at load and on toggle; with nothing set the renderer uses `(1, 1, 1, 1)`.
+
+      Its **presence** is additionally tested every frame and selects a different
+      post-processing mode, so setting it changes the post chain and not only the values. Five
+      shipped skins use it.
+
+  GammaParameters:
+    description: |
+      Contrast, brightness, level and gamma for the map, handed to the renderer when the map
+      loads and again when the skin is toggled. Every shipped skin that sets it sets the
+      neutral values, so it is a hook nobody currently bends.
+
+  "0x904ba3c8":
+    description: |
+      A parameter block applied to the render environment alongside the skybox, gamma and
+      colorization settings. It is passed whole and never inspected at that point, and its
+      class holds a single RGBA colour whose default is half-transparent magenta - a
+      placeholder value. Nothing that ships sets it.
+
+  ShadowsEnabled:
+    description: "Whether the map renders shadows, applied once when the map loads. Nothing that ships sets it, so every map runs on the default."
+
+  mGrassTintTexture:
+    description: |
+      Texture that tints the map's grass, applied once when the map loads and re-applied when
+      the skin is toggled. It is **skipped when the path is empty**, so clearing it leaves
+      whatever was applied before rather than resetting the tint. The active
+      `mAlternateAssets` entry overrides it, which is how each drake terrain gets its own
+      grass.
+    examples:
+      - "`assets/maps/info/map11/grasstint_srx.tex`"
+
+  mSkyboxCubemapTexture:
+    description: "Never set by anything that ships, so every map runs on the default path. The cubemap a map actually uses is `0xd0a4e40b`."
+
+  mObjectSkinFallbacks:
+    description: |
+      Per-character **skin overrides for map-owned units**, keyed by the hashed unit name with
+      no path prefix. At spawn the resolver looks the unit up here and, on a hit, uses the given
+      skin index instead of the default one. It applies only while the event skin is active and
+      only when the mode's level properties enable it, so a shipped table does nothing on a map
+      running `Default`.
+
+      Shipped tables use only two values: `0`, pinning the unit to its base skin, and `-1`,
+      which is the miss sentinel and therefore leaves the unit alone.
+    examples:
+      - "`SRU_Baron = 0`, `SRUAP_ChaosNexus = 0`, `HA_AP_Poro = -1`"
+    notes:
+      - "This is the spawn-time mechanism; `0x2d3285eb` is a separate preload-time one. No shipped skin populates both."
+
+  mResourceResolvers:
+    description: |
+      Resolvers that redirect **asset path resolution** while this skin is active, installed
+      process-wide rather than scoped to the map. Each maps a short effect or asset name to a
+      full content path, which lets a skin redirect a named effect without editing whatever asks
+      for it. They are activated once on install and re-activated whenever newly loaded data
+      brings resolvers of its own, and the active `mAlternateAssets` entries append theirs to
+      the same chain.
+
+      Entries are usually the skin's own `Maps/Shipping/<Map>/MapSkins/<Skin>/Resources`, but a
+      skin may also pull in a resolver from outside the map namespace.
+    examples:
+      - "`Maps/Shipping/Map30/MapSkins/Default/Resources` together with `Characters/Hexgate/Skins/Skin0/Resources`."
+
+  "0x2d3285eb":
+    description: |
+      A list of **character skin overrides**, each pairing a character path hash with a skin
+      index. During asset preload the client scans it by character and, on a hit, builds and
+      caches that character's record at the given skin instead of the default.
+
+      This is the preload path: it decides which skin's assets are built and cached, not what
+      the server spawns. The spawn-time equivalent is `mObjectSkinFallbacks`. Two shipped skins
+      use it, both on Summoner's Rift, to re-skin map units such as turrets, the nexus, the
+      Rift Herald and the shopkeepers.
