@@ -1,0 +1,16 @@
+# VfxBeamBaseDefinitionData Documentation
+
+class:
+  description: |
+    The two endpoint offsets of a beam. A beam runs from the system's current world position
+    (the **source**) to the target position of the effect instance (the **target**), and
+    these offsets move each end. Both are rotated into the system's orientation before they
+    are added, so they are expressed in the system's local space, not in world space and not
+    in the target's space.
+
+properties:
+  mLocalSpaceSourceOffset:
+    description: "Offset of the beam's source end from the system's position, in the system's local space."
+
+  mLocalSpaceTargetOffset:
+    description: "Offset of the beam's target end from the target position, in the system's local space."

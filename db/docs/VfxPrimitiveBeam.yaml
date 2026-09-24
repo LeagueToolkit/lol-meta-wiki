@@ -1,0 +1,56 @@
+# VfxPrimitiveBeam Documentation
+
+class:
+  description: |
+    A straight **beam**: one quad per particle, stretched between two endpoints that belong to
+    the system rather than to the particle.
+
+    **Endpoints.** Both ends are computed from the running system every frame:
+
+    - **Source**: the system's current world position, plus `mLocalSpaceSourceOffset`
+      rotated into the system's orientation
+    - **Target**: the target position of the effect instance, plus
+      `mLocalSpaceTargetOffset` rotated the same way
+
+    The offsets are documented on
+    [VfxBeamBaseDefinitionData](/classes/vfxbeambasedefinitiondata).
+
+    The particle's position does not place either end, so every particle of the emitter draws
+    the same segment. Particles differ only in width, color and texture tiling, and they draw
+    stacked on each other. More particles add more coincident quads, not a longer or a
+    divided beam.
+
+    **Width.** `scale.x` is the full width. Which way it points is set by `mBeam.mMode`:
+    facing the camera, or lying flat along the world's horizontal plane. See
+    [`VfxBeamDefinitionData.mMode`](/classes/vfxbeamdefinitiondata#mmode).
+
+    **Length.** `scale.y` and `scale.z` trim the two ends, as fractions of the beam:
+
+    ```text
+    sourceEdge = source + (target - source) · scale.y
+    targetEdge = target - (target - source) · scale.z
+    ```
+
+    With both at `0`, or both at `1`, the quad covers the whole beam. Values in between move
+    each edge toward the other end.
+
+    **Texture.** The texture's `v` axis lies along the beam and its `u` axis across it. The
+    emitter's UV transform is applied with its first axis along the beam, so a `u` scroll such
+    as `BirthUvScrollRate.x` moves the texture along the beam. The number of repeats comes from
+    `mBeam.mBirthTilingSize`: `width / x` across and `length / y` along, where a component of
+    `0` or below gives one repeat. The length is the full distance between the endpoints even
+    when the quad is trimmed, so trimming shortens the quad without removing repeats.
+
+properties:
+  mBeam:
+    description: |
+      The beam's settings: its width mode, texture tiling, color by distance and endpoint
+      offsets. See [VfxBeamDefinitionData](/classes/vfxbeamdefinitiondata).
+
+  mMesh:
+    description: |
+      A mesh to draw in place of the quad. When any mesh named here loads, the quad is not
+      drawn and the emitter's particles draw the mesh instead, turned to lie along the line
+      between the two endpoints, with world up as its up axis (world X for a vertical beam).
+      How the mesh is placed and scaled along the beam is not yet identified. See
+      [VfxMeshDefinitionData](/classes/vfxmeshdefinitiondata) for how the mesh is chosen.

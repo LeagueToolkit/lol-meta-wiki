@@ -1,0 +1,41 @@
+# VfxPrimitiveAttachedMesh Documentation
+
+class:
+  description: |
+    A mesh primitive that draws the **unit the effect is attached to**.
+
+    **Which mesh.** When `mMesh` names a mesh that loads, that mesh is drawn. Otherwise, which
+    is how most shipped attached meshes use it, the particle draws the unit's own skinned mesh:
+    every skin instance the unit currently shows, posed with the unit's current bone
+    transforms.
+    The overlay therefore follows the unit's animation exactly, and is shaded with the
+    emitter's texture, color and blend mode instead of the unit's own material. Each particle
+    draws one more copy, so several particles stack several overlays.
+
+    **Placement.** `mMesh.mLockMeshToAttachment` decides what places the mesh:
+
+    - **Set**: the mesh sits on the unit's attachment transform - its position and rotation,
+      with its scale forced to `1` - combined with the emitter's transform and scaled by the
+      particle's scale. The particle's own position and rotation are ignored, so the overlay
+      stays on the unit wherever the particle moves. With no attachment, every particle's mesh
+      collapses onto the emitter's origin and keeps only its scale.
+    - **Not set**: the particle's own position and rotation place the mesh, combined with the
+      emitter's transform.
+
+    Shipped data sets it on most attached meshes and never authors it as `false`.
+
+    **Submeshes.** The unit's own visibility decides what can show:
+
+    ```text
+    drawn = mSubmeshesToDrawAlways | (unitVisible & mSubmeshesToDraw)
+    ```
+
+    `mSubmeshesToDraw` can only narrow what the unit currently shows, and an empty list keeps
+    all of it. `mSubmeshesToDrawAlways` is added after the unit's mask, so it shows a submesh
+    even while the unit hides it.
+
+properties:
+  UseAvatarSpecificSubmeshMask:
+    description: |
+      Selects which of two visible-submesh masks the unit provides is used as `unitVisible`
+      above. It changes nothing else. What distinguishes the two masks is not yet identified.

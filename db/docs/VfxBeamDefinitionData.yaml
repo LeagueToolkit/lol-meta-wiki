@@ -1,0 +1,67 @@
+# VfxBeamDefinitionData Documentation
+
+class:
+  description: |
+    The settings of a beam primitive, held by its `mBeam`. The two beam primitives read it
+    differently:
+
+    - [VfxPrimitiveBeam](/classes/vfxprimitivebeam) draws one straight quad per particle and
+      reads `mMode` and `mBirthTilingSize`, but not `mSegments`.
+    - [VfxPrimitiveCameraSegmentBeam](/classes/vfxprimitivecamerasegmentbeam) draws a strip of
+      ribs, one per particle, and reads `mSegments`, but not `mMode`.
+
+    Both read the endpoint offsets and the color-by-distance pair.
+
+properties:
+  mMode:
+    description: |
+      Which way the width of a [VfxPrimitiveBeam](/classes/vfxprimitivebeam) points.
+
+      | Value | Behavior |
+      |---|---|
+      | `0` | **Camera-facing.** The width is perpendicular to the beam and to the view from the source, so the beam is always seen face-on at its full width. |
+      | `1` | **Flat.** The width starts horizontal and perpendicular to the beam. For a particle with no rotation, a horizontal beam lies flat on the ground plane at its full width. |
+
+      In mode `1` the width vector is then transformed by the particle's local matrix - its
+      rotation and its offset from the emitter both apply - and used without normalizing it.
+      So a beam narrows as it tilts toward vertical, by the length of its horizontal part, and
+      has no width at all when exactly vertical, and a particle that moves away from its
+      emitter shifts the width direction.
+    notes:
+      - "Shipped beams set `1`."
+      - "`VfxPrimitiveCameraSegmentBeam` ignores this field and always faces the camera."
+
+  mSegments:
+    description: |
+      Number of ribs of a
+      [VfxPrimitiveCameraSegmentBeam](/classes/vfxprimitivecamerasegmentbeam), and so the
+      maximum number of particles its emitter holds. It is scaled by an engine quality factor
+      before use. `0` or `1` draws nothing, since a strip needs at least two ribs.
+    notes:
+      - "`VfxPrimitiveBeam` never reads it."
+
+  mTrailMode:
+    description: "Not read by either beam primitive. Setting it has no known effect."
+
+  mIsColorBindedWithDistance:
+    description: |
+      Colors the beam by its **length**. When set, every particle's color is multiplied by
+      `mAnimatedColorWithDistance`, evaluated at the world distance between the two endpoints.
+      The result is one color for the whole beam, not a gradient along it, and it changes as
+      the beam stretches and shrinks.
+    notes:
+      - "The distance is measured between the system's position and the target, without `mLocalSpaceSourceOffset` or `mLocalSpaceTargetOffset`."
+
+  mAnimatedColorWithDistance:
+    description: |
+      The color applied by `mIsColorBindedWithDistance`. Its dynamics are sampled at the
+      beam's length in **world units**, not at a normalized time, so the curve's keys are
+      distances such as `500` or `1200`. Unused while `mIsColorBindedWithDistance` is unset.
+
+  mBirthTilingSize:
+    description: |
+      Texture tiling, evaluated once per particle when it spawns. Only `x` and `y` are used.
+      On a [VfxPrimitiveBeam](/classes/vfxprimitivebeam), `x` is the width in world units that
+      one texture repeat covers across the beam, and `y` the length it covers along the beam.
+      A component of `0` or below gives exactly one repeat on that axis. How the camera
+      segment beam uses it is not yet identified.

@@ -1,0 +1,14 @@
+# VfxPrimitiveCameraUnitQuad Documentation
+
+class:
+  description: |
+    A camera-facing quad whose size **equals** the particle scale. The corners sit at
+    `±scale.x / 2` along screen right and `±scale.y / 2` along screen up, so the quad is
+    `scale.x` wide and `scale.y` high.
+
+    That factor of one half is the only difference from
+    [VfxPrimitiveCameraQuad](/classes/vfxprimitivecameraquad). The screen-plane axes, the
+    roll from the X rotation, the `IsDirectionOriented` behavior and the texture mapping are
+    the same.
+  notes:
+    - "Swapping an emitter between this class and `VfxPrimitiveCameraQuad` without changing its scale halves or doubles the drawn size."

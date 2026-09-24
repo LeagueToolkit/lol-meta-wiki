@@ -1,0 +1,63 @@
+# VfxLegacyPrimitiveBase Documentation
+
+class:
+  description: |
+    The **primitive** of an emitter: the shape each of its particles is drawn as. An emitter
+    picks one through
+    [`VfxEmitterDefinitionData.Primitive`](/classes/vfxemitterdefinitiondata#primitive), and
+    every particle of that emitter draws the same shape. An emitter with no primitive draws
+    camera-facing quads, exactly like
+    [VfxPrimitiveCameraQuad](/classes/vfxprimitivecameraquad).
+
+    The primitive decides the geometry and how the particle's position, rotation and scale
+    map onto it. Texture, flipbook, color, blend mode, alpha erosion and the UV properties
+    come from the emitter and apply the same way whatever the primitive, except where a
+    primitive's page says otherwise.
+
+    ## Two ways of drawing
+
+    **Batched primitives** - camera quads, arbitrary quads, rays, beams and trails - build
+    their vertices on the CPU every frame, already in world space, and one draw call covers
+    every particle of the emitter. They share one vertex layout and the particle quad shader.
+    None of them has a shader of its own, so a trail or a beam is textured, flipbooked,
+    colored and eroded the same way a quad is.
+
+    **Per-particle primitives** - meshes and planar projections - add nothing to that batch.
+    Each particle is drawn separately, and a mesh once for every submesh, so their cost grows
+    with the particle count.
+
+    [VfxPrimitiveNonRenderable](/classes/vfxprimitivenonrenderable) draws nothing.
+
+    ## How the particle scale maps onto each shape
+
+    `scale` is the particle's current scale (`BirthScale0` combined with `Scale0`) multiplied
+    by the effect's overall scale. A dash marks a component whose effect is not established.
+
+    | Primitive | `scale.x` | `scale.y` | `scale.z` |
+    |---|---|---|---|
+    | [Camera quad](/classes/vfxprimitivecameraquad) | half-width | half-height | no effect |
+    | [Camera unit quad](/classes/vfxprimitivecameraunitquad) | width | height | no effect |
+    | [Arbitrary quad](/classes/vfxprimitivearbitraryquad) | half-extent along local X | half-extent along local Y | no effect |
+    | [Ray](/classes/vfxprimitiveray) | width | length along local +Z | start offset along local +Z |
+    | [Beam](/classes/vfxprimitivebeam) | width | trim at the source end | trim at the target end |
+    | [Camera segment beam](/classes/vfxprimitivecamerasegmentbeam) | width | - | - |
+    | [Trails](/classes/vfxprimitivetrailbase) | half-width at that point | no effect | no effect |
+    | [Meshes](/classes/vfxprimitivemeshbase) | X scale | Y scale | Z scale |
+
+    ## Which primitives follow the particle's rotation
+
+    - **Arbitrary quads, rays, arbitrary trails and meshes** are oriented by the particle's
+      full rotation, combined with the emitter's and the system's orientation.
+    - **Camera quads** lie in the screen plane and read only the X component of the particle
+      rotation, as a roll.
+    - **Camera trails** follow the path of their particles and turn about it to face the
+      camera.
+    - **Beams** take their direction from their two endpoints. Only the flat width mode of
+      a [VfxPrimitiveBeam](/classes/vfxprimitivebeam) reads the particle's rotation.
+
+    `VfxEmitterDefinitionData.IsDirectionOriented` rebuilds the orientation of an arbitrary
+    quad or a mesh from the particle's direction of travel, and a mesh's local +Z then points
+    along it. A camera quad takes its axes from the direction of travel instead of the screen.
+    Rays ignore it.
+  notes:
+    - "Emitters in a system's `SimpleEmitterDefinitionData` list are drawn by a separate, reduced path with different rules. The primitive pages describe complex emitters."

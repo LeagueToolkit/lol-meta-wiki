@@ -1,0 +1,13 @@
+# VfxPrimitiveBeamBase Documentation
+
+class:
+  description: |
+    A beam primitive configured by one [VfxBeamDefinitionData](/classes/vfxbeamdefinitiondata)
+    block, `mBeam`. How the block is read depends on the concrete primitive: see
+    [VfxPrimitiveCameraSegmentBeam](/classes/vfxprimitivecamerasegmentbeam).
+  notes:
+    - "[VfxPrimitiveBeam](/classes/vfxprimitivebeam) carries its own `mBeam` of the same type instead of deriving from this class, and reads some of its fields differently."
+
+properties:
+  mBeam:
+    description: "The beam's settings: endpoint offsets, rib count, texture tiling and color by distance."

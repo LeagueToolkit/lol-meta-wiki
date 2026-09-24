@@ -1,0 +1,78 @@
+# VfxPrimitiveMeshBase Documentation
+
+class:
+  description: |
+    The **mesh** primitives: each particle draws a whole 3D mesh, chosen by `mMesh` and placed,
+    turned and scaled by the particle.
+
+    **Transform.** The mesh takes the particle's full world transform: its position, its
+    rotation about all three axes (`BirthRotation0`, the rotation rates and `Rotation0`), the
+    turn from `BirthOrbitalVelocity`, and the emitter's and the system's transforms. Scale is
+    per axis, `scale.x`, `scale.y` and `scale.z` on the mesh's X, Y and Z, unless the emitter
+    sets `IsUniformScale`, which applies `scale.x` to all three. When the emitter sets
+    `IsDirectionOriented`, the mesh's local +Z points along the particle's direction of
+    travel.
+
+    **Cost.** Meshes are not batched. Every particle is drawn on its own, once for each submesh
+    it shows, and a skinned mesh also uploads its whole skeleton pose for every particle.
+
+    ## Camera alignment
+
+    `AlignYawToCamera` and `AlignPitchToCamera` replace part of the particle's orientation
+    with a rotation that faces the camera. With either set, every frame the particle is aimed
+    from its own position toward an **aim point** built per axis:
+
+    | Aim point axis | Source |
+    |---|---|
+    | X | the camera's X if `AlignYawToCamera` is set, else the particle's |
+    | Y | the camera's Y if `AlignPitchToCamera` is set, else the particle's |
+    | Z | always the camera's |
+
+    The camera's up vector is the up axis of the result, and the particle's position is kept.
+
+    - **Yaw alone** turns the mesh about the vertical to face the camera and keeps it upright.
+    - **Pitch alone** aims the mesh within the vertical plane through the particle, keeping
+      the particle's X. It works as a tilt toward the camera only when the camera has about
+      the same X as the particle.
+    - **Both** point the mesh at the camera's position.
+
+    Which side of the mesh ends up facing the camera depends on the mesh type. A skinned mesh
+    (`.skn`) points its local +Z at the camera. A static mesh (`.scb`, `.gmesh`) is turned a
+    half turn about the up axis from that, so its local -Z faces the camera.
+
+    Whether the particle's own rotation survives the alignment is set by `0x6aec9e7a`.
+  notes:
+    - "Skinned meshes draw with a separate particle shader that has no soft-particle fade, so `SoftParticleParams` does not affect them."
+
+properties:
+  mMesh:
+    description: |
+      The mesh to draw, its animation and which of its submeshes show. See
+      [VfxMeshDefinitionData](/classes/vfxmeshdefinitiondata).
+
+  AlignYawToCamera:
+    description: |
+      Aims the mesh toward the camera on the X axis of the aim point, which turns it about the
+      vertical to face the camera. Combines with `AlignPitchToCamera`, see Camera alignment
+      above.
+
+  AlignPitchToCamera:
+    description: |
+      Aims the mesh toward the camera on the Y axis of the aim point. On its own it keeps the
+      particle's X, so it is a true pitch only when combined with `AlignYawToCamera` or when
+      the camera shares the particle's X. See Camera alignment above.
+
+  "0x6aec9e7a":
+    description: |
+      Decides what happens to the particle's own rotation when a camera-alignment flag is set.
+
+      | Value | Behavior |
+      |---|---|
+      | `false` | The particle's own orientation is applied first and the camera-facing rotation on top of it, so spin and authored rotation still show inside the aligned frame. |
+      | `true` | The camera-facing rotation replaces the particle's orientation. |
+
+      Read only when `AlignYawToCamera` or `AlignPitchToCamera` is set, and otherwise it has
+      no effect. A particle that never rotates draws the same either way, since its own
+      orientation is then the identity.
+    notes:
+      - "The property's name is not known."

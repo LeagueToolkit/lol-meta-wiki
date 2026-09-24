@@ -1,0 +1,28 @@
+# VfxPrimitiveRay Documentation
+
+class:
+  description: |
+    A quad stretched along the particle's local **+Z axis** and turned about that axis to face
+    the camera. It has no properties: its shape comes entirely from the particle's orientation
+    and scale.
+
+    **Direction.** The axis is the particle's local +Z after its full orientation: the
+    particle's rotation, the post-rotation (`HasPostRotateOrientation`), the system's
+    orientation when `ParticleIsLocalOrientation` is set, and the emitter's transform. It is
+    **never** the velocity. `IsDirectionOriented` has no effect on a ray, so a ray with no
+    rotation authored points along the emitter's local +Z for its whole life, however the
+    particle moves.
+
+    **Size.** All three scale components are used:
+
+    ```text
+    near = position + axis · scale.z
+    far  = position + axis · (scale.z + scale.y)
+    ```
+
+    `scale.y` is the length of the ray, and `scale.z` is the gap between the particle and the
+    ray's near edge. A negative `scale.z` starts the ray behind the particle. `scale.x` is the
+    full width, centered on the axis.
+
+    **Facing.** The width runs perpendicular to both the axis and the direction to the camera,
+    so the ray rolls about its own axis to stay face-on, the way a cylinder billboard does.
