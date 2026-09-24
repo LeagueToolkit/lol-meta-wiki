@@ -1,0 +1,30 @@
+# VfxPrimitiveArbitraryQuad Documentation
+
+class:
+  description: |
+    A quad in the plane of the particle's own **local X and Y axes**, not facing the camera.
+    The axes come from the particle's full orientation - its rotation, combined with the
+    emitter's and the system's orientation - so the quad can lie flat on the ground, stand
+    upright or tumble in 3D.
+
+    **Size.** The corners are `position ± scale.x · X ± scale.y · Y`, so the quad is
+    `2 · scale.x` by `2 · scale.y`. `scale.z` is not read, and the local Z axis plays no part
+    in the shape.
+
+    **Orientation.** With no rotation authored, the quad stands upright in the emitter's
+    local XY plane, facing along the emitter's forward axis (+Z). A rotation of 90 degrees
+    about X, such as a `BirthRotation0` of `[90, 0, 0]`, lays it flat. When the emitter sets
+    `IsDirectionOriented`, the particle's orientation is rebuilt from its direction of
+    travel every frame, and the quad turns with it.
+
+    **Texture.** The mapping is the camera quad's with the two axes swapped. Before the
+    emitter's UV properties apply:
+
+    ```text
+    u = y + 0.5      // along local +Y
+    v = 0.5 - x      // against local +X
+    ```
+
+    where `x` and `y` run from `-0.5` to `0.5` across the quad. The top of the image lies
+    along +X and its left edge along -Y, so a texture that reads upright on a camera quad
+    appears turned a quarter turn here.

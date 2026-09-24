@@ -1,0 +1,92 @@
+# VfxTrailDefinitionData Documentation
+
+class:
+  description: |
+    The settings of a [trail](/classes/vfxprimitivetrailbase) ribbon, held by its `mTrail`.
+
+    The ribbon is built by **walking** its points from one end to the other, and
+    `mSmoothingMode` picks the direction. The walk decides two things other properties depend
+    on: where the texture's `u = 0` lies, and which end `mCutoff` removes.
+
+properties:
+  mMode:
+    description: |
+      How the texture's `u` coordinate is assigned along the ribbon.
+
+      | Value | Behavior |
+      |---|---|
+      | `0` | `u` is the distance along the current ribbon from the start of the walk, measured again every frame. The texture slides along the ribbon whenever a point is added at the head or removed at the tail. |
+      | non-zero | **Wake mode.** Each point keeps the `u` it was born with: the total distance the emitter's spawn point had travelled when that particle spawned. The texture stays pinned to the world path, and points appearing, dying or being cut off do not move it. |
+
+      In both modes the distance is divided by `mBirthTilingSize.x`.
+    notes:
+      - "Shipped trails set `1`."
+      - "Legacy `.troy` key: `p-trailmode`. Values of `2` and above are read as `1`."
+
+  mSmoothingMode:
+    description: |
+      Smoothing, and the direction the ribbon is walked in.
+
+      | Value | Smoothing | Walk |
+      |---|---|---|
+      | `0` | none | newest to oldest (head to tail) |
+      | `1` | on | newest to oldest (head to tail) |
+      | `2` | on, and width limited on sharp turns | oldest to newest (tail to head) |
+
+      Smoothing does two things, and neither adds points:
+
+      - Each point's position is replaced by the average of the particles up to `k` places
+        before and after it, where `k` (0 to 3) comes from a global engine setting rather than
+        from the emitter.
+      - At each joint the width direction is turned halfway between the directions of the two
+        segments that meet there, so the ribbon keeps its width through a bend instead of
+        kinking.
+
+      Mode `2` also narrows the ribbon after sharp turns. When a joint turns further than a
+      threshold angle, the limit on the half-width drops by up to half the segment length,
+      more for sharper turns. Each gentle joint after that raises the limit by half a segment
+      length again, never beyond twice the authored half-width. Along the walk, no point is
+      wider than the current limit. The threshold angle is not yet identified.
+
+      The walk direction is not cosmetic. It moves `u = 0` to the other end of the ribbon and
+      makes `mCutoff` remove the other end.
+    notes:
+      - "Legacy `.troy` key: `e-trail-smoothing`."
+
+  mCutoff:
+    description: |
+      Maximum length of the ribbon, in world units, measured along the ribbon from the point
+      where the walk starts. Points past that length are not drawn. `0` or a negative value
+      draws the whole ribbon, and the first point is never cut.
+
+      It truncates by total length. It does not break the ribbon where two particles are far
+      apart. Modes `0` and `1` of `mSmoothingMode` cut the oldest end, mode `2` cuts the
+      newest end.
+    notes:
+      - "Legacy `.troy` key: `e-trail-cutoff`."
+
+  mMaxAddedPerFrame:
+    description: |
+      Maximum number of particles the emitter spawns in one update. Since every particle is a
+      ribbon point, it caps how many points the ribbon gains per frame. `0` or a negative
+      value sets no cap.
+    notes:
+      - "Legacy `.troy` key: `e-trail-max-added-per-frame`."
+
+  mBirthTilingSize:
+    description: |
+      Texture tiling, evaluated once per particle when it spawns and kept for its life, so its
+      dynamics can give each point a different value. Only `x` and `y` are used.
+
+      - `x` is the length of one texture repeat along the ribbon, in world units:
+        `u = distance / x`. `0` or a negative value makes `u = 0` everywhere, so the whole
+        ribbon samples one column of the texture.
+      - `y` sets how much of the texture spans the ribbon's width, centered on `v = 0.5`:
+
+      | `y` | `v` span across the ribbon |
+      |---|---|
+      | `0` | the full texture, `0` to `1` |
+      | positive | `halfWidth / y`, so the span follows the ribbon's width in world units |
+      | negative | the constant `-y` |
+    notes:
+      - "Legacy `.troy` key: `e-tilesize`."

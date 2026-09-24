@@ -1,0 +1,11 @@
+# VfxPrimitivePlanarProjection Documentation
+
+class:
+  description: |
+    A per-particle primitive with a draw path of its own. It adds no geometry to the emitter's
+    batched quads. Instead, each particle is drawn separately, with its own per-particle shader
+    parameters, and emitters in the `SimpleEmitterDefinitionData` list have a dedicated draw
+    for it as well. The emitter's material is also built with a case specific to this
+    primitive.
+
+    The projection's geometry, and what `mProjection` controls, are not yet identified.

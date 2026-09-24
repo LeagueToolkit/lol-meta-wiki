@@ -1,0 +1,12 @@
+# VfxPrimitiveCameraTrail Documentation
+
+class:
+  description: |
+    A [trail](/classes/vfxprimitivetrailbase) that **faces the camera**. At each point the
+    width runs perpendicular to both the ribbon's direction and the view direction, so the
+    ribbon twists about its own path to stay face-on and reads at the same width from every
+    angle.
+
+    The ribbon's direction at a point is the direction to the neighboring particle: to the
+    next point for the first point of the walk, and from the previous point for every later
+    one. The particles' own rotation plays no part.

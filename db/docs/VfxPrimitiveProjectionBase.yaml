@@ -1,0 +1,12 @@
+# VfxPrimitiveProjectionBase Documentation
+
+class:
+  description: |
+    A primitive configured by one
+    [VfxProjectionDefinitionData](/classes/vfxprojectiondefinitiondata) block, `mProjection`.
+    See [VfxPrimitivePlanarProjection](/classes/vfxprimitiveplanarprojection) for what is known
+    about how it draws.
+
+properties:
+  mProjection:
+    description: "The projection's settings. See [VfxProjectionDefinitionData](/classes/vfxprojectiondefinitiondata)."

@@ -1,0 +1,36 @@
+# VfxPrimitiveCameraSegmentBeam Documentation
+
+class:
+  description: |
+    A beam drawn as a **strip bent through its particles**. It spans the same two endpoints as
+    [VfxPrimitiveBeam](/classes/vfxprimitivebeam) - the system's position and the effect
+    instance's target, each plus its offset from `mBeam` - but each particle becomes one
+    **rib** of the strip instead of a whole quad, and consecutive ribs are joined.
+
+    **Rib placement.** The number of ribs is `mBeam.mSegments`, multiplied by an engine
+    quality factor and truncated. A particle's place along the beam comes from its birth
+    order, counted from the emitter's start:
+
+    ```text
+    t   = birthIndex / (ribs - 1)
+    rib = lerp(source, target, t) + the particle's offset from its emitter
+    ```
+
+    The particle's own motion pushes its rib off the straight line, so velocity, drag, force
+    fields and `WorldAcceleration` bend the beam. Particles that do not move draw a straight
+    strip.
+
+    **Particle count.** The emitter never holds more particles than there are ribs, and only
+    the first `ribs` particles it spawns are drawn. A later particle is not drawn even when it
+    replaces one that died, so a rib whose particle dies is gone for the rest of the beam's
+    life. With `mSegments` at `0` or `1` nothing is drawn.
+
+    **Width.** The strip always faces the camera: one width direction for the whole beam,
+    perpendicular to the beam and to the view from the source. Each rib's width is its
+    particle's `scale.x`. `mBeam.mMode` has no effect on this primitive.
+
+    **Color.** Every rib carries its own particle's color and color-lookup coordinate, so
+    color over lifetime varies along the beam.
+  notes:
+    - "Alpha erosion does not progress on this primitive: the erosion drive every rib writes is always `0`."
+    - "The color-lookup coordinate fills the slot a `TextureMult` layer would read its UVs from, so with a mult texture set, the mult layer samples at the color-lookup coordinate."

@@ -1,0 +1,7 @@
+# VfxPrimitiveNonRenderable Documentation
+
+class:
+  description: |
+    A primitive that **draws nothing**. The emitter spawns and simulates its particles as
+    usual, but it builds no geometry, sets up no material and binds no texture, so the
+    emitter's appearance properties have no effect.

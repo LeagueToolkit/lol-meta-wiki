@@ -1,0 +1,12 @@
+# VfxPrimitiveArbitraryTrail Documentation
+
+class:
+  description: |
+    A [trail](/classes/vfxprimitivetrailbase) whose width follows each particle's own
+    **local X axis**, independent of the path and of the camera. The axis comes from the
+    particle's full orientation - its rotation, combined with the emitter's and the system's
+    orientation - so the ribbon can lie flat, stand upright or twist with its particles.
+
+    With no rotation authored, every point's width runs along the emitter's local X axis. The
+    direction of the path does not enter the width at all, so a ribbon whose path turns
+    toward its own X axis narrows at that point, and one seen edge-on disappears.

@@ -1,0 +1,29 @@
+# VfxPrimitiveCameraQuad Documentation
+
+class:
+  description: |
+    A **camera-facing quad**, and the default primitive: an emitter that sets no `Primitive`
+    draws its particles this way.
+
+    Each particle is a rectangle centered on the particle and lying in the screen plane. Its
+    axes are the camera's screen-right and screen-up vectors, so every quad of the emitter is
+    parallel to the screen, wherever it is in the scene. It does not turn toward the camera's
+    position, and it has no depth.
+
+    **Size.** The corners sit at `±scale.x` along screen right and `±scale.y` along screen up,
+    so the quad is `2 · scale.x` wide and `2 · scale.y` high. A `BirthScale0` of
+    `[50, 50, 50]` draws a square 100 world units across. `scale.z` has no effect.
+    [VfxPrimitiveCameraUnitQuad](/classes/vfxprimitivecameraunitquad) draws the same quad at
+    half this size.
+
+    **Roll.** The quad turns about the view direction by the X component of the particle's
+    accumulated rotation, built from `BirthRotation0`, `BirthRotationalVelocity0`,
+    `BirthRotationalAcceleration` and `Rotation0`. The angle is truncated to whole degrees.
+    The Y and Z components have no effect on a camera quad.
+
+    **Direction of travel.** When the emitter sets `IsDirectionOriented`, the two axes come
+    from the particle's direction of travel instead of the screen, and the roll is ignored.
+
+    **Texture.** Before the emitter's UV properties apply, `u` runs from `0` at the left edge
+    to `1` at the right edge, and `v` from `0` at the top edge to `1` at the bottom edge, so an
+    unrolled quad shows its texture upright.

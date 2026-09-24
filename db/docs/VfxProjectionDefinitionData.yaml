@@ -1,0 +1,16 @@
+# VfxProjectionDefinitionData Documentation
+
+class:
+  description: |
+    The settings of a [planar projection](/classes/vfxprimitiveplanarprojection), held by its
+    `mProjection`. How the engine uses each field is not yet identified.
+
+properties:
+  mYRange:
+    description: "Purpose not yet identified."
+
+  mFading:
+    description: "Purpose not yet identified."
+
+  colorModulate:
+    description: "Purpose not yet identified."

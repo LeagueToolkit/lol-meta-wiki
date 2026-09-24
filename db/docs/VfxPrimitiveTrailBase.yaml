@@ -1,0 +1,37 @@
+# VfxPrimitiveTrailBase Documentation
+
+class:
+  description: |
+    A **trail**: one ribbon strung through the emitter's live particles. Every particle is one
+    point of the ribbon, so the ribbon is exactly as long and as detailed as the set of
+    particles alive at that moment. It grows at the head as the emitter spawns and shrinks at
+    the tail as particles die.
+
+    Points are joined in birth order, from the newest particle (the head) to the oldest (the
+    tail). Each point contributes two vertices, one on each side of the particle, and two
+    triangles join it to the previous point. The ribbon never inserts points between
+    particles, so its smoothness depends on the spawn rate: a slow emitter or a fast-moving
+    one draws visible corners.
+
+    **Width.** At each point the ribbon extends `scale.x` to each side, so it is
+    `2 · scale.x` wide there, and a `Scale0` curve over the particle's lifetime tapers the
+    ribbon along its length. `scale.y` and `scale.z` have no effect. The direction the width
+    points in is what the concrete trail classes decide:
+    [VfxPrimitiveCameraTrail](/classes/vfxprimitivecameratrail) turns it toward the camera,
+    [VfxPrimitiveArbitraryTrail](/classes/vfxprimitivearbitrarytrail) takes it from each
+    particle's rotation.
+
+    **Color and texture.** Every point carries its own particle's color, flipbook frame and
+    color-lookup coordinate, so color over lifetime varies along the ribbon, from the young
+    head to the old tail. The texture coordinates at each point come from `mTrail` and then
+    pass through the particle's UV transform (`UvScale`, `UvRotation` and the UV scroll
+    properties), as they do on a quad.
+  notes:
+    - "The spawn rate controls the ribbon's resolution. `mTrail.mMaxAddedPerFrame` caps how many points one update adds."
+
+properties:
+  mTrail:
+    description: |
+      The ribbon's settings: texture tiling, the order the ribbon is walked in, smoothing,
+      maximum length and the texture mode. See
+      [VfxTrailDefinitionData](/classes/vfxtraildefinitiondata).

@@ -1,0 +1,66 @@
+# VfxMeshDefinitionData Documentation
+
+class:
+  description: |
+    Which mesh a mesh primitive draws, how it is animated and which of its submeshes show.
+
+    **Choosing the mesh.** The fields are tried in a fixed order when the emitter's definition
+    loads, and the first that loads wins:
+
+    1. A **skinned** mesh, when both `mMeshName` and `mMeshSkeletonName` are set and neither
+       is its `doesnotexist.*` placeholder. It is all or nothing: one name without the other
+       loads no skinned mesh.
+    2. A **static** mesh from `mSimpleMeshName`, when it ends in `.scb`.
+    3. A static mesh from `mSimpleMeshName`, when it ends in `.tmesh` or `.gmesh`.
+
+    A skinned pair therefore overrides `mSimpleMeshName` entirely. `mSimpleMeshName` is the
+    only field tested by extension, and any other extension loads nothing, `.sco` included.
+
+    The animation fields apply only to a skinned mesh.
+
+properties:
+  mMeshName:
+    description: |
+      Path of a skinned mesh (`.skn`). Needs `mMeshSkeletonName` to load, and takes
+      precedence over `mSimpleMeshName` when it does.
+
+  mMeshSkeletonName:
+    description: "Path of the skeleton (`.skl`) for `mMeshName`. Without it the skinned mesh does not load."
+
+  mSimpleMeshName:
+    description: |
+      Path of a static mesh: `.scb`, `.tmesh` or `.gmesh`. Used only when no skinned mesh
+      loaded. Any other extension is ignored without an error.
+
+  mAnimationName:
+    description: |
+      The animation a skinned mesh plays: an `.anm` path, or the bare name of a clip.
+      Ignored when `mAnimationVariants` has entries, and never loaded for a static mesh.
+
+  mAnimationVariants:
+    description: |
+      Alternative animations. When the list has entries, one is picked at random, each with
+      equal chance, and replaces `mAnimationName`.
+
+      The pick happens once, when the effect's definition loads, not per particle and not per
+      effect instance. Every instance plays the same animation until the definitions are
+      loaded again.
+
+  mSubmeshesToDraw:
+    description: |
+      Names of the submeshes to draw. An empty list draws them all. Names are matched against
+      the mesh's own submesh names, and a mesh can have at most 32 addressable submeshes.
+      How the list combines with `mSubmeshesToDrawAlways` depends on the primitive: see
+      [VfxPrimitiveMesh](/classes/vfxprimitivemesh) and
+      [VfxPrimitiveAttachedMesh](/classes/vfxprimitiveattachedmesh).
+
+  mSubmeshesToDrawAlways:
+    description: |
+      Submeshes drawn in addition to `mSubmeshesToDraw`. On an attached mesh they are added
+      after the unit's own visibility, so they show even while the unit hides them.
+
+  mLockMeshToAttachment:
+    description: |
+      Places the mesh on the unit's attachment instead of on the particle. Read only by
+      [VfxPrimitiveAttachedMesh](/classes/vfxprimitiveattachedmesh), which describes the
+      effect. Other mesh primitives ignore it.

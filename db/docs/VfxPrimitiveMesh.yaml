@@ -1,0 +1,11 @@
+# VfxPrimitiveMesh Documentation
+
+class:
+  description: |
+    Draws the mesh named in `mMesh` at every particle, placed, turned and scaled by the
+    particle as described on [VfxPrimitiveMeshBase](/classes/vfxprimitivemeshbase).
+
+    Submeshes are chosen from the mesh alone: the drawn set is `mSubmeshesToDraw` together
+    with `mSubmeshesToDrawAlways`, and an empty `mSubmeshesToDraw` draws every submesh.
+  notes:
+    - "`mMesh.mLockMeshToAttachment` is not read by this class. It only affects `VfxPrimitiveAttachedMesh`."
