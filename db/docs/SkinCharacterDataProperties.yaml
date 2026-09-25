@@ -66,7 +66,9 @@ properties:
       - "There is no check for `-1`. A skin with `skinClassification` `2` and no `skinParent` looks up `..._-1`."
 
   championSkinName:
-    description: "A readable skin name, such as `AhriSkin04` or `Popstar Ahri Chroma1`. No reader of this value was found in the game client."
+    description: |
+      The name used in the skin's sound event names, as in `Play_sfx_AhriSkin04_AhriQ_OnCast`.
+      When it is empty, the character name is used.
 
   championSkinId:
     description: |
