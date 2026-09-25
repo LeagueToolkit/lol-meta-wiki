@@ -1,0 +1,59 @@
+# PersistentEffectConditionData Documentation
+
+class:
+  description: |
+    Effects and submesh changes that apply to a unit while two conditions are true: one
+    evaluated on the unit that owns the entry, and one on a source unit.
+
+    The engine checks every entry on each update:
+
+    1. `OwnerCondition` is evaluated on the unit that owns the entry, and `SourceCondition`
+       on the source unit. A condition that is not set counts as true.
+    2. If either condition is false, the entry's effects are destroyed and its submesh
+       changes are removed.
+    3. If both are true and the entry has no live effects, every item of `PersistentVfxs`
+       is spawned once. The effects stay until a condition turns false.
+    4. The entry's submesh changes are recalculated. See `SubmeshesToShow`.
+
+    When the conditions go from false to true again, the effects spawn again.
+
+properties:
+  OwnerCondition:
+    description: |
+      A [ILogicBoolDriver](/classes/ilogicbooldriver) evaluated on the unit that owns the
+      entry. Not set means true.
+
+  SourceCondition:
+    description: |
+      A [ILogicBoolDriver](/classes/ilogicbooldriver) evaluated on the source unit. Not set
+      means true.
+
+  ForceRenderVfx:
+    description: |
+      When `false`, some states of the owner hide the entry's effects, for example when the
+      owner has faded out completely. When `true`, the owner's state does not hide them.
+      Other reasons to hide an effect, such as fog of war, still apply.
+    notes:
+      - "The other owner states that hide the effects are not yet identified."
+      - "Buff particles are hidden by the same owner-state rule."
+      - "Shipped data sets it on about 20 entries, on both skins and buffs."
+
+  PersistentVfxs:
+    description: |
+      The effects spawned when both conditions become true. Each item is a
+      [PersistentVfxData](/classes/persistentvfxdata). They are spawned once per activation
+      and destroyed when a condition turns false.
+
+  SubmeshesToShow:
+    description: |
+      Hashes of submesh names that are shown while the entry is active. A hash that does not
+      match a submesh of the unit's current mesh is ignored.
+
+      The engine combines all active entries: the show sets are joined, and every submesh in
+      any hide set is removed.
+
+  SubmeshesToHide:
+    description: |
+      Hashes of submesh names that are hidden while the entry is active. A hash that does not
+      match a submesh of the unit's current mesh is ignored. See `SubmeshesToShow` for how
+      entries combine.

@@ -1,0 +1,12 @@
+# 0x7d564f9a Documentation
+
+class:
+  description: |
+    A per-character setting on a skin, keyed by a character name. No reader was found in the
+    game client.
+  notes:
+    - "Shipped data uses it only on Ivern skins 2 to 10, each with one entry keyed `IvernTotem` that leaves `0xe0ef4172` unset."
+
+properties:
+  "0xe0ef4172":
+    description: "Purpose not yet identified. No shipped entry sets it, and no reader was found in the game client."

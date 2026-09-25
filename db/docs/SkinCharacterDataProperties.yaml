@@ -213,8 +213,9 @@ properties:
 
       Each entry is spawned as follows:
 
-      - `effectKey` is resolved through the skin's `mResourceResolver` and then the global
-        resolvers. It takes priority over `effectName`.
+      - `effectKey` is resolved through the unit's resource resolvers and then the global
+        resolvers. It takes priority over `effectName`. A key that no resolver has spawns
+        nothing, and `effectName` is not used instead.
       - `effectName` is a particle name, used only when `effectKey` is not set.
       - `boneName` is the bone the effect is placed on and attached to. When it is empty, the
         effect is attached to the unit.
@@ -237,10 +238,8 @@ properties:
         undone.
 
       The submesh changes of all true entries add up. Gear changes register the list again.
-      `BuffData.PersistentEffectConditions` uses the same system, with the buff's caster as the
-      source.
-    notes:
-      - "`ForceRenderVfx` forces an internal render flag of the spawned effects on. What the flag controls is not yet identified."
+      `BuffData.PersistentEffectConditions` uses the same system. See
+      [PersistentEffectConditionData](/classes/persistenteffectconditiondata).
 
   mSpawnParticleName:
     description: |
@@ -327,8 +326,9 @@ properties:
 
   mContextualActionData:
     description: |
-      The unit's [ContextualActionData](/classes/contextualactiondata). Without it, the unit
-      gets no contextual action component.
+      The unit's [ContextualActionData](/classes/contextualactiondata). A unit without it gets
+      no contextual action component, unless the unit type always gets one, which is
+      probably the case for champions.
 
   "0xeda7817e":
     description: |
@@ -352,11 +352,12 @@ properties:
 
   "0x62ca0ae":
     description: |
-      A spawn-in sequence. It plays one sequence for each team and an animation on the unit.
-      The code that plays it is behind a client feature flag, and no shipped skin sets it.
+      A spawn-in sequence, started by a server message. It plays one sequence for each team
+      and an animation on the unit. See [SpawnInSequence](/classes/spawninsequence). The code
+      that plays it is behind a client feature flag, and no shipped skin sets it.
 
   "0x81169a8b":
-    description: "Has the same fields as a spawn-in sequence. No reader was found, and no shipped skin sets it."
+    description: "See [0x81169a8b](/classes/0x81169a8b). No shipped skin sets it."
 
   "0xad74545b":
     description: "No reader was found, and no shipped skin sets it."

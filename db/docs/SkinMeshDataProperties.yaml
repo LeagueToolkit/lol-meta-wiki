@@ -106,3 +106,258 @@ properties:
       a lookup by bone name can find when no joint has that name.
     notes:
       - "Read only on a character skin's `skinMeshProperties`."
+
+  skeleton:
+    description: |
+      Path of the skeleton (`.skl`) the mesh is skinned to. The client loads it when it builds
+      the mesh. If the skeleton does not load, the mesh is not built, and a character skin that
+      uses this object does not load.
+    examples:
+      - "`ASSETS/Characters/KhaZix/Skins/Skin11/Khazix_Skin11.skl`"
+
+  simpleSkin:
+    description: |
+      Path of the skinned mesh (`.skn`). The client builds the mesh from this file together with
+      `skeleton`. If the file does not load, the mesh is not built.
+
+      The built mesh, with its materials and submesh lists, is kept in a cache. For a character
+      the cache key is this path plus the character name and skin number, compared without
+      case, so every unit of the same character and skin shares one copy.
+    examples:
+      - "`ASSETS/Characters/KhaZix/Skins/Skin11/Khazix_Skin11.skn`"
+
+  ReducedBoneSkinning:
+    description: |
+      When `true`, each vertex keeps only its two largest bone weights instead of four. The two
+      weights are scaled so that they add up to `1`, and the other two are set to zero. This is
+      done when the `.skn` is loaded.
+    notes:
+      - "Shipped data sets it only on map units (about 580 skins)."
+
+  skinScale:
+    description: |
+      Uniform scale factor for the mesh. The client sets it as the scale of the mesh instance on
+      all three axes, and multiplies the size of the mesh's local bounding box by it.
+
+  selfIllumination:
+    description: |
+      Self-illumination level of the mesh. When a submesh is drawn, the client writes this value
+      to the `SELF_ILLUMINATION` shader constant (as `x`, `y` and `z`). The client can replace it
+      at run time with an override value for the draw.
+    notes:
+      - "What sets the run-time override is not yet identified."
+      - "How each shader uses `SELF_ILLUMINATION` is up to that shader."
+
+  brushAlphaOverride:
+    description: |
+      Stored with the built mesh. The code that reads it is not yet identified.
+
+  overrideBoundingBox:
+    description: |
+      Size of the mesh's bounding box on the `x`, `y` and `z` axes, in world units. When it is
+      unset, the client uses the size of the bounds in the `.skn`.
+    notes:
+      - "Which systems use this box (culling, selection or other) is not yet identified."
+
+  boundingCylinderRadius:
+    description: |
+      Radius, in world units, of the bounding cylinder the client stores on the mesh's collision
+      object, together with `boundingCylinderHeight`.
+    notes:
+      - "The code that reads the cylinder is not yet identified."
+
+  boundingCylinderHeight:
+    description: |
+      Height, in world units, of the bounding cylinder stored with `boundingCylinderRadius`.
+    notes:
+      - "The code that reads the cylinder is not yet identified."
+
+  boundingSphereRadius:
+    description: |
+      Radius, in world units, of a bounding sphere stored on the mesh's collision object. When
+      it is unset, the stored radius marks the sphere as absent.
+    notes:
+      - "The code that reads the sphere is not yet identified."
+
+  fresnel:
+    description: |
+      Strength of the fresnel term of LIT_UBER. The shader receives `0.1 + 4.9 * fresnel` in the
+      `w` component of `vFresnel` and `FRESNEL`, with `fresnelColor` in `x`, `y` and `z`.
+    notes:
+      - "Used only by submeshes that draw with LIT_UBER (rules 2 and 4 in the class description)."
+
+  fresnelColor:
+    description: |
+      Colour of the fresnel term of LIT_UBER. The red, green and blue channels go to the `x`,
+      `y` and `z` components of `vFresnel` and `FRESNEL`, from `0` to `1`. The alpha channel is
+      not used.
+
+  reflectionFresnel:
+    description: |
+      Fresnel strength of LIT_UBER's reflective variant (`REFLECTIVE`). The shader receives
+      `0.1 + 4.9 * reflectionFresnel` in the `x` component of `vReflection`.
+    notes:
+      - "The `REFLECTIVE` constants are set only when the variant is active: `reflectionMap` is set and the high-quality path is in use. Otherwise the four `reflection*` values have no effect."
+
+  reflectionOpacityDirect:
+    description: |
+      Reflection opacity for LIT_UBER's reflective variant, passed in the `y` component of
+      `vReflection`. How the shader uses it was not checked.
+
+  reflectionOpacityGlancing:
+    description: |
+      Reflection opacity for LIT_UBER's reflective variant, passed in the `z` component of
+      `vReflection`. How the shader uses it was not checked.
+
+  reflectionFresnelColor:
+    description: |
+      Colour of the reflection fresnel of LIT_UBER's reflective variant. The red, green and blue
+      channels go to `vReflectionFColor`, from `0` to `1`, with `w` set to `1`. The alpha channel
+      is not used.
+
+  "0xf37c6128":
+    description: |
+      Turns the mesh's rim light on or off. The client passes it as the `w` component of the
+      `RIM_LIGHT_COLOR` shader constant: `1` when `true`, `0` when `false`.
+    notes:
+      - "Shipped data sets it to `false` on three Shyvana skins only."
+
+  "0xc2357dbf":
+    description: |
+      Direction of the mesh's rim light, as three rotation angles in degrees. The client rotates
+      the vector `(0, 0, -1)` by these angles and passes the result as the `RIM_LIGHT_DIR` shader
+      constant.
+    notes:
+      - "No shipped skin sets it."
+
+  "0x783ad838":
+    description: |
+      Colour of the mesh's rim light, as linear RGB that can go above `1`. The client converts it
+      before it passes it as the `x`, `y` and `z` components of `RIM_LIGHT_COLOR`: with
+      `m = max(1, r, g, b)`, each channel becomes `m * (channel / m)^2.2`.
+    notes:
+      - "No shipped skin sets it."
+
+  "0xde85a7d3":
+    description: |
+      Contrast of the mesh's rim light. The client passes it as the `RIM_LIGHT_CONTRAST` shader
+      constant.
+    notes:
+      - "No shipped skin sets it."
+
+  "0x8881ee77":
+    description: |
+      Four extra constants for LIT_UBER. The client sets them on the LIT_UBER material of every
+      submesh that has no `Material` (rules 2 and 4):
+
+      | Field of the linked object | LIT_UBER constant | Value when unset |
+      |---|---|---|
+      | `0xed8edf74` | `albedoNewMin` | `0.1` |
+      | `0xdba24ad6` | `albedoNewMax` | `1` |
+      | `RimOffset` | `rimOffset` | `0.2` |
+      | `0xe9552339` | `modelHeight` | `275` |
+
+      A `materialOverride` entry that sets its own `0x8881ee77` uses that object for its
+      submesh instead. When neither is set, the client uses the values in the last column.
+    notes:
+      - "No shipped skin sets it."
+
+  usesSkinVO:
+    description: |
+      Selects the name the client uses for the unit's audio. When `true`, it uses the unit's
+      skin name. When `false`, it uses the character record's `charAudioNameOverride` if that is
+      set, and the character name if not.
+    notes:
+      - "Shipped data sets it to `true` on about 330 champion skins across about 70 champions, most of them older skins."
+
+  castShadows:
+    description: |
+      When `false`, the client skips the mesh in its skinned-mesh shadow pass, including the
+      draw with the `SkinnedMesh/SHADOW_MAP` shaders, so the unit casts no shadow.
+    notes:
+      - "Shipped data sets it only to `false`: about 600 skins, most of them map units."
+
+  initialSubmeshToHide:
+    description: |
+      Submeshes that are hidden when the mesh instance is created. The value is a list of
+      submesh names separated by spaces, commas, `|` or `:`, matched without case. A name that
+      matches no submesh is ignored.
+
+    examples:
+      - "`Recall`"
+    notes:
+      - "Set on about 12,000 skins. `Recall` is the most common value."
+
+  initialSubmeshShadowsToHide:
+    description: |
+      Submeshes that do not cast shadows, as a list in the same format as
+      `initialSubmeshToHide`. The client builds the unit's shadow submesh set from everything
+      not in this list.
+
+  initialSubmeshMouseOversToHide:
+    description: |
+      A list of submesh names in the same format as `initialSubmeshToHide`. The client turns it
+      into a submesh set when the mesh instance is created.
+    notes:
+      - "The pass that uses this set is not yet identified."
+
+  InitialSubmeshAvatarToHide:
+    description: |
+      A list of submesh names in the same format as `initialSubmeshToHide`. The client turns it
+      into a submesh set when the mesh instance is created.
+    notes:
+      - "The pass that uses this set is not yet identified."
+
+  EmitterSubmeshAvatarToHide:
+    description: |
+      A list of submesh names in the same format as `initialSubmeshToHide`. The client turns it
+      into a submesh set when it builds the mesh.
+    notes:
+      - "The code that uses this set is not yet identified."
+
+  submeshRenderOrder:
+    description: |
+      Draw order of the submeshes, as a list of submesh names in the same format as
+      `initialSubmeshToHide`. The client first draws every submesh that is not in the list, in
+      the order of the `.skn`. Then it draws the listed submeshes, in the order of the list.
+      When it is unset, all submeshes draw in the order of the `.skn`.
+
+  ForceDrawLast:
+    description: |
+      A flag the mesh instance exposes to the renderer. The code that reads it is not yet
+      identified.
+    notes:
+      - "Shipped data sets it to `true` on about 50 skins."
+
+  materialController:
+    description: |
+      An object that changes the materials of this mesh per unit. When it is set, the client
+      gives the controller a copy of the submesh materials of each unit that uses the mesh when
+      the mesh is set up, and again on updates when the controller asks for them.
+    notes:
+      - "Shipped data sets it on about 830 skins, nearly all TFT unit skins, and nearly all of them use the same controller class."
+
+  OutlineCategorySubmeshes:
+    description: |
+      Submeshes that draw a second time with an outline material. For each entry whose
+      `category` is set, the client finds the submeshes named in `Submeshes` (same list format
+      as `initialSubmeshToHide`). When those submeshes draw, the client draws them again with the
+      entry's `materialOverride` or, if that is unset, with the `Material` of the entry's
+      [category](/classes/characteroutlinecategory).
+    notes:
+      - "An entry without `category` is ignored."
+
+  rigPoseModifierData:
+    description: |
+      Rig pose modifiers for the skeleton. The client adds each entry to the mesh instance when it sets the instance up for a character skin.
+    notes:
+      - "Read only on a character skin's `skinMeshProperties`."
+
+  EnablePicking:
+    description: |
+      When `false`, the client discards the triangle data of the mesh's collision object after
+      it builds it. A ray test against the triangles of this mesh then never hits. The per-bone
+      bounding spheres of the collision object are still built.
+    notes:
+      - "Which clicks or selections use this ray test is not yet identified."
+      - "Shipped data sets it to `false` on about 3,000 skins, nearly all of them TFT companions."

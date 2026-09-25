@@ -1,0 +1,9 @@
+# ISecondaryResourceDisplayData Documentation
+
+class:
+  description: |
+    How the HUD should display a unit's secondary resource.
+
+    No reader was found in the game client. Nothing reads the skin field, and no code checks
+    which class the value is. Shipped data sets the field only on Yorick's skins and on copies
+    of them in map files.

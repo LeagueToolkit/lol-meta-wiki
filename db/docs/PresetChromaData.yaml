@@ -1,0 +1,32 @@
+# PresetChromaData Documentation
+
+class:
+  description: |
+    Chroma data that selects a chroma preset by number. It is the common form of
+    [IChromaData](/classes/ichromadata): shipped data uses it on about 7,400 skins.
+
+    No reader was found in the game client. The client loads it with the skin, but nothing
+    reads its fields.
+
+properties:
+  SelectedPreset:
+    description: |
+      Number of the chroma preset. Shipped values are small integers, most often `1`, `4`,
+      `6` and `10`. What each number selects is not yet identified. No reader was found in
+      the game client.
+
+  RarityOverrides:
+    description: |
+      Rarity of the chroma per publishing region, keyed by region name. Shipped keys are
+      `riot` and `TENCENT`, and shipped values are `0`, `1` and `2`. What the values mean is
+      not yet identified. No reader was found in the game client.
+    examples:
+      - "`{ \"riot\" = 2, \"TENCENT\" = 2 }`"
+
+  DescriptionOverrides:
+    description: |
+      Description of the chroma per publishing region, keyed by region name like
+      `RarityOverrides`. Shipped values are string-table keys of the form
+      `chroma_description_<skin id>`. No reader was found in the game client.
+    examples:
+      - "`{ \"riot\" = \"chroma_description_266034\" }` on Aatrox skin 34"

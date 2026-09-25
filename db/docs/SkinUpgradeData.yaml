@@ -1,0 +1,34 @@
+# SkinUpgradeData Documentation
+
+class:
+  description: |
+    The gear and augment data of a skin. A gear is an alternate look that the server can
+    switch the unit to during a game. An augment is a loadout item that changes a skin, such
+    as a border or a basic augment.
+
+properties:
+  mGearSkinUpgrades:
+    description: |
+      The skin's gears, in index order. Each item is a
+      [GearSkinUpgrade](/classes/gearskinupgrade), and its `mGearData` is one entry of the
+      unit's gear list. The client builds the list when the skin is applied to the unit.
+
+      The server selects a gear by its index in this list, counting from `0`. An index that
+      is outside the list is ignored. Switching gear applies the new gear's
+      [GearData](/classes/geardata): its mesh, resource resolver, submesh changes, idle
+      effects and equip animation.
+
+      When the list is empty, the unit has no gears and gear changes do nothing.
+    notes:
+      - "Shipped data sets it on about 850 skins, most with 2 to 4 gears."
+
+  SkinAugmentCategories:
+    description: |
+      The augments that belong to the skin, sorted into two lists: `BasicAugments` and
+      `BorderAugments`. No reader of this property was found in the game client.
+
+      The client applies the augments that the server lists for the player. It looks each
+      one up by its content id in the global loadout catalog, not through this list.
+    notes:
+      - "Shipped data sets `BorderAugments` on about 90 skins and `BasicAugments` on 12 skins."
+      - "No reader of the border augment objects was found in the game client either."

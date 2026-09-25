@@ -1,0 +1,31 @@
+# 0xc96d9140 Documentation
+
+class:
+  description: |
+    Chroma data that names its chroma by hash instead of a preset number. Otherwise it
+    carries the same per-region overrides as [PresetChromaData](/classes/presetchromadata).
+    Shipped data uses it on 889 skins.
+
+    No reader was found in the game client. The client loads it with the skin, but nothing
+    reads its fields.
+
+properties:
+  Chroma:
+    description: |
+      Hash that names the chroma. The strings behind the shipped hashes are not yet
+      identified. Most shipped values occur on one skin only. No reader was found in the game
+      client.
+
+  RarityOverrides:
+    description: |
+      Rarity of the chroma per publishing region, keyed by region name. Shipped keys are
+      `riot` and `TENCENT`, and shipped values are `0`, `1` and `2`. What the values mean is
+      not yet identified. No reader was found in the game client.
+
+  DescriptionOverrides:
+    description: |
+      Description of the chroma per publishing region, keyed by region name. Shipped values
+      are string-table keys of the form `chroma_description_<skin id>`. No reader was found
+      in the game client.
+    examples:
+      - "`{ \"riot\" = \"chroma_description_266032\" }` on Aatrox skin 32"

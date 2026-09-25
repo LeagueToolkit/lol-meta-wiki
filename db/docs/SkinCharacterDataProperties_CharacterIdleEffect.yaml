@@ -1,0 +1,50 @@
+# SkinCharacterDataProperties_CharacterIdleEffect Documentation
+
+class:
+  description: |
+    One effect that plays on a unit for as long as the unit is alive.
+
+    The engine spawns each entry as follows:
+
+    1. If neither `effectKey` nor `effectName` is set, the entry is skipped.
+    2. The spawn position is the unit's position. If `boneName` is set and the unit's
+       skeleton has that bone, the bone's position is used.
+    3. If `effectKey` is set, the effect is created from the definition that the key
+       resolves to. Otherwise the particle named by `effectName` is created.
+    4. The effect is attached to the bone in `boneName`, or to the unit when `boneName` is
+       empty. It then follows that bone or the unit.
+    5. If `targetBoneName` is set, the effect's target is attached to that bone of the unit.
+
+properties:
+  effectKey:
+    description: |
+      The hash of an effect name, resolved to a [VfxSystemDefinitionData](/classes/vfxsystemdefinitiondata).
+      The engine looks the key up in the unit's resource resolvers (the skin's
+      [ResourceResolver](/classes/resourceresolver)), then in the global resolvers.
+      When `effectKey` is set, `effectName` is ignored.
+    notes:
+      - "If the key is set but no resolver has it, no effect spawns. The engine does not fall back to `effectName`."
+
+  effectName:
+    description: |
+      The name of a particle system, created by name. Used only when `effectKey` is not
+      set.
+
+  Position:
+    description: "No reader was found in the game client. The spawn position comes from the unit or from `boneName`."
+    notes:
+      - "Shipped data sets it on about 140 entries, for example `(0, 100, 0)`."
+
+  boneName:
+    description: |
+      The bone that places the effect. The effect spawns at the bone's position and stays
+      attached to the bone. When it is empty, or the skeleton has no such bone, the effect
+      spawns at the unit's position. When it is empty, the effect is attached to the unit.
+
+  targetBoneName:
+    description: |
+      A bone of the unit that the effect's target is attached to, so the effect's target
+      position follows that bone. It works with or without `boneName`. When it is empty, no
+      target is set.
+    notes:
+      - "Shipped data sets it on about 950 entries, most of them in Xerath, Thresh and Aurelion Sol skins."

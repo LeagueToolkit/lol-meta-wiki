@@ -1,0 +1,20 @@
+# ResourceResolver Documentation
+
+class:
+  description: |
+    A lookup table from a name hash to a resource. Its `resourceMap` maps a key, the FNV-1a
+    hash of a lowercased name, to a linked resource object. In shipped data the keys are
+    skin-independent effect names that spells and scripts ask for, and the values are the
+    skin's own [VfxSystemDefinitionData](/classes/vfxsystemdefinitiondata) objects. Each skin
+    ships its own resolver, so the same effect name gives different art per skin.
+
+    A skin links its resolver in `SkinCharacterDataProperties.mResourceResolver`. When the
+    client loads the skin, it loads every resource the resolver links that is not loaded yet.
+    Each resource is loaded only once, however many resolvers link it.
+
+    A key that is in the map with an empty link still counts as found: the lookup succeeds
+    and returns no resource. A key that is not in the map is not found.
+  notes:
+    - "Shipped skins also map some keys to an empty link, for example `0x4c250437 = 0x0` in Aatrox's `Skin37` resolver."
+  examples:
+    - "`\"Aatrox_W_mis\" = \"Characters/Aatrox/Skins/Skin37/Particles/Aatrox_Skin37_W_mis\"`"

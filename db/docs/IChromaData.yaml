@@ -1,0 +1,12 @@
+# IChromaData Documentation
+
+class:
+  description: |
+    The chroma data of a character skin. It holds the chroma's preset or hash and its rarity and description for each publishing
+    region.
+
+    No reader was found in the game client. The client loads the object with the skin, but no
+    code reads its fields or checks which class it is. Changing or removing it has no
+    identified effect in game.
+  notes:
+    - "Shipped data sets `ChromaData` on about 8,300 skins."

@@ -1,0 +1,37 @@
+# 0x81169a8b Documentation
+
+class:
+  description: |
+    A skin's pick size, plus two sequences with an object selector each. When the skin is
+    applied, the client copies all five values onto a runtime object that belongs to the
+    unit. Only the pick size is read back.
+  notes:
+    - "No shipped skin sets it."
+
+properties:
+  "0x2d790b62":
+    description: |
+      The size class of an ellipsoid that the client tests a ray against, probably for mouse
+      picking. The value picks the ellipsoid's radii from a fixed table:
+
+      | Value | Horizontal radius | Vertical radius |
+      |---|---|---|
+      | `0` | 50 | 120 |
+      | `1` | 50 | 180 |
+      | `2` | 60 | 200 |
+      | `3` | 90 | 220 |
+      | `4` | 110 | 240 |
+
+      Radii are in world units. Values above `4` fall outside the table.
+
+  "0x7b6954ef":
+    description: "A [Sequence](/classes/sequence). The client copies it onto the unit's runtime object. No code that plays it was found in the game client."
+
+  "0x575e63f2":
+    description: "A [SequenceObjectSelector](/classes/sequenceobjectselector), copied with `0x7b6954ef`. No reader was found in the game client."
+
+  "0x73548d8b":
+    description: "A [Sequence](/classes/sequence). The client copies it onto the unit's runtime object. No code that plays it was found in the game client."
+
+  "0x41796e8e":
+    description: "A [SequenceObjectSelector](/classes/sequenceobjectselector), copied with `0x73548d8b`. No reader was found in the game client."

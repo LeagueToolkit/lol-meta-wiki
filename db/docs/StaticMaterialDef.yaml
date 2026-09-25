@@ -1,0 +1,178 @@
+# StaticMaterialDef Documentation
+
+class:
+  description: |
+    A material: which shader draws a mesh, which variant of that shader, and the textures,
+    parameters and render state it draws with. Skins use it through
+    [SkinMeshDataProperties](/classes/skinmeshdataproperties) (`Material` and
+    `materialOverride` entries), and map geometry, particles, UI and post-processing use it
+    too. A link to a material is the FNV-1a hash of its `name`, lowercased.
+
+    Each pass in `techniques` links a [CustomShaderDef](/classes/customshaderdef). Each
+    shader ships with one table of contents per stage that lists every compiled variant
+    (permutation) of that shader. The shader definition declares which
+    textures, parameters and switches exist. The material only fills them in, by name. A
+    material entry whose name the shader does not declare does nothing.
+
+    To pick the variant, for each pass the client builds a list of defines, in this order:
+
+    1. the material's `shaderMacros`
+    2. the shader's `featureDefines`
+    3. one define per compile-time switch of the shader, `NAME=1` or `NAME=0` (see `switches`).
+       It replaces an earlier define with the same name.
+    4. the pass's `shaderMacros`
+
+    At compile time the client adds its own defines for the material's `type` (quality and
+    rendering settings). A define the pass already has keeps the pass's value. The client then
+    keeps only the `NAME=VALUE` pairs that the shader's table of contents declares, and
+    silently drops everything else. For a name that appears more than once, the later entry
+    wins. The kept pairs select one compiled variant.
+
+    When something does not resolve, the client logs it, but the material still counts as
+    compiled:
+
+    | Log line | Cause | Result |
+    |---|---|---|
+    | `Unable to find correct hash for shader` | the define set matches no compiled variant | the pass has no shader |
+    | `Failed to compile shader.` | no shader program for the pass; the line prints the pass defines and the engine defines | the pass has no shader |
+    | `Missing sampler "X"`, `Missing texture "X"`, `Missing shader constant "X"` | the compiled shader needs a resource that neither the material nor the engine's shared textures provide | the pass keeps an empty effect |
+
+    Nothing checks the empty effect, so the problem shows up later and away from the
+    material. The log line is the only thing that names the cause.
+
+    Bin files leave out values that equal the class default, and the client then uses that
+    default. This matters in two places: a switch entry without `on` is on, and a parameter entry without `value` writes `(0, 0, 0, 0)`,
+    not the shader's default.
+  notes:
+    - "The client drops a property whose type in the bin does not match its registered type. A `texturePath` still written as a `String` loads as unset, and the sampler gets the engine's fallback texture."
+
+properties:
+  name:
+    description: |
+      The material's path, such as `Characters/Ahri/Skins/Skin52/Materials/MAT_Eyes_inst`. Links
+      to the material use the FNV-1a hash of this path, lowercased.
+    notes:
+      - "Shipped data always sets it to the path whose hash is the object's own key."
+
+  type:
+    description: |
+      The kind of mesh the material draws. It selects the client's per-type setup and the set
+      of engine defines the passes compile with, so it must match the shader. Shipped data
+      always pairs it with one shader family:
+
+      | Value | Shader family |
+      |---|---|
+      | `0` | `Shaders/StaticMesh/...` (map geometry) |
+      | `1` | `Shaders/SkinnedMesh/...` (characters) |
+      | `2` | `Shaders/Particles/...` |
+      | `3` | `Shaders/UI/...` |
+      | `4` | `Shaders/PostProcess/...` |
+      | `5` | `Shaders/SkinnedMesh/...`, on a few TFT materials only. What `5` changes is not yet identified. |
+
+  techniques:
+    description: |
+      The material's techniques, each a named list of
+      [passes](/classes/staticmaterialpassdef). The client builds every technique and every
+      pass. A pass links the shader, adds its own `shaderMacros` and parameter values, and
+      carries the render state (blending, depth, culling, stencil). Passes draw in list order.
+    notes:
+      - "Every shipped material has exactly one technique, named `normal`. It has one pass, or two on about a hundred materials."
+
+  childTechniques:
+    description: |
+      Techniques derived from another technique. For each entry the client finds the technique
+      named `parentName`, first in `techniques` and then in `childTechniques`, and builds a
+      copy of its passes under the child's `name`. It then adds the child's `shaderMacros` to
+      every pass of the copy, replacing a define of the same name. A child can therefore select
+      a different variant of the same shader, for example with `TRANSITION` defined.
+      See [StaticMaterialChildTechniqueDef](/classes/staticmaterialchildtechniquedef).
+    notes:
+      - "When no technique has the `parentName`, the child technique is created with no passes."
+      - "Shipped child names are `transition`, `env_transition`, `normal_blend`, `death` and `death_blend`. `death_blend` derives from the child `death`; all others derive from `normal`."
+      - "Which engine code switches a mesh to each child technique is not yet identified."
+
+  shaderMacros:
+    description: |
+      Defines added first to every pass's define list (step 1 above), as `NAME` to `VALUE`.
+      Switches, the pass's own macros and child techniques can override them. A name or value
+      that the shader's table of contents does not declare is dropped without a warning, so a
+      misspelled macro does nothing.
+    examples:
+      - "`NUM_BLEND_WEIGHTS = 4` on skinned materials"
+      - "`NO_BAKED_LIGHTING = 1`, `DISABLE_DEPTH_FOG = 1`, `PREMULTIPLIED_ALPHA = 1`"
+    notes:
+      - "Shipped data has misspelled macros, such as `NUM_DLEND_WEIGHTS`, which the client drops."
+      - "A compile-time switch replaces a macro of the same name. To set a switch, use `switches`."
+
+  switches:
+    description: |
+      Values for the shader's static switches. Each entry names a switch and sets `on`. For
+      each switch the shader declares, the client uses the material's entry when there is one,
+      and otherwise the shader's `onByDefault`. An entry without `on` is on. Shipped
+      data only writes `on` when it is `false`.
+
+      - A compile-time switch becomes the define `NAME=1` or `NAME=0`, which selects the
+        compiled variant.
+      - A runtime switch does not change the variant. The client passes it to the shader as
+        the constant `switch_NAME`, which it can change while the game runs. A few shaders use
+        this kind.
+
+      Which kind a switch is comes from the shader definition. See
+      [StaticMaterialSwitchDef](/classes/staticmaterialswitchdef).
+    notes:
+      - "An entry whose name the shader does not declare is ignored."
+
+  paramValues:
+    description: |
+      Values for the shader's parameters, each a name and a `value` (four floats). The client
+      first sets every shader parameter to its default from the shader definition and applies
+      the pass's own parameter values. Then it applies these entries to every pass of every
+      technique whose shader declares the name. The material's value wins over the pass's.
+
+      A parameter can use fewer than four components. The shader definition marks which ones
+      the name sets, and the client fills those in order from `value`, starting at `x`. The
+      others keep their value. See
+      [StaticMaterialShaderParamDef](/classes/staticmaterialshaderparamdef).
+    notes:
+      - "An entry without `value` writes zeros, not the shader's default. Shipped data has many such entries on parameters whose shader default is not zero."
+      - "An entry whose name the shader does not declare is ignored."
+
+  samplerValues:
+    description: |
+      Textures and sampler states for the shader's textures. For each texture the pass
+      shaders declare, the client looks for an entry whose `TextureName` equals the texture's
+      name:
+
+      | Material entry | Texture used |
+      |---|---|
+      | present, `texturePath` loads | `texturePath`, or an `uncensoredTextures` path when that one applies |
+      | present, `texturePath` unset or does not load | the engine's fallback texture |
+      | absent | the shader's `defaultTexturePath` |
+
+      An entry also sets the sampler: `addressU`, `addressV` and `addressW` (`0` wrap,
+      `1` clamp, `2` mirror, `3` border) and `filterMin` and `filterMag` (filtering is on only for the value `1`). A shader
+      texture that names a shared sampler uses that sampler instead. See
+      [StaticMaterialShaderSamplerDef](/classes/staticmaterialshadersamplerdef).
+    notes:
+      - "An entry with no `texturePath` does not fall back to the shader's default texture. It gets the engine's fallback texture."
+      - "An entry whose `TextureName` the shader does not declare is ignored."
+      - "When there is no entry and the shader's default texture does not load, no fallback is assigned. What is drawn then is not yet identified."
+
+  SharedTextureSets:
+    description: |
+      Textures that the material registers engine-wide. For each entry the client loads
+      `texturePath` and, when it loads, registers it under `SharedTextureName` with the
+      entry's address and filter modes. Shaders find shared textures by name, so any shader
+      that samples that shared name gets this texture. See
+      [StaticMaterialSharedTextureDef](/classes/staticmaterialsharedtexturedef).
+    notes:
+      - "No shipped material sets it."
+
+  dynamicMaterial:
+    description: |
+      Drivers that change the material's parameters, textures and switches while the game
+      runs, for example from time or from gameplay state. The client connects it to the
+      material after the passes are built. Without it, the material keeps the values above.
+      See [DynamicMaterialDef](/classes/dynamicmaterialdef).
+    notes:
+      - "About a third of shipped materials set it."

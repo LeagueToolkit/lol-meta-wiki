@@ -1,0 +1,9 @@
+# SecondaryResourceDisplayFractional Documentation
+
+class:
+  description: |
+    A secondary-resource display mode with no settings. No reader was found in the game
+    client: the client creates the object when it loads the skin, and no code uses it or
+    tests for its class. Adding or removing it has no identified effect in game.
+  notes:
+    - "Shipped data sets it on 79 skins, 60 of them in Yorick's files and the rest in map files."
