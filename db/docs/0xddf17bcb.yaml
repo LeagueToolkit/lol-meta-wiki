@@ -1,0 +1,54 @@
+# 0xddf17bcb Documentation
+
+class:
+  description: |
+    A socket attached to one joint. The socket moves, turns and scales with the joint as it
+    animates. `PositionOffset` and `RotationOffset` set where the socket is relative to the
+    joint.
+
+    The six freeze flags stop the animation from changing one axis of the socket. A frozen
+    axis takes its value from the bind pose instead of the current pose.
+  notes:
+    - "If `ParentJoint` does not match a joint of the skeleton, the lookup fails as if the name did not exist. The engine does not try the next socket."
+
+properties:
+  ParentJoint:
+    description: |
+      The joint the socket is attached to. The value is the skeleton's joint name hash: the
+      ELF hash of the lowercased joint name, as in the `.skl` file. It is not the FNV-1a
+      hash that bin tools usually write for a hash value.
+
+  PositionOffset:
+    description: |
+      Offset of the socket from the joint, in world units, along the model's X, Y and Z axes
+      in the bind pose. In the bind pose, the socket is at the joint's position plus this
+      offset. When the joint animates, the offset turns and scales with the joint.
+
+  RotationOffset:
+    description: |
+      Rotation of the socket relative to the joint, as Euler angles in degrees about X, Y
+      and Z. It is applied in the joint's own axes, before the joint's rotation.
+
+  "0x5fce2dff":
+    description: "Freezes the X coordinate of the socket's position. The X coordinate is the one the socket has in the bind pose, so animation cannot move the socket along X."
+
+  "0x5ece2c6c":
+    description: "Freezes the Y coordinate of the socket's position. Works the same as `0x5fce2dff` for Y."
+
+  "0x61ce3125":
+    description: "Freezes the Z coordinate of the socket's position. Works the same as `0x5fce2dff` for Z."
+
+  "0xdcbfa078":
+    description: |
+      Freezes the X angle of the socket's rotation. The rotation is converted to Euler angles,
+      the X angle is replaced with the X angle of the socket in the bind pose, and the result
+      is converted back.
+
+  "0xddbfa20b":
+    description: "Freezes the Y angle of the socket's rotation. Works the same as `0xdcbfa078` for Y."
+
+  "0xdebfa39e":
+    description: "Freezes the Z angle of the socket's rotation. Works the same as `0xdcbfa078` for Z."
+
+  IsWorldSpaceOffset:
+    description: "Removed from current builds. When set, `PositionOffset` was added to the joint's position without turning with the joint."
