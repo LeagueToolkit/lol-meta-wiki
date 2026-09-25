@@ -1,6 +1,105 @@
 # SkinMeshDataProperties Documentation
 
+class:
+  description: |
+    The **skinned mesh of a character skin**, and how each of its submeshes is shaded. Every
+    character skin embeds one, so champions, map units and TFT companions all use it.
+
+    **Material per submesh.** The client picks a material for each submesh of the mesh. The
+    first rule that matches wins:
+
+    | # | Condition | The submesh draws with |
+    |---|---|---|
+    | 1 | A `materialOverride` entry names the submesh and sets `Material` | the entry's material |
+    | 2 | A `materialOverride` entry names the submesh and does not set `Material` | LIT_UBER, built from the entry's textures |
+    | 3 | `Material` is set | `Material` |
+    | 4 | None of the above | LIT_UBER, built from this object's textures |
+
+    **LIT_UBER** is the engine's built-in shader for skinned meshes
+    (`SkinnedMesh/LIT_UBER_VS` and `LIT_UBER_PS`). It is not a
+    [`StaticMaterialDef`](/classes/staticmaterialdef): it takes its textures from the texture
+    fields of this class, and which of them are set selects its shader variant. A submesh that
+    resolves to a material (rules 1 and 3) does not use LIT_UBER; the material's own samplers
+    shade it.
+
+    In shipped data about one skin in five sets `Material`, and about two in three override
+    entries set textures only.
+  notes:
+    - "The client drops a property whose type in the bin does not match its registered type. A texture path still written as a `String` where the field is a `File` therefore loads as unset."
+
 properties:
+  Material:
+    description: |
+      The [`StaticMaterialDef`](/classes/staticmaterialdef) for every submesh that no
+      `materialOverride` entry names (rule 3). When it is unset, those submeshes draw with
+      LIT_UBER and this object's textures.
+    notes:
+      - "What the client does when the link does not resolve is not yet identified."
+
+  materialOverride:
+    description: |
+      Per-submesh exceptions to `Material` and to this object's textures. Each entry names one
+      submesh in `submesh`:
+
+      - An entry that sets `Material` shades its submesh with that material (rule 1).
+      - An entry without `Material` shades its submesh with LIT_UBER, built from the entry's
+        own `texture`, `glossTexture`, `RoughnessMetallicAoTexture` and `normalMapTexture`
+        (rule 2).
+
+      Entries come before the top-level `Material`, so a texture-only entry keeps its submesh on
+      LIT_UBER even when `Material` is set.
+    notes:
+      - "How `submesh` is matched against the mesh's submesh names, including case, is not yet identified."
+      - "Whether a texture that an entry leaves unset falls back to this object's texture is not yet identified."
+
+  texture:
+    description: |
+      Base colour texture for LIT_UBER. Shipped values are the skin's colour maps
+      (`_tx_cm.tex`).
+    examples:
+      - "`assets/characters/aatrox/skins/skin26/aatrox_skin26_tx_cm.tex`"
+
+  emissiveTexture:
+    description: |
+      Passed to LIT_UBER together with the other textures. How the shader uses it is not yet
+      identified.
+    notes:
+      - "Rarely set in shipped data. Override entries have no emissive texture of their own."
+
+  glossTexture:
+    description: |
+      Gloss map for LIT_UBER's reflective variant (`REFLECTIVE`). On the high-quality path,
+      LIT_UBER binds this texture as its gloss map and `reflectionMap` as its reflection map. On
+      the other path neither is bound. Shipped values are gloss maps (`_tx_gm.tex`).
+    examples:
+      - "`assets/characters/amumu/skins/skin16/amumu_skin16_tx_gm.tex`"
+    notes:
+      - "Which client setting selects the high-quality path is not yet identified."
+
+  reflectionMap:
+    description: |
+      Reflection map for LIT_UBER's reflective variant, bound together with `glossTexture` on
+      the high-quality path only. Shipped values are cube maps (`_cubemap.dds`).
+    examples:
+      - "`assets/characters/blitzcrank/skins/base/blitzcrank_base_cubemap.dds`"
+
+  normalMapTexture:
+    description: |
+      Normal map for LIT_UBER. Setting it selects the shader's tangent-frame variant
+      (`FEATURE_TANGENT`).
+    notes:
+      - "No shipped skin sets it, on this class or on an override entry."
+
+  RoughnessMetallicAoTexture:
+    description: |
+      Packed roughness, metallic and ambient-occlusion map for LIT_UBER. Setting it selects the
+      metallic-roughness variant (`FEATURE_ROUGHNESS_METALLIC`) and changes the shading model
+      from [`SkinnedStandardShadingModel`](/classes/skinnedstandardshadingmodel) to
+      [`SkinnedPbrShadingModel`](/classes/skinnedpbrshadingmodel). This texture is the only
+      thing that selects between the two for LIT_UBER.
+    notes:
+      - "No shipped skin sets it, on this class or on an override entry. Champion RMA maps ship as samplers of custom materials instead, which do not use LIT_UBER."
+
   SocketDefinitions:
     description: |
       The skin's [sockets](/classes/socketdefinitionbase): named points on the skeleton that
