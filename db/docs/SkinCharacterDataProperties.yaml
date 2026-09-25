@@ -1,0 +1,384 @@
+# SkinCharacterDataProperties Documentation
+
+class:
+  description: |
+    Data for one skin of a character: mesh, animation graph, audio, icons, loading-screen
+    art, idle effects, and some HUD and audio options. Every character has at least one,
+    including sub-units, minions, monsters, structures, companions and TFT units.
+
+    A skin is the object at `Characters/<Character>/Skins/Skin<N>`, where `<N>` is the skin
+    number the unit is created with. The client looks for these objects in order:
+
+    1. `Characters/<Character>/Skins/Skin<N>`
+    2. `Characters/<Name>/Skins/Skin<N>`, where `<Name>` is the character's
+       `CharacterRecord.mFallbackCharacterName`
+    3. `Characters/<Character>/Skins/Skin0`
+
+    The client uses the first object it finds. It loads `mResourceResolver`, the icons, the
+    preloads and the audio, then builds the mesh from `skinMeshProperties` and loads the
+    animation graph. If the mesh cannot be built, the character does not load, and the client
+    does not try another skin.
+
+    A chroma is a complete skin object and does not inherit data from its base skin.
+    `skinClassification` and `skinParent` only change the chroma's display name.
+  notes:
+    - "The loading screen looks up `Characters/<Character>/Skins/Skin<N>` on its own, without the fallbacks above."
+
+properties:
+  skinMeshProperties:
+    description: |
+      The skin's mesh, skeleton, textures and materials. See
+      [SkinMeshDataProperties](/classes/skinmeshdataproperties).
+
+  skinAnimationProperties:
+    description: |
+      Links to the skin's animation graph. There is no fallback to another skin's graph. When
+      the graph loads, the client preloads every particle event in its clips whose name ends
+      in `.troy`.
+
+  skinAudioProperties:
+    description: |
+      The skin's sound banks, sound event tags and the `PlaysVo` switch. When `PlaysVo` is
+      `false`, the unit plays no voice-over events. Shipped data sets it to `false` only on
+      companion-type units, such as Teemo's mushrooms and Yorick's ghouls.
+    notes:
+      - "How `bankUnits` and `tagEventList` are loaded is not documented here yet."
+
+  skinClassification:
+    description: |
+      The kind of skin. The client only checks for `2`, which marks a chroma. A chroma is
+      named after its `skinParent`.
+
+      | Value | Shipped on |
+      |---|---|
+      | `1` | base and purchasable skins |
+      | `2` | chromas |
+      | unset | sub-units, map units, companions and TFT units |
+
+  skinParent:
+    description: |
+      The skin number of the skin this chroma belongs to. Read only when `skinClassification`
+      is `2`. The chroma's display name is built from the parent,
+      `game_character_skin_displayname_<Character>_<skinParent>`, and skin-number conditions
+      that are set to accept a chroma compare against the parent.
+    notes:
+      - "No data is inherited from the parent skin."
+      - "There is no check for `-1`. A skin with `skinClassification` `2` and no `skinParent` looks up `..._-1`."
+
+  championSkinName:
+    description: "A readable skin name, such as `AhriSkin04` or `Popstar Ahri Chroma1`. No reader of this value was found in the game client."
+
+  championSkinId:
+    description: |
+      A global skin number. In shipped data it is the champion's numeric id times `1000`, plus
+      the skin number: Ahri's `Skin8` is `103008`. How the client uses it is not yet
+      identified.
+
+  OverrideOnScreenName:
+    description: |
+      A string-table key for the name the unit shows in game. When it is set, it is used
+      instead of the character's own name. Shipped data uses it only for the practice-tool
+      target dummy.
+
+  endOfGameAlias:
+    description: "The name written for this unit in the TFT end-of-game statistics. Shipped data sets it only in the TFT tutorial."
+
+  metaDataTags:
+    description: |
+      Comma-separated `key:value` tags, such as `faction`, `gender`, `race` and `skinline`. No
+      reader was found in the game client.
+
+  attributeFlags:
+    description: "Bit flags. Shipped data sets only the value `1`, on a mixed set of skins. No reader was found in the game client."
+
+  ChromaData:
+    description: |
+      Store data for a chroma: its preset and rarity overrides. No reader was found in the game
+      client.
+
+  loadscreen:
+    description: |
+      The skin's loading-screen art. The loading screen shows the first entry of
+      `UncensoredImages` that the censorship check accepts (see `uncensoredIconCircles`).
+      If none is accepted, it shows `loadscreenVintage` when the player has vintage art turned
+      on, and `image` otherwise.
+
+  loadscreenVintage:
+    description: |
+      The loading-screen art for a player with vintage art turned on. The game start data sets
+      this per player. Only `image` is read, not `UncensoredImages`.
+    notes:
+      - "Which game start value turns vintage art on is not yet identified."
+
+  mEmblems:
+    description: |
+      Emblems drawn on the loading-screen card. Only the first entry is used. It is shown when
+      the client setting `DisplayTencentEmblems` is on, and in some other cases that are not
+      yet identified.
+
+  iconCircle:
+    description: |
+      The round portrait of the unit, used by the HUD and other UI. An entry of
+      `uncensoredIconCircles` replaces it when the censorship check accepts the entry.
+
+  iconSquare:
+    description: |
+      The square portrait of the unit. An entry of `uncensoredIconSquares` replaces it when the
+      censorship check accepts the entry.
+
+  iconAvatar:
+    description: |
+      The hero portrait. When it is not set, `iconCircle` is used. An alternate icon that the
+      server selects from `alternateIconsCircle` takes priority.
+
+  iconCircleScale:
+    description: |
+      Scale of `iconCircle` in some icon displays. When it is not set, the scale is `1`.
+      Shipped data sets `1.2` on epic monsters and buff camps.
+    notes:
+      - "Which UI element uses the scale is not yet identified."
+
+  alternateIconsCircle:
+    description: |
+      Other round icons for the skin. All of them are loaded with the skin, and the server
+      selects one by its index in this list. The selected icon replaces `iconAvatar`.
+      Shipped data uses it for Lillia.
+
+  alternateIconsSquare:
+    description: "Other square icons for the skin, loaded with the skin and selected by the same mechanism as `alternateIconsCircle`."
+
+  uncensoredIconCircles:
+    description: |
+      Replacements for `iconCircle`, keyed by the hash of a content category such as
+      `tobacco`. An entry is used when the client's censorship table allows its category for
+      the current game. When the table is missing or does not allow the category, the default
+      icon is shown.
+    notes:
+      - "Where the censorship table comes from and which value selects the current game's allowances are not yet identified."
+
+  uncensoredIconSquares:
+    description: "Replacements for `iconSquare`, chosen the same way as `uncensoredIconCircles`."
+
+  "0xffdf3bd9":
+    description: "A texture that is loaded with the skin when set. No reader of the loaded texture was found, and no shipped skin sets it."
+
+  "0x55d3758e":
+    description: |
+      A path to a chroma preview image, `ASSETS/Characters/<Character>/Skins/Skin<N>/ChromaPreview.tex`.
+      No reader was found in the game client.
+
+  "0x9cf5d363":
+    description: "No reader was found, and no shipped skin sets it."
+
+  objectPath:
+    description: |
+      The path hash of this skin object. In shipped data it always equals the object's own
+      entry key. It is passed to the effects that the skin spawns.
+
+  skinUpgradeData:
+    description: |
+      Gear and augment data. The gear list of `mGearSkinUpgrades` becomes the unit's gear
+      list when the unit is created. Switching gear changes the unit's submeshes, materials,
+      animations, idle effects and persistent effects.
+    notes:
+      - "How `SkinAugmentCategories` is used is not yet identified."
+
+  mResourceResolver:
+    description: |
+      The skin's [ResourceResolver](/classes/resourceresolver), which maps effect keys to effect
+      definitions. When the skin is found, every target of the resolver is loaded.
+
+  mAdditionalResourceResolvers:
+    description: "More resource resolvers. No reader was found in the game client."
+
+  extraCharacterPreloads:
+    description: |
+      Names of other characters to load together with this one, such as Anivia's egg. Each is
+      loaded with the same skin number as the owner, through the normal skin lookup, and stays
+      loaded as long as the owner does. Preloaded characters load their own
+      `extraCharacterPreloads` too. A name that fails to load is skipped without a message.
+
+  defaultAnimations:
+    description: |
+      Animations started on the unit when its animation graph is set up, and again when it is
+      refreshed. Each name is an animation of the skin's graph.
+
+  idleParticlesEffects:
+    description: |
+      Effects that play on the unit while it is alive. They start when the skin is applied,
+      stop when the unit dies, and restart when the skin, model or gear changes. A gear with
+      its own `OverrideIdleEffects` replaces this list while it is equipped.
+
+      Each entry is spawned as follows:
+
+      - `effectKey` is resolved through the skin's `mResourceResolver` and then the global
+        resolvers. It takes priority over `effectName`.
+      - `effectName` is a particle name, used only when `effectKey` is not set.
+      - `boneName` is the bone the effect is placed on and attached to. When it is empty, the
+        effect is attached to the unit.
+      - `targetBoneName` attaches the effect's target end to that bone of the unit.
+
+      An entry with neither `effectKey` nor `effectName` is skipped.
+    notes:
+      - "No reader of the entry's `Position` was found."
+
+  PersistentEffectConditions:
+    description: |
+      Effects and submesh changes that apply while a condition is true. Each entry is checked
+      continuously:
+
+      - `OwnerCondition` is evaluated on the unit and `SourceCondition` on the source unit. A
+        condition that is not set counts as true.
+      - While both are true, `PersistentVfxs` are spawned once, and `SubmeshesToShow` and
+        `SubmeshesToHide` apply.
+      - When either turns false, the entry's effects are removed and its submesh changes are
+        undone.
+
+      The submesh changes of all true entries add up. Gear changes register the list again.
+      `BuffData.PersistentEffectConditions` uses the same system, with the buff's caster as the
+      source.
+    notes:
+      - "`ForceRenderVfx` forces an internal render flag of the spawned effects on. What the flag controls is not yet identified."
+
+  mSpawnParticleName:
+    description: |
+      A particle name spawned at the unit's position when the unit spawns. It plays only if
+      the unit is created on the client within 0.25 seconds of its spawn time, so a unit that
+      first appears later, for example when it comes into view, does not play it. Shipped data
+      uses it for minion spawns.
+
+  particleOverride_DeathParticle:
+    description: |
+      A particle name, preloaded with the skin. Shipped data sets it on structures, for
+      example turret, inhibitor and Nexus explosions.
+    notes:
+      - "The name `doesnotexist.troy` loads no particle. Shipped skins use it to disable a default particle."
+      - "Where the value is read is not yet identified."
+
+  particleOverride_ChampionKillDeathParticle:
+    description: |
+      A particle name, preloaded with the skin. All shipped values are `doesnotexist.troy`,
+      which loads no particle.
+    notes:
+      - "Where the value is read is not yet identified."
+
+  emoteLoadout:
+    description: |
+      The object path of a [SkinSummonerEmoteLoadout](/classes/skinsummoneremoteloadout). It is
+      used for a unit that has no player emote loadout of its own.
+
+  emoteYOffset:
+    description: |
+      Moves the summoner emote up (positive) or down (negative) from its default position,
+      which is above the health bar. The offset is in screen space, so camera zoom does not
+      change it.
+
+  emoteBuffbone:
+    description: "No reader was found in the game client."
+
+  godrayFXbone:
+    description: "No reader was found in the game client."
+
+  healthBarData:
+    description: "The unit's health bar settings. See [CharacterHealthBarDataRecord](/classes/characterhealthbardatarecord)."
+
+  secondaryResourceHudDisplayData:
+    description: |
+      How the HUD shows the unit's secondary resource. Shipped data sets it only to
+      `SecondaryResourceDisplayFractional`, on Yorick. No reader was found in the game client.
+
+  ExtraActionButtonCount:
+    description: "Shipped data sets `3` on Gangplank and `5` on Ornn. No reader was found in the game client."
+
+  armorMaterial:
+    description: |
+      A material name such as `Flesh`, `Metal`, `Stone` or `Wood`. No reader of this field was
+      found. The unit's armor material used in game comes from another source.
+
+  themeMusic:
+    description: |
+      The skin's theme music, as a list of Wwise event names. The server selects which track
+      plays and when, by its index in this list. An index outside the list is ignored.
+
+      When the list is not empty, the HUD offers teammates a button to mute this player's
+      music. See `CanShareThemeMusic`, `HudMuteEvent` and `HudUnmuteEvent`.
+
+  CanShareThemeMusic:
+    description: |
+      When `true`, teammates get a mute button for this player's skin music on their HUD.
+      When `false`, they do not. Whether the player gets the button on their own row is set by
+      `0x2ac577e2`.
+
+  "0x2ac577e2":
+    description: |
+      When `true`, the player gets a mute button for their own skin music. Shipped data sets
+      it on Seraphine and a few skins with theme music.
+
+  HudMuteEvent:
+    description: |
+      The Wwise event posted when a player mutes this unit with its HUD mute button. The client
+      does not mute anything else, so the event must do the muting. Shipped events mute a music
+      bus. Only teammates get the button, and only when this event or `HudUnmuteEvent` is set.
+
+  HudUnmuteEvent:
+    description: "The Wwise event posted when a player unmutes this unit. Set together with `HudMuteEvent`."
+
+  mContextualActionData:
+    description: |
+      The unit's [ContextualActionData](/classes/contextualactiondata). Without it, the unit
+      gets no contextual action component.
+
+  "0xeda7817e":
+    description: |
+      A UI material for the skin. Shipped data sets it only on Hall of Legends skins. No reader
+      was found in the game client.
+
+  "0xe484edc4":
+    description: |
+      A set of restyled announcements, for example the kill-streak banners. Shipped data sets
+      it only on Hall of Legends skins. No reader was found in the game client.
+
+  "0xb67a2dd8":
+    description: |
+      Damage-number formats for specific spells. Each entry lists spells and the formats to use
+      for their physical, magical and true damage, critical hits and absorbed damage. When the
+      unit's damage comes from a listed spell, the first matching entry's formats are used.
+      Shipped data uses it only on one Samira skin.
+
+  "0x7d564f9a":
+    description: "Keyed by a character name. Shipped data uses it only on Ivern skins, with the key `IvernTotem`. No reader was found."
+
+  "0x62ca0ae":
+    description: |
+      A spawn-in sequence. It plays one sequence for each team and an animation on the unit.
+      The code that plays it is behind a client feature flag, and no shipped skin sets it.
+
+  "0x81169a8b":
+    description: "Has the same fields as a spawn-in sequence. No reader was found, and no shipped skin sets it."
+
+  "0xad74545b":
+    description: "No reader was found, and no shipped skin sets it."
+
+  "0x46558f0e":
+    description: "Never read by the game client, and no shipped skin sets it."
+
+  "0xbf8e9bae":
+    description: "No reader was found, and no shipped skin sets it."
+
+  "0xe02ae791":
+    description: "No reader was found, and no shipped skin sets it."
+
+  skipVOOverride:
+    description: "Removed from current builds."
+
+  voiceOverOverride:
+    description: "Removed from current builds."
+
+  "0x2d790b62":
+    description: "Removed from current builds. The same field is now part of `0x81169a8b`."
+
+  "0x575e63f2":
+    description: "Removed from current builds. The same field is now part of `0x81169a8b`."
+
+  "0x7b6954ef":
+    description: "Removed from current builds. The same field is now part of `0x81169a8b`."
