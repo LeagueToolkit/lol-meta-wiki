@@ -1,0 +1,22 @@
+# SkinAnimationProperties Documentation
+
+class:
+  description: |
+    The animation setup of a character skin. The client loads the graph as part of the character load, after it has built the skin's
+    mesh. If the mesh cannot be built, the graph is not loaded.
+
+properties:
+  animationGraphData:
+    description: |
+      The skin's [AnimationGraphData](/classes/animationgraphdata). There is no fallback to
+      another skin's graph or to a default graph.
+
+      When the graph loads, the client goes through every clip in `mClipDataMap` that has an
+      event map (`mEventDataMap`). For each
+      [ParticleEventData](/classes/particleeventdata) in those maps whose `mEffectName` ends
+      in `.troy` (any case), it preloads that particle effect. Particle events that use only
+      `mEffectKey` are not preloaded here.
+
+      Shipped data sets it on every skin.
+    notes:
+      - "The client does not check that the link resolved before it uses the graph. The same character load also reads the graph when it preloads the skin's idle, death and spawn particles."

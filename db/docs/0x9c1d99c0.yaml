@@ -1,0 +1,37 @@
+# 0x9c1d99c0 Documentation
+
+class:
+  description: |
+    Damage-number formats for a group of spells.
+
+    The client asks the unit for a spell and a damage-number type. It walks the list in
+    order and uses the first entry whose `spells` contains that spell. From that entry it
+    takes the format for the damage-number type, and the combinable format. If no entry
+    matches, the list has no effect on the damage number.
+  notes:
+    - "Shipped data uses it only on one Samira skin, with one entry that lists 18 spells."
+
+properties:
+  spells:
+    description: |
+      The spells this entry applies to. Each item is resolved as a link to a spell object,
+      and the client compares the name of that spell with the spell of the damage. An item
+      that does not resolve to a spell matches nothing.
+
+  "0x80cf3335":
+    description: |
+      The formats to use, each a link to a [FloatTextFormattingData](/classes/floattextformattingdata).
+      The client picks one by damage-number type:
+
+      | Damage-number type | Format |
+      |---|---|
+      | `16` | `DefaultPhysicalDamageFormat` |
+      | `6` | `CriticalPhysicalDamageFormat` |
+      | `17` | `DefaultMagicalDamageFormat` |
+      | `7` | `CriticalMagicalDamageFormat` |
+      | `18` | `DefaultTrueDamageFormat` |
+      | `8` | `CriticalTrueDamageFormat` |
+      | `33` | `AbsorbedDamageFormat` |
+
+      For any other type, and for a format left empty, the entry does not change the format.
+      `CombinableDamageFormat`, when set, is used for every match, whatever the type.

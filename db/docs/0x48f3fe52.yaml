@@ -1,0 +1,25 @@
+# 0x48f3fe52 Documentation
+
+class:
+  description: |
+    A set of restyled announcement banners for a skin. No reader was found in the game
+    client.
+  notes:
+    - "Shipped data has three objects, one each on a Hall of Legends skin of Ahri, Kai'Sa and Tristana."
+
+properties:
+  Treatments:
+    description: |
+      A list of `0x7084628f` entries, one per banner element to restyle. Each entry holds
+      three UI scene element hashes and a `CustomAnnouncementStyle`, a link to an
+      [AnnouncementStyleBasic](/classes/announcementstylebasic).
+
+      In shipped data each object has ten entries: allied and enemy variants of the double,
+      triple, quadra and penta kill banners, plus the blue and red underlines. In each entry,
+      `0x9d6e31fd` names an element of the standard banner scene
+      (`ClientStates/Gameplay/UX/AnnouncementBanners/ClassicBase/BannerScene/...`),
+      `0xde3ba82a` names a Hall of Legends component
+      (`ClientStates/Gameplay/UX/LoL/Skins/HoLAnnounceVC/Components/...`), and `0xc5adfe86`
+      names a Hall of Legends banner frame.
+    notes:
+      - "How the client would apply an entry is not yet identified."

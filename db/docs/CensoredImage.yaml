@@ -1,0 +1,31 @@
+# CensoredImage Documentation
+
+class:
+  description: |
+    An image with uncensored variants. The client resolves it to one texture:
+
+    1. It goes through `UncensoredImages` in stored order and takes the first entry whose
+       category passes the censorship check.
+    2. If no entry passes, it uses `image`.
+
+    For the censorship check, the client keeps a table that lists, for each category hash, the
+    values for which that category is allowed. It compares the table against one value that it
+    receives with the game start data. A category fails the check when it is not in the table,
+    when the current value is not listed for it, or when the client has no value. A failed
+    check shows the censored `image`.
+  notes:
+    - "Where the category table comes from, and which game start value it is compared against, are not yet identified."
+    - "`SkinCharacterDataProperties.uncensoredIconCircles` and `uncensoredIconSquares` use the same check, but take the last entry that passes instead of the first."
+
+properties:
+  image:
+    description: "The texture shown when no `UncensoredImages` entry passes the censorship check."
+
+  UncensoredImages:
+    description: |
+      Replacement textures keyed by the hash of a content category. An entry is used only
+      when its category passes the censorship check (see the class description), and the
+      first entry that passes wins over the others and over `image`.
+
+      Shipped keys include `tobacco` and `shade`. Shipped data sets one entry per image, on
+      about 30 loading-screen images.

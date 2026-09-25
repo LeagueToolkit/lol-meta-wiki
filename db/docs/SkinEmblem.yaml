@@ -1,0 +1,49 @@
+# SkinEmblem Documentation
+
+class:
+  description: |
+    An emblem drawn on a skin's loading-screen card. Only the first entry of
+    `SkinCharacterDataProperties.mEmblems` is used; the others are ignored.
+
+    The card shows the emblem only when the client setting `DisplayTencentEmblems` is `1`, or
+    when an internal flag that is not yet identified is set. Otherwise every emblem slot on
+    the card stays hidden.
+
+    The loading-screen layout defines one placeholder element per anchor
+    value. The client shows the element for `mLoadingScreenAnchor`, gives it the texture
+    `mEmblemData.mImagePath`, and resizes it inside the element's own rectangle:
+
+    ```text
+    width  = rectangle width  * mLoadingScreenScale * 2.56
+    height = rectangle height * mLoadingScreenScale * 1.28
+    ```
+
+    `mLoadingScreenScale` also comes from the linked
+    [EmblemData](/classes/emblemdata). If the emblem data has no texture, no emblem is shown.
+  notes:
+    - "Shipped data sets about 3,950 emblems on skins. The linked EmblemData objects are all defined in `Global.wad.client`."
+
+properties:
+  mEmblemData:
+    description: |
+      The [EmblemData](/classes/emblemdata) that supplies the emblem's texture
+      (`mImagePath`) and size factor (`mLoadingScreenScale`). Shipped size factors range from
+      `0.4` to `0.7`.
+
+  mLoadingScreenAnchor:
+    description: |
+      Which placeholder element of the card shows the emblem, and where the emblem sits
+      inside that element's rectangle:
+
+      | Value | Emblem position in the rectangle |
+      |---|---|
+      | `0` | top-left corner |
+      | `1` | top-right corner |
+      | `2` | bottom-left corner |
+      | `3` | bottom-right corner |
+      | `4` | top edge, centered horizontally |
+      | `5` | bottom edge, centered horizontally |
+
+      Any other value leaves the element's rectangle unchanged, so the emblem fills it.
+    notes:
+      - "Shipped data sets `1` on almost every emblem that sets this property. The rest use the default."

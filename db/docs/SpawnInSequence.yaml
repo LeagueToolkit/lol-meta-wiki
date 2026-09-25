@@ -1,0 +1,61 @@
+# SpawnInSequence Documentation
+
+class:
+  description: |
+    A spawn-in sequence for a champion skin: a [Sequence](/classes/sequence) and an
+    animation that play when the champion enters the game.
+
+    The server starts it by sending a message for the champion. The client runs it only when
+    a client feature flag is on; which setting controls that flag is not yet identified.
+    The steps are:
+
+    1. The client waits `0xa4c9a8d7` seconds.
+    2. It picks `OrderSequence` when the champion is on team `100` (Order), and
+       `ChaosSequence` otherwise. If the skin has no spawn-in sequence, or the picked link is
+       empty, nothing plays.
+    3. It fills the sequence's object slots: the slot named by `0x4adc6795` gets the
+       champion, and the slot named by `0x5a439ea4` gets a separate object that the client
+       creates for the sequence.
+    4. It puts the champion into a spawn-in state, plays `Animation` on it and starts the
+       sequence.
+    5. `0x259377f1` seconds after the start, the client ends a first phase on the champion.
+       What that phase changes is not yet identified.
+    6. When the sequence reaches the time of its last key, the client takes the champion out
+       of the spawn-in state and the spawn-in is over.
+
+    What the spawn-in state changes on the champion is not yet identified.
+
+    The client can also end the sequence early, under a condition that is not yet
+    identified.
+  notes:
+    - "No shipped skin sets a spawn-in sequence."
+
+properties:
+  OrderSequence:
+    description: "The sequence played when the champion is on team `100` (Order)."
+
+  ChaosSequence:
+    description: "The sequence played when the champion is on any team other than `100`."
+
+  "0x5a439ea4":
+    description: |
+      A [SequenceObjectSelector](/classes/sequenceobjectselector) that names an object slot in
+      the sequence. The client puts an object it creates for the spawn-in into that slot.
+      What the object represents is not yet identified.
+
+  "0x4adc6795":
+    description: |
+      A [SequenceObjectSelector](/classes/sequenceobjectselector) that names an object slot in
+      the sequence. The client puts the spawning champion into that slot, so sequence
+      actions that target the slot act on the champion.
+
+  Animation:
+    description: "The name of the animation the champion plays when the sequence starts."
+
+  "0xa4c9a8d7":
+    description: "Delay, in seconds, between the server's start message and the start of the sequence."
+
+  "0x259377f1":
+    description: |
+      Time, in seconds after the sequence starts, at which the client ends a first phase of
+      the spawn-in on the champion. What that phase changes is not yet identified.

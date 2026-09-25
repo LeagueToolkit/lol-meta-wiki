@@ -1,0 +1,64 @@
+# ContextualActionData Documentation
+
+class:
+  description: |
+    A unit's set of contextual actions: voice lines, animations and events that play when
+    something happens in the game, such as a spell cast, a kill or low health. The unit's
+    contextual action component reads this object.
+
+    A situation is a named game event. When a situation happens to the unit, the client
+    looks up its name in `mSituations`. If the map has no entry for it, nothing plays. If it
+    has one, the client picks a [ContextualRule](/classes/contextualrule) from the entry and
+    runs that rule's actions. Situations can come from the client's own checks, such as
+    `mHealthPercentThreshold`, and from the server.
+
+    Two cooldowns limit how often actions play:
+
+    | Cooldown | Scope | Set by |
+    |---|---|---|
+    | Situation cooldown | one situation | `ContextualSituation.mCoolDownTime` |
+    | Shared cooldown | all situations of the unit | `mCooldown` |
+  notes:
+    - "Shipped data has about 560 objects, in champion WADs and in a few map WADs. They are stored in the merged skin bins of each champion, not in separate files."
+
+properties:
+  mSituations:
+    description: |
+      The situations this unit reacts to, keyed by situation name. The key is the FNV-1a
+      hash of the lowercased name, so a bin that writes the key as a string, such as
+      `HealthDroppedBelowThreshold`, matches the client's own hash. Each value is a
+      [ContextualSituation](/classes/contextualsituation).
+
+      When the situation happens, the client first checks the situation cooldown: if fewer
+      than `mCoolDownTime` seconds have passed since this situation last played, nothing
+      plays. Then it picks a rule. When `mChooseRandomValidRule` is `false`, it takes the
+      first rule in `mRules` whose conditions pass. When it is `true`, it picks one of the
+      valid rules at random, weighted by each rule's `ChanceWeight`.
+
+  mCooldown:
+    description: |
+      A cooldown, in seconds, shared by all situations of the unit. While the unit's
+      contextual action timer shows `mCooldown` seconds or less, the client skips every rule
+      whose `ActiveVoiceOver` is `true`. A rule is exempt when it sets `mOverrideCacCooldown`,
+      or when its `CooldownModifications` sets `IgnoreTimer`
+      (see [ContextualActionCooldownModifications](/classes/contextualactioncooldownmodifications)).
+
+      Rules whose `ActiveVoiceOver` is `false` do not check this cooldown.
+    notes:
+      - "Shipped data sets `15` on almost every object. A few use `9`, `10` or `20`."
+      - "What restarts the timer is not yet identified."
+
+  mHealthPercentThreshold:
+    description: |
+      A health fraction, from `0` to `1`. When the unit takes damage and its health goes from
+      above this value to this value or below, the client fires the situation
+      `HealthDroppedBelowThreshold` for the unit. It fires once per crossing: health must rise
+      above the threshold again before it can fire again.
+    notes:
+      - "Shipped data sets it on 8 objects: `0.4` on seven and `0.2` on one."
+
+  mObjectPath:
+    description: |
+      The object's own path, such as `Characters/Ahri/CAC/Ahri_Base`. In shipped data it is
+      the same string as the object's name. No reader of this value was found in the game
+      client.

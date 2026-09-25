@@ -1,0 +1,89 @@
+# CharacterHealthBarDataRecord Documentation
+
+class:
+  description: |
+    The health bar settings of a character skin. The client reads them from the skin the unit
+    uses, so each skin can change its unit's bar. They control:
+
+    - which kind of bar the HUD builds (`unitHealthBarStyle`),
+    - where the bar sits (`attachToBone`),
+    - how the bar behaves while the unit cannot be targeted (`showWhileUntargetable`,
+      `AlphaOutWhileUntargetable`),
+    - the character state indicator, the `ShowCharacterStateIndicator*` and
+      `CharacterStateIndicatorMaxCount` fields.
+
+    The HUD layout lists the champions that have an indicator
+    and defines its elements. For such a champion, the HUD shows the element that matches
+    the champion's current state. The champion's own player always sees it. Whether allies
+    and enemies see it is set on each element in the HUD layout.
+
+properties:
+  unitHealthBarStyle:
+    description: |
+      Selects the kind of health bar the HUD builds for the unit. When the value changes,
+      the client removes the unit's bar and builds a new one of the new kind. `12` and `22`
+      use one build path, `14` to `21` another, and all other values a third. `13` removes
+      the bar and builds none.
+
+      The client does not name the values. Shipped data uses them this way:
+
+      | Value | Shipped on |
+      |---|---|
+      | `1`, `3`, `5`, `6`, `7`, `8` | map units, and some champion summons (`1`, `3`, `5`) |
+      | `9` | Naafiri's files only |
+      | `12` | champions |
+      | `15`, `17` | TFT units |
+      | `22` | TFT companions |
+      | `23` | a few objects in map and TFT files |
+
+  attachToBone:
+    description: |
+      Name of a bone in the unit's skeleton. When the client positions the bar, it places it
+      above that bone's world position, raised by the unit's health bar height. The name
+      match ignores case. When the name is empty, or the skeleton has no bone of that name,
+      the bar follows the unit's position.
+    examples:
+      - "`Buffbone_Cstm_Healthbar`, the most common shipped value. Spellings and case vary between skins, for example `C_Buffbone_Cstm_Healthbar_Loc` and `Buffbone_Healthbar`."
+
+  hpPerTick:
+    description: |
+      Shipped values are `1` (mostly map units), `2`, `50`, `100`, `300` (TFT units), `500`,
+      `1000` and `2000`. Where the client reads it is not yet identified.
+
+  showWhileUntargetable:
+    description: |
+      When `false`, the bar is hidden while the unit fails a status check, probably whether it can be targeted. When `true`, the bar
+      stays visible. Shipped data sets `true` almost only in TFT files.
+
+  AlphaOutWhileUntargetable:
+    description: |
+      When `true`, the bar's opacity is multiplied by a factor that depends on a unit status,
+      probably whether the unit can be targeted. When
+      `false`, the bar keeps its opacity. Shipped data sets `false` on TFT companions and TFT
+      units.
+    notes:
+      - "The fade factors come from the HUD and are not yet identified."
+
+  CharacterStateIndicatorMaxCount:
+    description: |
+      Maximum count for the character state indicator. The HUD stores it when it sets up the
+      indicator. How it limits the display is not yet identified. Shipped values are `3` (Dr.
+      Mundo, Mel) and `7` (Zeri, Samira).
+
+  ShowCharacterStateIndicatorToAllies:
+    description: |
+      The HUD stores it when it sets up the indicator. How it is used is not yet identified;
+      ally visibility of the indicator elements comes from the HUD layout. Shipped data sets
+      it only on Dr. Mundo.
+
+  ShowCharacterStateIndicatorToEnemies:
+    description: |
+      The HUD stores it when it sets up the indicator. How it is used is not yet identified;
+      enemy visibility of the indicator elements comes from the HUD layout. Shipped data sets
+      it only on Dr. Mundo.
+
+  ShowCharacterStateIndicatorOnStartGame:
+    description: |
+      When `true`, the character state indicator is visible from the start of the game.
+      When `false`, it stays hidden until something else turns it on; what does is not yet
+      identified. Shipped data never sets it.

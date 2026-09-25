@@ -1,0 +1,45 @@
+# SkinAudioProperties Documentation
+
+class:
+  description: |
+    The sound banks and voice-over switch of a character skin. The client loads the banks when it loads the character, before it builds the mesh. A
+    bank that failed to load does not stop the character from loading.
+
+properties:
+  bankUnits:
+    description: |
+      The Wwise files to load for this skin, as a list of
+      [BankUnit](/classes/bankunit) entries. The client loads every non-empty path in each
+      entry's `bankPath`, and chooses the loader by the file extension:
+
+      | Extension | What the client does |
+      |---|---|
+      | `.wpk` | Registers the media files in the package so that Wwise can stream them. |
+      | any other | Loads the file as a sound bank. The bank ID is the Wwise hash of the file name without its extension. A bank with the same ID that is already loaded is shared, not loaded again. |
+
+      An entry's `voiceOver` flag puts its files in the client's table of language-specific
+      audio files instead of the shared table.
+
+      The skin loader does not read an entry's `name` or `events`.
+
+      Shipped entries come in pairs of `<Skin>_SFX` and `<Skin>_VO`, and each lists an
+      `_audio.bnk`, an `_events.bnk` and, for voice-over, an `_audio.wpk`. Voice-over paths
+      are under `VO/en_US/` and set `voiceOver` to `true`.
+    examples:
+      - "`ASSETS/Sounds/Wwise2016/SFX/Characters/Ahri/Skins/Skin04/Ahri_Skin04_SFX_events.bnk`"
+      - "`ASSETS/Sounds/Wwise2016/VO/en_US/Characters/Ahri/Skins/Skin04/Ahri_Skin04_VO_audio.wpk`"
+
+  tagEventList:
+    description: |
+      Shipped data lists the character name and the skin name, for example `Ahri` and
+      `AhriSkin04`. How the client uses it is not yet identified.
+    notes:
+      - "The client builds a skin's `play_sfx_...` event names from `championSkinName` and the character name, not from this list."
+
+  PlaysVo:
+    description: |
+      When `false`, the unit does not post its built-in voice-over events, such as its death
+      and emote lines.
+
+      Shipped data sets it only to `false`, and only on companion-type units such as Teemo's
+      mushrooms and Yorick's ghouls.
