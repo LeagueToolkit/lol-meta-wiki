@@ -1,0 +1,26 @@
+# SocketDefinitionBase Documentation
+
+class:
+  description: |
+    A **socket** is a named point on a character skin's skeleton that is not a joint. A skin
+    lists its sockets in
+    [`SkinMeshDataProperties.SocketDefinitions`](/classes/skinmeshdataproperties#socketdefinitions).
+
+    When the engine looks up a bone's transform by name, it searches the skeleton's joints
+    first. If no joint has the name, it searches the sockets in list order and uses the
+    first socket whose `name` matches. A socket with the same name as a joint is never used.
+
+    Bone names that use this lookup include `MissileMovementSpec.mStartBoneName`,
+    `SpellDataResource.mHitBoneName`, `SkinCharacterDataProperties_CharacterIdleEffect.boneName`,
+    `SeqInputCreateEffectEmitter.AttachTargetBone` and the bone that a VFX system is attached
+    to.
+
+    The socket's transform is calculated from the skeleton's current pose at each lookup.
+    Each kind of socket calculates it differently.
+  notes:
+    - "Only the socket list of a character skin is read, from `SkinCharacterDataProperties.skinMeshProperties`. The list on other classes that embed `SkinMeshDataProperties` is ignored."
+    - "No shipped skin defines sockets."
+
+properties:
+  name:
+    description: "The bone name of the socket. It is compared with the requested name the same way as a joint name, ignoring case."

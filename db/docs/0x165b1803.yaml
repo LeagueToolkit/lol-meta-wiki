@@ -1,0 +1,11 @@
+# 0x165b1803 Documentation
+
+class:
+  description: |
+    A socket at a fixed position relative to the character's origin. It is not attached to
+    a joint, so animation does not move it. It has no rotation or scale of its own and uses
+    the character's rotation and scale.
+
+properties:
+  PositionOffset:
+    description: "Position of the socket in the character's local space, in world units. It moves, turns and scales with the character."

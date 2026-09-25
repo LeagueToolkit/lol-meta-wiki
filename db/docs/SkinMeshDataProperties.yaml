@@ -1,0 +1,9 @@
+# SkinMeshDataProperties Documentation
+
+properties:
+  SocketDefinitions:
+    description: |
+      The skin's [sockets](/classes/socketdefinitionbase): named points on the skeleton that
+      a lookup by bone name can find when no joint has that name.
+    notes:
+      - "Read only on a character skin's `skinMeshProperties`."
