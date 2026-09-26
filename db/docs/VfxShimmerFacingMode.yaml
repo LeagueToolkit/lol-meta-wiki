@@ -1,0 +1,13 @@
+# VfxShimmerFacingMode Documentation
+
+class:
+  description: |
+    How a shimmer mesh faces the camera. Legacy mesh primitives choose this with flags; the
+    shimmer meshes hold one of these objects in `FacingMode` instead, and the subclass chosen
+    decides the orientation.
+
+    When a mesh's `FacingMode` is set, the object orients each particle and the camera look-at
+    is skipped. How each subclass orients the particle is not yet identified. Quads also carry
+    a `FacingMode`, but whether the quad builder reads it is not yet identified.
+  notes:
+    - "No shipped data sets a facing mode."

@@ -1,0 +1,14 @@
+# VfxPrimitiveLaser Documentation
+
+class:
+  description: |
+    Batched geometry between two points, built on the CPU each frame through the shimmer
+    primitives' geometry builder. The number of vertices and indices each particle gets
+    follows from the two segment counts in `Laser`; see
+    [VfxLaserDefinitionData](/classes/vfxlaserdefinitiondata).
+  notes:
+    - "No shipped data uses this class."
+
+properties:
+  Laser:
+    description: "Endpoints and tessellation of the laser. See [VfxLaserDefinitionData](/classes/vfxlaserdefinitiondata)."

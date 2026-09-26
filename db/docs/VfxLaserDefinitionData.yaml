@@ -1,0 +1,17 @@
+# VfxLaserDefinitionData Documentation
+
+class:
+  description: |
+    The settings of a [VfxPrimitiveLaser](/classes/vfxprimitivelaser). The endpoint offsets
+    work as on [VfxBeamBaseDefinitionData](/classes/vfxbeambasedefinitiondata). Of the fields
+    specific to the laser, only the two segment counts are identified.
+
+properties:
+  "0xa9305f86":
+    description: |
+      One of the two segment counts. The laser's per-particle vertex and index counts are
+      computed from this value and `0x52f5ac93`.
+
+  "0x52f5ac93":
+    description: |
+      The other segment count; see `0xa9305f86`.

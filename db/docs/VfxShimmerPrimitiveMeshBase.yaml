@@ -1,0 +1,34 @@
+# VfxShimmerPrimitiveMeshBase Documentation
+
+class:
+  description: |
+    The shimmer **mesh** primitives. Each particle draws a whole mesh, one particle at a time;
+    meshes are never batched.
+
+    **Which mesh.** When the system is prepared, the client loads what `Mesh` names: the
+    skinned pair with its animation, and a static mesh chosen by the extension of
+    `mSimpleMeshName`. At draw time a `.scb` wins over a `.tmesh` or `.gmesh`, and either wins
+    over a skinned mesh. When the attached mesh's own `Mesh` loads nothing, it draws the
+    owner's skinned mesh; see
+    [VfxShimmerPrimitiveAttachedMesh](/classes/vfxshimmerprimitiveattachedmesh). Whether a
+    plain shimmer mesh draws its own skinned `.skn` mesh is not yet identified.
+
+properties:
+  Mesh:
+    description: |
+      The mesh to draw, in the same form legacy mesh primitives use; see
+      [VfxMeshDefinitionData](/classes/vfxmeshdefinitiondata).
+    examples:
+      - "`mSimpleMeshName: \"ASSETS/Maps/Particles/SR/HoL/Particles/HOL26_MapAccents_Z_CubeMesh_01.gmesh\"`"
+    notes:
+      - "Every shipped shimmer mesh names a `.gmesh` in `mSimpleMeshName` and sets nothing else here."
+
+  FacingMode:
+    description: |
+      How the mesh faces the camera. When it is set, the facing mode orients each particle and
+      the camera look-at is skipped. When it is unset, the draw falls back to the camera
+      look-at that legacy meshes drive with `AlignYawToCamera` and `AlignPitchToCamera`.
+      Shimmer meshes have no such flags, and whether that look-at turns them is not yet
+      identified. See [VfxShimmerFacingMode](/classes/vfxshimmerfacingmode).
+    notes:
+      - "No shipped mesh sets it."

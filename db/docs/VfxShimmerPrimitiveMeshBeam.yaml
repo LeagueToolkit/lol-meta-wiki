@@ -1,0 +1,20 @@
+# VfxShimmerPrimitiveMeshBeam Documentation
+
+class:
+  description: |
+    A mesh stretched along a beam. For each particle, the client places `Mesh` between the
+    beam's source and target, and scales the mesh along its local Z by the beam length divided
+    by the mesh's Z extent.
+
+    The source is the system's position and the target is the effect's target position, each
+    moved by the offsets in `Beam`; see
+    [VfxBeamBaseDefinitionData](/classes/vfxbeambasedefinitiondata).
+  notes:
+    - "No shipped data uses this class."
+
+properties:
+  Beam:
+    description: "The two endpoint offsets. See [VfxBeamBaseDefinitionData](/classes/vfxbeambasedefinitiondata)."
+
+  Mesh:
+    description: "The mesh to stretch. See [VfxMeshDefinitionData](/classes/vfxmeshdefinitiondata)."

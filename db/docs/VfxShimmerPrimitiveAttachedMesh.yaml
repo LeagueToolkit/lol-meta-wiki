@@ -1,0 +1,25 @@
+# VfxShimmerPrimitiveAttachedMesh Documentation
+
+class:
+  description: |
+    The shimmer twin of [VfxPrimitiveAttachedMesh](/classes/vfxprimitiveattachedmesh): a mesh
+    primitive that draws the **unit the effect is attached to**. The client takes the owner's
+    skinned mesh and the owner's visible-submesh mask by the same route as for the legacy
+    attached mesh, so the overlay follows the unit's animation and its submesh visibility.
+    The legacy page describes that behavior.
+
+    **Locked placement does not work here.** With `Mesh.mLockMeshToAttachment` set, the legacy
+    attached mesh sits on the unit's attachment transform. When this class draws a skinned
+    mesh with the flag set, it keeps only the scale and discards the rotation, the position,
+    the attachment and the emitter's transform, so every particle's mesh collapses onto the
+    world origin, scaled. With the flag
+    unset, the particle and emitter transforms place the mesh as they do for the legacy class.
+  notes:
+    - "No shipped data uses this class, so nothing currently hits the locked-placement fault."
+
+properties:
+  UseAvatarSpecificSubmeshMask:
+    description: |
+      Selects which of the owner's two visible-submesh masks limits the drawn submeshes, as on
+      [the legacy class](/classes/vfxprimitiveattachedmesh#useavatarspecificsubmeshmask). What
+      distinguishes the two masks is not yet identified.

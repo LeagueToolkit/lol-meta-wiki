@@ -16,9 +16,9 @@ class:
     emitter lists have no equivalent check, so a misconfigured complex or simple
     emitter still runs.
 
-    The graph also supplies what gets drawn: the geometry component's primitive names a
-    texture, a mesh and shader parameters, and those are resolved into the emitter's
-    draw setup before the system spawns.
+    The graph also supplies what gets drawn: the client loads the meshes that the geometry
+    component's primitive names, and the render component builds the emitter's draw setup
+    from them before the system spawns.
 
     Per-spawn gates differ from the other lists. `ChanceToNotExist`, the `importance`
     cull and `colorblindVisibility` all apply, as they do to complex emitters.
@@ -47,6 +47,8 @@ properties:
     description: |
       Skips the emitter. Tested while the system is prepared, so a disabled entry is
       never built at all rather than being suppressed per spawn.
+    notes:
+      - "Every shipped shimmer emitter sets it, so no shipped component graph runs through this list."
 
   importance:
     description: |

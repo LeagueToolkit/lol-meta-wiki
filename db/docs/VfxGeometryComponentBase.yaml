@@ -1,0 +1,10 @@
+# VfxGeometryComponentBase Documentation
+
+class:
+  description: |
+    The **geometry** slot of a [VfxComponents](/classes/vfxcomponents) graph: it supplies the
+    primitive that every particle of the emitter is drawn as. The client loads the meshes the
+    primitive names when the system is prepared.
+
+    Required, and it must resolve to a primitive. A geometry component with no primitive drops
+    the emitter just as a missing geometry component does.

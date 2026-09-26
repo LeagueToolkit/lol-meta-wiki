@@ -1,0 +1,10 @@
+# VfxComponentBase Documentation
+
+class:
+  description: |
+    The root of the **component classes** that make up a
+    [VfxComponents](/classes/vfxcomponents) graph. Each component fills one slot of that graph:
+    lifetime, physics, render or geometry, plus the optional child component. The graph's page
+    describes what each slot does and the order in which the slots run.
+
+    Shipped data uses only the modern components, never the `VfxLegacy*` ones.

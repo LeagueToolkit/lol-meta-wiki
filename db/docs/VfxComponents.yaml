@@ -1,0 +1,75 @@
+# VfxComponents Documentation
+
+class:
+  description: |
+    The **component graph** of a
+    [shimmer emitter](/classes/vfxshimmeremitterdefinitiondata): one object per slot for
+    lifetime, physics, rendering and geometry, plus an optional child component. A shimmer
+    emitter has almost no properties of its own. Everything that a
+    [complex emitter](/classes/vfxemitterdefinitiondata) carries as properties - emission,
+    lifetime, motion, material and primitive - comes from the components in these slots.
+
+    **Required slots.** When the system is prepared, the client builds the emitter only if
+    `LifetimeComponent`, `PhysicsComponent`, `RenderComponent` and `GeometryComponent` are all
+    set, and the geometry component resolves to a primitive. A graph that misses any of them
+    drops its emitter. `ChildComponent` is the only optional slot.
+
+    **Preparing.** The client loads the meshes that the geometry component's primitive names,
+    the same way [VfxMeshDefinitionData](/classes/vfxmeshdefinitiondata) describes. The render
+    component then builds the emitter's draw setup from the primitive, those meshes and the
+    emitter's name.
+
+    **Each update**, the components run in a fixed order:
+
+    1. The lifetime component decides whether the emitter is finished.
+    2. If it is not, and emission has not been stopped, the lifetime component returns how
+       many particles to spawn in this update, and they are spawned.
+    3. The physics component moves the particles.
+    4. The render component builds the render data.
+    5. The child component, if set, and the geometry component update.
+
+    Every component is told how many particles were spawned. The count comes straight from
+    the lifetime component. There is no emission-rate accumulator and no burst clamp on this
+    path, so the per-importance emission-rate multiplier of `EffectsQuality` does not apply.
+    The emitter's mesh animation loops on a clock that starts at the start time the lifetime
+    component reports.
+
+    **Shipped data.** Only Summoner's Rift map data carries component graphs. Every shipped
+    graph fills the four required slots with the modern components and leaves
+    `ChildComponent` and `components` empty. Every shipped shimmer emitter also sets
+    `disabled`, and a disabled shimmer emitter is never built, so no shipped graph runs.
+  notes:
+    - "Summoner's Rift map data also writes component graphs onto complex emitters, as a `VfxComponents` field on `VfxEmitterDefinitionData`. No tracked build registers that field there, and the client skips a property that its class does not register. Those complex emitters set no `rate`, `flexRate`, `isSingleParticle` or material override, so the client drops them when the system is prepared."
+
+properties:
+  LifetimeComponent:
+    description: |
+      Decides when the emitter is finished and how many particles it spawns in each update.
+      Required. See [VfxLifetimeComponentBase](/classes/vfxlifetimecomponentbase).
+
+  PhysicsComponent:
+    description: |
+      Moves the particles once per update, after the spawn. Required. See
+      [VfxPhysicsComponentBase](/classes/vfxphysicscomponentbase).
+
+  RenderComponent:
+    description: |
+      Builds the emitter's draw setup when the system is prepared and the render data in each
+      update. Required. See [VfxRenderComponentBase](/classes/vfxrendercomponentbase).
+
+  GeometryComponent:
+    description: |
+      Supplies the primitive the particles are drawn as. Required, and it must resolve to a
+      primitive. See [VfxGeometryComponentBase](/classes/vfxgeometrycomponentbase).
+
+  ChildComponent:
+    description: |
+      Optional. When set, it is told each spawn count and updates after the render
+      component. See [VfxChildComponent](/classes/vfxchildcomponent).
+
+  components:
+    description: |
+      A general list of components. The prepare and update paths described above read only
+      the five named slots. What reads this list is not yet identified.
+    notes:
+      - "No shipped graph sets it."

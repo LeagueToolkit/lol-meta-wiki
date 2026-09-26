@@ -1,0 +1,18 @@
+# VfxShimmerPrimitiveQuad Documentation
+
+class:
+  description: |
+    A quad per particle, built on the CPU each frame and drawn in one batch with the
+    emitter's other quads. It is the only batched shimmer primitive that ships.
+  notes:
+    - "Shipped quads set none of their properties."
+
+properties:
+  "0x4fe2b16f":
+    description: |
+      A two-component value. Its effect on the quad is not yet identified.
+
+  FacingMode:
+    description: |
+      How the quad faces the camera; see [VfxShimmerFacingMode](/classes/vfxshimmerfacingmode).
+      Whether the quad builder applies it is not yet identified.
