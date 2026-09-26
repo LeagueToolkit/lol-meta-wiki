@@ -1,0 +1,10 @@
+# VfxRenderComponentBase Documentation
+
+class:
+  description: |
+    The **render** slot of a [VfxComponents](/classes/vfxcomponents) graph. When the system is
+    prepared, it builds the emitter's draw setup from the geometry component's primitive, the
+    meshes loaded for that primitive, and the emitter's `emitterName`. In each update
+    it builds the particles' render data after the physics component has moved them.
+
+    Required: a graph without a render component drops its emitter.

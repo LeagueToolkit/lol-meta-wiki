@@ -1,0 +1,30 @@
+# VfxShimmerPrimitiveBase Documentation
+
+class:
+  description: |
+    The **shimmer primitives**: the shapes that the particles of a
+    [component emitter](/classes/vfxcomponents) can be drawn as, held by
+    [`VfxGeometryComponent.primitive`](/classes/vfxgeometrycomponent#primitive). Complex
+    emitters use the [legacy primitives](/classes/vfxlegacyprimitivebase) instead, and some
+    shimmer classes are twins of legacy ones.
+
+    | Primitive | Draws |
+    |---|---|
+    | [VfxShimmerPrimitiveQuad](/classes/vfxshimmerprimitivequad) | a quad, batched |
+    | [VfxShimmerPrimitiveMesh](/classes/vfxshimmerprimitivemesh) | a mesh, per particle |
+    | [VfxShimmerPrimitiveAttachedMesh](/classes/vfxshimmerprimitiveattachedmesh) | the owner's skinned mesh, per particle |
+    | [VfxShimmerPrimitiveMeshBeam](/classes/vfxshimmerprimitivemeshbeam) | a mesh stretched between two points, per particle |
+    | [VfxPrimitiveLaser](/classes/vfxprimitivelaser) | tessellated geometry, batched |
+    | [VfxPrimitiveRibbon](/classes/vfxprimitiveribbon) | a strip, batched |
+
+    Shipped graphs use only the mesh and the quad, and no shipped graph runs; see
+    [VfxComponents](/classes/vfxcomponents).
+
+    **Batched** primitives build their vertices on the CPU each frame, through a geometry
+    builder that only this tree has. The component emitter calls that builder for shimmer
+    primitives only, which is why a legacy batched primitive in a component graph draws
+    nothing. **Per-particle** primitives add nothing to the batch and draw each particle
+    separately.
+
+    Meshes choose how they face the camera through a `FacingMode` object rather than through
+    flags; see [VfxShimmerFacingMode](/classes/vfxshimmerfacingmode).

@@ -1,0 +1,15 @@
+# VfxLegacyGeometryComponent Documentation
+
+class:
+  description: |
+    A geometry component that holds a [legacy primitive](/classes/vfxlegacyprimitivebase), the
+    kind that complex emitters use.
+
+    The component emitter builds batched geometry only for primitives of the shimmer family,
+    so a legacy quad, ray, beam or trail placed here builds no vertices. Legacy meshes skip the
+    batch and draw per particle. A legacy attached mesh takes the same route as
+    [VfxShimmerPrimitiveAttachedMesh](/classes/vfxshimmerprimitiveattachedmesh), including its
+    fault with locked placement. What else differs for a plain legacy mesh here is not yet
+    identified.
+  notes:
+    - "No shipped data uses this class."

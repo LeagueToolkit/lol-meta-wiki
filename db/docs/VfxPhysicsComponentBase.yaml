@@ -1,0 +1,9 @@
+# VfxPhysicsComponentBase Documentation
+
+class:
+  description: |
+    The **physics** slot of a [VfxComponents](/classes/vfxcomponents) graph. It moves the
+    particles once per update, after that update's spawn, and it is told how many particles
+    each spawn adds.
+
+    Required: a graph without a physics component drops its emitter.

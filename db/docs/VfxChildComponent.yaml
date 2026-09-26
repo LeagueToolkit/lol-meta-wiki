@@ -1,0 +1,9 @@
+# VfxChildComponent Documentation
+
+class:
+  description: |
+    The optional **child** slot of a [VfxComponents](/classes/vfxcomponents) graph. When it is
+    set, it is told each spawn count and updates after the render component. What it does with
+    its child particle set is not yet identified.
+  notes:
+    - "No shipped data uses this class."

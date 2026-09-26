@@ -1,0 +1,15 @@
+# VfxLifetimeComponentBase Documentation
+
+class:
+  description: |
+    The **lifetime** slot of a [VfxComponents](/classes/vfxcomponents) graph. It owns emission:
+    in each update it decides whether the emitter is finished and, while it is not, returns the
+    number of particles to spawn in that update. The count is whole and comes straight from
+    this component, with no accumulator or burst limit applied after it.
+
+    It also reports the emitter's start time, which the emitter's mesh animation clock counts
+    from.
+
+    Required: a graph without a lifetime component drops its emitter.
+  notes:
+    - "The spawn count for one update is at most 65535."
