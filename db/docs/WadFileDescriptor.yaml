@@ -1,0 +1,22 @@
+# WadFileDescriptor Documentation
+
+class:
+  description: |
+    An **authoring-side record of a mountable WAD**. Each object's entry path is
+    `WadFiles/<name>`, and it stands for the archive `DATA/FINAL/<name>.wad.client`. Every
+    shipped object is empty: the entry path is the whole payload.
+
+    The client no longer registers this class, but the objects still ship in map bins.
+    The bin reader skips any top-level entry whose class it does not know, so these objects
+    are dropped at load and never exist at runtime. Nothing in the client looks one up.
+
+    The entry paths still matter as **strings**. [`Map.WadDependencies`](/classes/map#waddependencies)
+    names extra WADs by these paths, which is why its entries carry the `WadFiles/` prefix
+    that the client strips before mounting. The client reads only the string. It does not
+    resolve or check the descriptor it names.
+  notes:
+    - "Adding, removing or editing a `WadFileDescriptor` changes nothing in game. To make a map mount an extra WAD, add a `WadFiles/<name>` entry to `Map.WadDependencies`."
+    - "The Teamfight Tactics set WADs (`TFTSet<N>`, `TFTSetEvent<name>`, `TFTSetTutorial`) have descriptors, but no data links to them. The client mounts a set's WAD from the set name itself: it cuts the name at the first `_` and mounts `<name>.wad`. An event set also mounts its own WAD next to the core set's WAD."
+    - "The shipped descriptors match the WADs that hold content. The set WADs that ship only as near-empty placeholders have no descriptor."
+  examples:
+    - "`WadFiles/Companions` describes `DATA/FINAL/Companions.wad.client`, which the Teamfight Tactics map and one other map mount through `WadDependencies`."

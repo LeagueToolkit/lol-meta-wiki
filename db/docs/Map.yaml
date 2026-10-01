@@ -54,6 +54,7 @@ properties:
       - "`WadFiles/Companions` mounts `DATA/FINAL/Companions.wad.client`. Only the two modes that need companion assets set it, so the rest of the game does not pay for a one-gigabyte archive."
     notes:
       - "The list is walked again to unmount when the map is released."
+      - "Each entry is the entry path of a [WadFileDescriptor](/classes/wadfiledescriptor) shipped in the same bin. Only the string is used: the descriptor is never resolved, and the client drops it at load."
 
   mapSkins:
     description: |
