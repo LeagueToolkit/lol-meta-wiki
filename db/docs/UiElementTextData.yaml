@@ -1,0 +1,18 @@
+# UiElementTextData Documentation
+
+properties:
+  FontDescription:
+    description: |
+      The [GameFontDescription](/classes/gamefontdescription) the element draws its text
+      with. The client requests the font with a scale factor that depends on the element.
+      Elements that use the same description at the same scale share one font.
+
+      Ignored when `0x2886ee61` is set.
+
+  "0x2886ee61":
+    description: |
+      A [0x82bdb583](/classes/0x82bdb583) text style. When set, the element draws with it
+      instead of `FontDescription`, and the font's size scales from the `SourceResolutionHeight`
+      of the element's `UiPositionRect.UIRect`.
+    notes:
+      - "No UI element in `UI.wad.client` or `Global.wad.client` sets it."

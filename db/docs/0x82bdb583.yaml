@@ -1,0 +1,39 @@
+# 0x82bdb583 Documentation
+
+class:
+  description: |
+    A text style built from font families and weights instead of a
+    [FontType](/classes/fonttype). UI text links it through `UiElementTextData.0x2886ee61`,
+    and when that link is set it is used in place of `UiElementTextData.FontDescription`.
+
+    To build a font, the client picks one `0xf1bc6341` entry, a
+    [0x92c8c778](/classes/0x92c8c778), by locale. From that entry's family it takes the
+    regular font file and the bold font file, and it computes the size as:
+
+    `fontSize × window height ÷ reference height × 0.75`
+
+    - **Reference height**: the `SourceResolutionHeight` of the text element's
+      `UiPositionRect.UIRect`.
+    - **`0.75`**: applies only while `0xe82a5770` is `0`.
+
+    The size is at least `1`, and the client then multiplies it by the scale factor that the
+    requesting UI passes.
+
+    The class has no colors, outline or shadow. A font built from it has black text, outline
+    and shadow colors, no outline and no shadow offset.
+  notes:
+    - "Shipped data has 30 objects in `ux/fonts.bin`, each with `en_US`, `ko_KR` and `zh_CN` entries. No UI element in `UI.wad.client` or `Global.wad.client` links one."
+
+properties:
+  "0xe82a5770":
+    description: "When `0`, the client multiplies the font size by `0.75`. Any other value keeps the size unchanged. No shipped object sets it."
+
+  "0xf1bc6341":
+    description: |
+      The style per locale, keyed by the hash of the locale name. The client picks:
+
+      1. the entry for the client's locale,
+      2. otherwise the entry for `en_us`,
+      3. otherwise the entry with the lowest key hash.
+
+      Keys hash the same in any letter case, so `en_US` and `en_us` name one entry.

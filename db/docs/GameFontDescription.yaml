@@ -1,0 +1,98 @@
+# GameFontDescription Documentation
+
+class:
+  description: |
+    A text style: which font files to draw with, at what size, and in which colors. UI text
+    elements link it through `UiElementTextData.FontDescription`, and floating text links it
+    through `FloatTextFormattingData.mFontDescription`.
+
+    The client builds a **font** from a description in three steps:
+
+    1. It picks the font files from `typeData`, a [FontType](/classes/fonttype), by the
+       client's locale.
+    2. It picks the size, outline size and shadow offset from `resolutionData`, a
+       [FontResolutionData](/classes/fontresolutiondata), by the locale and the height of the
+       game window. The size is then multiplied by a scale factor that the requesting UI
+       passes.
+    3. It copies the colors and the fill texture from the description.
+
+    UI text that uses the same description at the same scale shares one font. When the game
+    window changes height, the client repeats step 2 for every font it has built. Each font
+    file is loaded once, the first time a font uses it, and shared by every font that names
+    the same path.
+
+    **Colorblind colors.** The five `colorblind*` colors are optional overrides. While the
+    client uses its colorblind color palette, a font takes each override that is set in place
+    of the matching normal color. An override that is not set leaves the normal color in
+    place.
+  notes:
+    - "Shipped descriptions all live in `ux/fonts.bin`, keyed by paths such as `UX/Fonts/Descriptions/...`. The client reads that bin once during startup, from `Bootstrap.windows.wad.client`, before it creates the game window, and keeps it for the whole session. `UI.wad.client` ships a copy of the same bin that the client does not read."
+    - "The client looks up two descriptions by name: `UX/Fonts/Descriptions/FloatText_OMW` and `UX/Fonts/Descriptions/ThresholdCapped`."
+    - "Floating text builds its own font for each format instead of sharing the cached one. It uses the description's text, outline and shadow colors, but replaces their alpha with the fade of the floating text."
+
+properties:
+  name:
+    description: |
+      A readable name for the description. Shipped values describe the style, for example
+      `Gold4_NoShadow`. Building a font does not read it.
+
+  typeData:
+    description: |
+      The [FontType](/classes/fonttype) that supplies the font files. Shipped descriptions
+      link the types under `UX/Fonts/Types/`, for example `UX/Fonts/Types/BeaufortBold`.
+
+  resolutionData:
+    description: |
+      The [FontResolutionData](/classes/fontresolutiondata) that supplies the size, outline
+      size and shadow offset. If it has no entry for the locale and no `en_us` entry, the
+      font gets a size of `0` and no outline or shadow offset.
+
+  Color:
+    description: "The text color. Replaced by `colorblindColor` when that is set and the colorblind palette is on."
+
+  outlineColor:
+    description: |
+      The color of the outline. The outline's width comes from `FontResolution.outlineSize`.
+      Replaced by `colorblindOutlineColor` when that is set and the colorblind palette is on.
+
+  shadowColor:
+    description: |
+      The color of the drop shadow. The shadow's offset comes from
+      `FontResolution.shadowDepthX` and `shadowDepthY`. Replaced by `colorblindShadowColor`
+      when that is set and the colorblind palette is on.
+    notes:
+      - "Shipped descriptions with `NoShadow` in their name set it to `{ 0, 0, 0, 0 }`."
+
+  glowColor:
+    description: |
+      Building a font does not read it, and no other reader was found in the game client.
+      Shipped data sets it on about 300 descriptions.
+
+  SelectionBoxColor:
+    description: |
+      A color the client copies onto the font with the other colors. Replaced by
+      `ColorblindSelectionBoxColor` when that is set and the colorblind palette is on. Where
+      the font uses it is not yet identified. Shipped data sets it on 9 descriptions.
+
+  colorblindColor:
+    description: "Replaces `Color` while the colorblind palette is on. See the class description."
+
+  colorblindOutlineColor:
+    description: "Replaces `outlineColor` while the colorblind palette is on. See the class description."
+
+  colorblindShadowColor:
+    description: "Replaces `shadowColor` while the colorblind palette is on. See the class description. No shipped description sets it."
+
+  colorblindGlowColor:
+    description: "The colorblind counterpart of `glowColor`. No reader was found in the game client, and no shipped description sets it."
+
+  ColorblindSelectionBoxColor:
+    description: "Replaces `SelectionBoxColor` while the colorblind palette is on. No shipped description sets it."
+
+  fillTextureName:
+    description: |
+      A texture the client loads with the description and hands to the font. How the font
+      draws it is not yet identified.
+    examples:
+      - "`assets/ux/fonts/announcementtexture.tex`, on 13 announcement banner descriptions"
+      - "`assets/ux/fonts/loadingscreen_font_fill.tex`, on 3 loading screen descriptions"

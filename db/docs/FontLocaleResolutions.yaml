@@ -1,0 +1,23 @@
+# FontLocaleResolutions Documentation
+
+class:
+  description: |
+    The sizes of a [FontResolutionData](/classes/fontresolutiondata) for one locale. The
+    `FontResolutionData` page describes how the client picks an entry, and how it picks a
+    value from `resolutions`.
+
+properties:
+  localeName:
+    description: |
+      The locale the entry applies to, compared with the client's locale ignoring case. An
+      entry that does not set it counts as `en_us`, which makes it the fallback for every
+      locale that has no entry of its own.
+
+  resolutions:
+    description: |
+      The values for this locale, as [FontResolution](/classes/fontresolution) entries. With
+      `FontResolutionData.autoScale` set, only the first entry is read. Without it, the client
+      picks the entry whose `screenHeight` is closest to the window height.
+
+      Most shipped entries have one item. The ones that list several screen heights have
+      between 7 and 13.

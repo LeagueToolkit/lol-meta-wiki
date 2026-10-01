@@ -1,0 +1,29 @@
+# FontResolution Documentation
+
+class:
+  description: |
+    Font size, outline size and shadow offset for one screen height. See
+    [FontResolutionData](/classes/fontresolutiondata) for how the client picks an entry and
+    scales its values.
+
+properties:
+  screenHeight:
+    description: |
+      The game window height, in pixels, that these values are meant for. With
+      `FontResolutionData.autoScale`, the values are scaled by `window height / screenHeight`.
+      Without it, the client uses the entry whose `screenHeight` is closest to the window
+      height.
+
+  fontSize:
+    description: |
+      The font size at `screenHeight`. The client multiplies it by the scale factor that the
+      requesting UI passes.
+
+  outlineSize:
+    description: "The width of the outline drawn in `GameFontDescription.outlineColor`. `0` means no outline."
+
+  shadowDepthX:
+    description: "Horizontal offset of the drop shadow drawn in `GameFontDescription.shadowColor`. Negative values are allowed."
+
+  shadowDepthY:
+    description: "Vertical offset of the drop shadow drawn in `GameFontDescription.shadowColor`. Negative values are allowed."

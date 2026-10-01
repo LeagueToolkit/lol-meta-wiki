@@ -1,0 +1,30 @@
+# FontLocaleType Documentation
+
+class:
+  description: |
+    The font files of a [FontType](/classes/fonttype) for one locale. The `FontType` page
+    describes how the client picks an entry.
+
+properties:
+  localeName:
+    description: |
+      The locale the entry applies to, compared with the client's locale ignoring case. An
+      entry that does not set it counts as `en_us`, which makes it the fallback for every
+      locale that has no entry of its own.
+    examples:
+      - "`ko_kr`, `zh_cn`, `ja_jp`"
+
+  mFontFilePath:
+    description: |
+      Path of the font file for regular text. The client loads the file the first time a font
+      uses it, and every font that names the same path shares the loaded file. Shipped values
+      are `.otf` and `.ttf` files under `ASSETS/UX/Fonts/`.
+    examples:
+      - "`ASSETS/UX/Fonts/BeaufortforLOL-Regular.otf`"
+
+  FontFilePathBold:
+    description: |
+      Path of a second font file that the client loads next to `mFontFilePath`, for bold
+      text. When it is empty, the font has no bold file.
+    examples:
+      - "`ASSETS/UX/Fonts/BeaufortforLOL-Bold.otf`"
