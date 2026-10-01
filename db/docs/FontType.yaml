@@ -1,0 +1,26 @@
+# FontType Documentation
+
+class:
+  description: |
+    The font files of a typeface, per client locale. A
+    [GameFontDescription](/classes/gamefontdescription) links one through `typeData`.
+
+    To build a font, the client picks one `localeTypes` entry:
+
+    1. the entry whose `localeName` matches the client's locale, ignoring case,
+    2. otherwise the last entry whose `localeName` is `en_us`,
+    3. otherwise the first entry.
+
+    It then loads `mFontFilePath` and `FontFilePathBold` from that entry.
+  notes:
+    - "Shipped types are keyed `UX/Fonts/Types/<name>`, for example `UX/Fonts/Types/BeaufortReg`, and live in `ux/fonts.bin`."
+
+properties:
+  localeTypes:
+    description: |
+      The font files per locale, as [FontLocaleType](/classes/fontlocaletype) entries. The
+      class description gives the order the client picks an entry in.
+
+      Shipped types list the Latin font first, with no `localeName`, so the entry counts as
+      `en_us` and serves every locale without its own entry. The entries after it name the
+      locales that need another font, such as `ko_kr`, `zh_cn`, `ja_jp`, `th_th` and `ar_ae`.

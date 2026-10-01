@@ -1,0 +1,42 @@
+# 0x92c8c778 Documentation
+
+class:
+  description: |
+    The family, weight, style and size of a [0x82bdb583](/classes/0x82bdb583) text style for
+    one locale.
+
+    The client takes two font files from the family's `Faces`:
+
+    - **Regular**: the face whose `WEIGHT` equals `FontWeight` and whose `Style` equals
+      `FontStyle`. If no face matches, the font has no regular file.
+    - **Bold**: the face whose `WEIGHT` is `7` and whose `Style` equals `FontStyle`. If no
+      face matches, the font has no bold file.
+
+properties:
+  FontFamily:
+    description: "The [0x215f4776](/classes/0x215f4776) font family to take the faces from."
+
+  FontWeight:
+    description: |
+      The weight of the regular face, matched exactly against `WEIGHT` on the family's faces.
+      Shipped faces use the CSS weights divided by 100:
+
+      | Value | Shipped face |
+      |---|---|
+      | `3` | Light |
+      | `4` | Regular |
+      | `5` | Medium |
+      | `6` | SemiBold |
+      | `7` | Bold |
+      | `8` | Heavy |
+
+  FontStyle:
+    description: "The style of both faces, matched exactly against `Style` on the family's faces. Shipped faces use `0` for upright and `1` for italic."
+
+  fontSize:
+    description: |
+      The base font size. The [0x82bdb583](/classes/0x82bdb583) page gives the formula that
+      turns it into the size of the font. Shipped values are between 24 and 288.
+
+  "0x9eab8cf8":
+    description: "Building a font does not read it. Purpose not yet identified. Shipped data sets `0.8` or `0.9` on 16 entries."

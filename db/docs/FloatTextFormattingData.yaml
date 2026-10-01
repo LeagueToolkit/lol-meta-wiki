@@ -1,0 +1,13 @@
+# FloatTextFormattingData Documentation
+
+properties:
+  mFontDescription:
+    description: |
+      The [GameFontDescription](/classes/gamefontdescription) the floating text is drawn
+      with. Each floating text builds its own font from it and does not share the font that UI
+      text uses.
+
+      The text color is the description's `Color`, or `colorblindColor` while the colorblind
+      palette is on. The client shifts that color by `colorOffsetR`, `colorOffsetG` and
+      `colorOffsetB`. The outline and shadow colors come from the description too. All three
+      colors take their alpha from the fade of the floating text, not from the description.

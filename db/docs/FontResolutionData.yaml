@@ -1,0 +1,44 @@
+# FontResolutionData Documentation
+
+class:
+  description: |
+    The size, outline size and shadow offset of a
+    [GameFontDescription](/classes/gamefontdescription), per locale and screen height.
+
+    The client first picks a `localeResolutions` entry: the entry whose `localeName` matches
+    the client's locale, ignoring case, otherwise the last `en_us` entry. Unlike
+    [FontType](/classes/fonttype), there is no fallback to the first entry. If neither
+    exists, or the picked entry has no `resolutions`, the font gets a size of `0` and no
+    outline or shadow offset.
+
+    From the picked entry's `resolutions`, `autoScale` decides how the values are found. The
+    client runs this again for every font when the height of the game window changes.
+
+properties:
+  autoScale:
+    description: |
+      How the client turns the `resolutions` list into values for the current window height.
+
+      **`true`**: only the first [FontResolution](/classes/fontresolution) is used. The client
+      scales its values by `window height / screenHeight`:
+
+      - The font size is scaled, and is at least `1`.
+      - A non-zero outline size is scaled and truncated, and is at least `1`. An outline size
+        of `0` stays `0`.
+      - A non-zero shadow offset is scaled and truncated, and keeps its sign with a magnitude
+        of at least `1`. An offset of `0` stays `0`.
+
+      **`false`**: the client takes the entry whose `screenHeight` is closest to the window
+      height, and uses its values unscaled. When two entries are equally close, the earlier
+      one wins.
+    notes:
+      - "Shipped data sets `false` on 10 objects. These are the ones that list several screen heights."
+
+  localeResolutions:
+    description: |
+      The values per locale, as [FontLocaleResolutions](/classes/fontlocaleresolutions)
+      entries. The class description gives the order the client picks an entry in.
+
+      Most shipped objects have one entry with no `localeName`, which counts as `en_us` and
+      serves every locale. Some add entries for locales whose text needs a different size, such
+      as `vi_vn`, `el_gr` and `pl_pl`.

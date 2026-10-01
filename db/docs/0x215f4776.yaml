@@ -1,0 +1,18 @@
+# 0x215f4776 Documentation
+
+class:
+  description: |
+    A font family: the font files of one typeface, one per weight and style. A
+    [0x92c8c778](/classes/0x92c8c778) style entry picks a face from it by `WEIGHT` and
+    `Style`.
+  notes:
+    - "Shipped data has four families in `ux/fonts.bin`: `Beaufort for LOL` with 10 faces, `Spiegel` with 6, and `Uttum Dotum` and `FZDaHei-B02` with 1 each."
+
+properties:
+  displayName:
+    description: "The family's name, for example `Beaufort for LOL`. Building a font does not read it."
+
+  Faces:
+    description: |
+      The family's faces, as [0xbb778e9b](/classes/0xbb778e9b) entries. The client takes the
+      first face that matches the weight and style it looks for.

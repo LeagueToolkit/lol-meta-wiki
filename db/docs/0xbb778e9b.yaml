@@ -1,0 +1,27 @@
+# 0xbb778e9b Documentation
+
+class:
+  description: |
+    One face of a [0x215f4776](/classes/0x215f4776) font family: a font file and the weight
+    and style it provides.
+
+properties:
+  displayName:
+    description: "The face's name, for example `Bold Italic`. Building a font does not read it."
+
+  FilePath:
+    description: |
+      Path of the font file. The client loads it the first time a font uses the face, and
+      every font that names the same path shares the loaded file.
+    examples:
+      - "`ASSETS/UX/Fonts/Spiegel-SemiBold.otf`"
+
+  WEIGHT:
+    description: |
+      The weight this face provides, compared with `FontWeight` of the style entry. `7` is
+      also the weight the client looks for when it picks the bold face. Shipped values follow
+      the CSS weights divided by 100: `3` Light, `4` Regular, `5` Medium, `6` SemiBold, `7`
+      Bold, `8` Heavy.
+
+  Style:
+    description: "The style this face provides, compared with `FontStyle` of the style entry. Shipped faces use `0` for upright and `1` for italic."
