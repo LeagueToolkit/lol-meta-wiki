@@ -3,8 +3,8 @@
 class:
   description: |
     The [pose modifier](/classes/baserigposemodifierdata) that does the work of a
-    [JointSnapEventData](/classes/jointsnapeventdata): it **stands one joint on another
-    joint or on a socket** while the event is active. It has no settings. The two joints
+    [JointSnapEventData](/classes/jointsnapeventdata): it **snaps one joint onto another
+    joint or onto a socket** while the event is active. It has no settings. The two joints
     and the offset come from the event, and that page describes the snap.
 
     The client adds this modifier to a unit by itself when a clip of the unit's animation
