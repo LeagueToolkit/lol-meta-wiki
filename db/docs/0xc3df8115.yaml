@@ -1,0 +1,14 @@
+# 0xc3df8115 Documentation
+
+class:
+  description: |
+    Switches the **role-bound quest** system on for a mode. Nothing looks this config up. It
+    acts once, when the mode's configs are loaded.
+  notes:
+    - "Summoner's Rift ships one with no property set."
+
+properties:
+  "0x9c697a76":
+    description: |
+      When `true`, the client plays the `NarrativeBark_RoleBoundQuest_*` barks only for the
+      local player's own quests.

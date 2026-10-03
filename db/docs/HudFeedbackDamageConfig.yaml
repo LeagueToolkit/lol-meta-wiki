@@ -1,0 +1,73 @@
+# HudFeedbackDamageConfig Documentation
+
+class:
+  description: |
+    The **damage screen flash**: the full-screen flash the client shows when the local
+    player's champion takes damage.
+
+    The client runs one of two checks on every damage event of that champion.
+
+    **Low health.** If the champion's health fraction is at or below
+    `LowHealthFlashThresholdPercentage`, every hit flashes. The flash lasts
+    `LowHealthFlashDuration` seconds and its opacity is:
+
+    `0xba7b16a1 × (1 - health fraction)`
+
+    So the flash gets stronger as health drops.
+
+    **Burst.** Above that threshold, the client records the hit. It keeps the last 20 hits
+    and adds up the damage taken in the last `OverTimeForFlashSeconds` seconds. When the sum
+    is more than `PercentageDamageForFlash × max health`, it flashes for `flashDuration`
+    seconds with this opacity:
+
+    `0xba7b16a1 × min(1, StartFlashAlpha + excess ÷ (0x22728a51 × max health))`
+
+    Here `excess` is the sum minus the threshold. The client then clears the recorded hits,
+    so the next burst flash needs new damage.
+  notes:
+    - "Every shipped map has one object, at `UX/HUD/Globals/DamageFeedback`, and they all hold the same values."
+    - "With the shipped values, losing 20% of max health within 5 seconds starts a flash at 20% strength. The flash reaches full strength when the damage is a further 20% of max health above that."
+
+properties:
+  PercentageDamageForFlash:
+    description: |
+      The burst threshold, as a fraction of the champion's max health. The damage summed
+      over `OverTimeForFlashSeconds` must be more than this share for a burst flash.
+
+  OverTimeForFlashSeconds:
+    description: |
+      The length, in seconds, of the window the burst check sums damage over. Hits older
+      than this do not count.
+
+  "0x22728a51":
+    description: |
+      The share of max health over which a burst flash ramps from `StartFlashAlpha` to full
+      strength. Smaller values make the flash reach full strength with less damage above the
+      threshold.
+
+  flashDuration:
+    description: "How long a burst flash lasts, in seconds."
+
+  StartFlashAlpha:
+    description: |
+      The strength of a burst flash that only just passes the threshold, from `0` to `1`.
+      Damage above the threshold adds to it.
+
+  LowHealthFlashThresholdPercentage:
+    description: |
+      The health fraction at or below which every hit flashes. Above it, the burst check
+      applies instead.
+
+  LowHealthFlashDuration:
+    description: "How long a low-health flash lasts, in seconds."
+
+  "0xba7b16a1":
+    description: |
+      The opacity of a flash at full strength, from `0` to `1`. It scales both the
+      low-health flash and the burst flash.
+
+  HitTexture:
+    description: "A texture path. The two checks above do not read it, and what draws it is not identified."
+
+  StunTexture:
+    description: "A texture path. The two checks above do not read it, and what draws it is not identified."

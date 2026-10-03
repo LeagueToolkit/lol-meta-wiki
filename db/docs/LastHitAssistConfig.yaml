@@ -1,0 +1,22 @@
+# LastHitAssistConfig Documentation
+
+class:
+  description: |
+    Turns on the **ability last-hit indicator**. For a spell that takes part, the client
+    predicts the spell's damage against a nearby unit and compares it with the unit's
+    health. On the unit's health bar it then draws either a marker that the spell would
+    kill the unit, or a segment that shows the damage the spell would do.
+  notes:
+    - "Summoner's Rift ships two objects, one of them with the queue list `500`, `501`, `502`."
+
+properties:
+  LastHitAssistRadius:
+    description: "The range, in world units, within which units get the indicator."
+
+  RankedEnabled:
+    description: "When `true`, the indicator also works in ranked games."
+
+  DisabledQueueIds:
+    description: |
+      Queue ids in which the indicator stays off. The client checks the list against the
+      queue id of the game when the config is loaded.

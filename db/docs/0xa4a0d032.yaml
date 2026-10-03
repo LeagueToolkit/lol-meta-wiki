@@ -1,0 +1,17 @@
+# 0xa4a0d032 Documentation
+
+class:
+  description: |
+    A per-mode **stat growth curve**. Nothing looks this config up. It acts once, when the
+    mode's configs are loaded.
+
+properties:
+  "0x163d624b":
+    description: |
+      The per-level stat factors. When the config is loaded, the client copies the list over
+      `mPerLevelStatsFactor` of
+      [GlobalPerLevelStatsFactor](/classes/globalperlevelstatsfactor) and rebuilds the
+      running totals it derives from it. This replaces the global per-level stat growth for
+      the mode.
+    examples:
+      - "One shipped mode sets `0` followed by 29 entries of `1`, which makes stats grow by the same amount at every level."

@@ -1,0 +1,15 @@
+# 0x3d900309 Documentation
+
+class:
+  description: |
+    Extra **shop item lists that a mutator switches on**. A mode can list items here that
+    the shop only offers in games that run a given mutator.
+  notes:
+    - "No shipped mode has one."
+
+properties:
+  itemLists:
+    description: |
+      [GameModeItemList](/classes/gamemodeitemlist) objects keyed by mutator name. When the
+      shop is built, the client adds the items of every list whose key is one of the
+      mutators applied to the game.

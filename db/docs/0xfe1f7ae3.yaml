@@ -1,0 +1,12 @@
+# 0xfe1f7ae3 Documentation
+
+class:
+  description: |
+    A marker that keeps the map's **Lua level script** loading. In a mode whose
+    [LuaDeprecationConfig](/classes/luadeprecationconfig) switches the legacy Lua scripts
+    off, the client still loads the script that the `LevelScriptFile` level property names
+    when the mode ships this object.
+
+    Only its presence matters.
+  notes:
+    - "Three shipped maps have one, Summoner's Rift and Howling Abyss among them."

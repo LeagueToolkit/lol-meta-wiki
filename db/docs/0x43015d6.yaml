@@ -1,0 +1,8 @@
+# 0x43015d6 Documentation
+
+class:
+  description: |
+    The client registers the class but does not read it. Nothing looks the config up, so its
+    values have no effect on the client.
+  notes:
+    - "No shipped mode has one."

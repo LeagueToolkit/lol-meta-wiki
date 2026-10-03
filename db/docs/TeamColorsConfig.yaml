@@ -1,0 +1,22 @@
+# TeamColorsConfig Documentation
+
+class:
+  description: |
+    **Team colors** for a mode. The client asks it for the color of a team when it tints the
+    champion icons on the minimap and the unit frames.
+
+    The answer is the `Color` of the `TeamColors` entry that lists the team. A team that no
+    entry lists gets `DefaultColor`. Each color is an
+    [AccessibleColor](/classes/accessiblecolor), so it can carry a separate value for the
+    colorblind palette.
+  notes:
+    - "No shipped mode has one."
+
+properties:
+  TeamColors:
+    description: |
+      The colors per team. Each entry holds the teams it applies to in `Teams` and their
+      color in `Color`.
+
+  DefaultColor:
+    description: "The color of a team that no `TeamColors` entry lists."

@@ -1,0 +1,26 @@
+# IGameModeConfigBase Documentation
+
+class:
+  description: |
+    A **per-mode config**: a block of settings that one game mode opts into. A mode ships a
+    config by linking it from `Configs` or `ConfigsClient` on its
+    [GameModeMapData](/classes/gamemodemapdata). When the mode loads, the client collects
+    every linked object into one table, keyed by the object's class.
+
+    Client code that needs a config asks that table for its class. What a miss means depends
+    on the class:
+
+    - For most classes the feature is simply **off**, or runs on values built into the
+      client.
+    - For a few classes, such as [MinimapDrawConfig](/classes/minimapdrawconfig) and
+      [0xb2ff06ac](/classes/0xb2ff06ac), the client creates an object with default values
+      instead. For those a missing object means "defaults", not "off".
+
+    Some configs are never looked up. They act once, when the mode's configs are loaded, and
+    change other state from there: [0xa4a0d032](/classes/0xa4a0d032) replaces the per-level
+    stat factors, and [0xc3df8115](/classes/0xc3df8115) switches the role-bound quest system
+    on.
+  notes:
+    - "A lookup is by class, so client code can only ever find one object of a given class in a mode."
+    - "Many config classes have no client code that reads their values. The client registers them only so the bin parses. Editing such a config changes nothing on the client."
+    - "A map bin usually holds several objects of the same class, one per mode. Only the objects the current mode's `GameModeMapData` links are loaded."

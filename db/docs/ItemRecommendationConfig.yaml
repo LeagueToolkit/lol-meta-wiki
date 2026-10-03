@@ -1,0 +1,7 @@
+# ItemRecommendationConfig Documentation
+
+properties:
+  "0x99fa8da4":
+    description: |
+      The client copies the value into its item recommendation data when that is built.
+      Nothing reads the copy, so the value currently has no effect on the client.

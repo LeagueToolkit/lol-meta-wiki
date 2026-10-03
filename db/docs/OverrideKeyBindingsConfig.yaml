@@ -1,0 +1,19 @@
+# OverrideKeyBindingsConfig Documentation
+
+class:
+  description: |
+    A set of **key binding overrides** for a mode. The client applies the set when it
+    initialises input for the game, on top of the player's own bindings.
+
+    [OverrideDeferredKeyBindingsConfig](/classes/overridedeferredkeybindingsconfig) is the
+    variant that can be held back and applied later.
+
+properties:
+  "0x68d95a00":
+    description: |
+      The overrides, keyed by input event name such as `evtCastSpell1`. The value is a
+      binding string:
+
+      - `[]` removes every binding the event currently has. The client remembers the removed
+        bindings so that it can restore them.
+      - Any other value is parsed as a binding and bound to the event.

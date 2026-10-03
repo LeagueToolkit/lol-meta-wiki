@@ -1,0 +1,7 @@
+# VoiceChatConfig Documentation
+
+properties:
+  TeamVoiceChatEnabled:
+    description: |
+      The client copies the value onto its voice chat panel. Nothing reads the copy, so the
+      value currently has no effect on the client.

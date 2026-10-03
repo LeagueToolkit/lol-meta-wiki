@@ -1,0 +1,20 @@
+# DeathRecapTeammateSpectatorConfig Documentation
+
+class:
+  description: |
+    **Teammate spectating while dead.** With this object, the client builds a panel of up to
+    four allied champions for the dead player. The input events `evtSelectAlly1` to
+    `evtSelectAlly4` pick the teammate to watch.
+
+    [0xe348122d](/classes/0xe348122d) carries the object in `TeammateSpectatorConfig`.
+  notes:
+    - "The panel also needs a client feature toggle to be on, so shipping the object is not enough by itself."
+
+properties:
+  EnableAutoSpectate:
+    description: |
+      When `true`, the client itself starts to watch the nearest living ally, after the
+      delay in `0x45258bde`.
+
+  "0x45258bde":
+    description: "The delay, in seconds, before `EnableAutoSpectate` picks a teammate."

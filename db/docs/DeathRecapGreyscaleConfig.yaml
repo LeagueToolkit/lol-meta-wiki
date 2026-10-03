@@ -1,0 +1,32 @@
+# DeathRecapGreyscaleConfig Documentation
+
+class:
+  description: |
+    A fade of the **greyscale death screen**. While the local player's champion is dead the
+    screen is grey. With this object, part of the color returns after a delay:
+
+    `greyscale = 1 - progress × 0x9044f758`
+
+    `progress` runs from `0` to `1` over `FadeGreyscaleDurationSecs`, starting `0x2ac8249e`
+    seconds after the death. A greyscale of `1` is fully grey.
+
+    [0xe348122d](/classes/0xe348122d) carries the object in `GreyscaleConfig`.
+  notes:
+    - "The shipped values are a delay of 3 seconds, a fade of 1.5 seconds and an end value of 0.2. So 3 seconds after the death, 20% of the color fades back in over 1.5 seconds."
+
+properties:
+  "0x2ac8249e":
+    description: "The time, in seconds, after the death at which the fade starts."
+
+  FadeGreyscaleDurationSecs:
+    description: |
+      The length of the fade, in seconds. The fade only runs when this is above `0`, so an
+      object that leaves it unset changes nothing.
+
+  "0x9044f758":
+    description: |
+      How much of the greyscale the fade removes, from `0` to `1`. At `1` the screen returns
+      to full color.
+
+  TintColor:
+    description: "The fade described above does not read it."

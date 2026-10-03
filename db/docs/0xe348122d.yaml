@@ -1,0 +1,23 @@
+# 0xe348122d Documentation
+
+class:
+  description: |
+    What the local player sees **while dead**. It holds two optional parts:
+
+    - `GreyscaleConfig` fades part of the color back into the grey death screen.
+    - `TeammateSpectatorConfig` lets the player watch a living teammate.
+
+    A part that is not set leaves its feature off.
+  notes:
+    - "Every shipped object sets both parts, with the same values."
+
+properties:
+  GreyscaleConfig:
+    description: |
+      The [DeathRecapGreyscaleConfig](/classes/deathrecapgreyscaleconfig) that fades the
+      greyscale of the death screen. When not set, the client does not fade it.
+
+  TeammateSpectatorConfig:
+    description: |
+      The [DeathRecapTeammateSpectatorConfig](/classes/deathrecapteammatespectatorconfig)
+      for watching a teammate while dead.

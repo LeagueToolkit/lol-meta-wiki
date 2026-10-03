@@ -1,0 +1,16 @@
+# OverrideDeferredKeyBindingsConfig Documentation
+
+class:
+  description: |
+    A set of key binding overrides that the client can **hold back**. It has the format of
+    [OverrideKeyBindingsConfig](/classes/overridekeybindingsconfig).
+
+    The set that [WasdMoveOrderData](/classes/wasdmoveorderdata) carries in `0x80a6bb6d` is
+    applied when the player switches to keyboard movement. When the player switches back,
+    the client restores the regular bindings.
+  notes:
+    - "Summoner's Rift ships two sets: the 258 events inside its `WasdMoveOrderData`, and a separate object with 225 events and `SkipExecution` set."
+
+properties:
+  SkipExecution:
+    description: "When `true`, the client does not apply the set when it initialises input."

@@ -1,0 +1,20 @@
+# SmartPingParticleOverrides Documentation
+
+class:
+  description: |
+    A per-mode **swap of ping effects**. A ping names its particle effect by a resolver key,
+    which a resource resolver turns into a VFX system. This config replaces keys before they
+    are resolved, so a mode can give the standard pings its own effects without touching the
+    pings themselves.
+
+properties:
+  Overrides:
+    description: |
+      Replacement keys, keyed by the hash of the resolver key they replace. When the client
+      spawns the effect of a ping, it looks the ping's resolver key up here. On a match it
+      resolves the replacement key instead. A key with no entry is resolved unchanged.
+
+      The replacement key must be one that a resolver of the game knows, such as the
+      [ResourceResolver](/classes/resourceresolver) of the map.
+    examples:
+      - "One shipped map replaces `SRP_2`, which the global resolver maps to an effect under `Shared/Particles/`, with `JadeP_2`, which the map's own resolver maps to an effect under `Maps/Shipping/Map453/Particles/`."

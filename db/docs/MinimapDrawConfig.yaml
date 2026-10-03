@@ -1,0 +1,26 @@
+# MinimapDrawConfig Documentation
+
+class:
+  description: |
+    A per-mode mask of the **minimap layers** the client draws. A mode that ships no object
+    gets an object with default values, which draws every layer.
+  notes:
+    - "No shipped mode has one."
+
+properties:
+  DrawTypes:
+    description: |
+      A bit mask. The minimap draws a layer only while its bit is set.
+
+      | Bit | Layer |
+      |-----|-------|
+      | `0x1` | Overlay |
+      | `0x2` | Markers |
+      | `0x4`, `0x8`, `0x20`, `0x40` | Unit icons, in four groups |
+      | `0x10` | Champion icons |
+      | `0x400` | The local player's champion |
+      | `0x800` | The camera rectangle |
+      | `0x1000` | Pings and drawn lines |
+
+      Bits `0x80`, `0x100` and `0x200` each gate one more draw pass. What those passes draw
+      is not identified.

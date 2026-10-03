@@ -1,0 +1,15 @@
+# AccessibleColor Documentation
+
+class:
+  description: |
+    A color with an optional **colorblind variant**. A reader takes `colorblindColor` when
+    it is set and the client uses its colorblind palette, and `DefaultColor` otherwise.
+
+    [TeamColorsConfig](/classes/teamcolorsconfig) stores its team colors this way.
+
+properties:
+  DefaultColor:
+    description: "The color outside the colorblind palette. Also used in the colorblind palette when `colorblindColor` is not set."
+
+  colorblindColor:
+    description: "The color while the client uses its colorblind palette."

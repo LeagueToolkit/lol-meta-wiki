@@ -1,0 +1,11 @@
+# IGameModeConfigClient Documentation
+
+class:
+  description: |
+    The kind of per-mode config that a mode links from `GameModeMapData.ConfigsClient`.
+    [IGameModeConfigBase](/classes/igamemodeconfigbase) explains how the client finds a
+    config and what a missing one means.
+
+    The client does not treat these differently from an
+    [IGameModeConfig](/classes/igamemodeconfig): objects from both lists go into the same
+    table and are looked up the same way.
