@@ -1,0 +1,46 @@
+# FaceTargetEventData Documentation
+
+class:
+  description: |
+    An [animation event](/classes/baseeventdata) that **turns the whole unit to face a
+    target**. It changes the facing of the unit itself, not a joint. When the event starts,
+    the client computes a direction from `FaceTarget`, turns it by `YRotationDegrees`, and
+    sets it as the facing of the unit. For a unit that the local player owns, the client
+    also sends the new facing to the server.
+
+    The event does its work once, at the start. Nothing is undone when the event ends or
+    when its clip stops.
+  examples:
+    - "Almost all shipped events use the default target, the camera."
+
+properties:
+  FaceTarget:
+    description: |
+      What the unit turns to.
+
+      | Value | Name | Direction |
+      |-------|------|-----------|
+      | `0` | `kCamera` | Toward the camera: the opposite of the direction the camera looks in. |
+      | `1` | `kSpawnLocation` | Toward the spawn position of the unit's team. |
+      | `2` | `kGoldRedirectTarget` | Toward the unit's gold redirect target. With no target the facing is kept. |
+      | `3` | Not known | A direction taken from the gold redirect target. What it stands for was not identified. |
+
+      Any other value keeps the current facing.
+
+  YRotationDegrees:
+    description: |
+      A rotation around the vertical axis that is added to the direction, in degrees. `0`
+      faces the target, and `180` turns the unit's back to it.
+
+  BlendInTime:
+    description: |
+      The time the turn takes, in seconds. It is used only when `BlendOutTime` is above
+      `0`.
+
+  BlendOutTime:
+    description: |
+      Turns on the gradual turn. Any value above `0` makes the unit turn over
+      `BlendInTime` seconds. With `0`, which is the default, the unit faces the new
+      direction at once and `BlendInTime` is not used.
+    notes:
+      - "It is not a blend-out time. The client only tests whether it is above `0`."

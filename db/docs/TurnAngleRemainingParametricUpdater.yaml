@@ -1,0 +1,10 @@
+# TurnAngleRemainingParametricUpdater Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) that returns **how far the unit
+    still has to turn**: the angle from the direction it faces to the direction it turns
+    to, from `-180` to `180` degrees.
+
+    It is one of the turn updaters. A graph that uses any of them turns on turn tracking
+    for the unit, see [TurnAngleParametricUpdater](/classes/turnangleparametricupdater).

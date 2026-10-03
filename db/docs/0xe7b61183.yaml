@@ -1,0 +1,25 @@
+# 0xe7b61183 Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) that returns the **angle from the
+    direction the unit faces to one of its own missiles**, from `-180` to `180` degrees.
+    The missile is the first live missile of the spells in `MissileSpellObjects`. Use it
+    in a [ParametricClipData](/classes/parametricclipdata) to make a character follow its
+    projectile with its body or head.
+
+    It uses the shared look direction of the unit, see
+    [LookAtSpellTargetAngleParametricUpdater](/classes/lookatspelltargetangleparametricupdater).
+    While no missile of the listed spells is alive, the value does not change.
+
+properties:
+  "0xe1795243":
+    description: |
+      When true, the direction to the missile is taken relative to the current rotation of
+      the skeleton's root joint, not to the map, with the extra rotation of `0x8f149e18`.
+      When false, which is the default, the direction is taken on the map.
+
+  "0x8f149e18":
+    description: |
+      An extra rotation around the vertical axis, in degrees. The client reads it only
+      when `0xe1795243` is true.

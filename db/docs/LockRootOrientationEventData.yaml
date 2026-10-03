@@ -1,0 +1,30 @@
+# LockRootOrientationEventData Documentation
+
+class:
+  description: |
+    An [animation event](/classes/baseeventdata) that **keeps a joint pointing the same
+    way in the world while the unit turns**. When the event starts, the client records the
+    rotation of the unit. On every frame after that, it turns the joint `JointName` back by
+    the amount the unit has turned since then. The joint and everything below it keep the
+    world orientation they had at the start of the event.
+
+    A typical use is an animation whose body must stay in place while the game turns the
+    unit, with `JointName` set to the root joint.
+
+    When the event ends, the correction fades out over `BlendOutTime` and the joint turns
+    to follow the unit again.
+  notes:
+    - "The client needs no setup on the skin for this event. It adds the pose modifier that does the lock when a clip of the graph has an event of this kind."
+
+properties:
+  JointName:
+    description: |
+      The joint to hold, as the hash of its name (FNV-1a 32 of the lowercased name).
+    notes:
+      - "It must name a joint of the skeleton. The client does not check for a missing joint before it uses it."
+
+  BlendOutTime:
+    description: |
+      The time over which the joint goes back to following the unit after the event has
+      ended, in seconds of real time. The fade is linear. `0` lets the joint go back in
+      one frame.

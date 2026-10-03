@@ -1,0 +1,12 @@
+# IsAllyParametricUpdater Documentation
+
+class:
+  description: |
+    A [bool updater](/classes/ibooleanparametricupdater) that is true **when the unit is on
+    the local player's side**. It lets a graph play a different clip for allies and for
+    enemies of the player who watches.
+
+    When the client has no local player, the value is true. The owner of the graph must be
+    a unit. Otherwise the value does not change.
+  notes:
+    - "The result depends on who watches, so two players can see different clips for the same unit."

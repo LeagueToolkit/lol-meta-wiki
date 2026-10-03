@@ -1,0 +1,15 @@
+# SwitchIntPairData Documentation
+
+class:
+  description: |
+    One case of a [SwitchIntClipData](/classes/switchintclipdata): an integer and the child
+    that plays for it.
+
+properties:
+  value:
+    description: "The integer this case matches. The match is exact."
+
+  ClipName:
+    description: |
+      The child that plays for this value, as a key of `AnimationGraphData.mClipDataMap`.
+      An empty name, or a name that is not in the map, plays nothing for this value.

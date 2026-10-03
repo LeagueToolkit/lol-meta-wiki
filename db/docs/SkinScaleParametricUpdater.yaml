@@ -1,0 +1,10 @@
+# SkinScaleParametricUpdater Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) that returns the **current size of
+    the unit as a scale factor**. `1` is the normal size of the skin. The value includes
+    the temporary size changes that spells and buffs put on the unit, while they ease in
+    and out.
+
+    The owner of the graph must be a unit. Otherwise the value does not change.

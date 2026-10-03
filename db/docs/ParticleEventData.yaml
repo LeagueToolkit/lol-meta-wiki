@@ -1,0 +1,94 @@
+# ParticleEventData Documentation
+
+class:
+  description: |
+    An [animation event](/classes/baseeventdata) that **spawns a particle effect on the
+    character**. When the event starts, the client spawns one effect for each entry of
+    `mParticleEventDataPairList`, at the joint that the entry names.
+
+    The effect is named by `mEffectKey`, or by `mEffectName` when `mEffectKey` is empty.
+
+    **When the effect is stopped:**
+
+    - When the clip reaches `mEndFrame`.
+    - When the clip loops, if `mIsLoop` is true. A new effect is then spawned at the start
+      frame of the next pass.
+    - When the clip stops, if `mIsKillEvent` is true.
+
+    An event with no end frame and with `mIsKillEvent` false never stops its effect. The
+    effect then plays until it ends by itself.
+  notes:
+    - "An empty `mParticleEventDataPairList` spawns nothing. To spawn an effect at the unit's position, add one entry with no bone name."
+
+properties:
+  mEffectKey:
+    description: |
+      The effect, as a key of the skin's resource resolver. The client looks the key up in
+      the resolvers of the unit, then in the resolver of the skin, then in the global
+      resolvers, and last as the path of a particle system object itself. The first match
+      gives the [VfxSystemDefinitionData](/classes/vfxsystemdefinitiondata) to spawn.
+
+      A key that resolves to nothing spawns nothing.
+
+  mEnemyEffectKey:
+    description: |
+      A second effect key, for viewers on the other team. When it is set, and the unit is
+      not on the local player's team, it is used in place of `mEffectKey`.
+    notes:
+      - "It is used only when `mEffectKey` is also set."
+
+  mEffectName:
+    description: |
+      The effect by name, for example a `.troy` name. The client uses it only when
+      `mEffectKey` is empty.
+    notes:
+      - "When the graph loads, the client preloads the effects whose `mEffectName` ends in `.troy`."
+
+  mParticleEventDataPairList:
+    description: |
+      Where the effect is spawned. Each [entry](/classes/particleeventdatapair) spawns one
+      copy of the effect at one joint. With an empty list, nothing is spawned.
+
+  scale:
+    description: "A scale factor on the size of the effect."
+
+  mScalePlaySpeedWithAnimation:
+    description: |
+      When true, the effect plays at the playback speed that the clip has at the moment
+      the effect is spawned. When false, the effect plays at its normal speed.
+    notes:
+      - "The speed is taken once. The effect does not follow later changes of the clip's speed."
+
+  mIsDetachable:
+    description: |
+      When true, the effect is placed where the joint is at the moment it is spawned and
+      then stays there. When false, which is the default, the effect is bound to the joint
+      and follows it.
+    notes:
+      - "`ParticleEventDataPair.mTargetBoneName` is not used when this is true."
+
+  mIsLoop:
+    description: |
+      When true, which is the default, the event fires again on every loop of its clip:
+      the effect of the pass before is stopped and a new one is spawned. When false, the
+      event fires on the first pass only.
+    notes:
+      - "It is about the loops of the clip. It does not make the effect itself loop."
+
+  mIsKillEvent:
+    description: |
+      When true, which is the default, the effect is stopped when the clip stops. When
+      false, the effect is left alone when the clip stops and plays to its own end.
+
+      It does not change what happens at `mEndFrame` or on a loop.
+
+  SkipIfPastEndFrame:
+    description: |
+      When true, an event that has not started yet and whose `mEndFrame` the clip has
+      already passed is skipped for that pass. When false, such an event still starts and
+      ends at once.
+
+  "0x4fce52ba":
+    description: |
+      An optional [0x1c0e452](/classes/0x1c0e452) that delays the stop of the effect. Not
+      set, which is the default: the effect is stopped at once when the event ends.

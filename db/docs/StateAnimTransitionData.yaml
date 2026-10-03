@@ -1,0 +1,69 @@
+# StateAnimTransitionData Documentation
+
+class:
+  description: |
+    One transition out of a [StateAnimClipData](/classes/stateanimclipdata) state. A
+    transition passes when all three of these hold:
+
+    1. The state has run for at least `TransitionDelaySwitchTime`.
+    2. The child of the state has ended, or `CanTransitionMidPlay` is true.
+    3. `Condition` is true, or is not set.
+
+    The state then plays `TargetClipName` as a new clip, at speed `1`, and stops. The
+    other properties set how the target starts.
+
+properties:
+  TargetClipName:
+    description: |
+      The clip to play, as a key of `AnimationGraphData.mClipDataMap`. It is normally
+      another `StateAnimClipData`, but it can be any clip of the graph.
+
+      The target loops when the `mFlags` of the state that is left are not `0`.
+    notes:
+      - "The name must be a clip of the same graph. The client does not check for a missing clip before it plays the target."
+
+  Condition:
+    description: |
+      A [bool driver](/classes/ilogicbooldriver) that must be true for the transition to
+      pass. It is evaluated for the object that owns the graph, and only after the delay
+      and the mid-play test have passed.
+
+      Not set: the condition counts as true.
+
+  TransitionDelaySwitchTime:
+    description: |
+      The minimum time the state must have run before this transition can pass, in
+      seconds. The time counts from the start of the state's child.
+
+  CanTransitionMidPlay:
+    description: |
+      When true, which is the default, the transition can pass while the child of the
+      state still plays. When false, it can pass only after the child has ended or has
+      been replaced, or when the state has no child.
+
+  blend:
+    description: |
+      When true, which is the default, the target cross-fades in with the time from
+      `AnimationGraphData.mBlendDataTable`. When false, the target starts with an immediate
+      cut.
+
+  PlayAnimChangeFromBeginning:
+    description: |
+      When true, which is the default, the target starts at its beginning. When false and
+      the child of the state still plays, the target starts at the same fraction of its
+      length as the child had reached.
+
+  SyncFrameOnChangeAnim:
+    description: |
+      Changes the start position that the target takes from the child. It is read only
+      when `PlayAnimChangeFromBeginning` is false. It works like
+      `ConditionBoolClipData.SyncFrameOnChangeAnim`: the number of seconds the child has
+      played is used as the fraction of the target's length.
+
+  PauseOnEnd:
+    description: |
+      When true, a target that does not loop stays on its last frame when it reaches its
+      end, and keeps playing that frame. When false, the target is finished at its end.
+
+  DontStompTransitionClip:
+    description: "Keeps a transition clip that already plays. Same as `ConditionBoolClipData.DontStompTransitionClip`."

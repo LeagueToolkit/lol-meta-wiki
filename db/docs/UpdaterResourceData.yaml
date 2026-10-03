@@ -1,0 +1,16 @@
+# UpdaterResourceData Documentation
+
+class:
+  description: |
+    The **updaters** of an [AtomicClipData](/classes/atomicclipdata). An updater reads a
+    value from the character every frame, for example the move speed, and applies it to
+    the clip while the clip plays.
+
+properties:
+  mUpdaterDataList:
+    description: |
+      The updaters, see [UpdaterData](/classes/updaterdata). The client makes them when the
+      clip is played and runs each of them once right away, then every frame while the clip
+      plays.
+    notes:
+      - "Every shipped list has exactly one entry."

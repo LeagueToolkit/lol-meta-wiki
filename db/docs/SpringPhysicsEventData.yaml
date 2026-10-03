@@ -1,0 +1,31 @@
+# SpringPhysicsEventData Documentation
+
+class:
+  description: |
+    An [animation event](/classes/baseeventdata) that **turns a spring of the skin on or
+    off** while it is active. A spring is a
+    [SpringPhysicsRigPoseModifierData](/classes/springphysicsrigposemodifierdata) entry in
+    `SkinMeshDataProperties.rigPoseModifierData`: one joint that swings after the motion
+    of the unit.
+
+    The event puts the spring in the opposite of its `DefaultOn` state:
+
+    - A spring that is on by default is turned off while the event is active, and on again
+      when it ends.
+    - A spring that is off by default is turned on while the event is active, and off
+      again when it ends.
+
+    Without a matching spring on the skin, the event does nothing.
+
+properties:
+  SpringToAffect:
+    description: |
+      The spring to change, as the hash of its `name`. Empty changes every spring of the
+      unit. A name that matches no spring does nothing.
+
+  BlendOutTime:
+    description: |
+      The time of the change to the off state, in seconds. `0`, which is the default,
+      turns the spring off at once. The change to the on state is always at once.
+    notes:
+      - "With a value above `0`, the fade does not run as a fade-out. The spring goes off at once, comes back gradually over this time, and then goes off again. Use `0` for a clean result."

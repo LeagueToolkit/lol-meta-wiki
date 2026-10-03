@@ -1,0 +1,15 @@
+# DisplacementParametricUpdater Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) that returns **how fast the unit
+    really moves**, in world units per second. Unlike
+    [MoveSpeedParametricUpdater](/classes/movespeedparametricupdater), it is measured from
+    the unit's recent positions, so it also covers dashes, knockbacks and other movement
+    that the move speed stat does not describe.
+
+    The client keeps the last positions of the unit with their times. The value is the
+    length of that path divided by the time it took. A step of 100 units or more between
+    two positions counts as a teleport and cuts the path there.
+
+    The owner of the graph must be a unit. Otherwise the value does not change.

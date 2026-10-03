@@ -1,0 +1,21 @@
+# FadeEventData Documentation
+
+class:
+  description: |
+    An [animation event](/classes/baseeventdata) that **fades the unit**. When the event
+    starts, the unit's fade value starts to move to `mTargetAlpha`, and reaches it after
+    `mTimeToFade`.
+
+    The event does its work once, at the start. It does nothing when it ends or when the
+    clip stops, so the unit stays at the target value. An animation that fades the unit
+    out must fade it in again with another event.
+
+properties:
+  mTargetAlpha:
+    description: |
+      The fade value to reach. Shipped events mostly use `0` to fade the unit out and `1`
+      to fade it in.
+
+  mTimeToFade:
+    description: |
+      The time the fade takes, in seconds. `0` sets the target value at once.

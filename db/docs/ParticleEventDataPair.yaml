@@ -1,0 +1,19 @@
+# ParticleEventDataPair Documentation
+
+class:
+  description: |
+    One spawn of a [ParticleEventData](/classes/particleeventdata): the joint the effect is
+    spawned at, and an optional second joint that the effect points to.
+
+properties:
+  mBoneName:
+    description: |
+      The joint the effect is spawned at and bound to, as the hash of the joint's name.
+      Empty, or a joint that the skeleton does not have: the effect is spawned at the
+      position of the unit.
+
+  mTargetBoneName:
+    description: |
+      A second joint, bound as the target of the same effect. An effect with a target,
+      such as a beam, then runs from `mBoneName` to this joint. Empty: the effect has no
+      target joint.

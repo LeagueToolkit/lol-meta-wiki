@@ -1,0 +1,37 @@
+# JointOrientationEventData Documentation
+
+class:
+  description: |
+    An [animation event](/classes/baseeventdata) that **changes a joint orientation
+    modifier of the skin** while it is active. The modifier is a
+    [JointOrientationRigPoseModifierData](/classes/jointorientationrigposemodifierdata) in
+    `SkinMeshDataProperties.rigPoseModifierData`. It turns a list of joints toward a
+    direction.
+
+    The event has no joint of its own. The joints are those of the modifier. The event can
+    do two things: turn the modifier on or off (`BlendData`), and give it another
+    direction to follow (`0x3e20ae96`).
+
+    Without that modifier on the skin, the event does nothing.
+  notes:
+    - "Events of this kind do not nest. When two overlap, the last one to start sets the state, and the first one to end puts the default back."
+
+properties:
+  BlendData:
+    description: |
+      Turns the modifier on or off, see
+      [JointOrientationBlendEventData](/classes/jointorientationblendeventdata). While the
+      event is active, the modifier is in the opposite of its `DefaultOn` state. Not set:
+      the event does not change whether the modifier is on.
+
+  "0x3e20ae96":
+    description: |
+      Another direction for the modifier to follow while the event is active, see
+      [0xc6de5b9c](/classes/0xc6de5b9c). When the event ends, the modifier goes back to
+      the direction from its own data. Not set: the direction is not changed.
+
+  orientationType:
+    description: "Removed from current builds. The value is now `orientationType` of the [0xc6de5b9c](/classes/0xc6de5b9c) object in `0x3e20ae96`."
+
+  OrientationSource:
+    description: "Removed from current builds. The value is now `OrientationSource` of the [0xc6de5b9c](/classes/0xc6de5b9c) object in `0x3e20ae96`."

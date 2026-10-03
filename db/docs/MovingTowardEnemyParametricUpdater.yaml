@@ -1,0 +1,14 @@
+# MovingTowardEnemyParametricUpdater Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) that returns the **distance to the
+    nearest enemy that the unit moves toward**, in world units. The client looks at the
+    visible enemy units that lie inside a cone around the direction the unit moves in, and
+    returns the distance to the nearest one. With no such enemy the value is `1000`.
+
+    The owner of the graph must be a unit. Otherwise the value does not change.
+  notes:
+    - "Despite its name it is not a true or false value."
+    - "The width of the cone was not determined."
+    - "No shipped graph uses it."

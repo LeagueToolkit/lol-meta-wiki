@@ -1,0 +1,11 @@
+# FacingParametricUpdater Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) that returns the **direction the
+    unit faces on the map**, as a heading from `0` to `360` degrees. It depends only on
+    the unit's facing, not on its movement or on the camera.
+
+    The owner of the graph must be a unit. Otherwise the value does not change.
+  notes:
+    - "The heading is measured from the map direction (-1, 0, -1), plus 180 degrees."

@@ -1,0 +1,21 @@
+# 0x1c0e452 Documentation
+
+class:
+  description: |
+    The **delayed stop** of a [ParticleEventData](/classes/particleeventdata) effect
+    (`0x4fce52ba`). Without it, the effect is stopped at once when the event ends. With
+    it, the effect keeps playing for a time after the event has ended, and is stopped
+    then.
+  notes:
+    - "Very few shipped events use it."
+
+properties:
+  "0x922eae5":
+    description: |
+      The time from the end of the event to the stop of the effect, in seconds.
+
+  "0x1aad2ecc":
+    description: |
+      When true, which is the default, the delay applies only after the clip has stopped.
+      If the clip of the event still plays, or plays again, when the event ends, the
+      effect is stopped at once. When false, the delay always applies.

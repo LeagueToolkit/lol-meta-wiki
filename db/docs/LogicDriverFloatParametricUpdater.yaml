@@ -1,0 +1,14 @@
+# LogicDriverFloatParametricUpdater Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) that takes its value from a
+    **[logic driver](/classes/ilogicfloatdriver)**. It gives a clip access to everything a
+    float driver can compute, in the unit and range of that driver.
+
+    The driver is evaluated every frame for the object that owns the graph. That object
+    does not have to be a unit, so this updater also works in the graph of a map prop.
+
+properties:
+  driver:
+    description: "The driver to evaluate. Not set: the value is `0`."

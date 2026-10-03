@@ -1,0 +1,14 @@
+# PathingAngleParametricUpdater Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) that returns the **angle between
+    the direction to a point of the unit's path and the unit's look direction**, from
+    `-180` to `180` degrees. The look direction is the one the look-at updaters write, see
+    [LookAtSpellTargetAngleParametricUpdater](/classes/lookatspelltargetangleparametricupdater),
+    and not the direction the unit faces.
+
+    The owner of the graph must be a unit. Otherwise the value does not change.
+  notes:
+    - "Which point of the path it uses was not identified."
+    - "No shipped graph uses it."

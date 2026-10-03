@@ -1,0 +1,10 @@
+# BaseBlendData Documentation
+
+class:
+  description: |
+    One entry of `AnimationGraphData.mBlendDataTable`: what the client does when one given
+    clip takes over from another on a [track](/classes/trackdata). An entry is either a
+    cross-fade time ([TimeBlendData](/classes/timeblenddata)) or a clip to play in between
+    ([TransitionClipBlendData](/classes/transitionclipblenddata)).
+
+    A pair of clips with no entry cross-fades over `0.2` seconds.

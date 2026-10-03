@@ -1,0 +1,21 @@
+# TimeBlendData Documentation
+
+class:
+  description: |
+    A [blend table](/classes/baseblenddata) entry that sets the **cross-fade time** between
+    two clips.
+
+    The cross-fade is linear, with no easing. The weight of the old clip goes from `1` to
+    `0` and the weight of the new clip from `0` to `1`. Positions and scales are
+    interpolated linearly, and rotations take the shortest path.
+
+properties:
+  mTime:
+    description: |
+      The cross-fade time, in seconds. The fade runs on the clock of the new clip: the
+      elapsed time is multiplied by the playback speed of that clip, so a clip that plays
+      at double speed fades in over half the time.
+
+      `0` or less is an immediate cut.
+    notes:
+      - "Most shipped entries are `0`, `0.05` or `0.1`. An entry is only needed for a time other than the `0.2` seconds that a pair with no entry gets."

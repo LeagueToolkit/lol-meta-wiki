@@ -1,0 +1,11 @@
+# 0xd59163d9 Documentation
+
+class:
+  description: |
+    A [bool updater](/classes/ibooleanparametricupdater) that becomes true **when the unit
+    starts to move, and then stays true**. It uses the same test as
+    [IsMovingParametricUpdater](/classes/ismovingparametricupdater), but once the value is
+    true the test is not made again, so the value does not go back to false when the unit
+    stops.
+
+    The value starts at false again each time the clip that holds the updater is played.

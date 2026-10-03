@@ -1,0 +1,59 @@
+# ParametricClipData Documentation
+
+class:
+  description: |
+    A clip that **blends between its children by a run-time value**, for example a set of
+    aim poses blended by the angle to the target, or a walk and a run blended by speed.
+
+    Each child has a value (`ParametricPairData.mValue`). Every frame the `Updater`
+    supplies the current value, and the clip blends the two children whose values are on
+    either side of it. The weight is linear between the two. A value outside the range of
+    the list plays the first or the last child alone.
+
+    The children do not play as clips of their own. The parametric clip samples both at
+    the **same fraction of their length**, so children of different lengths stay in step.
+    The length of the parametric clip is the blend of the two children's lengths with the
+    same weight, so it changes as the value changes.
+
+    The result plays on this clip's own track, with this clip's own mask.
+  notes:
+    - "A child must be an [AtomicClipData](/classes/atomicclipdata) or another `ParametricClipData`. Other kinds are not played."
+    - "Of each child, the client uses the animation, the mask and the events. The child's track, sync group and updaters are not used."
+    - "A joint that one of the two children has no data for is left out of the result."
+    - "The clip's own `mSyncGroupDataName` is not used."
+
+properties:
+  Updater:
+    description: |
+      The source of the blend value: any [parametric updater](/classes/ibaseparametricupdater).
+      The client reads it when the clip starts and then every frame, and uses the value
+      as it is. A bool updater gives `1` or `0`.
+
+      The updater class also decides how the rotations of the two children are blended.
+      For the updaters that return an angle or a direction, the client uses a spherical
+      interpolation. For the others it uses a linear one along the shortest path.
+    notes:
+      - "It must be set. The client does not check for a missing `Updater` before it uses it."
+
+  mParametricPairDataList:
+    description: |
+      The children and their values, see
+      [ParametricPairData](/classes/parametricpairdata).
+
+      The list must be in ascending order of `mValue`. The client does not sort it, and it
+      looks for the first pair of neighbours that the value lies between. With one entry,
+      that child plays alone.
+    notes:
+      - "The list must not be empty."
+
+  "0x69de8fca":
+    description: |
+      Turns on the clip's **own events**. When false, which is the default, the events in
+      this clip's `mEventDataMap` never fire, and only the events of the children fire.
+      When true, this clip's events fire as well.
+
+      Of the two children that are blended, only the events of the one with the larger
+      weight fire.
+    notes:
+      - "Event frames of a parametric clip, and of its children while it plays them, run from `0` to the frame count of the shortest child. The frame is the progress through the clip multiplied by that count."
+      - "When the larger weight moves to the other child, the events of the first child stop where they are. They are ended when the clip loops or stops."

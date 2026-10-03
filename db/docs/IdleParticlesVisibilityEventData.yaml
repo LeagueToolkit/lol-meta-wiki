@@ -1,0 +1,18 @@
+# IdleParticlesVisibilityEventData Documentation
+
+class:
+  description: |
+    An [animation event](/classes/baseeventdata) that **shows or hides the idle particle
+    effects of the unit**: the effects that the skin keeps on the character all the time.
+    A typical use is to hide them during a death or recall animation.
+
+    On every frame while the event is active, the client sets the visibility of every
+    persistent effect of the unit to `mShow`. The event does nothing when it ends or when
+    the clip stops, so the effects stay as the event left them. To bring them back, use a
+    second event with `mShow` true.
+  notes:
+    - "Set `mFireIfAnimationEndsEarly` on the event that shows the effects again, so it also fires when the animation is interrupted."
+
+properties:
+  mShow:
+    description: "True shows the idle particle effects. False, which is the default, hides them."

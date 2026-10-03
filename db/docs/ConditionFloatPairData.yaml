@@ -1,0 +1,37 @@
+# ConditionFloatPairData Documentation
+
+class:
+  description: |
+    One range of a [ConditionFloatClipData](/classes/conditionfloatclipdata): a bound, the
+    child that plays in that range, and how long the clip stays on this child after the
+    value has left the range.
+
+properties:
+  mValue:
+    description: |
+      The bound of the range, in the unit of the clip's `Updater`. For values of `0` or
+      more it is the lower bound of the range. For values below `0` it is the upper bound.
+      See `ConditionFloatClipData.mConditionFloatPairDataList`.
+
+  mClipName:
+    description: |
+      The child that plays in this range, as a key of `AnimationGraphData.mClipDataMap`.
+      An empty name, or a name that is not in the map, plays nothing in this range and
+      leaves the child that plays.
+
+  mHoldAnimationToLower:
+    description: |
+      How long the clip stays on this child after the value has moved to a **lower** range,
+      in seconds. While the time runs, this child keeps playing. If the value comes back
+      to this range before the time is over, nothing changes.
+
+      `0` switches at once.
+    notes:
+      - "The hold time is taken from the entry that is left, not from the entry that is entered."
+
+  mHoldAnimationToHigher:
+    description: |
+      How long the clip stays on this child after the value has moved to a **higher**
+      range, in seconds. It works like `mHoldAnimationToLower`.
+    notes:
+      - "Shipped data has values such as `450` and `1000` here. They hold for that many seconds, which in practice is until the clip ends."

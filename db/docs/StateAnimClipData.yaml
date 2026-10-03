@@ -1,0 +1,49 @@
+# StateAnimClipData Documentation
+
+class:
+  description: |
+    One **state of an animation state machine**. A state plays a child clip, and every
+    frame it checks its `Transitions`. The first transition that passes plays its target
+    clip, normally another state, and this state stops.
+
+    Order of work each frame:
+
+    1. The transitions are checked in list order. The first one that passes, and whose
+       target could be started, ends the state.
+    2. On its first frame, the state starts `ChildClipName`.
+    3. On later frames, the state sets the speed of the child from `SpeedRatioDriver`.
+
+    The state does not stop its own child when it ends. The child goes away when the clip
+    of the target replaces it on its track, or when it ends by itself.
+
+    A state machine is started by `AnimationGraphData.AnimStateGraphEntryClips`.
+  notes:
+    - "The transitions are checked before the child starts, so a transition with no delay and a condition that is already true passes on the first frame."
+    - "A state that has already been entered in the same frame is not entered again. This stops two states from handing over to each other forever within one frame."
+    - "No shipped graph uses this clip kind."
+
+properties:
+  ChildClipName:
+    description: |
+      The clip this state plays, as a key of `AnimationGraphData.mClipDataMap`. It is
+      started once. When a child that does not loop ends, the state stays active with no
+      clip of its own and keeps checking its transitions.
+
+      Empty, or a name that is not in the map: the state plays nothing and only checks
+      its transitions.
+
+  SpeedRatioDriver:
+    description: |
+      A [float driver](/classes/ilogicfloatdriver) for the playback speed of the child.
+      `1` is the normal speed. The driver is evaluated every frame for the object that
+      owns the graph, so the speed can change while the child plays.
+
+      Not set: the speed is `1`. It does not change the speed of the target clips, which
+      always start at speed `1`.
+
+  Transitions:
+    description: |
+      The ways out of this state, see
+      [StateAnimTransitionData](/classes/stateanimtransitiondata). They are checked every
+      frame in list order, and the first one that passes is taken. If its target cannot be
+      started, the check goes on with the next one.

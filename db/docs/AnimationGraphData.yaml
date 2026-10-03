@@ -1,0 +1,140 @@
+# AnimationGraphData Documentation
+
+class:
+  description: |
+    The **animation graph** of a character skin: every clip the character can play, and the
+    tracks, masks, sync groups and blend rules that the clips use. A skin links its graph
+    from `SkinAnimationProperties.animationGraphData`.
+
+    **Playing a clip.** The game plays an animation by name, for example `Idle1`, `Run`,
+    `Attack1` or `Spell1`. The name is hashed (FNV-1a 32 of the lowercased name) and looked
+    up in `mClipDataMap`. A unit can carry run-time overrides that replace one name with
+    another before the lookup. A name that is not in the map plays nothing: the graph has no
+    fallback to another clip. The name `none` is always accepted and plays nothing.
+
+    **Clips.** A clip is one of several [kinds](/classes/clipbasedata). Two kinds produce a
+    pose and play on a track: [AtomicClipData](/classes/atomicclipdata), which plays one
+    `.anm` file, and [ParametricClipData](/classes/parametricclipdata), which blends
+    several of them. The other kinds produce no pose. They decide which clips to start: in
+    sequence, at the same time, at random, or from a condition.
+
+    **Tracks.** A clip that produces a pose plays on the [track](/classes/trackdata) it
+    names. Each track holds one clip at a time and cross-fades from the old clip to the new
+    one (`mBlendDataTable`). The client then combines the active tracks into the final pose,
+    in priority order and limited by each clip's [mask](/classes/maskdata).
+
+    **Events.** A clip can carry [events](/classes/baseeventdata) that fire at given frames:
+    particle effects, sounds, submesh visibility, joint overrides and more.
+
+    **State graphs.** A graph with entries in `AnimStateGraphEntryClips` works differently:
+    it runs as a state machine, and a request to play a name becomes a signal to that
+    machine.
+  notes:
+    - "All references between objects of a graph are name hashes into the maps of the same graph. Shipped graphs have no dangling clip, track, mask or sync group names."
+
+properties:
+  mClipDataMap:
+    description: |
+      The clips of the graph. The key is the hash of the clip's name, and that hash is how
+      everything refers to the clip: the game when it plays an animation, the other clips
+      that use it as a child, and the keys of `mBlendDataTable`.
+
+      A name that the game asks for and that is not a key plays nothing.
+    examples:
+      - "Names the game asks for in shipped graphs include `Idle1`, `Run`, `Death`, `Attack1`, `Attack2`, `Crit`, `Spell1` to `Spell4`, `Channel`, `Channel_Wndup`, `Recall`, `Dance`, `Taunt`, `Laugh` and `Joke`."
+
+  mTrackDataMap:
+    description: |
+      The [blend tracks](/classes/trackdata) of the graph, by name hash. The client makes one
+      track for each entry, sorted by `TrackData.mPriority`. A clip names its track with
+      `BlendableClipData.mTrackDataName`.
+    notes:
+      - "Every shipped graph has at least one track. A graph with one track calls it `Default`."
+
+  mMaskDataMap:
+    description: |
+      The [joint masks](/classes/maskdata) of the graph, by name hash. A clip names its mask
+      with `BlendableClipData.mMaskDataName`, and a
+      [ConformToPathEventData](/classes/conformtopatheventdata) names one with its own
+      `mMaskDataName`.
+
+  mSyncGroupDataMap:
+    description: |
+      The [sync groups](/classes/syncgroupdata) of the graph, by name hash. A clip names its
+      group with `BlendableClipData.mSyncGroupDataName`.
+
+  mBlendDataTable:
+    description: |
+      The **blend table**: what the client does when one clip takes over from another on a
+      track. The key is two clip name hashes in one 64-bit number. The high 32 bits are the
+      clip that is left, and the low 32 bits are the clip that starts. The value is a
+      [TimeBlendData](/classes/timeblenddata) (a cross-fade time) or a
+      [TransitionClipBlendData](/classes/transitionclipblenddata) (a clip to play in
+      between).
+
+      The lookup is an exact match of the pair. There is no wildcard and no entry for "any
+      clip". A pair with no entry cross-fades over `0.2` seconds.
+
+      | Situation | Blend time |
+      |-----------|------------|
+      | Clip A plays and clip B starts | The entry for (A, B) |
+      | A clip ends or is stopped and no clip replaces it | The entry for (A, `0`): a key whose low half is `0` |
+      | A clip starts on a track that was empty | None. The clip has its full weight at once |
+      | A clip is queued behind the clip that plays | The entry for (playing clip, queued clip). The queued clip starts that long before the playing clip ends, so the fade is complete when it ends |
+
+      A clip that starts during a cross-fade fades in from the blended pose, not from one of
+      the two clips.
+    notes:
+      - "The entry for (A, `0`) must be a `TimeBlendData`. With any other entry the fade-out takes `0.2` seconds."
+      - "A clip that is queued behind a looping clip never starts, because the looping clip does not reach its end."
+      - "The fade-out of a clip with nothing to replace it is skipped on a normal track when no other normal track is active."
+
+  mUseCascadeBlend:
+    description: |
+      Turns on **cascade blending** for every cross-fade of the graph. A normal cross-fade
+      uses one blend factor for the whole skeleton. A cascade cross-fade gives each joint
+      its own factor, from how far the joint is from the root along the bone chain (the sum
+      of the bone lengths in the bind pose, scaled so the farthest joint is `1`). Joints
+      near the root change to the new clip first, and the ends of the limbs change last.
+
+      `mCascadeBlendValue` sets how long each joint takes.
+    notes:
+      - "The root joint and its direct children always use the normal blend factor."
+      - "Few shipped graphs use it: the Aurelion Sol and Vel'Koz skins and two Summoner's Rift props."
+
+  mCascadeBlendValue:
+    description: |
+      The length of each joint's own cross-fade under `mUseCascadeBlend`, as a fraction of
+      the whole blend. A joint at distance `d` from the root (`0` to `1`) changes from the
+      old clip to the new one while the blend progress goes from `d - mCascadeBlendValue`
+      to `d`.
+
+      A small value gives a sharp wave that moves out along the limbs. A larger value
+      overlaps the joints more. `0` makes each joint change in one step when the progress
+      reaches its distance.
+
+      The client reads it only when `mUseCascadeBlend` is true.
+    notes:
+      - "The default `-1` is not a usable value with cascade blending on: nearly every joint shows the new clip from the first frame. Shipped graphs that turn cascade blending on use `0.15` or `0.4`."
+
+  AnimStateGraphEntryClips:
+    description: |
+      The entry clips of a **state graph**. When the list is not empty, the graph runs as a
+      state machine built from [StateAnimClipData](/classes/stateanimclipdata) and
+      [EventControlledSelectorClipData](/classes/eventcontrolledselectorclipdata) clips:
+
+      - A request to play an animation by name plays nothing. It raises a **state event**
+        whose id is the hash of the requested name, and the clips that run react to it.
+      - Whenever no logic clip of the graph runs, the client plays every clip of this list,
+        in list order. This starts the state machine, and starts it again if it stops.
+
+      An entry that is not a key of `mClipDataMap` is skipped. When the list is empty, the
+      graph is a normal graph and a request plays the clip with that name.
+    notes:
+      - "No shipped graph sets it."
+
+  objectPath:
+    description: |
+      The path hash of the graph object itself. In shipped data it always equals the
+      object's own entry key. No reader of this value was found in the client's animation
+      code.

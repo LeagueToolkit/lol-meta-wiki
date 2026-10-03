@@ -1,0 +1,10 @@
+# LookAtSpellTargetHeightOffsetParametricUpdater Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) that returns **how much higher the
+    ground at the spell target is than the unit**, in world units. It is positive when the
+    target is uphill and negative when it is downhill. Use it to aim up or down.
+
+    The target is the position or the target unit of the unit's spell target. With no
+    target position the value does not change.

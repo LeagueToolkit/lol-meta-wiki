@@ -1,0 +1,11 @@
+# LookAtSpellTargetDistanceParametricUpdater Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) that returns the **distance from
+    the unit to the target of its spell**, in world units. The target is the position or
+    the target unit of the unit's spell target, see
+    [LookAtSpellTargetAngleParametricUpdater](/classes/lookatspelltargetangleparametricupdater).
+
+    When the spell target is only a direction, or the unit has none, the value does not
+    change.

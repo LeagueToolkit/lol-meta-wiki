@@ -1,0 +1,42 @@
+# SwitchIntClipData Documentation
+
+class:
+  description: |
+    A clip that plays **one child, chosen by an integer** from a
+    [logic driver](/classes/ilogicintdriver). Each child has a value, and the child whose
+    value equals the driver's result plays.
+
+    It runs like every condition clip, see
+    [ConditionBoolClipData](/classes/conditionboolclipdata): one child at a time, chosen
+    at the start, and chosen again every frame only with `ChangeAnimationMidPlay`.
+
+    When no child has the driver's value, nothing starts. The clip then reads the driver
+    again every frame until a value matches. A child that already plays keeps playing.
+
+properties:
+  driver:
+    description: |
+      The source of the integer. The client evaluates it each time it makes a choice, for
+      the object that owns the animation graph.
+    notes:
+      - "It must be set when the list is not empty. The client does not check for a missing `driver` before it uses it."
+
+  SwitchIntPairDataList:
+    description: |
+      The values and their children, see [SwitchIntPairData](/classes/switchintpairdata).
+      The first entry in list order whose `value` equals the driver's result is chosen.
+
+  ChangeAnimationMidPlay:
+    description: "Lets the clip switch to another child while it plays. Same as `ConditionBoolClipData.mChangeAnimationMidPlay`, except that the clip also switches while the current child is being faded out."
+
+  ChildAnimDelaySwitchTime:
+    description: "How long the new choice must hold before the clip switches, in seconds. Same as `ConditionBoolClipData.mChildAnimDelaySwitchTime`."
+
+  PlayAnimChangeFromBeginning:
+    description: "Starts the new child at its beginning on a switch. Same as `ConditionBoolClipData.mPlayAnimChangeFromBeginning`."
+
+  SyncFrameOnChangeAnim:
+    description: "Changes the start position that a switch takes from the old child. Same as `ConditionBoolClipData.SyncFrameOnChangeAnim`."
+
+  DontStompTransitionClip:
+    description: "Keeps a transition clip that already plays. Same as `ConditionBoolClipData.DontStompTransitionClip`."

@@ -1,0 +1,73 @@
+# ClipBaseData Documentation
+
+class:
+  description: |
+    One **clip** of an [animation graph](/classes/animationgraphdata): an entry of
+    `mClipDataMap` that the game, or another clip, plays by name.
+
+    There are two groups of clips. **Pose clips** produce a pose and play on a
+    [track](/classes/trackdata). **Logic clips** produce no pose of their own. They start
+    other clips of the same graph, and those clips can be of any kind, so logic clips
+    nest.
+
+    | Kind | Group | What it plays |
+    |------|-------|---------------|
+    | [AtomicClipData](/classes/atomicclipdata) | Pose | One `.anm` file |
+    | [ParametricClipData](/classes/parametricclipdata) | Pose | A blend of two neighbouring children, chosen by a run-time value |
+    | [SequencerClipData](/classes/sequencerclipdata) | Logic | Its children one after the other |
+    | [ParallelClipData](/classes/parallelclipdata) | Logic | Its children at the same time |
+    | [SelectorClipData](/classes/selectorclipdata) | Logic | One child, picked at random |
+    | [ConditionBoolClipData](/classes/conditionboolclipdata) | Logic | One of two children, from a true or false value |
+    | [ConditionFloatClipData](/classes/conditionfloatclipdata) | Logic | One child, from the range a number falls in |
+    | [SwitchIntClipData](/classes/switchintclipdata) | Logic | One child, from an integer |
+    | [EventControlledSelectorClipData](/classes/eventcontrolledselectorclipdata) | Logic | One child, from a state event |
+    | [StateAnimClipData](/classes/stateanimclipdata) | Logic | One child, until a transition to another clip passes |
+
+    When the graph loads, the client replaces every child name with the clip it names. A
+    child name that is not a key of `mClipDataMap` is dropped from a sequencer or parallel
+    list and counts as "no clip" in most other kinds.
+
+properties:
+  mFlags:
+    description: |
+      A bit field of playback flags.
+
+      | Bit | Name | Read on | Effect |
+      |-----|------|---------|--------|
+      | `0x1` | `kMain` | A direct child of a [ParallelClipData](/classes/parallelclipdata) | This child decides when the parallel ends. |
+      | `0x2` | `kLoop` | Every clip | The clip loops. An atomic clip wraps its time and fires its events again. A sequencer goes back to its first child. A parallel starts again when its main child ends. A selector picks again when its child ends. |
+      | `0x4` | `kContinue` | A direct child of a parallel, and the child of a bool or float condition clip | In a parallel: the child is not stopped when the main child ends, and it keeps playing when the parallel starts again. In a condition clip: see `ConditionBoolClipData.mChangeAnimationMidPlay`. |
+      | `0x8` | `kPlayOnce` | A direct child of a parallel or a [SequencerClipData](/classes/sequencerclipdata) | The child plays only on the first pass. Later loops of the parent skip it. In a parallel it is not stopped when the main child ends. It cancels `kLoop` and `kContinue` on the same child, except on the main child. |
+
+      Only `kLoop` has an effect on a clip by itself. The other three have an effect only
+      where the table says. On any other clip they do nothing.
+
+      A clip also loops when its parent asks it to. A logic clip passes that request to a
+      child only if the child sets `kLoop` itself.
+    examples:
+      - "An intro followed by a loop: a `SequencerClipData` with `kLoop`, whose first child sets `kPlayOnce` and whose second child sets `kLoop`."
+    notes:
+      - "Many shipped clips set `kMain`, `kContinue` or `kPlayOnce` on a clip that is not the child of a parallel or a sequencer. The bits have no effect there."
+
+  mAnimationInterruptionGroupNames:
+    description: |
+      The **interruption groups** of the clip: a list of free names. Two clips that share a
+      name do not play at the same time on different tracks.
+
+      When a clip becomes the current clip of a track, the client looks at the current
+      clip of every other track. Each of those clips that shares at least one group name
+      with the new clip is stopped: its track's queue is cleared and the clip fades out.
+
+      Clips on the same track are not affected, because a track holds one clip at a time
+      already. A clip with an empty list never interrupts another clip and is never
+      interrupted this way.
+    notes:
+      - "The names are not declared anywhere in the graph. Any hash works, and only equality counts."
+
+  Accessorylist:
+    description: |
+      Named blocks of extra data on the clip, see
+      [ClipAccessoryData](/classes/clipaccessorydata). The clip does not use them when it
+      plays. Other systems read them from the clip that plays on a track.
+    notes:
+      - "An accessory is found only on the clip that is itself on a track. Accessories on a logic clip, or on the child of a parametric clip, are not searched. Shipped data sets them on atomic clips only."

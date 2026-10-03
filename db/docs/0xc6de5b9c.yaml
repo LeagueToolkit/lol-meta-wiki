@@ -1,0 +1,25 @@
+# 0xc6de5b9c Documentation
+
+class:
+  description: |
+    The direction that a [JointOrientationEventData](/classes/jointorientationeventdata)
+    gives to the joint orientation modifier while the event is active.
+
+properties:
+  OrientationSource:
+    description: |
+      A vector driver that supplies the direction or the position. It is evaluated every
+      frame for the object that owns the graph.
+    notes:
+      - "It must be set. With no driver, the modifier does nothing while the event is active."
+
+  orientationType:
+    description: |
+      What the vector of `OrientationSource` is.
+
+      | Value | Meaning |
+      |-------|---------|
+      | `0` | A direction. Every joint of the modifier turns to that direction. |
+      | `1` | A position in the world. Each joint turns to point from its own position to that position. |
+
+      Any other value behaves as `0`.

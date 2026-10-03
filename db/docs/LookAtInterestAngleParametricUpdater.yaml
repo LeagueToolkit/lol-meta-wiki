@@ -1,0 +1,25 @@
+# LookAtInterestAngleParametricUpdater Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) that returns the **angle from the
+    direction the unit faces to its point of interest**, from `-180` to `180` degrees. It
+    is the value for a head or body that follows something near the unit.
+
+    The point of interest is the first of these that exists:
+
+    1. The unit that the game set as this unit's look-at target.
+    2. The position that the game set as this unit's look-at position.
+    3. The nearest enemy unit.
+
+    For a unit and for the nearest enemy, the look direction turns toward the point of
+    interest at up to 80 degrees per second, so the value does not jump when the point
+    changes. For a position, the game chooses whether the direction turns gradually or
+    jumps. The updater uses the shared look direction
+    of the unit, see
+    [LookAtSpellTargetAngleParametricUpdater](/classes/lookatspelltargetangleparametricupdater).
+
+    With no point of interest the value does not change.
+  notes:
+    - "The nearest enemy is looked up again every 0.4 seconds, not every frame."
+    - "Which enemy units count as the nearest enemy was not confirmed."

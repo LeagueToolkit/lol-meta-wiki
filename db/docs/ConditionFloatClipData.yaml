@@ -1,0 +1,60 @@
+# ConditionFloatClipData Documentation
+
+class:
+  description: |
+    A clip that plays **one child, chosen by the range a number falls in**. The number
+    comes from its `Updater`. A typical use is a `Run` clip that plays a walk, a run or a
+    fast run from the character's move speed.
+
+    It runs like every condition clip, see
+    [ConditionBoolClipData](/classes/conditionboolclipdata): one child at a time, chosen
+    at the start, and chosen again every frame only with `mChangeAnimationMidPlay`.
+
+    Unlike a [ParametricClipData](/classes/parametricclipdata), it does not blend its
+    children by the value. It plays one of them and cross-fades when it switches.
+
+properties:
+  Updater:
+    description: |
+      The source of the number: a [float updater](/classes/ifloatparametricupdater). The
+      client reads it when the clip starts and then every frame. Later values are used
+      only with `mChangeAnimationMidPlay`.
+    notes:
+      - "It must be set. The client does not check for a missing `Updater` before it uses it."
+
+  mConditionFloatPairDataList:
+    description: |
+      The ranges and their children, see
+      [ConditionFloatPairData](/classes/conditionfloatpairdata). The list must be in
+      ascending order of `mValue`. The client does not sort it.
+
+      The entry is chosen like this:
+
+      - **Value of `0` or more**: the last entry whose `mValue` is not above the value. So
+        an entry covers the range from its `mValue` up to the `mValue` of the next entry.
+      - **Value below `0`**: the first entry whose `mValue` is above the value. So an entry
+        covers the range from the `mValue` of the entry before it up to its own `mValue`.
+
+      When no entry fits the rule, the first entry is used.
+    examples:
+      - "Move speed entries at `0`, `300` and `400`: a speed of `350` plays the `300` entry."
+      - "Angle entries at `-180`, `-90`, `0`, `90` and `180`: `-100` plays the `-90` entry, `-45` and `45` both play the `0` entry, and `100` plays the `90` entry. The ranges are symmetric around zero."
+
+  mChangeAnimationMidPlay:
+    description: "Lets the clip switch to another child while it plays. Same as `ConditionBoolClipData.mChangeAnimationMidPlay`."
+
+  mChildAnimDelaySwitchTime:
+    description: |
+      How long the new choice must hold before the clip switches, in seconds. Same as
+      `ConditionBoolClipData.mChildAnimDelaySwitchTime`. It is counted after the hold time
+      of the entry that is left (`ConditionFloatPairData.mHoldAnimationToLower` and
+      `mHoldAnimationToHigher`), so the two add up.
+
+  mPlayAnimChangeFromBeginning:
+    description: "Starts the new child at its beginning on a switch. Same as `ConditionBoolClipData.mPlayAnimChangeFromBeginning`."
+
+  SyncFrameOnChangeAnim:
+    description: "Changes the start position that a switch takes from the old child. Same as `ConditionBoolClipData.SyncFrameOnChangeAnim`."
+
+  DontStompTransitionClip:
+    description: "Keeps a transition clip that already plays. Same as `ConditionBoolClipData.DontStompTransitionClip`."

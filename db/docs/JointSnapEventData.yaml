@@ -1,0 +1,41 @@
+# JointSnapEventData Documentation
+
+class:
+  description: |
+    An [animation event](/classes/baseeventdata) that **snaps one joint onto another**
+    while it is active, for example a weapon joint onto a hand, a holster or a point in
+    the world.
+
+    While the event is active, the joint `mJointNameToOverride` takes the place of the
+    joint `mJointNameToSnapTo` in the skeleton: it gets the same parent and the same
+    position, rotation and scale as that joint, plus `offset`. The children of the snapped
+    joint move with it.
+
+    When the event ends, or its clip stops, the joint goes back to its animated place in
+    one frame. There is no blend.
+
+    The snap applies only while the clip of the event is the clip that drives the snapped
+    joint. If a clip on another track takes over that joint, the snap is off until the
+    joint is back with this clip.
+  notes:
+    - "The client needs no setup on the skin for this event. It adds the pose modifier that does the snap when a clip of the graph has a joint snap event."
+    - "A joint cannot be snapped to one of its own descendants. Such an event does nothing."
+
+properties:
+  mJointNameToOverride:
+    description: |
+      The joint to move, as the hash of its name (FNV-1a 32 of the lowercased name, the
+      same hash as for bin names). A name that is not a joint of the skeleton makes the
+      event do nothing.
+
+  mJointNameToSnapTo:
+    description: |
+      The joint to snap to, as the hash of its name. When the skeleton has no joint with
+      that name, the client looks for a socket of the skin with that name and snaps to
+      the socket. A name that is neither makes the event do nothing.
+
+  offset:
+    description: |
+      An offset added to the position of the snapped joint, in the units of the skeleton.
+      It is given in the axes of the joint that is snapped to, so it turns with that
+      joint.

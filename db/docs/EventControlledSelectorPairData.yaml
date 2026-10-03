@@ -1,0 +1,19 @@
+# EventControlledSelectorPairData Documentation
+
+class:
+  description: |
+    One case of an
+    [EventControlledSelectorClipData](/classes/eventcontrolledselectorclipdata): a state
+    event id and the child that plays after that event.
+
+properties:
+  StateEventId:
+    description: |
+      The id of the state event. It is either the `StateLogicEventSignalId` of a
+      [StateLogicEventData](/classes/statelogiceventdata), or, in a state graph, the hash
+      of an animation name that the game asks for.
+
+  ClipName:
+    description: |
+      The child that this event selects, as a key of `AnimationGraphData.mClipDataMap`. An
+      empty name, or a name that is not in the map, selects nothing.
