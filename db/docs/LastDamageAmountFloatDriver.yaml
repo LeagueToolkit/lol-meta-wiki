@@ -1,0 +1,13 @@
+# LastDamageAmountFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns the **amount stored with the
+    last death of the source**. The client writes the value only when the unit dies, from the
+    record the server sends with the death. While the unit lives, the value does not change.
+
+    The source must be a unit. Without one the driver returns `0`. A unit that has not died
+    yet has the value it was created with.
+  notes:
+    - "The code does not show what the amount measures. That it is a damage amount comes from the class name."
+    - "No shipped object uses it."

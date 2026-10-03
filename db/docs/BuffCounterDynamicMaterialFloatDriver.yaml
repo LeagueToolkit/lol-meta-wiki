@@ -2,14 +2,23 @@
 
 class:
   description: |
-    Float logic driver returning the **stack counter of a buff** on the owner
-    unit, identified by the buff's spell hash. Shipped
-    uses: Soul Fighter Sett's grit meter and pip conditions
-    ([LogicDriverViewController](/classes/logicdriverviewcontroller) UI), and
-    Irelia's passive-stack animation conditions (`ConditionBoolClipData`).
+    A [float driver](/classes/ilogicfloatdriver) that returns the **counter of a buff** on the
+    source. The counter is the number a buff script counts up or down, which is usually the
+    stack count. The value is the raw count, not a fraction.
+
+    The source must be a unit. The driver returns `0` without one, when the buff cannot be
+    resolved, and when the unit does not have the buff. When the unit has several instances
+    of the buff, the first valid one supplies the value.
+
+    Shipped uses: Sett's grit meter and its pips in the
+    [LogicDriverViewController](/classes/logicdriverviewcontroller) UI, and Irelia's passive
+    stack conditions in her animation graph.
 
 properties:
   Spell:
-    description: "Hash of the buff (the buff-carrying spell's name) whose stack count the driver reads."
+    description: |
+      The spell object of the buff. When it resolves, the buff is found by the script name of
+      that spell. This is the form shipped data uses.
+
   mScriptName:
-    description: "Legacy string form of `Spell` - the buff's script name."
+    description: "The script name of the buff. Used only when `Spell` does not resolve."

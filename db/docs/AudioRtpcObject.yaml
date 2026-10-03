@@ -1,0 +1,51 @@
+# AudioRtpcObject Documentation
+
+class:
+  description: |
+    A **tracked audio parameter**. Once it is loaded, the client reads the global value of
+    one game parameter (RTPC) of the audio engine on every audio update, and turns it into an
+    output number that an [AudioFloatDriver](/classes/audiofloatdriver) returns.
+
+    The value passes through these steps:
+
+    1. **Range.** The value is mapped from `InputMinDb`..`InputMaxDb` to `0`..`1` and
+       clamped. With the defaults, `-48` to `0`, a parameter that carries a level in decibels
+       becomes a `0` to `1` loudness.
+    2. **Adaptation.** When `AdaptationTime` is above `0`, the client tracks the range the
+       value has actually moved in and stretches that range to `0`..`1`, so that quiet
+       material still uses the full range.
+    3. **Smoothing.** The value follows its target over `AttackSeconds` when it rises and
+       over `ReleaseSeconds` when it falls.
+    4. **Curve.** `ResponseCurve`, when set, reshapes the value.
+    5. **Scale.** The value is multiplied by `0x50e3899`.
+
+    When `InputMinDb` is not below `InputMaxDb`, all five steps are skipped and the output is
+    the raw value of the parameter.
+
+properties:
+  rtpcName:
+    description: "The name of the game parameter in the audio engine."
+
+  InputMinDb:
+    description: "The parameter value that maps to `0`."
+
+  InputMaxDb:
+    description: "The parameter value that maps to `1`."
+
+  AdaptationTime:
+    description: "Turns on the adaptation step when above `0`."
+
+  AdaptationZoom:
+    description: "The limit of the adaptation step: the tracked range is never narrower than the full range divided by this number, so the value is stretched by at most this factor."
+
+  AttackSeconds:
+    description: "The smoothing time, in seconds, while the value rises. `0` follows a rise at once."
+
+  ReleaseSeconds:
+    description: "The smoothing time, in seconds, while the value falls. `0` follows a fall at once."
+
+  ResponseCurve:
+    description: "An optional curve applied to the `0`..`1` value. Its result is clamped to `0`..`1`."
+
+  "0x50e3899":
+    description: "A factor on the final value. It sets the top of the output range."

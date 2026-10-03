@@ -10,11 +10,13 @@ class:
     current value or
     [EasedFloatConceptLogicDriver](/classes/easedfloatconceptlogicdriver) for
     the eased one, and from there it reaches materials, animation conditions,
-    VFX, and [driver-driven UI](/classes/logicdriverviewcontroller). Until
-    something writes it, readers see the concept's default value.
+    VFX, and [driver-driven UI](/classes/logicdriverviewcontroller). A concept
+    holds one value per object it is written for. Until something writes it for
+    an object, the raw driver returns the concept's default value and the eased
+    driver returns `0`.
 
     See [ConceptBase](/classes/conceptbase) for the system as a whole.
 
 properties:
   EasingData:
-    description: "Optional easing applied when the value changes; only readers using the `Eased*` driver variants (e.g. [EasedFloatConceptLogicDriver](/classes/easedfloatconceptlogicdriver)) see the eased value. Unset, every reader sees the value change instantly."
+    description: "Optional [ConceptEasingData](/classes/concepteasingdata) applied when the value changes; only readers using the `Eased*` driver variants (e.g. [EasedFloatConceptLogicDriver](/classes/easedfloatconceptlogicdriver)) see the eased value. Unset, every reader sees the value change instantly."

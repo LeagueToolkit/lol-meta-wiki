@@ -1,0 +1,21 @@
+# ValueArrayFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that **picks one driver from a list**. It
+    evaluates `ArrayIndexDriver`, drops the fraction of the result, and returns the value of
+    the `ValueArray` entry at that position. The first entry is position `0`. Only the
+    picked entry is evaluated.
+
+    An index outside the list returns `0`. That covers an index of `-1` or below, an index
+    at or past the end of the list, and an empty list.
+  notes:
+    - "The index is cut, not rounded: `2.9` picks entry `2`. An index between `-1` and `0` picks entry `0`."
+    - "No shipped object uses it. A class with the same two properties, which picks a text instead of a float, ships in the skin overlays of the gameplay UI."
+
+properties:
+  ArrayIndexDriver:
+    description: "The driver that supplies the position. It must be set: the client does not check for a missing operand."
+
+  ValueArray:
+    description: "The drivers to pick from. Every entry must be set."

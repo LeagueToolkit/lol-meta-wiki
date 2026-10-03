@@ -1,0 +1,26 @@
+# SineMaterialDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns a **sine wave** of another
+    driver:
+
+    `sin(mDriver × mFrequency) × mScale + mBias`
+
+    The driver reads no clock. Time enters only through `mDriver`, which in shipped data is
+    almost always a [TimeMaterialDriver](/classes/timematerialdriver).
+
+properties:
+  mDriver:
+    description: "The driver that supplies the angle. It must be set: there is no fallback to the game time, and the client does not check for a missing operand."
+
+  mFrequency:
+    description: |
+      A factor on the value of `mDriver`. The product is the angle in **radians**, so with a
+      time in seconds one full wave takes `2π ÷ mFrequency` seconds.
+
+  mScale:
+    description: "The amplitude. The wave swings between `mBias - mScale` and `mBias + mScale`."
+
+  mBias:
+    description: "The value the wave swings around."

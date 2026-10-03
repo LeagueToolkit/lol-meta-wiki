@@ -1,0 +1,12 @@
+# InvertFloatMaterialDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns `1 - driver`. It turns a `0` to
+    `1` value into its complement. It does not negate the value, and it does not clamp it.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  driver:
+    description: "The driver whose value is subtracted from `1`. It must be set: the client does not check for a missing operand."

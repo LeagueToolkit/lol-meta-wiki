@@ -1,0 +1,32 @@
+# RemapFloatMaterialDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that maps a value from one **range** to
+    another:
+
+    1. It clamps the value of `mDriver` to `mMinValue`..`mMaxValue`.
+    2. It takes the position of the value in that range, from `0` to `1`.
+    3. It returns the point at that position between `mOutputMinValue` and `mOutputMaxValue`.
+
+    The output range may run downwards: with `mOutputMinValue` above `mOutputMaxValue` the
+    result falls as the input rises.
+  notes:
+    - "An input range of zero width (`mMinValue` equal to `mMaxValue`) divides zero by zero, and the driver returns an invalid number for every input."
+    - "With `mMinValue` above `mMaxValue` the driver becomes a step: it returns `mOutputMaxValue` for an input above `mMaxValue`, and `mOutputMinValue` otherwise."
+
+properties:
+  mDriver:
+    description: "The driver whose value is mapped. It must be set: the client does not check for a missing operand."
+
+  mMinValue:
+    description: "The low end of the input range. Inputs below it count as this value."
+
+  mMaxValue:
+    description: "The high end of the input range. Inputs above it count as this value."
+
+  mOutputMinValue:
+    description: "The result for an input at `mMinValue`."
+
+  mOutputMaxValue:
+    description: "The result for an input at `mMaxValue`."

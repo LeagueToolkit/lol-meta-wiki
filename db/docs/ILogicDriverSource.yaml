@@ -1,0 +1,15 @@
+# ILogicDriverSource Documentation
+
+class:
+  description: |
+    An object that a [logic driver](/classes/ilogicfloatdriver) can be evaluated for. The
+    client hands the source to the driver, and the driver works out what it is: a driver that
+    reads a unit asks whether the source is a unit, a driver that reads a map prop asks
+    whether it is a map prop, and so on.
+
+    The source itself offers no values. Being a source only makes an object something a
+    driver can identify. Game objects and game entities are sources, and so is the context
+    the client builds for a spell preview.
+
+    When a source is destroyed, the drivers that keep a value per source drop the value they
+    kept for it.

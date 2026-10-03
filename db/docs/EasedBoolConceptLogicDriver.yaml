@@ -1,0 +1,17 @@
+# EasedBoolConceptLogicDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns the **eased value of a
+    [BoolConcept](/classes/boolconcept)** for the source. Easing true and false gives a
+    number that moves between `0` and `1`, which is why this driver produces a float: `0` for
+    false and `1` for true at rest, and a value in between while the ease runs.
+
+    It works like [EasedFloatConceptLogicDriver](/classes/easedfloatconceptlogicdriver),
+    and the notes there apply.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Concept:
+    description: "The [BoolConcept](/classes/boolconcept) to read."

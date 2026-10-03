@@ -1,0 +1,37 @@
+# ConceptEasingData Documentation
+
+class:
+  description: |
+    How a [concept](/classes/conceptbase) **eases to a new value**. When a concept with
+    easing data gets a new value for a source, the eased value moves from the old value to
+    the new one over a fixed time, along the chosen curve. Only the `Eased*` drivers, such as
+    [EasedFloatConceptLogicDriver](/classes/easedfloatconceptlogicdriver), see the eased
+    value.
+
+    The ease is timed from the moment the value changed. For a value the server sent, that
+    is the time the server stamped on it, so a change that arrives late starts part of the
+    way through, or is already done.
+
+properties:
+  EasingType:
+    description: |
+      The curve of the ease.
+
+      | Value | Curve |
+      |-------|-------|
+      | `0` | Linear |
+      | `1` | Instant: the new value at once |
+      | `2` | Smoothstep |
+      | `3` | Smootherstep |
+      | `4`, `5`, `6` | Quadratic: in, out, in and out |
+      | `7`, `8`, `9` | Cubic: in, out, in and out |
+      | `10`, `11`, `12` | Quartic: in, out, in and out |
+      | `13`, `14`, `15` | Quintic: in, out, in and out |
+      | `16`, `17`, `18` | Sine: in, out, in and out |
+      | `19`, `20`, `21` | Circular: in, out, in and out |
+      | `22`, `23`, `24` | Exponential: in, out, in and out |
+
+      The values `25` to `33` select nine more curves, which are not identified.
+
+  "0xed45b9e":
+    description: "The length of the ease, in seconds. With `0` the value changes at once."

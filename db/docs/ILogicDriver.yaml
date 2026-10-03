@@ -1,0 +1,11 @@
+# ILogicDriver Documentation
+
+class:
+  description: |
+    A **logic driver that produces a four-component vector**, such as a color. It is the
+    widest kind of logic driver, and the base of the float, int and bool drivers.
+    [ILogicFloatDriver](/classes/ilogicfloatdriver) describes how drivers are evaluated, what
+    the source is, and how the narrower kinds are read as wider ones.
+
+    A property that takes an `ILogicDriver` takes every kind of driver. A float driver in
+    such a property puts its number in all four components.

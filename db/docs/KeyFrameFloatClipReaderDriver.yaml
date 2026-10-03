@@ -1,0 +1,30 @@
+# KeyFrameFloatClipReaderDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that reads a **keyframed float track from the
+    animation that is playing**. An animation clip can carry
+    [KeyFrameFloatMapClipAccessoryData](/classes/keyframefloatmapclipaccessorydata) entries:
+    named tracks that map a time in the clip to a value. The driver returns the value of the
+    track named `ClipAccessoryToRead` at the current time of the clip.
+
+    The track is a **step function**. The driver returns the value of the last key the clip
+    has passed, with no blending toward the next key. When the clip loops or restarts, the
+    driver starts again from the first key.
+
+    The driver remembers the last value **per source**. The source must be a unit with an
+    animation graph. Without one the driver returns `DefaultFloat`.
+  examples:
+    - "Shipped Milio and Kayn materials feed it into a parameter named `FrameIndex`, so each animation picks the frames of a flipbook face texture."
+
+properties:
+  ClipAccessoryToRead:
+    description: "The `name` of the track to read. The first playing clip that carries a track with this name supplies the value."
+
+  DefaultFloat:
+    description: "The value returned when the track is not available, and the value a source starts with."
+
+  PersistentFloatChanges:
+    description: |
+      What the driver returns while no playing clip carries the track. When `true`, the last
+      value read for that source. When `false`, `DefaultFloat`.

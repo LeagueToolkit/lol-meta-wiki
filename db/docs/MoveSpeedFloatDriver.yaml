@@ -1,0 +1,13 @@
+# MoveSpeedFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns the **move speed stat of the
+    source**, in world units per second. It is the stat, with all bonuses and slows, and not
+    the speed the unit is actually travelling at.
+
+    The source must be a unit. Without one the driver returns `0`.
+  notes:
+    - "It returns the same number as [CharacterStatFloatDriver](/classes/characterstatfloatdriver) with `Stat` `20` and `UseRawValue` on."
+    - "For the measured speed, see [VelocityDynamicMaterialFloatDriver](/classes/velocitydynamicmaterialfloatdriver)."
+    - "No shipped object uses it."

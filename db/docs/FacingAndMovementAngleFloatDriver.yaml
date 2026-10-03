@@ -1,0 +1,14 @@
+# FacingAndMovementAngleFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns the **angle between the way the
+    source faces and the way it moves**, in degrees, from `-180` to `180`. The sign tells
+    which side the movement is on. `0` means the unit moves straight ahead.
+
+    The movement direction is smoothed: it turns toward the real direction of travel, and
+    jumps to it only on a sharp reversal.
+
+    The source must be a unit. Without one the driver returns `0`.
+  notes:
+    - "No shipped object uses it."

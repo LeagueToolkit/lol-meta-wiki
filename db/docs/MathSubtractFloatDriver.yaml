@@ -1,0 +1,8 @@
+# MathSubtractFloatDriver Documentation
+
+class:
+  description: "Returns `value - Subtract`. See [MathFloatDriver](/classes/mathfloatdriver)."
+
+properties:
+  Subtract:
+    description: "The driver subtracted from `value`. It must be set."

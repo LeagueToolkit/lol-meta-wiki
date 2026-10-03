@@ -1,0 +1,18 @@
+# TftPlayerPlacementDynamicMaterialFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns the **current placement of a
+    Teamfight Tactics player**, as a whole number.
+
+    The player comes from the source. A champion source names its own player. A map prop
+    source names the player the prop is assigned to. The driver returns `0` outside a
+    Teamfight Tactics game.
+  examples:
+    - "The shipped scoreboard props of one arena use two of these for the parameters `Home_Rank` and `Away_Rank`."
+
+properties:
+  UseOpponentPlacement:
+    description: |
+      When `true`, the driver returns the placement of the player's current opponent instead.
+      It returns `0` while the player has no opponent.

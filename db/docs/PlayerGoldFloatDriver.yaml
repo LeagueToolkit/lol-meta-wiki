@@ -1,0 +1,11 @@
+# PlayerGoldFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns the **total gold the source has
+    earned** in the game. It is the running total, which never goes down, and not the gold
+    the unit currently holds.
+
+    The source must be a unit. Without one the driver returns `0`.
+  examples:
+    - "The shipped Kai'Sa skin overlay divides it by a spell value named `GoldToNextForm` to fill a progress meter."

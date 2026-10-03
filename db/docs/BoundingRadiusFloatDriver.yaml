@@ -1,0 +1,11 @@
+# BoundingRadiusFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns the **bounding radius of the
+    source**, in world units. For a plain game object this is the average of half the width
+    and half the depth of its bounding box. Height does not count.
+
+    The source can be any game object. Without one the driver returns `0`.
+  notes:
+    - "No shipped object uses it."

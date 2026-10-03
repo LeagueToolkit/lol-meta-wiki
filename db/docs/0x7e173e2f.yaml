@@ -1,0 +1,20 @@
+# 0x7e173e2f Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns **how visible a map visibility
+    controller is right now**, from `0` for hidden to `1` for shown. While the controller
+    fades in or out, the value moves in a straight line over the transition time. It does not
+    use the source.
+
+    This is the same fade weight the map uses to blend the objects that the controller
+    governs, so the driver lets a material or an effect follow that fade.
+
+    With no controller linked, the driver returns `1`.
+  notes:
+    - "`MapVisibilityLogicBoolDriver` gives the state the controller is heading to, as a bool. [MapVisibilityTransitionLengthDriver](/classes/mapvisibilitytransitionlengthdriver) gives the length of the fade."
+    - "No shipped object uses it."
+
+properties:
+  VisibilityController:
+    description: "The map visibility controller to read."

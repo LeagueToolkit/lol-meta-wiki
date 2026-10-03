@@ -1,0 +1,12 @@
+# FloatLiteralMaterialDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns a **constant**. It does not use
+    the source.
+  notes:
+    - "The most common float driver in shipped data. It supplies the fixed operands of other drivers, such as the right side of a `FloatComparisonMaterialDriver`."
+
+properties:
+  mValue:
+    description: "The value the driver returns."

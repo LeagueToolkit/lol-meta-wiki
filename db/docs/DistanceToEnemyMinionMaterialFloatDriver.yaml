@@ -1,0 +1,34 @@
+# DistanceToEnemyMinionMaterialFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns the **distance from the source
+    to the nearest enemy lane minion**, as a fraction of a range. The result is `0` at
+    `minDistance` or closer, `1` at `maxDistance` or farther, and rises in a straight line
+    between them. When no minion counts, the result is `1`.
+
+    It is the minion counterpart of
+    [DistanceToPlayerMaterialFloatDriver](/classes/distancetoplayermaterialfloatdriver), with
+    these differences:
+
+    - Only **lane minions** count. Jungle monsters, pets and wards do not.
+    - Only minions of the team **opposing the source** count, and dead minions never count.
+    - The distance is measured on the ground plane. Height is ignored.
+
+    The source can be any game object. Without a source the driver returns `0`.
+  notes:
+    - "A source that is on neither of the two main teams has no opposing team, so the result is always `1`."
+  examples:
+    - "Shipped Vayne skins test it together with the distance to enemy champions, with a range of `0` to `4000`, to switch a mask effect."
+
+properties:
+  minDistance:
+    description: "The distance, in world units, at and below which the result is `0`."
+
+  maxDistance:
+    description: "The distance, in world units, at and above which the result is `1`."
+
+  "0x8370ee35":
+    description: |
+      When `true`, a minion counts only if the source can see it. The visibility test only
+      does real work when the source is the local player's champion.

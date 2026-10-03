@@ -1,0 +1,9 @@
+# HealthDynamicMaterialFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns the **health of the source as
+    a fraction**: current health divided by maximum health, from `0` to `1`.
+
+    The source must be a unit. Without one, or when the maximum health is `0`, the driver
+    returns `0`.

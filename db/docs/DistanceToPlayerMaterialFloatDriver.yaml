@@ -1,0 +1,49 @@
+# DistanceToPlayerMaterialFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns the **distance from the source
+    to the nearest champion**, as a fraction of a range. The result is `0` at `minDistance`
+    or closer, `1` at `maxDistance` or farther, and rises in a straight line between them.
+
+    "Player" here means any champion in the game, not the local player. The properties
+    below narrow which champions count. When no champion counts, the result is `1`.
+
+    The source can be any game object. Without a source the driver returns `0`.
+  notes:
+    - "The source itself is not left out. A champion as the source finds itself at distance `0` unless `TeamCondition` is `1`."
+    - "The nearest champion must also pass one more check on its state, which is not identified. When it fails, the result is `1`."
+    - "The distance is measured in three dimensions."
+    - "`minDistance` and `maxDistance` must differ. The client does not guard the division."
+  examples:
+    - "A shipped jungle plant uses a range of `150` to `300` to play its reaction as a champion comes near."
+
+properties:
+  minDistance:
+    description: "The distance, in world units, at and below which the result is `0`."
+
+  maxDistance:
+    description: "The distance, in world units, at and above which the result is `1`."
+
+  TeamCondition:
+    description: |
+      Which champions count, by team:
+
+      | Value | Champions that count |
+      |-------|----------------------|
+      | `0` | Those on the team of the source |
+      | `1` | Those on the opposing team |
+      | `2` or more | All |
+
+      With `1`, a source that is on neither of the two main teams gets no team filter.
+
+  IgnoreDead:
+    description: "When `true`, dead champions do not count."
+
+  "0x8370ee35":
+    description: |
+      When `true`, a champion counts only if the source can see it. The client then also
+      requires the source to be a champion itself, and returns `1` for any other source.
+
+      The visibility test only does real work when the source is the local player's champion.
+      For any other source every champion passes it.

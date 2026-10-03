@@ -1,0 +1,62 @@
+# CharacterStatFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns **one stat of the source**.
+    `Stat` picks the stat.
+
+    By default the result is the stat as a fraction of a fixed range for that stat, clamped
+    to `0`..`1`. With `UseRawValue` it is the stat's own number.
+
+    The source must be a unit. Without one the driver returns `0`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Stat:
+    description: |
+      The stat to read. The range is what `0` and `1` stand for when `UseRawValue` is off.
+
+      | Value | Stat | Range |
+      |-------|------|-------|
+      | `0` | Base attack damage | 40 to 140 |
+      | `1` | Base attack damage before percent scaling | 40 to 140 |
+      | `2` | Flat bonus to base attack damage | 0 to 50 |
+      | `3` | Percent bonus to base attack damage | 0 to 1 |
+      | `4` | Total attack damage | 40 to 500 |
+      | `5` | Bonus attack damage | 0 to 400 |
+      | `6` | Flat physical damage bonus | 0 to 400 |
+      | `7` | Base ability power | 0 to 500 |
+      | `8` | Total ability power | 0 to 1000 |
+      | `9` | Flat ability power bonus | 0 to 1000 |
+      | `10` | Attack speed multiplier | 0.2 to 2.5 |
+      | `11` | Critical strike chance | 0 to 1 |
+      | `12` | Critical strike damage multiplier | 1.75 to 2.5 |
+      | `13` | Dodge chance | 0 to 1 |
+      | `14` | Armor | 0 to 300 |
+      | `15` | Bonus armor | 0 to 250 |
+      | `16` | Magic resistance | 0 to 200 |
+      | `17` | Bonus magic resistance | 0 to 200 |
+      | `18` | Base health regeneration | 0 to 50 |
+      | `19` | Health regeneration | 0 to 100 |
+      | `20` | Move speed | 0 to 600 |
+      | `21` | Base move speed increase | 0 to 200 |
+      | `22` | Attack range | 0 to 700 |
+      | `23` | Model scale | 0.5 to 2 |
+      | `24` | Percent cooldown reduction | 0 to 1 |
+      | `25` | Cooldown reduction cap | 0 to 1 |
+      | `26` | Ability haste | 0 to 200 |
+      | `27` | Ability haste with its percent bonus applied | 0 to 200 |
+      | `28` | Life steal | 0 to 1 |
+      | `29` | Omnivamp | 0 to 1 |
+      | `30` | Spell vamp | 0 to 1 |
+      | `31` | Percent healing bonus | 0 to 1 |
+
+      Any other value is outside the table and gives no meaningful result.
+    notes:
+      - "The default, `10`, is the attack speed multiplier."
+
+  UseRawValue:
+    description: |
+      When `true`, the driver returns the stat's own number. When `false`, it returns where
+      the stat lies in the range for that stat, from `0` to `1`.

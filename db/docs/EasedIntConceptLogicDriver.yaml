@@ -1,0 +1,17 @@
+# EasedIntConceptLogicDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns the **eased value of an
+    [IntConcept](/classes/intconcept)** for the source. Easing a whole number gives numbers
+    in between, which is why this driver produces a float: while the ease runs the result
+    has a fraction, and at rest it equals the int.
+
+    It works like [EasedFloatConceptLogicDriver](/classes/easedfloatconceptlogicdriver),
+    and the notes there apply.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Concept:
+    description: "The [IntConcept](/classes/intconcept) to read."

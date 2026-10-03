@@ -2,21 +2,16 @@
 
 class:
   description: |
-    Abstract float logic driver for drivers that read values out of a specific
-    **spell's data**, referencing the spell by hash instead of by spellbook
-    slot.
+    The shared part of the [float drivers](/classes/ilogicfloatdriver) that read a value out
+    of a **spell's data**. The spell is named by a link, not by a spellbook slot.
 
-    These drivers read static spell data (per-level data values), not runtime
-    cast state - for "is this spell being cast", see
-    [IsCastingBoolDriver](/classes/iscastingbooldriver).
-  notes:
-    - "⚠️ The concrete implementation dereferences the resolved `Spell` link without a null check - see the crash note on [SpellDataNamedValueFloatDriver](/classes/spelldatanamedvaluefloatdriver)."
+    These drivers read the static data of a spell, such as its values per level. For "is
+    this spell being cast", see [IsCastingBoolDriver](/classes/iscastingbooldriver).
 
 properties:
   Spell:
     description: |
-      Hash of the spell whose data is read. Resolved through the global spell
-      registry and cached on first evaluation. If the spell cannot be found,
-      the driver evaluates to `0`.
-  ScriptName:
-    description: "Legacy string identifying the spell by script name, superseded by the `Spell` hash."
+      The spell object whose data is read. The driver resolves it on its first evaluation and
+      keeps the result.
+    notes:
+      - "The link must resolve to a loaded spell object. See the crash note on [SpellDataNamedValueFloatDriver](/classes/spelldatanamedvaluefloatdriver)."

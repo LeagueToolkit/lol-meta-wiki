@@ -1,0 +1,11 @@
+# ILogicBoolDriver Documentation
+
+class:
+  description: |
+    A **logic driver that produces true or false**. Bool drivers are the conditions of the
+    driver system: they gate effects, pick between values and switch UI on and off.
+    [ILogicFloatDriver](/classes/ilogicfloatdriver) describes how drivers are evaluated and
+    what the source is.
+
+    A bool driver also counts as an int and as a float driver: read as a number, it gives
+    `1` for true and `0` for false.

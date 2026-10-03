@@ -1,0 +1,17 @@
+# AudioFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns the **level of an audio
+    parameter**, so that visuals can follow the sound. It reads the output of an
+    [AudioRtpcObject](/classes/audiortpcobject), which tracks one global game parameter of
+    the audio engine and turns it into a smoothed number, normally from `0` to `1`.
+
+    It does not use the source. The driver returns `0` when the link does not resolve, and
+    while the audio object has no value yet.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  RtpcObject:
+    description: "The [AudioRtpcObject](/classes/audiortpcobject) to read."

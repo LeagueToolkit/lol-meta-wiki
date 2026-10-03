@@ -1,0 +1,16 @@
+# VelocityDynamicMaterialFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns the **recent ground speed of
+    the source**, in world units per second.
+
+    The client keeps the last ten positions of a unit with their times. The driver adds up
+    the distance along those positions and divides it by the time they span, so the value is
+    an average over the recent past, not the speed of this frame. Height is ignored.
+
+    The source must be a unit. Without one the driver returns `0`.
+  notes:
+    - "A jump of `100` units or more between two positions, such as a blink or a teleport, ends the span. The jump itself is not counted as speed."
+    - "A position is stored only when the unit moves. For a unit that has stopped, the value falls toward `0` as time passes instead of dropping at once."
+    - "For the unit's move speed stat instead of its measured speed, see [MoveSpeedFloatDriver](/classes/movespeedfloatdriver)."

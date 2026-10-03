@@ -1,0 +1,17 @@
+# MathFloatDriver Documentation
+
+class:
+  description: |
+    The shared part of the four **arithmetic** [float drivers](/classes/ilogicfloatdriver):
+    [MathAddFloatDriver](/classes/mathaddfloatdriver),
+    [MathSubtractFloatDriver](/classes/mathsubtractfloatdriver),
+    [MathMultiplyFloatDriver](/classes/mathmultiplyfloatdriver) and
+    [MathDivideFloatDriver](/classes/mathdividefloatdriver). Each combines `value` with one
+    more driver.
+
+    All four return `0` when they are evaluated without a source, before they read either
+    operand.
+
+properties:
+  value:
+    description: "The left operand. It must be set: the client does not check for a missing operand."
