@@ -10,12 +10,12 @@ class:
     are linear.
 
 properties:
-  "0x2b969c0d":
+  BlendFromDefaultDuration:
     description: |
       The time of the change away from the default state when the event starts, in
       seconds. `0` changes at once.
 
-  "0xe61bf09e":
+  BlendToDefaultDuration:
     description: |
       The time of the change back to the default state when the event ends, in seconds.
       `0` changes at once.
