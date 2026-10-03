@@ -1,0 +1,10 @@
+# 0xd428e2c8 Documentation
+
+class:
+  description: |
+    Links a [PortraitSet](/classes/portraitset) and a block of tuning values to a mode.
+
+    The client registers the class but does not read it. Nothing looks the config up, and
+    neither linked class has client code that reads its values.
+  notes:
+    - "One shipped map has an object, with a portrait set of 25 entries."

@@ -1,0 +1,27 @@
+# 0x396e5d4f Documentation
+
+class:
+  description: |
+    The **lane state overlay** of the minimap. The server sends the client where each lane's
+    front line is, and the client paints the lanes into a texture that the minimap shows. It
+    places the lanes between the two anchor points.
+
+    The overlay is off unless `0x9eb14c42` is set.
+  notes:
+    - "Summoner's Rift ships one, but leaves `0x9eb14c42` unset, so the overlay does not show."
+
+properties:
+  "0x9eb14c42":
+    description: "Turns the overlay on."
+
+  OrderAnchorPoint:
+    description: "One of the two anchor positions, in world units. Summoner's Rift sets it to the position of the Order nexus."
+
+  ChaosAnchorPoint:
+    description: "One of the two anchor positions, in world units. Summoner's Rift sets it to the position of the Chaos nexus."
+
+  DefaultLaneColor:
+    description: "One of the two colors the overlay paints lanes with. Which lane sections get it is not identified."
+
+  BothTeamsLaneColor:
+    description: "One of the two colors the overlay paints lanes with. Which lane sections get it is not identified."

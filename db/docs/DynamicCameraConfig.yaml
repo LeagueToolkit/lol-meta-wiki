@@ -1,0 +1,22 @@
+# DynamicCameraConfig Documentation
+
+class:
+  description: |
+    The **camera settings** of a mode: one default
+    [DynamicCameraSettings](/classes/dynamiccamerasettings) and a table of alternatives the
+    client can switch to during the game.
+
+properties:
+  DefaultCameraSettings:
+    description: "The default camera settings of the mode."
+
+  AdditionalSettings:
+    description: |
+      Alternative camera settings, keyed by a hash. The client switches to an entry by its
+      key and blends to it over `SettingsSwitchDuration`.
+
+  SettingsSwitchDuration:
+    description: "The length, in seconds, of the blend from one set of camera settings to another."
+
+  "0x1c008b79":
+    description: "No client code that reads it has been found."

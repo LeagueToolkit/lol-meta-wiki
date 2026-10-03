@@ -1,0 +1,17 @@
+# ControlSchemeSwapConfig Documentation
+
+class:
+  description: |
+    Limits on **switching the control scheme** during a game, between point-and-click and
+    the keyboard movement that [WasdMoveOrderData](/classes/wasdmoveorderdata) configures.
+  notes:
+    - "Summoner's Rift ships two objects, both with a cooldown of 0.2 seconds. One of them also locks switching after 600 seconds."
+
+properties:
+  ControlSwapCooldownSeconds:
+    description: "The time, in seconds, a player must wait after a switch before the next one."
+
+  "0x8628e0ff":
+    description: |
+      The game time, in seconds, after which switching is locked for the rest of the game.
+      The client also shows this time in the lock warning of the options menu.

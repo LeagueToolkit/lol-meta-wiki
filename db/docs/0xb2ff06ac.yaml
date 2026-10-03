@@ -1,0 +1,19 @@
+# 0xb2ff06ac Documentation
+
+class:
+  description: |
+    Controls when the client shows the **range indicators of enemy turrets**. The indicators
+    only show while the player's `ShowTurretRangeIndicators` setting is on. This config
+    decides whether they then show always or only under a further condition.
+
+    A mode that ships no object gets one with default values.
+  notes:
+    - "No shipped mode has one."
+
+properties:
+  "0x467aa47":
+    description: |
+      When `true`, the indicators show whenever the player's setting is on.
+
+      When `false`, they also need every champion in the game to pass a check. What that
+      check tests is not identified.

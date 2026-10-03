@@ -1,0 +1,11 @@
+# RegaliaConfig Documentation
+
+class:
+  description: |
+    A per-mode replacement for the table the client resolves **ranked crests** from.
+
+properties:
+  RankedCrestLookup:
+    description: |
+      The object the client looks ranked crests up in for this mode. It takes the place of
+      the default object, `Loadouts/Regalia/Crests/Ranked/RankedCrestLookup`.

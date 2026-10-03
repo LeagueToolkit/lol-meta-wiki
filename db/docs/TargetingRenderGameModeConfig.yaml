@@ -1,0 +1,21 @@
+# TargetingRenderGameModeConfig Documentation
+
+class:
+  description: |
+    Switches the **spell targeting indicators** on or off for a mode. These are the shapes
+    the client draws on the ground while the player aims a spell: range circles, cones,
+    line-missile arrows, area markers and the wall-target cursor.
+
+    A mode that ships no object has the indicators on.
+  notes:
+    - "Only the Teamfight Tactics map ships one, with `TargetingIndicatorsEnabled` set to `false`."
+
+properties:
+  TargetingIndicatorsEnabled:
+    description: |
+      Whether the client builds and draws the targeting indicators.
+
+      When `false`, the client never creates the indicator renderer. Its textures under
+      `DATA/Spells/Textures/` (such as `CircularRangeIndicatorUL.dds`,
+      `ConicRangeIndicator.dds` and `AOE.dds`) and its `TARGETING_*` materials are not
+      loaded, and every indicator draw returns without drawing.

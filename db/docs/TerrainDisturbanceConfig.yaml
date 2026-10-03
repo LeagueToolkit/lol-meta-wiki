@@ -1,0 +1,13 @@
+# TerrainDisturbanceConfig Documentation
+
+class:
+  description: |
+    Parameters of a **water and sand surface simulation**: ripples and wakes on water, and
+    footprints, carved trails, rims and piles in sand.
+
+    The client registers the class but does not read it. Nothing looks the config up, and no
+    shipped mode has one, so the values currently have no effect.
+
+    The shaders of the simulation do ship, one for the water half and one for the sand half.
+    Most `Sand*` properties, `WaveSpeedWobbleMagnitude`, `WaveSpeedWobbleFrequency` and
+    `RippleFrequency` share their name with a constant of those shaders.

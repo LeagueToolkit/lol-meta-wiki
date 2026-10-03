@@ -1,0 +1,13 @@
+# GameModeMapData Documentation
+
+properties:
+  Configs:
+    description: |
+      The [IGameModeConfig](/classes/igamemodeconfig) objects this mode uses. When the mode
+      loads, the client puts each linked object into the table that config lookups search.
+      [IGameModeConfigBase](/classes/igamemodeconfigbase) describes the lookup.
+
+  ConfigsClient:
+    description: |
+      The [IGameModeConfigClient](/classes/igamemodeconfigclient) objects this mode uses.
+      They go into the same table as `Configs`.

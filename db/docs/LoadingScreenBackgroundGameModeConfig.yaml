@@ -1,0 +1,71 @@
+# LoadingScreenBackgroundGameModeConfig Documentation
+
+class:
+  description: |
+    The **loading screen art and tips** of a mode.
+
+    The client picks the background texture in this order:
+
+    1. **Random.** If `UsingRandomLoadingScreen` is set, or the `RandomLoadingScreenBackground`
+       level property is `1`, it takes a random entry of
+       `PossibleRandomLoadingScreenBackgrounds`. If the list is empty or the entry is empty,
+       it continues at step 3.
+    2. **Level property.** Otherwise, if the `LoadingScreenBackground` level property is not
+       empty, it loads that path, with `.png` replaced by `.tex`. If the texture does not
+       load, it continues at step 3.
+    3. **Queue, then mode.** It looks up the game's queue in
+       `LoadingScreenBackgroundOverride`. A matching entry supplies the texture. With no
+       match, `LoadingScreenBackground` does.
+
+    Whenever the chosen path is empty, the client shows its default texture. It also does so
+    when the random step is taken in a mode that ships no object.
+
+    A **level property** is a named value the game session carries. Game mutators set them,
+    so steps 1 and 2 let a mutator change the art without a change to this object.
+  notes:
+    - "Map bins hold one object per mode. Summoner's Rift ships 13."
+
+properties:
+  LoadScreenTipConfiguration:
+    description: |
+      The [LoadScreenTipConfiguration](/classes/loadscreentipconfiguration) that the tips
+      panel of the loading screen uses in this mode.
+
+  LoadingScreenBackground:
+    description: |
+      The mode's default background texture. It is used in step 3, when no
+      `LoadingScreenBackgroundOverride` entry matches the game's queue.
+    notes:
+      - "It is a different thing from the `LoadingScreenBackground` level property of step 2, which is a path the game session supplies."
+
+  LoadingScreenBackgroundOverride:
+    description: |
+      Background textures per queue. The key is the `QueueType` of the game's
+      [MatchmakingQueue](/classes/matchmakingqueue), which the client finds by the queue id
+      of the game.
+    notes:
+      - "A matching entry with an empty path gives the client's default texture. It does not fall back to `LoadingScreenBackground`."
+    examples:
+      - "The Teamfight Tactics map ships six keys, among them `SET_REVIVAL_TFT`, `FIVE_YEAR_ANNIVERSARY_TFT` and `CHONCC_TREASURE`."
+
+  UsingRandomLoadingScreen:
+    description: |
+      When `true`, the client picks the background at random from
+      `PossibleRandomLoadingScreenBackgrounds` (step 1). The `RandomLoadingScreenBackground`
+      level property does the same for one game.
+    notes:
+      - "No shipped object sets it."
+
+  PossibleRandomLoadingScreenBackgrounds:
+    description: |
+      The textures the random step picks from. Each entry has the same chance.
+    notes:
+      - "No shipped object sets it."
+
+  MutatorControlledLoadingScreenBackgrounds:
+    description: |
+      A list of background textures. No client code reads it. A mutator changes the
+      background through the level properties of steps 1 and 2, and neither step looks at
+      this list.
+    notes:
+      - "Summoner's Rift and Howling Abyss each ship one object that sets it, with two entries."

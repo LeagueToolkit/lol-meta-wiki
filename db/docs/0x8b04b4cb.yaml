@@ -1,0 +1,14 @@
+# 0x8b04b4cb Documentation
+
+class:
+  description: |
+    Configures the **navigation mask render pass**, in which the client bakes the map's
+    navigation grid into the mask texture `NAVMESH_MASK_TEXTURE` and blurs it.
+  notes:
+    - "Three shipped maps have one, Summoner's Rift and Howling Abyss among them. None sets a property."
+
+properties:
+  "0xb35147f3":
+    description: |
+      When `true`, the client bakes the mask again while the game runs, and animates a
+      change between passable and blocked instead of switching it at once.

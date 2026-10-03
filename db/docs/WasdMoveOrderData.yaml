@@ -1,0 +1,148 @@
+# WasdMoveOrderData Documentation
+
+class:
+  description: |
+    The tuning of **keyboard movement**: the control scheme in which the player steers the
+    champion with direction keys instead of move clicks.
+
+    **Its presence makes the scheme available.** In a mode that ships no object:
+
+    - the local champion gets no keyboard movement component,
+    - the client reports the scheme as unavailable and hides its HUD toggle,
+    - a request to switch the movement mode to keyboard is refused.
+
+    **How the client moves the champion.** While the scheme is active, the client turns the
+    held direction into move orders:
+
+    1. An input with a magnitude below `DeadzoneMagnitude` counts as no input.
+    2. The direction is rotated by `MovementRotation` while the player's
+       `WASDMovementRotation` setting is on.
+    3. The destination is the champion's position plus the direction times a distance. The
+       distance is the champion's move speed times `0x69d07458`, and at least
+       `MinMoveDistance`.
+    4. The client sends the order, but not more often than `MinTimeBetweenMoveOrders`
+       allows. It sends an order for an unchanged direction again after `0x83f73f14` seconds.
+
+    Three optional behaviors adjust the destination: **wall sliding** (`0x8fcc8a74` and the
+    `WallSlide*` properties), the **head-on stop** (`0x4fb25d9f`), and **unit avoidance**
+    (`EnableUnitBlockAvoidance`).
+
+    The object also configures the **attack line**: a line from the champion to an attack
+    target that is still out of attack range (the `AutoAttackLine*` properties).
+  notes:
+    - "Shipping the object is needed but not enough. The client also checks platform configuration before it offers the scheme."
+    - "Summoner's Rift ships one."
+
+properties:
+  AutoAttackMode:
+    description: |
+      Whether the movement code issues attack orders by itself. Any value other than `0`
+      makes it issue the attack order. The values `1` and `2` also make it resend a move
+      order when the destination has not changed.
+
+  AutoAttackSpellScript:
+    description: "The client does not read it."
+
+  "0x9c8d113e":
+    description: "The client does not read it."
+
+  "0x17659fc6":
+    description: "The client does not read it."
+
+  "0x80a6bb6d":
+    description: |
+      A set of key binding overrides for the scheme. The client applies it when the player
+      switches to keyboard movement, and restores the regular bindings when the player
+      switches back. [OverrideKeyBindingsConfig](/classes/overridekeybindingsconfig)
+      describes the format.
+    notes:
+      - "The Summoner's Rift object sets 258 input events to `[]`, which unbinds the point-and-click controls while the scheme is active."
+
+  "0x69d07458":
+    description: |
+      The look-ahead time, in seconds. The move destination lies this many seconds of travel
+      ahead of the champion, at its current move speed.
+
+  MinMoveDistance:
+    description: "The least distance, in world units, between the champion and the move destination."
+
+  DeadzoneMagnitude:
+    description: "Direction input with a magnitude below this counts as no input."
+
+  MinTimeBetweenMoveOrders:
+    description: "The least time, in seconds, between two move orders."
+
+  "0x83f73f14":
+    description: "The time, in seconds, after which the client sends the order again while the direction stays the same."
+
+  MovementRotation:
+    description: |
+      An angle, in degrees, the client rotates the direction input by. It applies only while
+      the player's `WASDMovementRotation` setting is on.
+
+  "0x217f76f0":
+    description: "When `true`, the client resends a move order even if its destination has not changed."
+
+  "0x54d1971a":
+    description: "When `true`, the resend timer restarts when a state flag of the champion changes. Which state is not identified."
+
+  AlwaysStopOrder:
+    description: "When `true`, the client sends a stop order whenever the input falls below `DeadzoneMagnitude`."
+
+  "0x8fcc8a74":
+    description: |
+      Turns **wall sliding** on. When the direction runs into a wall, the champion moves
+      along the wall instead of stopping at it.
+
+  WallSlideDirectionThresholdDeg:
+    description: |
+      An angle, in degrees. When the direction is within this angle of the champion's
+      facing, the side the champion slides to follows the facing.
+
+  "0x4fb25d9f":
+    description: "Turns the **head-on stop** on. `StopMovementAngleDeg` sets when it applies."
+
+  StopMovementAngleDeg:
+    description: |
+      An angle, in degrees. When the direction is within this angle of the wall's normal,
+      the champion stops at the wall instead of sliding along it. Needs `0x4fb25d9f`.
+
+  WallSlideSearchEnabled:
+    description: |
+      When `true`, wall sliding traces the wall's outline on the navigation grid to find
+      where to slide to. The three `WallSlideSearch*` distances limit the trace.
+
+  WallSlideSearchMaxDist:
+    description: "The longest outline the wall slide search traces, in world units."
+
+  "0x73b57b29":
+    description: "The same limit as `WallSlideSearchMaxDist`, used in a second champion state. Which state is not identified."
+
+  WallSlideSearchMaxBackDist:
+    description: "The search stops when the outline turns back against the direction by more than this distance, in world units."
+
+  WallSlideSearchMinForwardDist:
+    description: "The least progress along the direction, in world units, that each traced point must make."
+
+  EnableUnitBlockAvoidance:
+    description: "When `true`, the client steers the destination around units that block the path."
+
+  UnitBlockSearchRange:
+    description: "The range, in world units, of the search for blocking units. The client searches within half of this distance."
+
+  "0xbb4806f7":
+    description: "A factor on the champion's own radius. The product is the radius of the search for blocking units."
+
+  "0xbdaf79db":
+    description: |
+      An angle, in degrees, that applies to dashes and to Flash. Within it, the client places
+      the cast target relative to the movement direction. The exact rule is not identified.
+
+  AutoAttackLineDurationSecs:
+    description: "How long the attack line stays visible, in seconds."
+
+  AutoAttackLineMaxRange:
+    description: "The attack line is hidden when the target is farther away than this, in world units."
+
+  AutoAttackLineDisplayEasing:
+    description: "The index of the easing curve the attack line fades with. The client has 34 curves."
