@@ -1,0 +1,13 @@
+# IsHomeguardParametricUpdater Documentation
+
+class:
+  description: |
+    A [bool updater](/classes/ibooleanparametricupdater) that is true **while the unit has
+    a homeguard buff**. The client does not look for one buff by name. It tests a flag in
+    the data of each buff on the unit, and the value is true when any active buff has that
+    flag.
+
+    The owner of the graph must be a unit. Otherwise the value does not change.
+  notes:
+    - "Which bin property sets that flag on a buff was not identified."
+    - "Shipped graphs use it in the `Run` clip, to play a `Run_Homeguard` clip."

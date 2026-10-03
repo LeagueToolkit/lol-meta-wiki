@@ -1,0 +1,11 @@
+# MoveSpeedParametricUpdater Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) that returns the **move speed of
+    the unit**. It is the most used float updater: shipped `Run` clips use it to choose
+    between walk, run and fast run clips, and to scale the playback speed of a run clip.
+
+    The owner of the graph must be a unit. Otherwise the value does not change.
+  examples:
+    - "Shipped condition clips compare it with values such as `300`, `350` and `400`, which fits the move speed number the game shows."

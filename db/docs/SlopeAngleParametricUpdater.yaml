@@ -1,0 +1,13 @@
+# SlopeAngleParametricUpdater Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) that returns the **slope of the
+    ground in front of the unit**, from `-90` to `90` degrees. It is positive when the
+    ground rises in the direction the unit faces.
+
+    The client compares the height of the terrain one world unit ahead of the unit with
+    the height at the unit. The value follows the measured slope gradually: each update
+    moves it one tenth of the way.
+
+    The owner of the graph must be a unit. Otherwise the value does not change.

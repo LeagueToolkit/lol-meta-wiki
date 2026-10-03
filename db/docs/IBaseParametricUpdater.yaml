@@ -1,0 +1,24 @@
+# IBaseParametricUpdater Documentation
+
+class:
+  description: |
+    A **parametric updater**: a small object that reads one number from the owner of an
+    animation graph, for a clip. Clips use the number in three ways:
+
+    | Holder | Use of the value |
+    |--------|------------------|
+    | `ParametricClipData.Updater` | The blend value between the children |
+    | `ConditionBoolClipData.Updater`, `ConditionFloatClipData.Updater` | Chooses the child that plays |
+    | `UpdaterData.Input` | Sets the playback speed of an atomic clip |
+
+    The client reads the updater when the clip is played and then once every frame while
+    the clip plays. Each clip that uses an updater keeps its own value, which starts at
+    `0`. Nothing is shared between two clips, even when they use the same updater class.
+
+    Most updaters read a **unit**: a champion, a minion, a monster, a turret, a pet. A few
+    read a map prop. When the owner of the graph is not the kind of object the updater
+    needs, or the thing it measures is not there (no target, no path), the updater does
+    not write a new value and the clip keeps the last one. The pages of the updaters name
+    the cases where a fixed fallback is written instead.
+
+    A bool updater gives `1` for true and `0` for false. All angles are in degrees.

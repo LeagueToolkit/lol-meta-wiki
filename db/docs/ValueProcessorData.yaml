@@ -1,0 +1,8 @@
+# ValueProcessorData Documentation
+
+class:
+  description: |
+    One step that changes the value of an [UpdaterData](/classes/updaterdata) before the
+    value is applied to its clip. The client only runs
+    [LinearTransformProcessorData](/classes/lineartransformprocessordata). An entry of this
+    base class itself does nothing and is skipped.

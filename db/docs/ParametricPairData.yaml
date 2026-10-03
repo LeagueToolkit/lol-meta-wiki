@@ -1,0 +1,22 @@
+# ParametricPairData Documentation
+
+class:
+  description: |
+    One child of a [ParametricClipData](/classes/parametricclipdata), and the value at
+    which that child plays alone.
+
+properties:
+  mValue:
+    description: |
+      The blend value at which this child has full weight. Between this value and the
+      value of the next entry, the two children are blended linearly. The unit is the unit
+      of the clip's `Updater`: degrees for an angle updater, `0` and `1` for a bool
+      updater, and so on.
+    examples:
+      - "Five children at `-180`, `-90`, `0`, `90` and `180` for an updater that returns a signed angle."
+
+  mClipName:
+    description: |
+      The child clip, as a key of `AnimationGraphData.mClipDataMap`. A name that is not in
+      the map makes the parametric clip produce no pose while that child is one of the two
+      it blends.

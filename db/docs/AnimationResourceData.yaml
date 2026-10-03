@@ -1,0 +1,20 @@
+# AnimationResourceData Documentation
+
+class:
+  description: |
+    The animation file of an [AtomicClipData](/classes/atomicclipdata).
+
+properties:
+  mAnimationFilePath:
+    description: |
+      The path of the `.anm` file.
+
+      The client requests the file when the graph loads and reads it in the background.
+      Clips that name the same file share one copy. The first time a clip needs the file
+      (to play, or to find its length), the client waits until the file is there.
+
+      The client accepts compressed files (`r3d2canm`) and uncompressed files (`r3d2anmd`,
+      versions 3, 4 and 5). It does not load a file of another version.
+
+      The tracks of the file are matched to the joints of the skeleton by joint name hash.
+      A joint of the skeleton that the file has no data for keeps its bind pose.

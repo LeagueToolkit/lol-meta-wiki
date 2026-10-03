@@ -1,0 +1,20 @@
+# LinearTransformProcessorData Documentation
+
+class:
+  description: |
+    A step of an [UpdaterData](/classes/updaterdata) that scales and offsets the value:
+
+    ```
+    result = value * mMultiplier + mIncrement
+    ```
+  notes:
+    - "With both properties left at `0` the result is always `0`. On an updater that sets the playback speed, that stops the clip."
+
+properties:
+  mMultiplier:
+    description: "The factor the value is multiplied by."
+    examples:
+      - "`0.004` on a move speed gives a playback speed of `1` at a move speed of 250."
+
+  mIncrement:
+    description: "The amount added after the multiplication."

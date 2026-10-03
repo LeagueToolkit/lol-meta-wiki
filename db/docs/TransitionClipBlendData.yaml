@@ -1,0 +1,30 @@
+# TransitionClipBlendData Documentation
+
+class:
+  description: |
+    A [blend table](/classes/baseblenddata) entry that puts a **transition clip** between
+    two clips, for example an `Idle_In` clip between `Run` and `Idle1`.
+
+    When clip A plays and the game plays clip B, and the entry for (A, B) is a
+    `TransitionClipBlendData`, the client:
+
+    1. Plays the transition clip now, on the transition clip's own track.
+    2. Queues clip B behind it, on B's track.
+
+    The step from A to the transition clip and the step from the transition clip to B each
+    use their own blend table entry, or `0.2` seconds. B starts that long before the
+    transition clip ends.
+
+    If A and B name the same [sync group](/classes/syncgroupdata), B starts at the time
+    that A had when B was requested.
+  notes:
+    - "The entry is used only when a clip is played directly. A clip that leaves a queue and takes over from the clip before it does not look for a transition clip."
+    - "The transition clip is played once, without the loop request of clip B. Do not set the loop flag on the transition clip itself: a clip queued behind a looping clip never starts."
+    - "Conditional clips can keep a transition clip that already plays instead of cutting it, see `ConditionBoolClipData.DontStompTransitionClip`."
+
+properties:
+  mClipName:
+    description: |
+      The transition clip, as a key of `AnimationGraphData.mClipDataMap`.
+    notes:
+      - "The name must be a clip of the same graph. The client does not check that it found the clip before it plays it. Every shipped entry names an existing clip."

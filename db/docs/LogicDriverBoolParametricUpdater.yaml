@@ -1,0 +1,18 @@
+# LogicDriverBoolParametricUpdater Documentation
+
+class:
+  description: |
+    A [bool updater](/classes/ibooleanparametricupdater) that takes its value from a
+    **[logic driver](/classes/ilogicbooldriver)**. It gives a clip access to everything a
+    bool driver can test: a buff, another animation that plays, a submesh that is visible,
+    a comparison of two numbers.
+
+    The driver is evaluated every frame for the object that owns the graph. That object
+    does not have to be a unit, so this updater also works in the graph of a map prop.
+
+properties:
+  driver:
+    description: |
+      The driver to evaluate. Not set: the value is false.
+    examples:
+      - "Shipped graphs mostly use `HasBuffDynamicMaterialBoolDriver`, `IsAnimationPlayingDynamicMaterialBoolDriver` and `SubmeshVisibilityBoolDriver` here."

@@ -1,0 +1,6 @@
+# IFloatParametricUpdater Documentation
+
+class:
+  description: |
+    A [parametric updater](/classes/ibaseparametricupdater) that gives a number: an angle,
+    a distance, a speed, a ratio. A `ConditionFloatClipData.Updater` takes only this kind.

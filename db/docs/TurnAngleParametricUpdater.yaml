@@ -1,0 +1,26 @@
+# TurnAngleParametricUpdater Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) that returns the **angle of the
+    turn the unit makes on the spot**, from `-180` to `180` degrees. The sign gives the
+    side of the turn. Shipped graphs use it in the `Turn` clip, a
+    [ParametricClipData](/classes/parametricclipdata) that blends turn animations for
+    different angles.
+
+    **Turn tracking.** A graph that uses a turn updater in any clip turns on turn tracking
+    for the unit. The turn updaters are this one,
+    [TurnAngleRemainingParametricUpdater](/classes/turnangleremainingparametricupdater),
+    [TotalTurnAngleParametricUpdater](/classes/totalturnangleparametricupdater) and
+    [IsTurningParametricUpdater](/classes/isturningparametricupdater). With turn tracking
+    on, each time the unit is told to face a new direction:
+
+    - The client measures the angles that the turn updaters return.
+    - If the new direction is more than 10 degrees away, and the last turn started more
+      than 0.25 seconds ago, the client plays the clip named `Turn`.
+
+    Without a turn updater in the graph, the client does not play `Turn` by itself and the
+    turn angles stay at `0`.
+
+    A `Turn` clip that is fading out because a new turn has started keeps the angle it
+    had. Only the newest `Turn` clip, and clips with other names, follow the live value.

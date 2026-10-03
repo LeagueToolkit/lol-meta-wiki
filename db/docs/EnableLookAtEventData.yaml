@@ -1,0 +1,33 @@
+# EnableLookAtEventData Documentation
+
+class:
+  description: |
+    An [animation event](/classes/baseeventdata) that **turns the look-at of the unit on
+    or off** while it is active. The look-at is the direction that the look-at updaters
+    return an angle to, see
+    [LookAtSpellTargetAngleParametricUpdater](/classes/lookatspelltargetangleparametricupdater).
+    Clips use that angle to aim a head or a body at a target.
+
+    The event sets one of three states:
+
+    | `mEnableLookAt` | `mLockCurrentValues` | State |
+    |-----------------|----------------------|-------|
+    | true | any | Normal: the look direction follows the target. |
+    | false | true | Frozen: the look direction stays where it is on the map. The angle still changes when the unit turns. |
+    | false | false | Off: the unit looks straight ahead, so the angle is `0`. |
+
+    When the event ends, or its clip stops, the state goes back to normal. It does not go
+    back to the state before the event, so two events that overlap do not nest.
+  notes:
+    - "The updater for the gold redirect target and the updater that follows a missile have no off state. For them, off behaves as normal."
+
+properties:
+  mEnableLookAt:
+    description: |
+      True, which is the default, sets the normal state. False turns the look-at off or
+      freezes it, as `mLockCurrentValues` says.
+
+  mLockCurrentValues:
+    description: |
+      Read only when `mEnableLookAt` is false. True, which is the default, freezes the
+      look direction. False makes the unit look straight ahead.

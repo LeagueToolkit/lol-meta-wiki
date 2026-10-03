@@ -1,0 +1,10 @@
+# IsInTerrainParametricUpdater Documentation
+
+class:
+  description: |
+    A [bool updater](/classes/ibooleanparametricupdater) that is true **while the unit
+    stands where it cannot walk**. The client looks up the navigation grid cell under the
+    unit. The value is true when that cell is a wall, when it is a team gate that the
+    unit's team cannot pass, or when the unit is outside the grid.
+
+    The owner of the graph must be a unit. Otherwise the value does not change.

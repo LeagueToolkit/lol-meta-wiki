@@ -1,0 +1,23 @@
+# SelectorPairData Documentation
+
+class:
+  description: |
+    One child of a [SelectorClipData](/classes/selectorclipdata), and how likely the
+    selector is to pick it.
+
+properties:
+  mProbability:
+    description: |
+      The weight of this child in the random pick. Weights are relative: the chance of a
+      child is its weight divided by the sum of all weights of the list. The weights do
+      not have to add up to `1` or to `100`.
+
+      When every weight of the list is `0`, the selector always picks the first entry.
+    examples:
+      - "`50`, `30` and `20` give 50%, 30% and 20%. `1`, `1` and `1` give one third each."
+
+  mClipName:
+    description: |
+      The child clip, as a key of `AnimationGraphData.mClipDataMap`.
+    notes:
+      - "The name must be a clip of the same graph. The client does not check for a missing clip when it picks this entry."

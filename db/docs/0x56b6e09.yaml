@@ -1,0 +1,17 @@
+# 0x56b6e09 Documentation
+
+class:
+  description: |
+    The base of the [float updaters](/classes/ifloatparametricupdater) that follow one of
+    the **unit's own missiles**. It holds the list of spells whose missiles count. The
+    updater that uses it is [0xe7b61183](/classes/0xe7b61183).
+
+properties:
+  MissileSpellObjects:
+    description: |
+      The spells whose missiles the updater looks for, as links to spell objects. They are
+      tried in list order, and the first spell that has a live missile of this unit is
+      used. A link that does not resolve to a spell object is skipped.
+
+  "0x55e3777c":
+    description: "Removed from current builds."

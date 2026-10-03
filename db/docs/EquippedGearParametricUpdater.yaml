@@ -1,0 +1,10 @@
+# EquippedGearParametricUpdater Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) that returns the **gear the unit
+    has equipped**, as a whole number. A unit with no gear returns `-1`.
+
+    The owner of the graph must be a unit. Otherwise the value does not change.
+  notes:
+    - "Shipped graphs use it in a `ConditionFloatClipData` with one entry for each gear number."

@@ -1,0 +1,16 @@
+# StateLogicEventData Documentation
+
+class:
+  description: |
+    An [animation event](/classes/baseeventdata) that **raises a state event** on the
+    animation graph of the unit. An
+    [EventControlledSelectorClipData](/classes/eventcontrolledselectorclipdata) that runs
+    on the same unit and has an entry for that id switches to the child of the entry.
+
+    The event fires once, when it starts.
+  notes:
+    - "No shipped graph uses this event kind."
+
+properties:
+  StateLogicEventSignalId:
+    description: "The id of the state event to raise. It is compared with `EventControlledSelectorPairData.StateEventId`."

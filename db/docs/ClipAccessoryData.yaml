@@ -1,0 +1,18 @@
+# ClipAccessoryData Documentation
+
+class:
+  description: |
+    A named block of extra data on a clip (`ClipBaseData.Accessorylist`). The animation
+    system does not use it to play the clip. Other systems look for an accessory by name on
+    the clip that plays, and read it.
+
+    The one kind is
+    [KeyFrameFloatMapClipAccessoryData](/classes/keyframefloatmapclipaccessorydata), which
+    [KeyFrameFloatClipReaderDriver](/classes/keyframefloatclipreaderdriver) reads.
+
+properties:
+  name:
+    description: |
+      The name of the accessory, as a hash. A reader asks for an accessory by this name.
+      Clips that carry an accessory with the same name supply the same reader, each while
+      it plays.

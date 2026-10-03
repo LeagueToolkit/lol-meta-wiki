@@ -1,0 +1,29 @@
+# SyncGroupData Documentation
+
+class:
+  description: |
+    A **sync group**: clips of one group continue where the last one stopped. A clip names
+    its group with `BlendableClipData.mSyncGroupDataName`.
+
+    When a clip starts on a track and replaces a different clip of the same group, the new
+    clip does not start at its beginning. It takes over the position of the clip it
+    replaces, as `mType` says. A typical use is a set of run clips: the feet keep their
+    place in the step cycle when the character changes from one run clip to another.
+
+    The position is handed over once, when the new clip starts. The two clips are not kept
+    in step after that.
+  notes:
+    - "When the new clip arrives through a [transition clip](/classes/transitionclipblenddata), the client only compares the group names. The new clip then takes over the position in seconds, whatever `mType` is."
+    - "Only an [AtomicClipData](/classes/atomicclipdata) uses its sync group. A [ParametricClipData](/classes/parametricclipdata) can name one, but the client does not use it."
+
+properties:
+  mType:
+    description: |
+      What the new clip takes over from the clip it replaces.
+
+      | Value | Name | Behavior |
+      |-------|------|----------|
+      | `0` | `kTime` | The same time in seconds from the start of the clip. |
+      | `1` | `kProgress` | The same fraction of the clip's length. Use it for clips of different lengths that show the same motion. |
+
+      Any other value does not sync.

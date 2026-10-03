@@ -1,0 +1,36 @@
+# SequencerClipData Documentation
+
+class:
+  description: |
+    A clip that plays its **children one after the other**. When a child ends, the
+    sequencer starts the next one. After the last child, a sequencer that loops (`kLoop`
+    in `mFlags`) goes back to the first child, and one that does not loop ends.
+
+    The `mFlags` of the children change the sequence:
+
+    - A child with `kPlayOnce` plays on the first pass only. Later passes skip it. If only
+      such children are left, the sequence ends.
+    - An atomic child with `kLoop` never ends, so the sequence stays on that child.
+  examples:
+    - "An intro followed by a loop: the sequencer sets `kLoop`, the first child sets `kPlayOnce` and the second child sets `kLoop`."
+
+properties:
+  mClipNameList:
+    description: |
+      The children, in play order, as keys of `AnimationGraphData.mClipDataMap`. A name
+      that is not in the map is dropped when the graph loads.
+
+  mEventDataMap:
+    description: |
+      [Events](/classes/baseeventdata) of the sequence as a whole. They run on the
+      sequencer's own clock, which starts when the sequencer starts and does not depend on
+      which child plays.
+
+      An event frame counts from the start of the sequence, across the atomic children:
+      the frames of the first child, then the frames of the second, and so on. Children
+      that are not atomic clips add no frames. After the first pass, children with
+      `kPlayOnce` are left out of the count.
+
+      The children also fire their own events.
+    notes:
+      - "The frame is the sequencer's time, scaled by the total frame count over the total length of the atomic children. When the children have different `mTickDuration` values, a frame does not line up exactly with the start of a child."

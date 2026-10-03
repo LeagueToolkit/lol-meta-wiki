@@ -1,0 +1,24 @@
+# KeyFrameFloatMapClipAccessoryData Documentation
+
+class:
+  description: |
+    A **keyframed number track** on a clip: a value that changes at given frames while the
+    clip plays. A [KeyFrameFloatClipReaderDriver](/classes/keyframefloatclipreaderdriver)
+    with the same `name` returns the current value, so the animation can drive a material
+    parameter or anything else that takes a float driver.
+  examples:
+    - "Shipped clips use it to pick the frame of a face flipbook texture: the values are frame indices such as `0` to `7`."
+
+properties:
+  KeyFrameFloatmap:
+    description: |
+      The keys. Each entry maps a **frame** to a value.
+
+      The frame counts from the start of the clip, in steps of the clip's `mTickDuration`.
+      It does not include `AtomicClipData.startFrame`.
+
+      The track is a step function. The value of a key holds from that key's frame until
+      the next key, with no interpolation. Before the first key the value is the value of
+      the first key, and after the last key the value of the last key holds.
+    notes:
+      - "The keys must be in ascending frame order. The client walks them in the stored order."

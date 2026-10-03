@@ -1,0 +1,9 @@
+# IsRangedParametricUpdater Documentation
+
+class:
+  description: |
+    A [bool updater](/classes/ibooleanparametricupdater) that is true **while the unit's
+    combat type is ranged**. When the combat type of a unit changes during the game, the
+    value changes with it.
+
+    The owner of the graph must be a unit. Otherwise the value does not change.

@@ -1,0 +1,6 @@
+# GrassSwayDirectionParametricUpdater Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) that is **removed from current
+    builds**. The client no longer has this class, so a graph that names it cannot use it.

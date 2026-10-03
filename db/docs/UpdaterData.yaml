@@ -1,0 +1,37 @@
+# UpdaterData Documentation
+
+class:
+  description: |
+    One updater of an [atomic clip](/classes/atomicclipdata). Every frame it does three
+    steps:
+
+    1. It reads a value from `Input`.
+    2. It passes the value through each entry of `mValueProcessorDataList`, in list order.
+    3. It applies the result to the clip, as `mOutputType` says.
+  examples:
+    - "A run clip that plays faster as the character moves faster: `Input` is a [MoveSpeedParametricUpdater](/classes/movespeedparametricupdater), one [LinearTransformProcessorData](/classes/lineartransformprocessordata) scales the move speed down to a value near `1`, and `mOutputType` is `1`."
+
+properties:
+  Input:
+    description: |
+      The source of the value: any [parametric updater](/classes/ibaseparametricupdater).
+      A bool updater gives `1` or `0`.
+    notes:
+      - "It must be set. The client does not check for a missing `Input` before it uses it."
+
+  mValueProcessorDataList:
+    description: |
+      Steps that change the value before it is applied, in list order. The only kind is
+      [LinearTransformProcessorData](/classes/lineartransformprocessordata). With an empty
+      list the value of `Input` is applied as it is.
+
+  mOutputType:
+    description: |
+      What the value is applied to.
+
+      | Value | Name | Effect |
+      |-------|------|--------|
+      | `0` | `kParametricValue` | Sets the blend value of the clip. Only a [ParametricClipData](/classes/parametricclipdata) has one, so on an atomic clip this does nothing. |
+      | `1` | `kPlaybackSpeed` | Sets the playback speed of the clip. `1` is the normal speed, `2` is double speed, and `0` stops the clip on its current frame. The speed is set again every frame. |
+    notes:
+      - "The default is not a valid type and the client does not handle it. Always set `mOutputType`."

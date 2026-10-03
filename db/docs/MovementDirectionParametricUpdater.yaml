@@ -1,0 +1,11 @@
+# MovementDirectionParametricUpdater Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) that returns the **direction the
+    unit moves in on the map**, as a heading from `0` to `360` degrees. `0` is the
+    positive X axis of the map and `90` is the positive Z axis.
+
+    While the unit does not move, the direction it faces is used.
+
+    The owner of the graph must be a unit. Otherwise the value does not change.

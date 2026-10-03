@@ -1,0 +1,11 @@
+# AttackSpeedParametricUpdater Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) that returns the **attack speed of
+    the unit**. Shipped graphs mostly use it in a
+    [ConditionFloatClipData](/classes/conditionfloatclipdata).
+
+    The owner of the graph must be a unit. Otherwise the value does not change.
+  notes:
+    - "The client copies one number from the unit's stats. Whether it is attacks per second or a multiplier was not identified."

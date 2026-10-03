@@ -1,0 +1,15 @@
+# 0x994ae080 Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) that returns the **angle from the
+    direction the unit faces to its aim point**, from `-180` to `180` degrees.
+
+    For the unit that the local player controls, the aim point is the point of the terrain
+    under the mouse cursor. For other units it is the aim point that the server sends for
+    them.
+
+    The owner of the graph must be a unit that has an aim point. Otherwise the value does
+    not change.
+  notes:
+    - "No shipped graph uses it."

@@ -1,0 +1,10 @@
+# IsTurningParametricUpdater Documentation
+
+class:
+  description: |
+    A [bool updater](/classes/ibooleanparametricupdater) that is true **while the unit is
+    turning on the spot**: while more than 5 degrees are left between the direction the
+    unit faces and the direction it turns to.
+
+    It is one of the turn updaters. A graph that uses any of them turns on turn tracking
+    for the unit, see [TurnAngleParametricUpdater](/classes/turnangleparametricupdater).

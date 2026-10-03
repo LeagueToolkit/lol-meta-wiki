@@ -1,0 +1,58 @@
+# EventControlledSelectorClipData Documentation
+
+class:
+  description: |
+    A clip that plays **one child, chosen by a state event**. A state event is an id that
+    is raised on the animation graph of a unit. Two things raise one:
+
+    - A [StateLogicEventData](/classes/statelogiceventdata) animation event, with the id
+      in its `StateLogicEventSignalId`.
+    - In a state graph (`AnimationGraphData.AnimStateGraphEntryClips`), every request of
+      the game to play an animation by name. The id is the hash of the requested name, for
+      example the hash of `attack1`.
+
+    Each child is tied to one event id. When that event is raised, the child becomes the
+    choice of this clip, and it stays the choice until another listed event is raised. The
+    clip does not go back to its default.
+
+    It runs like every condition clip, see
+    [ConditionBoolClipData](/classes/conditionboolclipdata): one child at a time, and a
+    switch to a new choice while a child plays only with `ChangeAnimationMidPlay`.
+  notes:
+    - "No shipped graph uses this clip kind."
+
+properties:
+  SelectorPairDataList:
+    description: |
+      The events and their children, see
+      [EventControlledSelectorPairData](/classes/eventcontrolledselectorpairdata). When an
+      event is raised, the first entry in list order with that id becomes the choice. An
+      event with no entry is ignored.
+
+  DefaultClipName:
+    description: |
+      The child that plays when the clip starts and none of the listed events was raised
+      in that frame. Empty, or a name that is not in the graph, starts nothing: the clip
+      then waits for a listed event.
+
+      It is used only at the start.
+    notes:
+      - "A default clip that needs a [parametric updater](/classes/ibaseparametricupdater) (a parametric or condition clip, or an atomic clip with `mUpdaterResourceData`) does not get one, unless the same clip is also in `SelectorPairDataList`."
+
+  ChangeAnimationMidPlay:
+    description: |
+      Lets the clip switch to a new choice while a child plays. When false, an event that
+      arrives while a child plays changes the choice but not the child, and the clip ends
+      with that child.
+
+  ChildAnimDelaySwitchTime:
+    description: "How long the new choice must hold before the clip switches, in seconds. Same as `ConditionBoolClipData.mChildAnimDelaySwitchTime`."
+
+  PlayAnimChangeFromBeginning:
+    description: "Starts the new child at its beginning on a switch. Same as `ConditionBoolClipData.mPlayAnimChangeFromBeginning`."
+
+  SyncFrameOnChangeAnim:
+    description: "Changes the start position that a switch takes from the old child. Same as `ConditionBoolClipData.SyncFrameOnChangeAnim`."
+
+  DontStompTransitionClip:
+    description: "Keeps a transition clip that already plays. Same as `ConditionBoolClipData.DontStompTransitionClip`."

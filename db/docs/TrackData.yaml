@@ -1,0 +1,69 @@
+# TrackData Documentation
+
+class:
+  description: |
+    One **blend track** of an [animation graph](/classes/animationgraphdata). A track is an
+    independent slot that plays clips. It holds the clip that plays now, the clip that
+    fades out, and a queue of clips that wait. A clip names its track with
+    `mTrackDataName`. A clip that starts on a track replaces the clip that was there, and
+    the track cross-fades between the two (see `AnimationGraphData.mBlendDataTable`).
+
+    A track is **active** while it plays a clip or still fades one out. Each frame the
+    client combines the active tracks into one pose:
+
+    - **No active track**: the bind pose.
+    - **One active track**: the pose of that track, unchanged. The clip's
+      [mask](/classes/maskdata), `mBlendWeight` and `mBlendMode` are not applied.
+    - **Two or more active tracks**: the client goes through the tracks in ascending
+      `mPriority`. Every joint starts with a weight budget of `1`. For each joint, a
+      normal track asks for a weight: the mask weight of its clip, times the fade weight
+      of the clip, times `mBlendWeight`. The track gets that weight or what is left of the
+      budget, whichever is smaller, and the remainder stays for the tracks after it. An
+      additive track adds its pose on top of the result so far and takes nothing from the
+      budget.
+
+    So where two normal tracks move the same joint, the track with the **lower**
+    `mPriority` wins. A later track shows only on joints where the earlier tracks left
+    some of the budget, for example joints that their masks set to `0`. When no joint has
+    budget left, the client skips the remaining normal tracks.
+  notes:
+    - "Because a single active track is used unchanged, a mask or a `mBlendWeight` below `1` has an effect only while another track is also active."
+    - "Shipped graphs with one track call it `Default`. In graphs with several tracks, the full-body track usually has the highest `mPriority`, and the tracks that override part of the body (`Upper`, `UpperBody`, `Recall`, ...) have lower numbers."
+
+properties:
+  mPriority:
+    description: |
+      The position of the track in the combine order. When the graph loads, the client
+      sorts the tracks by this value, lowest first. A lower number is processed earlier
+      and takes joint weight first, so it overrides tracks with a higher number.
+
+      An unmasked full-body track must have the highest number of the normal tracks.
+      Otherwise it takes the whole weight budget and the tracks after it have no effect.
+
+      An additive track is applied to the pose that the tracks before it produced. Give it
+      a higher number than the normal tracks it must add to.
+    notes:
+      - "Tracks with the same priority keep a fixed order, but it is not the order of the map. Give each track its own number."
+
+  mBlendMode:
+    description: |
+      How the track is combined with the other tracks.
+
+      | Value | Name | Behavior |
+      |-------|------|----------|
+      | `0` | `kBlendTrack` | Normal track. Its pose replaces the pose of later tracks on the joints it has weight for, and it uses up the joint weight budget. |
+      | `1` | `kAdditiveTrack` | Plays one clip at a time, with the usual queue and cross-fades. Its pose is added to the result so far as an offset: translation is added, and rotation and scale are multiplied. The joint weight scales the offset. It takes nothing from the weight budget. |
+      | `2` | `kMultiAdditiveTrack` | Additive, and the track holds several clips at the same time. Each clip that starts is added to the clips that already play, and each one stays until it ends. There is no cross-fade and no queue, and the blend table is not used. |
+
+      Any other value behaves as `0`.
+    notes:
+      - "A multi-additive track does not accept a looping clip. A request to play one is refused, and it also stops every clip that plays on the track."
+
+  mBlendWeight:
+    description: |
+      A factor from `0` to `1` on every joint weight of the track. On a normal track it
+      limits how much of the joint weight budget the track takes, so the tracks after it
+      keep a share. On an additive track it scales the offset. `0` gives the track no
+      effect.
+
+      It is not applied when the track is the only active track.

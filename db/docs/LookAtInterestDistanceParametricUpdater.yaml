@@ -1,0 +1,11 @@
+# LookAtInterestDistanceParametricUpdater Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) that returns the **distance from
+    the unit to its point of interest**, in world units. The point of interest is chosen
+    as for
+    [LookAtInterestAngleParametricUpdater](/classes/lookatinterestangleparametricupdater):
+    the look-at target, then the look-at position, then the nearest enemy unit.
+
+    With no point of interest the value does not change.

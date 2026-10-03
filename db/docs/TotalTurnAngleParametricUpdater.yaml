@@ -1,0 +1,13 @@
+# TotalTurnAngleParametricUpdater Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) that returns the **full angle of
+    the turn that just started**: the angle that was still left from the turn before, plus
+    the angle to the new direction. It can be more than 180 degrees in either direction.
+
+    The value is taken only during the first 0.25 seconds after a turn starts. After that
+    it stays as it is until the next turn.
+
+    It is one of the turn updaters. A graph that uses any of them turns on turn tracking
+    for the unit, see [TurnAngleParametricUpdater](/classes/turnangleparametricupdater).

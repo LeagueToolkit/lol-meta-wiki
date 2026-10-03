@@ -1,0 +1,68 @@
+# AtomicClipData Documentation
+
+class:
+  description: |
+    A clip that plays **one animation file**, or a range of its frames. It is the only clip
+    kind that names a `.anm` file. Every other kind plays atomic clips in the end.
+
+    The clip keeps its own time in seconds. Each update adds the frame time multiplied by
+    the playback speed (`1` unless something changes it). The time is converted to a frame
+    of the file:
+
+    ```
+    frame = time / mTickDuration + startFrame
+    ```
+
+    The pose is then sampled from the file at that frame, using the file's own frame rate
+    to find it. So the clip plays the frames of the file at one frame every
+    `mTickDuration` seconds, whatever rate the file was exported at.
+
+    The length of the clip is `(last frame - startFrame + 1) * mTickDuration` seconds,
+    where the last frame is `EndFrame`, or the end of the file. At the end, a looping clip
+    wraps its time and fires its events again. A clip that does not loop stops at its last
+    frame and is finished.
+
+    [Events](/classes/baseeventdata) of the clip use the same frame numbers as the pose.
+
+properties:
+  mAnimationResourceData:
+    description: |
+      The animation file, see [AnimationResourceData](/classes/animationresourcedata).
+
+  mTickDuration:
+    description: |
+      The time one frame of the file takes, in seconds. The default plays 30 frames a
+      second.
+
+      It sets the playback rate of the file: the clip shows one file frame every
+      `mTickDuration` seconds. For a file at its own rate, use `1 / (frame rate of the
+      file)`. A smaller value plays the file faster and a larger value plays it slower.
+
+      It also sets the length of the clip and the time at which each event fires, because
+      events are placed at frames.
+    examples:
+      - "`0.0333` for a 30 frames per second file at normal speed. `0.0167` plays the same file at double speed."
+
+  startFrame:
+    description: |
+      The first frame of the file that the clip plays. The clip starts there, and the
+      frames before it are never shown. A negative value counts as `0`.
+
+      Event frames are frames of the file, not frames counted from `startFrame`. An event
+      with a `mStartFrame` below `startFrame` fires as soon as the clip starts.
+
+  EndFrame:
+    description: |
+      The last frame of the file that the clip plays. A negative value, which is the
+      default, plays to the end of the file.
+
+      A value past the end of the file makes the clip longer than the file. The pose then
+      stays on the last frame of the file until the clip ends.
+
+  mUpdaterResourceData:
+    description: |
+      Optional run-time control of the clip, see
+      [UpdaterResourceData](/classes/updaterresourcedata). The usual use is to drive the
+      playback speed from a value such as the character's move speed.
+    notes:
+      - "It works only while this clip itself plays on a track. It has no effect while the clip is sampled as a child of a [ParametricClipData](/classes/parametricclipdata)."

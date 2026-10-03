@@ -1,0 +1,27 @@
+# SyncedAnimationEventData Documentation
+
+class:
+  description: |
+    An [animation event](/classes/baseeventdata) that **lines up one animation on several
+    units**, so that an animation two or more characters play together stays in step.
+
+    Units form a group when their clips carry a synced animation event under the same key
+    of `mEventDataMap`. The key is the id of the group.
+
+    - **When the event starts**, the client looks at every unit of the group and takes the
+      one whose clip is furthest along. The clips of all units are set to that time.
+      Events that lie before that time are marked as done and do not fire.
+    - **While the event is active**, the client computes one common position from the
+      positions of the units, and moves the animation root of each unit toward it. A unit
+      that is more than 250 world units away is left out.
+    - **When the event ends**, the clip of the unit is moved back by the time it was moved
+      forward at the start.
+  notes:
+    - "The event has an effect only on a unit that has the synced animation pose modifier. The client adds that modifier by itself when the graph has an event of this kind and a setting of the skin allows it. Which setting that is was not identified."
+    - "This event does not fire again when its clip loops."
+
+properties:
+  mLerpTime:
+    description: |
+      The time over which the unit's animation root moves to the common position, in
+      seconds. `0` moves it at once.

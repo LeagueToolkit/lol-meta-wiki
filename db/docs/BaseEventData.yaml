@@ -1,0 +1,88 @@
+# BaseEventData Documentation
+
+class:
+  description: |
+    An **animation event**: something the client does at a given frame of a clip, such as
+    spawning a particle effect, playing a sound or hiding a submesh. Events are the values
+    of a clip's `mEventDataMap` (`BlendableClipData.mEventDataMap`,
+    `SequencerClipData.mEventDataMap`). This base class holds what all event kinds share:
+    when the event starts and ends.
+
+    **Frames.** Event frames are frames of the clip's own timeline. For an
+    [AtomicClipData](/classes/atomicclipdata) the frame is
+    `time / mTickDuration + startFrame`, the same frame number the pose uses. The clip's
+    time runs at the clip's playback speed, so a faster clip fires its events sooner, at
+    the same frames.
+
+    **Start and end.** An event starts on the first update in which the clip has reached
+    `mStartFrame`.
+
+    - With an `mEndFrame` at or after `mStartFrame`, the event is **active** from the
+      start frame up to the end frame, and it ends when the clip reaches the end frame.
+    - With no `mEndFrame` (the default `-1`), the event stays active until the clip loops
+      or stops.
+
+    Some event kinds do their work once, at the start. Others do it again on every frame
+    while the event is active. Only some kinds do something when the event ends: a
+    [particle event](/classes/particleeventdata) stops its effect, and a
+    [stop animation event](/classes/stopanimationeventdata) lifts its block. For most
+    other kinds, what the event changed stays as it is.
+
+    **Loops.** When the clip loops, its events end and fire again on the next pass.
+
+    **When the clip stops.** A clip stops when it ends, or when another clip has replaced
+    it and the cross-fade is over. Each event that has started is then ended. While a clip
+    fades out it still runs, so its events still fire during the fade.
+
+    **Skipped frames.** If one update moves the clip past both frames of an event, the
+    event still starts and ends in that update.
+
+    **A clip that starts in the middle.** When a clip is started at a later position (a
+    condition clip that switches children can do this), events whose end frame has
+    already passed are skipped, and events whose range contains the position start at
+    once.
+  notes:
+    - "An event fires whatever the weight of its clip is. A mask, a track above it or a fade does not hold it back."
+    - "The client makes an event only for the event classes it knows, matched by the exact class. An entry of another class is ignored."
+    - "In a [ParametricClipData](/classes/parametricclipdata), only the events of the child with the larger weight fire."
+
+properties:
+  mStartFrame:
+    description: |
+      The frame at which the event starts. A value at or below the first frame of the clip
+      starts the event as soon as the clip starts.
+
+  mEndFrame:
+    description: |
+      The frame at which the event ends. A negative value, which is the default, or a
+      value below `mStartFrame`, means the event has no end frame: it stays active until
+      the clip loops or stops.
+
+      An end frame equal to `mStartFrame` makes the event start and end in the same
+      update.
+
+  mIsSelfOnly:
+    description: |
+      When true, the event exists only on the champion that the local player controls. On
+      every other unit the client does not make the event at all. It is used for things
+      that only the player should get, mostly sounds.
+    notes:
+      - "Minions, pets and other units that are not the local player's champion never get a self-only event."
+
+  mFireIfAnimationEndsEarly:
+    description: |
+      When true, the event still fires if its clip stops before the event has started.
+      The event is started at the moment the clip stops. Use it for a change that must
+      happen in any case, for example an event that shows a weapon again at the end of
+      an animation that can be interrupted.
+
+      The event is started only. It is not ended after that.
+    notes:
+      - "An event with an end frame that has already run and ended counts as not started. It fires a second time when the clip stops."
+
+  mName:
+    description: |
+      The name of the event, as a hash. When the graph loads, the client overwrites it
+      with the key of the event in `mEventDataMap`, so the value in the bin is not used.
+      A [SyncedAnimationEventData](/classes/syncedanimationeventdata) uses the name as the
+      id of its group.

@@ -1,0 +1,24 @@
+# LookAtSpellTargetAngleParametricUpdater Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) that returns the **angle from the
+    direction the unit faces to the target of its spell**, from `-180` to `180` degrees,
+    measured in the ground plane. Shipped graphs use it in a
+    [ParametricClipData](/classes/parametricclipdata) with aim poses, so the character
+    aims at its target while its body faces another way.
+
+    The target is the unit's spell target as the game last set it: a direction, a
+    position, or a target unit. For a target unit that is gone, the last known position is
+    used. When the target is the unit itself, the direction the unit turns to is used.
+
+    **The look direction.** The unit keeps one look direction, and every look-at updater
+    writes it: this one, the two interest updaters, the gold redirect updater and the
+    missile updater. The direction is written at most once each frame. So when several
+    look-at updaters play on one unit, the first one that runs in a frame decides the
+    direction for all of them. The value each updater returns is the angle from the
+    facing to that shared direction.
+
+    The owner of the graph must be a unit. Otherwise the value does not change.
+  notes:
+    - "An [EnableLookAtEventData](/classes/enablelookateventdata) event can freeze the look direction, or turn the look-at off so that this updater returns `0`."

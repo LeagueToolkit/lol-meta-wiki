@@ -1,0 +1,21 @@
+# JointOrientationBlendEventData Documentation
+
+class:
+  description: |
+    The on and off blend of a
+    [JointOrientationEventData](/classes/jointorientationeventdata). While the event is
+    active, the joint orientation modifier is in the opposite of its `DefaultOn` state:
+    a modifier that is on by default is turned off, and one that is off by default is
+    turned on. The two times set how fast the weight of the modifier changes. Both changes
+    are linear.
+
+properties:
+  "0x2b969c0d":
+    description: |
+      The time of the change away from the default state when the event starts, in
+      seconds. `0` changes at once.
+
+  "0xe61bf09e":
+    description: |
+      The time of the change back to the default state when the event ends, in seconds.
+      `0` changes at once.

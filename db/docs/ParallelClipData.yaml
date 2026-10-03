@@ -1,0 +1,40 @@
+# ParallelClipData Documentation
+
+class:
+  description: |
+    A clip that plays its **children at the same time**. Each child plays on its own
+    [track](/classes/trackdata), the one its pose clip names. The usual use is a body
+    animation on one track with an overlay, such as an upper body or a prop animation, on
+    another.
+
+    One child is the **main child** and decides when the parallel ends:
+
+    - Among the children that set `kMain` in their `mFlags`, the main child is the atomic
+      clip with the longest duration.
+    - When no child sets `kMain`, the main child is the first child of the list.
+
+    The main child starts first and the others follow in list order. The main child plays
+    at the speed of the parallel.
+
+    When the main child ends:
+
+    - A parallel that loops (`kLoop` in its own `mFlags`) stops the other children and
+      starts all children again.
+    - A parallel that does not loop is finished and stops the other children.
+
+    The flags of a child change what happens to it:
+
+    | Child flag | Effect |
+    |------------|--------|
+    | `kLoop` | The child loops while the parallel plays. |
+    | `kContinue` | The child is not stopped when the main child ends. When the parallel starts again and the child still plays, it keeps playing and is not restarted. |
+    | `kPlayOnce` | The child starts on the first pass only and is not stopped when the main child ends. On a child that is not the main child, it cancels `kLoop` and `kContinue`. |
+  notes:
+    - "Two children that name the same track do not play together. The one that starts later replaces the other on that track."
+
+properties:
+  mClipNameList:
+    description: |
+      The children, as keys of `AnimationGraphData.mClipDataMap`. A name that is not in the
+      map is dropped when the graph loads, so "the first child" is the first name that
+      exists.

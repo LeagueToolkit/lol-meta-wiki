@@ -1,0 +1,8 @@
+# IBooleanParametricUpdater Documentation
+
+class:
+  description: |
+    A [parametric updater](/classes/ibaseparametricupdater) that gives a true or false
+    value, as `1` or `0`. A `ConditionBoolClipData.Updater` takes only this kind. The
+    properties that take any updater (`ParametricClipData.Updater`, `UpdaterData.Input`)
+    take it as well, and then see `1` or `0`.

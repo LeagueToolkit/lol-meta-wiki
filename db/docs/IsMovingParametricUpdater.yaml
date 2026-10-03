@@ -1,0 +1,10 @@
+# IsMovingParametricUpdater Documentation
+
+class:
+  description: |
+    A [bool updater](/classes/ibooleanparametricupdater) that is true **while the unit
+    moves**, as the unit's movement system reports it.
+
+    The owner of the graph must be a unit. Otherwise the value does not change.
+  notes:
+    - "It is the most used bool updater in shipped graphs. The usual holder is a condition clip that plays a run variant while the unit moves and an idle variant while it stands."

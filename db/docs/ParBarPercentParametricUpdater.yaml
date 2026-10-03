@@ -1,0 +1,10 @@
+# ParBarPercentParametricUpdater Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) that returns **how full the unit's
+    resource bar is**: the current amount of its primary ability resource (mana, energy,
+    fury and so on) divided by the maximum. The value runs from `0` to `1`, and is `0`
+    when the maximum is `0`.
+
+    The owner of the graph must be a unit. Otherwise the value does not change.

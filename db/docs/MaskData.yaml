@@ -1,0 +1,38 @@
+# MaskData Documentation
+
+class:
+  description: |
+    A **joint mask**: one weight for each joint of the skeleton, which limits what part of
+    the body a clip moves. A clip names its mask with `BlendableClipData.mMaskDataName`. A
+    clip with no mask has a weight of `1` on every joint.
+
+    The weights are used when the client combines the [tracks](/classes/trackdata):
+
+    - On a normal track, the weight is the share of the joint that the clip asks for. `0`
+      leaves the joint to the tracks that come after it. `1` takes all that is left.
+    - On an additive track, the weight scales the offset that the clip adds to the joint.
+
+    While a track cross-fades between two clips, the masks of the two clips are blended
+    with the same factor as the poses. While a clip fades in or out with no other clip on
+    its track, all its weights are also multiplied by the fade, so the other tracks take
+    over gradually.
+  notes:
+    - "A mask has no effect while its track is the only active track. The client then uses the pose of that track unchanged."
+    - "A [ConformToPathEventData](/classes/conformtopatheventdata) uses a mask for a different purpose: to select the joints that it bends."
+
+properties:
+  mWeightList:
+    description: |
+      The weights, from `0` to `1`. Entry `i` is the weight of the joint with index `i` in
+      the skin's skeleton. The list is matched to the joints by position only, not by joint
+      name or id, so a mask fits one skeleton.
+
+      When the list is shorter than the skeleton, the remaining joints get `1`. Entries
+      past the last joint are ignored.
+    notes:
+      - "Most shipped weights are exactly `0` or `1`. A value between the two gives the joint partly to this clip and partly to the tracks after it."
+
+  mId:
+    description: |
+      A small number on some masks. No reader of this value was found in the client's
+      animation code. Shipped data uses `1` to `7`.

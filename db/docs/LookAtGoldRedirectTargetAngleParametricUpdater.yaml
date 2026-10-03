@@ -1,0 +1,11 @@
+# LookAtGoldRedirectTargetAngleParametricUpdater Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) that returns the **angle from the
+    direction the unit faces to its gold redirect target**, from `-180` to `180` degrees.
+    The gold redirect target is a unit that the game sets on this unit.
+
+    It uses the shared look direction of the unit, see
+    [LookAtSpellTargetAngleParametricUpdater](/classes/lookatspelltargetangleparametricupdater).
+    With no target the value does not change.

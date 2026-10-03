@@ -1,0 +1,15 @@
+# TftArenaOwnerStreakParametricUpdater Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) for the graph of a **map prop in
+    Teamfight Tactics**. It returns whether the player who owns the arena is on a streak:
+
+    | Value | Meaning |
+    |-------|---------|
+    | `1` | A win streak whose length is in one of the game mode's win streak ranges |
+    | `-1` | A loss streak whose length is in one of the game mode's loss streak ranges |
+    | `0` | No streak that counts |
+
+    The owner of the graph must be a map prop with a valid owner. Otherwise the value does
+    not change.

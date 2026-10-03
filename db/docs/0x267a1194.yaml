@@ -1,0 +1,30 @@
+# 0x267a1194 Documentation
+
+class:
+  description: |
+    A [bool updater](/classes/ibooleanparametricupdater) for the graph of a **map prop**.
+    It tests a byte of flags that the game server sets for that map prop.
+
+    The owner of the graph must be a map prop. On a unit the value does not change.
+  notes:
+    - "The client only stores the byte and tests it here. What each bit means is decided by the server and was not identified."
+
+properties:
+  Operation:
+    description: |
+      How the flags are tested.
+
+      | Value | Result |
+      |-------|--------|
+      | `0` | True when any bit of `VisibilityFlags` is set in the flags |
+      | `1` | True when the flags are exactly equal to `VisibilityFlags` |
+
+      Any other value gives false.
+
+  VisibilityFlags:
+    description: |
+      The bits to test: a mask for `Operation` `0`, and the exact value for `Operation`
+      `1`. With both properties at their defaults, the updater is true when any flag is
+      set.
+    notes:
+      - "Shipped graphs use `Operation` `1` with `4`, `8` or `64`."

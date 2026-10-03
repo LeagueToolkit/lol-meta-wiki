@@ -1,0 +1,21 @@
+# SelectorClipData Documentation
+
+class:
+  description: |
+    A clip that plays **one child, picked at random**. It is how a graph gives an animation
+    several variants, for example three idle clips under the name `Idle1`.
+
+    The pick is made when the selector starts. The child plays with the selector's speed,
+    and the selector ends when the child ends. A selector that loops (`kLoop` in
+    `mFlags`, or a loop request from its parent) picks again each time its child ends, so
+    it plays a chain of random variants.
+
+    Each pick is independent. The selector does not avoid the child it picked last.
+  notes:
+    - "A child that loops by itself (`kLoop` on the child) never ends, so the selector never picks again."
+
+properties:
+  mSelectorPairDataList:
+    description: |
+      The children and their weights, see [SelectorPairData](/classes/selectorpairdata).
+      With an empty list the selector plays nothing.

@@ -1,0 +1,37 @@
+# ConformToPathEventData Documentation
+
+class:
+  description: |
+    An [animation event](/classes/baseeventdata) that **changes which joints follow the
+    path of the unit**. It works on the skin's conform-to-path pose modifier
+    ([ConformToPathRigPoseModifierData](/classes/conformtopathrigposemodifierdata) in
+    `SkinMeshDataProperties.rigPoseModifierData`). That modifier bends a chain of joints,
+    such as a tail or a long body, along the trail of positions the unit has moved
+    through, so the chain follows the turns the unit has made.
+
+    The modifier weights its joints with a [mask](/classes/maskdata). While the event is
+    active, the mask of the modifier is replaced by `mMaskDataName`. When the event ends,
+    the modifier goes back to its own default mask.
+
+    Without that modifier on the skin, the event does nothing.
+  notes:
+    - "The path is the trail behind the unit, not the path it is going to walk."
+    - "While it is active, the event applies its mask again on every frame. If two events overlap, the one that is still active wins after the other ends."
+
+properties:
+  mMaskDataName:
+    description: |
+      The mask to use while the event is active, as a key of
+      `AnimationGraphData.mMaskDataMap`. The mask weight of a joint is how much that joint
+      conforms to the path. Empty, or a name that is not in the map: every joint of the
+      chain has a weight of `1`.
+
+  mBlendInTime:
+    description: |
+      The time over which the joint weights change from the current mask to this mask when
+      the event starts, in seconds. The change is linear. `0` changes at once.
+
+  mBlendOutTime:
+    description: |
+      The time over which the joint weights change back to the default mask of the
+      modifier when the event ends, in seconds. `0` changes at once.

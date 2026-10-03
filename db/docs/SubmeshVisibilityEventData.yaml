@@ -1,0 +1,37 @@
+# SubmeshVisibilityEventData Documentation
+
+class:
+  description: |
+    An [animation event](/classes/baseeventdata) that **shows and hides submeshes of the
+    character's mesh**, for example to hide a sheathed sword and show the sword in the
+    hand.
+
+    On every frame while the event is active, the client hides the submeshes of
+    `mHideSubmeshList` and then shows the submeshes of `mShowSubmeshList`. A submesh that
+    is in both lists ends up shown.
+
+    **The change is not undone.** The event does nothing when it ends, when the clip loops
+    or when the clip stops. The submeshes stay as the event left them until something else
+    changes them, normally another event. An animation that hides a submesh must show it
+    again with an event of its own, or with an event in the clip that plays next.
+  notes:
+    - "An end frame only sets how long the event keeps applying its lists. It does not put the submeshes back."
+    - "Set `mFireIfAnimationEndsEarly` on an event that puts submeshes back, so it also fires when the animation is interrupted."
+
+properties:
+  mShowSubmeshList:
+    description: |
+      The submeshes to show, as hashes of their names (the same hash as for bin names:
+      FNV-1a 32 of the lowercased name). A name that the mesh does not have is ignored.
+
+  mHideSubmeshList:
+    description: |
+      The submeshes to hide, as hashes of their names. A name that the mesh does not have
+      is ignored.
+
+  ApplyOnlyToAvatarMeshes:
+    description: |
+      When true, the two lists change a second visibility mask of the unit, the one for
+      its avatar meshes, and the normal submesh visibility is not changed.
+    notes:
+      - "What the avatar meshes of a unit are was not identified."

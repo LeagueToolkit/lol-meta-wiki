@@ -1,0 +1,38 @@
+# BlendableClipData Documentation
+
+class:
+  description: |
+    The common part of the two clip kinds that produce a pose:
+    [AtomicClipData](/classes/atomicclipdata) and
+    [ParametricClipData](/classes/parametricclipdata). It names the
+    [track](/classes/trackdata) the clip plays on, the [mask](/classes/maskdata) that limits
+    it to part of the body, and its [sync group](/classes/syncgroupdata), and it holds the
+    clip's [events](/classes/baseeventdata).
+
+properties:
+  mTrackDataName:
+    description: |
+      The track the clip plays on, as a key of `AnimationGraphData.mTrackDataMap`. A clip
+      that starts replaces the clip that was on that track.
+    notes:
+      - "The name must be a track of the same graph. The client looks it up for every clip, has no default track, and does not check that it found one. Every shipped clip names an existing track."
+
+  mMaskDataName:
+    description: |
+      The mask of the clip, as a key of `AnimationGraphData.mMaskDataMap`. Empty, or a name
+      that is not in the map, means no mask: the clip has full weight on every joint.
+
+  mSyncGroupDataName:
+    description: |
+      The sync group of the clip, as a key of `AnimationGraphData.mSyncGroupDataMap`.
+      Empty, or a name that is not in the map, means no group.
+
+  mEventDataMap:
+    description: |
+      The events of the clip. The key is the hash of the event's name and only has to be
+      unique within the clip. Each value is one [event](/classes/baseeventdata), which
+      fires at its `mStartFrame` while the clip plays.
+
+      When the graph loads, the client writes the key into each event's `mName`.
+    notes:
+      - "Events fire whatever the clip's weight is. A clip that fades out, or that a mask or a track above it hides, still fires its events."

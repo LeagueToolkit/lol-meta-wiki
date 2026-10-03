@@ -1,0 +1,23 @@
+# StopAnimationEventData Documentation
+
+class:
+  description: |
+    An [animation event](/classes/baseeventdata) that **stops another clip and keeps it
+    from playing**. On every frame while the event is active, the client:
+
+    1. Blocks the clip named `mStopAnimationName`. A request to play it does nothing.
+    2. Stops that clip if it plays. For a clip that produces a pose, the whole track the
+       clip is on is cleared at once, with no fade-out.
+
+    When the event ends, the block is lifted. With no end frame, the block lasts until the
+    clip of the event loops or stops.
+  examples:
+    - "Shipped graphs mostly use it to stop the `Turn` clip while an attack or spell animation plays."
+
+properties:
+  mStopAnimationName:
+    description: |
+      The clip to stop, as a key of `AnimationGraphData.mClipDataMap`. A name that is not
+      a clip of the graph does nothing.
+    notes:
+      - "It is a clip name, not a track name. Some shipped events name a track that has no clip of the same name. Those events do nothing."

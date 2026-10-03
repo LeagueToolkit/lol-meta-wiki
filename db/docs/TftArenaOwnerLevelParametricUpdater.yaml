@@ -1,0 +1,10 @@
+# TftArenaOwnerLevelParametricUpdater Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) for the graph of a **map prop in
+    Teamfight Tactics**. It returns the level of the player who owns the arena the prop
+    belongs to, as a whole number.
+
+    The owner of the graph must be a map prop with a valid owner. Otherwise the value does
+    not change.

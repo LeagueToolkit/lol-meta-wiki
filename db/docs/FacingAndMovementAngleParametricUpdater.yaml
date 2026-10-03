@@ -1,0 +1,13 @@
+# FacingAndMovementAngleParametricUpdater Documentation
+
+class:
+  description: |
+    A [float updater](/classes/ifloatparametricupdater) that returns the **angle between
+    the direction the unit moves in and the direction it faces**, from `-180` to `180`
+    degrees. `0` means the unit moves straight ahead. It is the value for strafing and
+    backward run clips.
+
+    The movement direction follows the unit's velocity with some smoothing. When the unit
+    stops, the last movement direction is kept, so the angle does not jump to `0`.
+
+    The owner of the graph must be a unit. Otherwise the value does not change.

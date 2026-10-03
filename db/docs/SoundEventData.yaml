@@ -1,0 +1,49 @@
+# SoundEventData Documentation
+
+class:
+  description: |
+    An [animation event](/classes/baseeventdata) that **plays a sound on the unit**. When
+    the event starts, the client plays the audio event `mSoundName` on the unit, at the
+    unit's position.
+
+    The end frame of the event does not stop the sound. What stops it is `mIsKillEvent`.
+
+properties:
+  mSoundName:
+    description: |
+      The name of the audio event to play, for example `Play_sfx_Volibear_VolibearQ_footsteps`.
+
+  mIsKillEvent:
+    description: |
+      When true, which is the default, the sound belongs to the clip: it is stopped when
+      the clip stops, and when the event fires again the sound that still plays is stopped
+      and started again. When false, the sound is played once and the animation system
+      never stops it.
+
+  mIsLoop:
+    description: |
+      When true, which is the default, the event fires again on every loop of its clip.
+      When false, it fires on the first pass only.
+    notes:
+      - "It is about the loops of the clip. It does not make the sound itself loop."
+
+  mSkipIfPastEndFrame:
+    description: |
+      When true, an event that has not started yet and whose `mEndFrame` the clip has
+      already passed is skipped for that pass.
+
+  ConditionClipTransitionType:
+    description: |
+      What the client does with the sound when its clip is started at a later position,
+      inside the range of this event. This happens when a
+      [condition clip](/classes/conditionboolclipdata) switches to the clip and carries
+      over the position of the clip before.
+
+      | Value | Name | Behavior |
+      |-------|------|----------|
+      | `0` | `NO_TRANSITION` | The event counts as started, and the sound is not played. |
+      | `1` | `ALWAYS_PLAY_START_OF_EVENT` | The sound plays from its beginning. |
+      | `2` | `SKIP_IF_PASSED_FRAME` | The event is skipped for this pass. |
+      | `3` | `CATCH_UP_TO_CURRENT_FRAME` | The sound plays from the point it would have reached, that is, as far into the sound as the clip is past `mStartFrame`. |
+    notes:
+      - "Only sound events have this setting. Every other event kind acts as `1`."

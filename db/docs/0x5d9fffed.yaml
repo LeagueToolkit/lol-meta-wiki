@@ -1,0 +1,27 @@
+# 0x5d9fffed Documentation
+
+class:
+  description: |
+    An [animation event](/classes/baseeventdata) that **turns a dynamics chain of the skin
+    on or off** while it is active. A dynamics chain is a
+    [DynamicsChainRigPoseModifierData](/classes/dynamicschainrigposemodifierdata) in the
+    skin's pose modifiers: a chain of joints that the client simulates.
+
+    While the event is active, the chain is in the opposite of its `DefaultOn` state. The
+    weight of the chain blends each joint between its animated pose and its simulated
+    pose, so turning the chain off gives the plain animation.
+
+    Without that modifier on the skin, the event does nothing.
+  notes:
+    - "No shipped graph uses this event kind."
+
+properties:
+  "0x2b969c0d":
+    description: |
+      The time of the change away from the default state when the event starts, in
+      seconds. The change is linear. `0` changes at once.
+
+  "0xe61bf09e":
+    description: |
+      The time of the change back to the default state when the event ends, in seconds.
+      `0` changes at once.

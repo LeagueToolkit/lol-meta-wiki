@@ -5,7 +5,7 @@ class:
     A [float driver](/classes/ilogicfloatdriver) that reads a **keyframed float track from the
     animation that is playing**. An animation clip can carry
     [KeyFrameFloatMapClipAccessoryData](/classes/keyframefloatmapclipaccessorydata) entries:
-    named tracks that map a time in the clip to a value. The driver returns the value of the
+    named tracks that map a frame of the clip to a value. The driver returns the value of the
     track named `ClipAccessoryToRead` at the current time of the clip.
 
     The track is a **step function**. The driver returns the value of the last key the clip

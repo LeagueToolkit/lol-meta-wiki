@@ -1,0 +1,91 @@
+# ConditionBoolClipData Documentation
+
+class:
+  description: |
+    A clip that plays **one of two children, chosen by a true or false value** from its
+    `Updater`. A typical use is a `Run` clip that plays a homeguard run while the
+    character has homeguard and the normal run otherwise.
+
+    **How a condition clip runs.** These rules are the same for the four clip kinds that
+    choose a child from a run-time value: this one,
+    [ConditionFloatClipData](/classes/conditionfloatclipdata),
+    [SwitchIntClipData](/classes/switchintclipdata) and
+    [EventControlledSelectorClipData](/classes/eventcontrolledselectorclipdata).
+
+    - The clip plays one child at a time. The choice is made when the clip starts.
+    - The clip ends when its child ends, or when another clip replaces the child on its
+      track. It does not choose again at that moment.
+    - By default the first choice is kept until the clip ends. With
+      `mChangeAnimationMidPlay`, the choice is read again every frame, and a different
+      choice switches to the other child.
+    - A switch plays the new child like any other clip. On the same track it cross-fades
+      from the old child with the time from `AnimationGraphData.mBlendDataTable`, and a
+      [transition clip](/classes/transitionclipblenddata) for that pair is played in
+      between.
+    - A choice that has no clip (an empty name, or a name that is not in the graph) starts
+      nothing and does not stop the child that plays.
+    - A loop request that the clip gets from its parent is passed to a child only when
+      that child sets `kLoop` in its own `mFlags`.
+
+properties:
+  Updater:
+    description: |
+      The source of the value: a [bool updater](/classes/ibooleanparametricupdater). The
+      client reads it when the clip starts and then every frame. The first value chooses
+      the first child. Later values are used only with `mChangeAnimationMidPlay`.
+    notes:
+      - "It must be set. The client does not check for a missing `Updater` before it uses it."
+
+  mTrueConditionClipName:
+    description: "The child that plays while the value is true, as a key of `AnimationGraphData.mClipDataMap`."
+
+  mFalseConditionClipName:
+    description: "The child that plays while the value is false, as a key of `AnimationGraphData.mClipDataMap`."
+
+  mChangeAnimationMidPlay:
+    description: |
+      Lets the clip switch to the other child while it plays. When false, the child chosen
+      at the start plays to its end, whatever the value does after that.
+
+      While another clip is fading the current child out, the clip does not switch. A
+      child that sets `kContinue` in its `mFlags` is not held back this way.
+
+  mChildAnimDelaySwitchTime:
+    description: |
+      How long the new choice must hold before the clip switches, in seconds. The time is
+      counted while the choice differs from the child that plays, and starts again from
+      zero whenever the choice goes back to that child. So a value that changes for a
+      shorter time than this does not cause a switch.
+
+      It does not delay the first child, and it has an effect only with
+      `mChangeAnimationMidPlay`.
+
+  mPlayAnimChangeFromBeginning:
+    description: |
+      Where the new child starts on a switch. When true, it starts at its beginning. When
+      false, which is the default, it starts at the same fraction of its length as the old
+      child had reached, so two clips that show the same cycle stay in step.
+
+      The first child always starts at its beginning.
+
+  SyncFrameOnChangeAnim:
+    description: |
+      Changes the start position that a switch takes from the old child. It is read only
+      when `mPlayAnimChangeFromBeginning` is false.
+
+      When true, the number of seconds the old child has played is used as the fraction of
+      the new child's length. An old child that has played `0.5` seconds starts the new
+      child at its midpoint, and one that has played `1` second or more starts it at its
+      end.
+    notes:
+      - "It does not start the new child at the same time or the same frame as the old child, although the name suggests it."
+
+  DontStompTransitionClip:
+    description: |
+      Keeps a [transition clip](/classes/transitionclipblenddata) that already plays. When
+      the clip switches to a child and the track is in the middle of the transition clip
+      that leads to that child, the child is queued behind the transition clip.
+
+      When false, which is the default, the switch cuts the transition clip that plays. If
+      the blend table has a transition clip for the switch, that clip starts again from
+      its beginning. If it has none, the child starts directly.
