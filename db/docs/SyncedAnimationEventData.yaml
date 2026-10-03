@@ -17,7 +17,7 @@ class:
     - **When the event ends**, the clip of the unit is moved back by the time it was moved
       forward at the start.
   notes:
-    - "The event has an effect only on a unit that has the synced animation pose modifier. The client adds that modifier by itself when the graph has an event of this kind and a setting of the skin allows it. Which setting that is was not identified."
+    - "The event has an effect only on a unit that has the synced animation pose modifier, a [SyncedAnimationRigPoseModifierData](/classes/syncedanimationrigposemodifierdata). The client adds that modifier by itself when the graph has an event of this kind and a setting of the skin allows it. Which setting that is was not identified."
     - "This event does not fire again when its clip loops."
 
 properties:

@@ -1,0 +1,121 @@
+# JointOrientationRigPoseModifierData Documentation
+
+class:
+  description: |
+    A [pose modifier](/classes/baserigposemodifierdata) that **turns joints to face a
+    direction or a place** that a vector driver gives, for example an arm that aims at a
+    missile.
+
+    **What happens on each frame**, while the weight of the modifier is above `0`:
+
+    1. `OrientationSource` is evaluated for the unit. It gives one vector.
+    2. For each joint of `Joints`, in the order of the list, the **direction** is that
+       vector (`orientationType` `0`), or the vector from the joint's place in the world
+       to that vector (`orientationType` `1`).
+    3. The **aim rotation** is built from the direction, see below.
+    4. The rotation of the joint is blended from its animated rotation to the aim rotation
+       by the weight of the modifier.
+
+    The aim rotation is absolute. It is not added to the animated rotation: at a weight
+    of `1` the joint has exactly the aim rotation in the world, whatever the clip turned
+    it to.
+
+    **The aim rotation** is built from three axes of the joint: the normal `N` of
+    `PlaneConstraint`, the tilt axis `A` (`0xa57f0269`) and the aim axis `B`
+    (`0xae1cbd5f`). With no rotation, the axes of the joint are the axes of the world.
+
+    1. With `0x1a30a486`, the joint starts with a half turn about `N`.
+    2. With a tilt axis, the joint is turned about `A` until the direction lies in the
+       plane of `PlaneConstraint`. This turn has no limit.
+    3. With an aim axis, the joint is turned about `N` until `B` points along the
+       direction. This turn is limited to `0x420b233d` degrees to either side.
+
+    **The weight** is `1` when `DefaultOn` is true and `0` when it is false. A
+    [JointOrientationEventData](/classes/jointorientationeventdata) on a clip changes it
+    while the event is active, and can give the modifier another vector to follow.
+  notes:
+    - "Without an `OrientationSource` the modifier does nothing."
+    - "The joints are turned one after the other on the same pose. A joint that is listed after its parent is aimed from the place the parent's turn left it."
+    - "Without a tilt axis, the turn about `N` is by the whole angle between the aim axis and the direction, not by the angle between their shadows on the plane. A direction that leaves the plane is then not followed exactly."
+    - "A direction of no length, and a direction along the tilt axis, are not checked for."
+    - "All of Viktor's skins have one. It turns the joint `C_Backarm3` of his back arm toward his E missile, with a limit of `12` degrees. It is off by default, and an event on the clip `Spell3` turns it on."
+
+properties:
+  Joints:
+    description: |
+      The joints to turn, as the hashes of their names (FNV-1a 32 of the lowercased name).
+      Every joint is turned toward the same vector. A name that is not a joint of the
+      skeleton is skipped.
+
+  OrientationSource:
+    description: |
+      A vector driver that gives the direction or the place to face. It is evaluated on
+      every frame for the unit that owns the skeleton.
+    notes:
+      - "Shipped data uses three driver classes here, and none of them has a name yet."
+      - "`0x19da44b2`, the driver of Viktor's skins, follows a missile of the unit. It goes through its `MissileSpellObjects` in order and reads a vector from the first of them that the unit has a missile of in flight. When no missile is in flight it gives the last vector it read. Which vector of the missile it reads was not identified. Viktor's skins use it as a place."
+
+  orientationType:
+    description: |
+      What the vector of `OrientationSource` is.
+
+      | Value | Meaning |
+      |-------|---------|
+      | `0` | A direction. Every joint turns to that direction. |
+      | `1` | A place in the world. Each joint turns to point from its own place to that place. |
+
+      Any other value behaves as `0`.
+
+  PlaneConstraint:
+    description: |
+      The plane the joint aims in, given by the axis that is its normal `N`. The turn that
+      points the aim axis at the direction is a turn about this axis.
+
+      | Value | Normal | Plane |
+      |-------|--------|-------|
+      | `0` | Z | XY |
+      | `1` | Y | XZ |
+      | `2` | X | YZ |
+
+  "0xa57f0269":
+    description: |
+      The **tilt axis** `A`. The joint is first turned about this axis until the direction
+      lies in the plane of `PlaneConstraint`, so that the aim can follow a direction that
+      points out of the plane.
+
+      | Value | Axis |
+      |-------|------|
+      | `0` | None. The plane is not tilted. |
+      | `1` | X |
+      | `2` | Y |
+      | `3` | Z |
+    notes:
+      - "An axis that is the normal of `PlaneConstraint` is read as none."
+
+  "0xae1cbd5f":
+    description: |
+      The **aim axis** `B`: the axis of the joint that is pointed along the direction. The
+      values are those of `0xa57f0269`. With `0x57722010` the axis is negated, so the
+      defaults aim the negative Z axis.
+    notes:
+      - "An axis that is the normal of `PlaneConstraint` is read as none, and the joint is then not turned about the normal."
+
+  "0x57722010":
+    description: "Negates the aim axis `0xae1cbd5f`. True, which is the default, points the negative side of the axis along the direction."
+
+  "0x1a30a486":
+    description: |
+      Flips the joint. The joint starts with a half turn about the normal of
+      `PlaneConstraint`, the tilt axis is negated, and the tilt is turned the other way.
+
+  "0x420b233d":
+    description: |
+      The largest turn about the normal of `PlaneConstraint`, in degrees, to either side.
+      With `180` the turn has no limit.
+    notes:
+      - "The tilt about `0xa57f0269` is not limited by it."
+
+  DefaultOn:
+    description: |
+      True: the modifier is on, and an event turns it off. False: the modifier is off,
+      and an event turns it on.

@@ -1,0 +1,39 @@
+# VertexAnimationRigPoseModifierData Documentation
+
+class:
+  description: |
+    A [pose modifier](/classes/baserigposemodifierdata) that runs **a spring on the
+    movement of the unit** and stores the result with the pose. It changes no joint.
+
+    The spring has a position and a velocity, each a vector. On each frame, with `dt` the
+    frame time, at most `0.03` seconds:
+
+    ```
+    target    = -(velocity of the unit)
+    velocity += (-(mStiffness / mMass) * (position - target) - (mDamping / mMass) * velocity) * dt
+    position += velocity * dt
+    ```
+
+    The pose then carries how far `position` moved on this frame, as one vector for the
+    whole skeleton.
+  notes:
+    - "What reads that vector was not identified, so what the modifier changes on screen is unknown."
+    - "No shipped skin has one."
+
+properties:
+  mStiffness:
+    description: "How strongly the spring is pulled to its target. A higher value follows the movement of the unit faster."
+
+  mMass:
+    description: |
+      The mass on the spring. The stiffness and the damping are both divided by it.
+    notes:
+      - "It must not be `0`."
+
+  mDamping:
+    description: "How fast the swing of the spring dies out. `0` swings forever."
+
+  mMaxSpeed:
+    description: |
+      The client compares the distance of the spring from its target with this value, and
+      does not use the result. It has no effect.

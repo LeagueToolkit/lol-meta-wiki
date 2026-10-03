@@ -1,0 +1,25 @@
+# SyncedAnimationRigPoseModifierData Documentation
+
+class:
+  description: |
+    The [pose modifier](/classes/baserigposemodifierdata) that does the work of a
+    [SyncedAnimationEventData](/classes/syncedanimationeventdata): it **brings the units
+    of a shared animation to one place and one clip time**. It has no settings. The group
+    and the lerp time come from the event.
+
+    Unlike the other pose modifiers, it moves the unit and not a joint. While an event of
+    its group is active:
+
+    - The root transform of the unit's pose is moved toward the place of the group over
+      `mLerpTime`, and its rotation is blended toward a constant rotation.
+    - When the modifier was made with a joint, the same movement is taken back off that
+      joint, so the joint stays where it was in the world while the rest of the skeleton
+      moves.
+
+    The clip times of the group are set by the event, see its page.
+
+    The modifier does nothing without an active event.
+  notes:
+    - "The client adds this modifier by itself for a graph that has a synced animation event. Rakan and Xayah, the only characters with such an event, have no entry of this class on their skins."
+    - "The only skins that list this class are some of Tahm Kench's, whose graphs have no synced animation event, so the entry does nothing there."
+    - "Which joint the client gives the modifier it makes was not identified."

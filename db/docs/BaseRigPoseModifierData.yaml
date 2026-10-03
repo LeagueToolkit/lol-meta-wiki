@@ -7,15 +7,38 @@ class:
     and before the mesh is skinned. A skin lists its modifiers in
     [`SkinMeshDataProperties.rigPoseModifierData`](/classes/skinmeshdataproperties#rigposemodifierdata).
 
-    On every pose evaluation the client runs the modifiers in two groups:
+    **The order.** On every pose evaluation the client runs the modifiers by kind, not in
+    the order of the skin's list:
 
-    1. Every modifier except the dynamics chain, on the pose in joint-local space.
-    2. The joints are then converted to world space.
-    3. The [dynamics chains](/classes/dynamicschainrigposemodifierdata) run on the world
-       space pose.
+    | Order | Kind | What it does |
+    |-------|------|--------------|
+    | 1 | [LockRootOrientationRigPoseModifierData](/classes/lockrootorientationrigposemodifierdata) | Keeps a joint facing the same way while the unit turns. |
+    | 2 | [SyncedAnimationRigPoseModifierData](/classes/syncedanimationrigposemodifierdata) | Brings the units of a shared animation to one place. |
+    | 3 | [ConformToPathRigPoseModifierData](/classes/conformtopathrigposemodifierdata) | Makes a chain of joints trail behind the unit. |
+    | 4 | [JointSnapRigPoseModifilerData](/classes/jointsnaprigposemodifilerdata) | Snaps one joint onto another. |
+    | 5 | [VertexAnimationRigPoseModifierData](/classes/vertexanimationrigposemodifierdata) | Runs a spring on the movement of the unit. It changes no joint. |
+    | 6 | [SpringPhysicsRigPoseModifierData](/classes/springphysicsrigposemodifierdata) | Makes one joint lag behind the unit and swing back. |
+    | 7 | [JointOrientationRigPoseModifierData](/classes/jointorientationrigposemodifierdata) | Turns joints to face a direction or a place. |
+    | 8 | [DynamicsChainRigPoseModifierData](/classes/dynamicschainrigposemodifierdata) | Simulates joints with physics. |
+
+    The first seven kinds run on the pose in joint-local space. The joints are then
+    converted to world space, and the dynamics chains run on the world space pose.
 
     Skinning, [sockets](/classes/socketdefinitionbase) and every lookup of a joint by name
-    read the pose after both groups.
+    read the pose after all of them.
+
+    **Modifiers the client adds by itself.** Three kinds need no entry in the skin's list.
+    The client goes through the events of every clip of the unit's animation graph, and
+    adds a joint snap modifier for a
+    [JointSnapEventData](/classes/jointsnapeventdata), a lock root orientation modifier
+    for a [LockRootOrientationEventData](/classes/lockrootorientationeventdata), and a
+    synced animation modifier for a
+    [SyncedAnimationEventData](/classes/syncedanimationeventdata). These three classes
+    have no settings: everything they do comes from the event.
+
+    The other kinds exist only where a skin lists them. The events that change them, such
+    as [SpringPhysicsEventData](/classes/springphysicseventdata) and
+    [JointOrientationEventData](/classes/jointorientationeventdata), do nothing on a skin
+    without the modifier.
   notes:
-    - "The client also adds some modifiers by itself, with no entry in the list: the joint snap and the lock root orientation modifiers are added when a clip of the graph has an event of that kind."
     - "A unit that is attached to a joint of another unit runs no pose modifiers."

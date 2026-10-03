@@ -1,0 +1,30 @@
+# LockRootOrientationRigPoseModifierData Documentation
+
+class:
+  description: |
+    The [pose modifier](/classes/baserigposemodifierdata) that does the work of a
+    [LockRootOrientationEventData](/classes/lockrootorientationeventdata): it **keeps a
+    joint facing the same way while the unit turns**. It has no settings. The joint and
+    the fade time come from the event.
+
+    The client adds this modifier to a unit by itself when a clip of the unit's animation
+    graph has a lock root orientation event. A skin does not need an entry of this class
+    for the event to work, and no shipped skin has one.
+
+    **How a lock works.** The modifier keeps one lock for each key of `mEventDataMap`
+    that such an event is stored under.
+
+    1. When an event starts, the lock takes the joint of the event. On the next pose it
+       records the rotation of the unit, and turns nothing on that frame.
+    2. On every frame after that, the client works out how far the unit has turned since
+       the recorded rotation, and turns the joint back by that amount.
+    3. When the event ends, the turn back fades out over `BlendOutTime`, and the lock is
+       then removed.
+
+    The joint is turned back in the frame of its parent. That keeps its facing in the
+    world exactly only when no joint above it is turned, which is the case for the root
+    joint.
+  notes:
+    - "Events under the same key share one lock. The lock ends when the last of them has ended. When one of them starts again while the lock is fading out, the lock keeps the rotation it recorded before."
+    - "This modifier runs before every other pose modifier of the unit."
+    - "What an entry of this class in a skin's list adds to the modifier the client makes by itself was not checked."

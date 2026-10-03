@@ -14,7 +14,9 @@ class:
     When the event ends, the correction fades out over `BlendOutTime` and the joint turns
     to follow the unit again.
   notes:
-    - "The client needs no setup on the skin for this event. It adds the pose modifier that does the lock when a clip of the graph has an event of this kind."
+    - "The client needs no setup on the skin for this event. It adds the pose modifier that does the lock, a [LockRootOrientationRigPoseModifierData](/classes/lockrootorientationrigposemodifierdata), when a clip of the graph has an event of this kind."
+    - "The world orientation is kept exactly only when no joint above `JointName` is turned, which is the case for the root joint. The joint is turned back in the frame of its parent."
+    - "Events under the same key of `mEventDataMap` share one lock, which ends when the last of them has ended."
 
 properties:
   JointName:

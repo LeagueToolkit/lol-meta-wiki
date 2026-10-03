@@ -1,0 +1,140 @@
+# ConformToPathRigPoseModifierData Documentation
+
+class:
+  description: |
+    A [pose modifier](/classes/baserigposemodifierdata) that makes **a chain of joints
+    trail behind the unit**. A tail or a ponytail swings out when the unit moves across
+    it, and settles back when the unit stops. Each joint of the chain turns about the
+    world up axis only.
+
+    **The chain** is every joint from `mStartingJointName` down to `mEndingJointName`. The
+    client takes the ending joint and walks up its parents until it reaches the starting
+    joint.
+
+    **What happens on each frame**, for each joint of the chain in order from the start:
+
+    1. The **animated direction** is the direction from the joint to the next joint of
+       the chain in the current pose.
+    2. The client remembers where the next joint stood in the world on the last frame.
+       That place is moved toward the joint by a spring (`mFrequency`, `mDampingValue`)
+       and pushed by the velocity of the unit (`mVelMultiplier`). The **target
+       direction** is the direction from the joint to that place.
+    3. The joint is turned about the world up axis by the angle between the two
+       directions, measured on the ground. The angle is at most `mMaxBoneAngle`, and it
+       is multiplied by the weight of the joint.
+
+    The joints after it in the chain are computed from the pose as the earlier joints
+    left it, so a turn at the start of the chain carries down the chain.
+
+    **The weight of a joint** is its weight in a [mask](/classes/maskdata) of the
+    animation graph. The modifier starts with the mask `mDefaultMaskName`. A
+    [ConformToPathEventData](/classes/conformtopatheventdata) on a clip gives it another
+    mask while the event is active, and the weights blend between the two masks over the
+    blend times of the event. With `OnlyActivateInTurns` the weight is also multiplied by
+    how near the joint is to a turn of the unit's path.
+
+    **The path of the unit** is a list of the places it has been, at most 300 of them. A
+    place is added when the unit is more than `1` world unit from the last one, measured
+    on the ground. A place where the path bends by more than `ActivationAngle` degrees is
+    a **turn**.
+  notes:
+    - "The modifier does nothing on the first frame. It only records where the joints stand."
+    - "An event changes every conform to path modifier of the unit. An event cannot name one modifier."
+    - "Ahri's base skin has eleven of them: one for each of the nine tails, one for the hair and one for the weapon arm. Their default masks have a weight of `0` on every joint, so the chains turn only while a clip has an event that gives another mask."
+
+properties:
+  mStartingJointName:
+    description: |
+      The joint of the chain that is nearest to the root of the skeleton, as the hash of
+      its name (FNV-1a 32 of the lowercased name).
+    notes:
+      - "A name that is not a joint of the skeleton is read as the first joint of the skeleton. It is not skipped."
+
+  mEndingJointName:
+    description: |
+      The last joint of the chain, as the hash of its name. It must be below
+      `mStartingJointName` in the skeleton.
+    notes:
+      - "When the ending joint is not below the starting joint, the chain runs from the ending joint up to the root of the skeleton."
+      - "The last joint has no next joint. Its target direction comes from a place the client extrapolates beyond the end of the chain."
+
+  mDefaultMaskName:
+    description: |
+      The mask the modifier uses when no event has given it another one, as a key of
+      `AnimationGraphData.mMaskDataMap`. The weight of a joint in the mask is how much of
+      the turn the joint takes. Empty, or a key that is not in the map: every joint of the
+      chain has a weight of `1`.
+
+  mMaxBoneAngle:
+    description: |
+      The largest turn of one joint, in degrees. The limit is applied before the weight
+      of the joint.
+
+  mFrequency:
+    description: |
+      How fast the remembered place of a joint is pulled toward the joint above it in the
+      chain. A higher value makes the chain settle faster after the unit stops.
+
+      On each frame the place moves by `velocity * dt`, where
+
+      ```
+      k        = 36 * mFrequency * mFrequency
+      velocity = k / (1 + 9 * mFrequency * mDampingValue * dt + k * dt * dt) * offset * dt
+                 + unit velocity * (1 - j / n) * mVelMultiplier
+      ```
+
+      `offset` is the offset from the place to the joint, `j` is the place of the joint
+      in the chain counted from `0`, and `n` is the number of joints of the chain. Only
+      the two ground axes are moved.
+    notes:
+      - "The velocity is computed again on every frame. It is not kept from one frame to the next, so the chain does not swing past its rest place and back."
+
+  mDampingValue:
+    description: |
+      Slows the pull of `mFrequency`. A higher value makes the chain settle slower. See
+      the formula under `mFrequency`.
+
+  mVelMultiplier:
+    description: |
+      How much of the velocity of the unit is added to the motion of the remembered
+      places. A negative value pushes them against the movement of the unit, so the chain
+      trails behind. A positive value pushes them ahead of it.
+
+      The push is full at the first joint of the chain and falls toward the end of it.
+
+  OnlyActivateInTurns:
+    description: |
+      True: a joint turns only when it is near a turn of the unit's path. The turn of the
+      joint is multiplied by a weight that is `1` when the joint is closer than
+      `ActivationDistance` to a turn, and falls in a straight line to `0` at
+      `BlendDistance`. The nearest turn counts.
+
+      False, which is the default: the path is not looked at, and the chain turns
+      whenever the unit moves.
+
+  ActivationAngle:
+    description: |
+      How much the path of the unit must bend at a place for that place to be a turn, in
+      degrees. Read only with `OnlyActivateInTurns`.
+
+  ActivationDistance:
+    description: |
+      The distance from a turn within which a joint takes the full turn, in world units,
+      measured on the ground. Read only with `OnlyActivateInTurns`.
+
+  BlendDistance:
+    description: |
+      The distance from a turn beyond which a joint does not turn, in world units. Read
+      only with `OnlyActivateInTurns`.
+    notes:
+      - "With a value that is not larger than `ActivationDistance`, there is no fade: the weight drops from `1` to `0` at `ActivationDistance`."
+
+  ExtraJointChains:
+    description: |
+      More chains that turn by the angles of the main chain, see
+      [ExtraJointChainData](/classes/extrajointchaindata). The joint at place `j` of an
+      extra chain is turned when the joint at place `j` of the main chain is, by the same
+      angle changed by `RightBias`.
+
+  DebugVisualization:
+    description: "The pose step does not read it. No use of it was identified."

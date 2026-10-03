@@ -1,0 +1,36 @@
+# ExtraJointChainData Documentation
+
+class:
+  description: |
+    A second chain of joints for a
+    [ConformToPathRigPoseModifierData](/classes/conformtopathrigposemodifierdata). The
+    chain computes no turn of its own. Its joint at place `j` is turned about the up axis
+    by the angle the modifier computed for the joint at place `j` of the main chain, in
+    the frame of the joint's parent.
+  notes:
+    - "A joint of this chain whose place is beyond the end of the main chain is not turned."
+    - "The mask weight and the turn weight of the main chain's joint are already in the angle. The joints of this chain are not looked up in the mask."
+
+properties:
+  StartingJointName:
+    description: |
+      The joint of the chain that is nearest to the root of the skeleton, as the hash of
+      its name (FNV-1a 32 of the lowercased name). The chain is built the same way as the
+      main chain: from `EndingJointName` up through its parents to this joint.
+
+  EndingJointName:
+    description: "The last joint of the chain, as the hash of its name."
+
+  RightBias:
+    description: |
+      Shifts the turn of the chain to one side. The joint at place `j` of a chain of `m`
+      joints turns by
+
+      ```
+      angle - |angle| * ((m - j) / m) * RightBias
+      ```
+
+      where `angle` is the turn of the main chain's joint. With `0` the chain turns
+      exactly as the main chain. The shift is largest at the start of the chain and falls
+      toward its end. Because the shift uses the size of the angle, it goes to the same
+      side whichever way the main chain turns.

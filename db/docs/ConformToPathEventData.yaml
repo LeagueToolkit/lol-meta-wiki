@@ -16,6 +16,7 @@ class:
     Without that modifier on the skin, the event does nothing.
   notes:
     - "The path is the trail behind the unit, not the path it is going to walk."
+    - "The event changes every conform to path modifier of the unit. It cannot name one."
     - "While it is active, the event applies its mask again on every frame. If two events overlap, the one that is still active wins after the other ends."
 
 properties:
