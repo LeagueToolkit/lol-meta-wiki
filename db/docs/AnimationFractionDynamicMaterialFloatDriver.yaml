@@ -1,0 +1,18 @@
+# AnimationFractionDynamicMaterialFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns **how far an animation has
+    played**: the current time of the animation divided by its length. The result runs from
+    `0` at the start to `1` at the end.
+
+    The source can be any game object with an animation graph, so it works on units and on
+    animated map props. The driver returns `0` without a source, when the source has no
+    animation graph, when the name is not in the graph, and whenever the animation is not
+    playing at that moment.
+  notes:
+    - "To read how fast an animation plays instead of how far it has played, see [0x34262325](/classes/0x34262325)."
+
+properties:
+  mAnimationName:
+    description: "The name of the animation, as a hash. It is looked up in the animation graph of the source the same way the graph looks up a clip to play."

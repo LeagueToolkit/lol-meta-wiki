@@ -1,0 +1,24 @@
+# MapVisibilityTransitionLengthDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns **how long a map visibility
+    controller takes to fade**, in seconds. It is the configured length of the transition,
+    not how far the transition has come. It does not use the source.
+
+    Where the length comes from depends on the kind of controller:
+
+    - A `LogicDriverVisibilityController` evaluates its own `TransitionTimeDriver`.
+    - A `LegacyVisFlagVisController` uses the transition time the game set with the
+      visibility flags.
+    - A `ChildMapVisibilityController` uses the time of the first parent that is changing.
+    - The other controllers switch at once, and the length is `0`.
+
+    With no controller linked, the driver returns `0`.
+  notes:
+    - "For the progress of the fade, see [0x7e173e2f](/classes/0x7e173e2f)."
+    - "No shipped object uses it."
+
+properties:
+  VisibilityController:
+    description: "The map visibility controller to ask."

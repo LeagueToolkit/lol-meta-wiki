@@ -1,0 +1,10 @@
+# RandomFloatMaterialDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns a **new random number** from
+    `0` to `1` every time it is evaluated. It does not use the source and it keeps no state,
+    so the value changes every frame, and two reads in the same frame differ.
+  notes:
+    - "It cannot give an object a random value that stays fixed. Nothing stores the number between evaluations."
+    - "No shipped object uses it."

@@ -1,0 +1,17 @@
+# EnabledTimerFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns **how long a condition has been
+    true**, in seconds. While `mBoolDriver` is false it returns `0`. When `mBoolDriver` turns
+    true the count starts at `0` and grows, without limit, until the condition is false again.
+
+    The time comes from the game clock.
+  notes:
+    - "The start time is kept on the driver object, not per source. If several sources evaluate one driver object, they share a single timer."
+    - "The driver sees the condition only when it is evaluated. A condition that turns false and true again between two evaluations does not restart the count."
+    - "No shipped object uses it."
+
+properties:
+  mBoolDriver:
+    description: "The condition that is timed. It must be set: the client does not check for a missing operand."

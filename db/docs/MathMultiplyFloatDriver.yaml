@@ -1,0 +1,8 @@
+# MathMultiplyFloatDriver Documentation
+
+class:
+  description: "Returns `value × multiplier`. See [MathFloatDriver](/classes/mathfloatdriver)."
+
+properties:
+  multiplier:
+    description: "The driver `value` is multiplied by. It must be set."

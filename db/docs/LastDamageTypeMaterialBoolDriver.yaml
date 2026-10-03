@@ -1,0 +1,16 @@
+# LastDamageTypeMaterialBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true when the **type stored with the
+    last death of the source** equals `DamageTypeToMatch`. The client writes the stored type
+    only when the unit dies, from the record the server sends with the death.
+
+    [LastDamageAmountFloatDriver](/classes/lastdamageamountfloatdriver) reads the amount
+    from the same record.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  DamageTypeToMatch:
+    description: "The type to compare with."

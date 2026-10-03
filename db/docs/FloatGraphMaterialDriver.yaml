@@ -1,0 +1,23 @@
+# FloatGraphMaterialDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that passes another driver through a
+    **curve**. The value of `driver` is the position on the curve, and the driver returns the
+    height of the curve there.
+
+    The curve is the list of `times` and `values` in `graph`. Between two keys the result is
+    a straight line from one value to the next. Before the first key the result is the first
+    value, and after the last key it is the last value. The curve does not loop.
+
+properties:
+  driver:
+    description: |
+      The driver that supplies the position on the curve, in the units of the `times` of
+      `graph`. It must be set: the client does not check for a missing operand.
+
+  graph:
+    description: |
+      The curve. `times` are the positions of the keys and `values` are their heights. A
+      graph with one key returns that key's value for every input, and a graph with no keys
+      returns `0`.

@@ -1,0 +1,24 @@
+# PersistentVfxData Documentation
+
+properties:
+  PlaySpeedModifierValueType:
+    description: |
+      Where the play speed of the effect comes from. `0` uses the fixed `PlaySpeedModifier`.
+      Any other value uses `PlaySpeedModifierLogicDriver`.
+
+  PlaySpeedModifierLogicDriver:
+    description: |
+      A [float driver](/classes/ilogicfloatdriver) that supplies the play speed of the effect,
+      where `1` is the normal speed. It is evaluated **once**, when the effect is created,
+      and the effect keeps that speed for its whole life.
+
+      It is used only when `PlaySpeedModifierValueType` is not `0`. If it is then not set,
+      or its source cannot be found, the speed is `1`, not `PlaySpeedModifier`.
+    examples:
+      - "A shipped Viego skin sets it to the playback speed of the attack animation, so the swipe effect keeps pace with the attack."
+
+  PlaySpeedModifierSource:
+    description: |
+      Which unit `PlaySpeedModifierLogicDriver` is evaluated for. `0` is the unit that
+      carries the effect. Any other value takes the unit from the context of the condition
+      that started the effect.

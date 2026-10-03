@@ -1,0 +1,26 @@
+# TimeMaterialDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns the **time**, in seconds. It
+    does not use the source.
+
+    During a game the time is the game clock, which stops while the game is paused and
+    follows the game speed. Outside a game the client reads a clock of its own.
+
+    - Without `LoopDuration` the driver returns the time as it is, a number that grows
+      without limit.
+    - With `LoopDuration` the time wraps: the driver returns the remainder of the time
+      divided by `LoopDuration`.
+
+properties:
+  LoopDuration:
+    description: |
+      The length of one loop, in seconds. When not set, the time does not wrap. A value of
+      `0` or below makes the driver return `0`.
+
+  LoopTimeAsFraction:
+    description: |
+      How a wrapped time is returned. When `true`, as a fraction of the loop, from `0` up to
+      `1`. When `false`, in seconds, from `0` up to `LoopDuration`. It has no effect without
+      `LoopDuration`.

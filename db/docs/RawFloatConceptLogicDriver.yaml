@@ -2,18 +2,22 @@
 
 class:
   description: |
-    Float logic driver that reads a [FloatConcept](/classes/floatconcept)'s
-    current value **without easing** - the bridge from the
-    [Concept](/classes/conceptbase) system into the driver graph (and from
-    there into materials, animation conditions, and
-    [driver-driven UI](/classes/logicdriverviewcontroller)). The
-    [EasedFloatConceptLogicDriver](/classes/easedfloatconceptlogicdriver)
-    variant reads the same value through the concept's `EasingData`;
-    `Raw`/`Eased` pairs exist for the bool, int, vec3, and vec4 concepts as
-    well.
+    A [float driver](/classes/ilogicfloatdriver) that returns the **current value of a
+    [FloatConcept](/classes/floatconcept)** for the source, without easing. It is the bridge
+    from the [concept](/classes/conceptbase) system into the driver system, and from there
+    into materials, animation conditions, effects and
+    [driver-driven UI](/classes/logicdriverviewcontroller).
+
+    A concept holds one value **per source**. While nothing has written the concept for the
+    source, the driver returns the concept's `DefaultValue`.
+
+    [EasedFloatConceptLogicDriver](/classes/easedfloatconceptlogicdriver) reads the same
+    value through the concept's easing. Raw and eased drivers also exist for the bool, int,
+    three-component and four-component concepts.
   notes:
-    - "No shipped bin uses this class - the machinery exists, but content adoption is untested."
+    - "`Concept` must link a loaded concept. An unset or unresolved link makes the client fail when the driver is evaluated."
+    - "No shipped object uses it."
 
 properties:
   Concept:
-    description: "Link to the [FloatConcept](/classes/floatconcept) to read."
+    description: "The [FloatConcept](/classes/floatconcept) to read."

@@ -1,0 +1,20 @@
+# AbilityResourceDynamicMaterialFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns **how full an ability resource
+    of the source is**: the current amount divided by the maximum. Mana, energy and fury are
+    ability resources. The result is `0` for an empty resource and `1` for a full one.
+
+    The source must be a unit. Without one, or when the maximum is `0`, the driver returns
+    `0`.
+  notes:
+    - "The result is not clamped. An amount above the maximum gives a value above `1`."
+
+properties:
+  slot:
+    description: |
+      Which ability resource slot of the unit to read. The client does not check the number
+      against the number of resources the unit has.
+    examples:
+      - "Shipped Renekton materials leave it at `0`. Shipped Zaahen materials and effects use `1`."

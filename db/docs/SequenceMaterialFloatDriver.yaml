@@ -1,0 +1,22 @@
+# SequenceMaterialFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns a **sequence material value
+    stored on the source**: a float kept under a key, which a sequence can set so that it
+    animates a material parameter.
+
+    The value is looked up on the source: on a game entity, or on the entity behind a game
+    object. The driver returns `0` without a source, when the source cannot hold such values,
+    and while no value has been written under the key.
+  notes:
+    - "`SequenceMaterialBoolDriver` and `SequenceMaterialVectorDriver` read the same store as a bool and as a color."
+    - "The sequence inputs `SeqInputMaterialParamFloat` and `SeqInputMaterialParamColor` link the same key objects. The code that writes the value was not traced."
+    - "No shipped object uses it."
+
+properties:
+  Key:
+    description: |
+      The object that names the value. The sequence input that writes the value links the
+      same object, and that shared link is what connects the writer to this reader. It must
+      be set.

@@ -2,13 +2,23 @@
 
 class:
   description: |
-    Float logic driver reading a [FloatConcept](/classes/floatconcept)'s value
-    **through the concept's `EasingData`**, so a value that jumps is delivered
-    to the driver graph as a smooth transition. The unsmoothed counterpart is
-    [RawFloatConceptLogicDriver](/classes/rawfloatconceptlogicdriver); see
-    there for the system overview. With no easing configured on the concept,
-    both read the same value.
+    A [float driver](/classes/ilogicfloatdriver) that returns the **eased value of a
+    [FloatConcept](/classes/floatconcept)** for the source. When the value of the concept
+    changes, this driver does not jump: it moves from the old value to the new one over the
+    time and with the curve of the concept's
+    [ConceptEasingData](/classes/concepteasingdata).
+
+    A concept holds one value **per source**, so the driver returns the value that was
+    written for the object it is evaluated for. With no easing on the concept, the eased
+    value equals the raw one.
+    [RawFloatConceptLogicDriver](/classes/rawfloatconceptlogicdriver) reads the value
+    without easing.
+  notes:
+    - "While nothing has written the concept for the source, this driver returns `0`. It does not return the concept's `DefaultValue`. The raw driver does."
+    - "A new value that arrives in the middle of an ease restarts the ease from the last value the concept had settled on, not from the value shown at that moment, so the result steps back first."
+    - "`Concept` must link a loaded concept. An unset or unresolved link makes the client fail when the driver is evaluated."
+    - "No shipped object uses it."
 
 properties:
   Concept:
-    description: "Link to the [FloatConcept](/classes/floatconcept) to read."
+    description: "The [FloatConcept](/classes/floatconcept) to read."

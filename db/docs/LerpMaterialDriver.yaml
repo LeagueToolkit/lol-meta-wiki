@@ -1,0 +1,46 @@
+# LerpMaterialDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that **fades between two values** when a
+    [bool driver](/classes/ilogicbooldriver) changes. While `mBoolDriver` is true the value
+    moves toward `mOnValue`, and while it is false toward `mOffValue`.
+
+    The driver keeps one current value **per source**, so each unit or prop that shares the
+    driver fades on its own. The value of a source is removed when the source is destroyed.
+
+    On every evaluation:
+
+    1. The first evaluation for a source returns the target value at once. There is no fade
+       from a start value.
+    2. When the current value is not at the target, it moves toward it by the time of the
+       last frame. A full swing from one value to the other takes `mTurnOnTimeSec` or
+       `mTurnOffTimeSec` seconds.
+    3. The value never leaves the range between `mOffValue` and `mOnValue`.
+
+    The step uses the game clock, so a paused game freezes the fade.
+  notes:
+    - "The value advances once per evaluation, not once per frame. A source that evaluates the driver twice in a frame fades twice as fast, and a source that stops evaluating it does not catch up later."
+
+properties:
+  mBoolDriver:
+    description: "The condition that picks the target value. It must be set: the client does not check for a missing operand."
+
+  mOnValue:
+    description: "The target while `mBoolDriver` is true."
+
+  mOffValue:
+    description: "The target while `mBoolDriver` is false."
+
+  mTurnOnTimeSec:
+    description: "The time, in seconds, of a full fade from `mOffValue` to `mOnValue`. `0` switches at once."
+
+  mTurnOffTimeSec:
+    description: "The time, in seconds, of a full fade from `mOnValue` to `mOffValue`. `0` switches at once."
+
+  mUseBrokenOldInterpolation:
+    description: |
+      Selects the older fade speed. When `true`, the value moves by `1` per fade time, whatever
+      the distance between `mOnValue` and `mOffValue`. The fade then takes the configured
+      time only when the two values are exactly `1` apart: a swing of `0.5` takes half the
+      time, and a swing of `10` takes ten times as long.

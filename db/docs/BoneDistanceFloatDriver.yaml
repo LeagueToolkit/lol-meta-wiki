@@ -1,0 +1,36 @@
+# BoneDistanceFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns the **distance between two
+    bones** of the source, in the units of its skeleton.
+
+    The driver takes the offset from bone A to bone B in the current pose and expresses it in
+    the axes of a third bone, the basis. `ComponentWeight` then weights the three axes before
+    the length is taken:
+
+    `sqrt(x² × weight.x + y² × weight.y + z² × weight.z)`
+
+    With the default weight the result is the plain distance. A weight of `1, 0, 0` gives
+    only the distance along the X axis of the basis bone.
+
+    The source can be any game object with a skeleton. The driver returns `0` without a
+    source, when the source has no skeleton, and when one of the two bones is not found.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  BoneAName:
+    description: "The bone the distance is measured from. A socket name also works. It must not be empty."
+
+  BoneBName:
+    description: "The bone the distance is measured to. A socket name also works. It must not be empty."
+
+  BoneBasisName:
+    description: |
+      The bone whose axes the offset is expressed in. When empty, or when the bone is not
+      found, the first bone of the skeleton is used. It matters only when `ComponentWeight`
+      weights the axes differently.
+
+  ComponentWeight:
+    description: "A weight for each axis of the offset. The weights apply to the squared components."

@@ -1,0 +1,18 @@
+# GetMapPropFloatDynamicMaterialFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns a **named float stored on a map
+    prop**. Each map prop carries a small table of named values, and the driver returns the
+    one stored under `mKeyName`.
+
+    The source must be a map prop. The driver returns `0` without one, and when the prop
+    has no value under that name.
+  notes:
+    - "What writes the values onto a prop is not identified."
+  examples:
+    - "Shipped Teamfight Tactics arena props read keys such as `FlickerValue`, `BubbleSpeed`, `FadeValue` and `EmissiveStrength` into material parameters."
+
+properties:
+  mKeyName:
+    description: "The name of the value. Letter case does not matter."

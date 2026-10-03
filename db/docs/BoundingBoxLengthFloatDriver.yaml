@@ -1,0 +1,13 @@
+# BoundingBoxLengthFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns the **size of the bounding box
+    of the source**: half the length of the box's diagonal, in world units. This is the
+    radius of the smallest sphere around the box.
+
+    The source can be any game object. The driver returns `0` without one, and for an object
+    whose bounding box is not valid.
+  notes:
+    - "[BoundingRadiusFloatDriver](/classes/boundingradiusfloatdriver) measures only the footprint of the box. This driver also counts its height."
+    - "No shipped object uses it."

@@ -1,0 +1,8 @@
+# MathAddFloatDriver Documentation
+
+class:
+  description: "Returns `value + add`. See [MathFloatDriver](/classes/mathfloatdriver)."
+
+properties:
+  add:
+    description: "The driver added to `value`. It must be set."

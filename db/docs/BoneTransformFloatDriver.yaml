@@ -1,0 +1,41 @@
+# BoneTransformFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns **one channel of a bone's
+    transform** in the current pose of the source: a position or a scale on one axis. The
+    transform is taken relative to a second bone, the basis.
+
+    The source can be any game object with a skeleton. The driver returns `0` without a
+    source, when the source has no skeleton, and when the bone is not found.
+  notes:
+    - "There is no rotation channel."
+    - "No shipped object uses it."
+
+properties:
+  boneName:
+    description: "The bone to read. It must be a bone of the skeleton. Unlike [BoneDistanceFloatDriver](/classes/bonedistancefloatdriver), a socket name does not work."
+
+  BoneBasisName:
+    description: "The bone the transform is taken relative to. When empty, or when the bone is not found, the first bone of the skeleton is used."
+
+  BoneTransformChannel:
+    description: |
+      The channel to return.
+
+      | Value | Channel |
+      |-------|---------|
+      | `0` | Position X |
+      | `1` | Position Y |
+      | `2` | Position Z |
+      | `3` | Scale X |
+      | `4` | Scale Y |
+      | `5` | Scale Z |
+
+      Any other value returns `0`.
+
+  "0x4742b028":
+    description: |
+      Converts the position channels. When `true`, the X position is multiplied by `-0.1`
+      and the Y and Z positions by `0.1`. When `false`, the position is returned as it is in
+      the pose. The scale channels are not affected.

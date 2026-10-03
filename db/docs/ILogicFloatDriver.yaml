@@ -1,0 +1,48 @@
+# ILogicFloatDriver Documentation
+
+class:
+  description: |
+    A **logic driver that produces a number**. A logic driver is a small object that computes
+    a value on request. Drivers nest: most take other drivers as operands, so data builds an
+    expression out of them, such as "the health of this unit, mapped to `0`..`1`, passed
+    through a curve". The client uses the result to drive a material parameter, an effect, an
+    animation or a piece of UI.
+
+    **The source.** A driver is always evaluated for one object, the **source**, and it
+    passes the same source on to its operands. Which object that is depends on what holds the
+    expression:
+
+    | Holder | Source |
+    |--------|--------|
+    | A dynamic material parameter (`DynamicMaterialParameterDef.driver`) | The object the material is drawn for: a unit, a map prop, a map mesh |
+    | A persistent effect (its conditions and its play speed) | The unit that carries the effect |
+    | An animation graph (`StateAnimClipData.SpeedRatioDriver`, the logic driver updaters) | The object that owns the graph |
+    | A particle effect (`VfxFloatLogicDriver`) | The object the effect is bound to |
+    | A map light updater | The game entity of the light, for a light that is an entity component |
+    | A [LogicDriverViewController](/classes/logicdriverviewcontroller) | The local player's champion |
+    | A map visibility controller (`TransitionTimeDriver`) | None |
+
+    A driver that reads a unit checks what the source is. When there is no source, or it is
+    the wrong kind of object, the driver returns a fixed fallback, which is `0` for most
+    drivers. Drivers that read no object, such as a constant or the time, work with any
+    source and with none.
+
+    **Evaluation.** Nothing caches a result. Every read walks the whole expression again, and
+    a dynamic material parameter is read every frame for every object that shows the
+    material. Most drivers keep no state. The few that do, such as
+    [LerpMaterialDriver](/classes/lerpmaterialdriver), move their state forward each time
+    they are evaluated, not once per frame.
+
+    **Value kinds.** There are drivers for a four-component vector (`ILogicDriver`), a float,
+    an int and a bool. Each narrower kind also counts as the wider ones:
+
+    - a bool driver read as an int gives `1` or `0`,
+    - an int driver read as a float gives the same number,
+    - a float driver read as a vector gives the float in all four components.
+
+    So a property that takes a float driver also takes an int or bool driver, and a float
+    driver can fill a property that takes an `ILogicDriver`, which is how most material
+    parameters use one.
+  notes:
+    - "Most drivers do not check their operands. An operand property that is left unset is a null pointer, and evaluating the driver then crashes the client. Set every operand."
+    - "Almost all shipped float drivers sit, directly or as operands, under a dynamic material parameter."

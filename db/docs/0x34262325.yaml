@@ -1,0 +1,22 @@
+# 0x34262325 Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns the **playback speed of an
+    animation** on the source, as a multiplier. `1` is the normal speed, and an animation the
+    client plays at double speed returns `2`.
+
+    The source must be a unit. The driver returns `1` without one, when the name is not in
+    the animation graph of the unit, and whenever the animation is not playing.
+
+    Shipped data uses it for one thing: the play speed of a
+    [PersistentVfxData](/classes/persistentvfxdata) effect, so that the effect keeps pace
+    with the animation it belongs to.
+  notes:
+    - "To read how far an animation has played instead, see [AnimationFractionDynamicMaterialFloatDriver](/classes/animationfractiondynamicmaterialfloatdriver)."
+
+properties:
+  AnimationName:
+    description: "The name of the animation. Letter case does not matter."
+    examples:
+      - "A shipped Viego skin uses `Attack1`, `Attack2` and `Recall`, each on an effect that shows only while that animation plays."

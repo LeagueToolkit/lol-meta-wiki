@@ -1,0 +1,12 @@
+# FloorFloatMaterialDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that rounds another driver **down** to a
+    whole number. `2.9` becomes `2` and `-0.5` becomes `-1`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  mDriver:
+    description: "The driver whose value is rounded down. It must be set: the client does not check for a missing operand."

@@ -1,0 +1,21 @@
+# RunSpeedRatioFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns **how fast the source is
+    travelling compared with its base move speed**. The result is about `1` for a unit that
+    moves at the base speed of its character, above `1` when it is faster and below `1` when
+    it is slower. The result is divided by the model scale of the unit, so a larger model
+    gets a smaller value.
+
+    This is the number the client uses to set the playback speed of a unit's `Run`
+    animation, so the driver lets other things keep step with the run cycle.
+
+    The value is smoothed: each evaluation blends four parts of the new ratio with one part
+    of the value the driver returned last time.
+
+    The source must be a unit. Without one the driver returns `1`.
+  notes:
+    - "The last value is kept on the driver object, not per source. If several units evaluate one driver object, their values mix."
+    - "While the unit does not move, the driver keeps returning its last value."
+    - "No shipped object uses it."

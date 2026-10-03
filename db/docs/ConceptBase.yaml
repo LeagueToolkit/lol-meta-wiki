@@ -16,8 +16,10 @@ class:
     [IntConcept](/classes/intconcept), [FloatConcept](/classes/floatconcept),
     [Vector3Concept](/classes/vector3concept),
     [Vector4Concept](/classes/vector4concept) - each carrying a typed default
-    that readers see until the value is first written, and optional easing that
-    smooths changes for the `Eased*` readers.
+    that the `Raw*` readers see until the value is first written, and optional
+    easing ([ConceptEasingData](/classes/concepteasingdata)) that smooths
+    changes for the `Eased*` readers. A concept holds one value per object it
+    is written for.
 
 properties:
   PathHash:

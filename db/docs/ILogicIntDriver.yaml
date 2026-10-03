@@ -1,0 +1,9 @@
+# ILogicIntDriver Documentation
+
+class:
+  description: |
+    A **logic driver that produces a whole number**.
+    [ILogicFloatDriver](/classes/ilogicfloatdriver) describes how drivers are evaluated and
+    what the source is.
+
+    An int driver also counts as a float driver: read as a float, it gives the same number.

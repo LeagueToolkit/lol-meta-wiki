@@ -1,0 +1,56 @@
+# GetFloatOptionFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ilogicfloatdriver) that returns the current value of one of the
+    player's **game settings**. It reads the float settings, the ones the options menu shows
+    as sliders. It does not use the source.
+
+    For a setting that is a checkbox, see
+    [IsOptionEnabledBoolDriver](/classes/isoptionenabledbooldriver).
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  option:
+    description: |
+      The index of the setting. `65535`, the default, means no setting, and the driver
+      returns `0`.
+
+      | Index | Setting (`game.cfg` section and key) |
+      |-------|--------------------------------------|
+      | `0` | `Volume` `AmbienceVolume` |
+      | `1` | `Volume` `AnnouncerVolume` |
+      | `2`, `3` | `Chat` `NativeOffsetX`, `NativeOffsetY` |
+      | `4`, `5` | `Chat` `ReplayNativeOffsetX`, `ReplayNativeOffsetY` |
+      | `6`, `7` | `TFTChat` `NativeOffsetX`, `NativeOffsetY` |
+      | `8` | `Accessibility` `ColorBrightness` |
+      | `9` | `Accessibility` `ColorContrast` |
+      | `10` | `Accessibility` `ColorGamma` |
+      | `11` | `Accessibility` `ColorLevel` |
+      | `12` | `General` `CursorScale` |
+      | `13` | `HUD` `DeathRecapScale` |
+      | `14` | `General` `DynamicCameraSpeed` |
+      | `15` | `General` `OffsetEdgepanSpeed` |
+      | `16` | `General` `CameraOffsetScale` |
+      | `17` | `HUD` `GlobalScale` |
+      | `18` | `HUD` `KeyboardScrollSpeed` |
+      | `19` | `HUD` `MiddleMouseScrollSpeed` |
+      | `20` | `HUD` `MapScrollSpeed` |
+      | `21` | `Volume` `MasterVolume` |
+      | `22` | `HUD` `MinimapScale` |
+      | `23` | `HUD` `MinimapScaleSpectator` |
+      | `24` | `Volume` `MusicVolume` |
+      | `25` | `HUD` `ObjectiveVoteScale` |
+      | `26` | `Volume` `PingsVolume` |
+      | `27` | `HUD` `PracticeToolScale` |
+      | `28` | `Volume` `SfxVolume` |
+      | `29` | `Volume` `NotificationsVolume` |
+      | `30`, `31` | `ItemShop` `NativeOffsetX`, `NativeOffsetY` |
+      | `32` | `HUD` `ShopScale` |
+      | `33` | `Voice` `ActivationSensitivity` |
+      | `34` | `Voice` `InputVolume` |
+      | `35` | `Volume` `VoiceVolume` |
+    notes:
+      - "The client does not check the index against the size of the table. An index that names no setting reads memory that is not a setting."
+      - "In a replay, index `17` reads `GlobalScaleReplay` and index `19` reads `ReplayMiddleMouseScrollSpeed`."
