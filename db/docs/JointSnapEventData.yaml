@@ -18,7 +18,7 @@ class:
     joint. If a clip on another track takes over that joint, the snap is off until the
     joint is back with this clip.
   notes:
-    - "The client needs no setup on the skin for this event. It adds the pose modifier that does the snap when a clip of the graph has a joint snap event."
+    - "The client needs no setup on the skin for this event. It adds the pose modifier that does the snap, a [JointSnapRigPoseModifilerData](/classes/jointsnaprigposemodifilerdata), when a clip of the graph has a joint snap event."
     - "A joint cannot be snapped to one of its own descendants. Such an event does nothing."
 
 properties:

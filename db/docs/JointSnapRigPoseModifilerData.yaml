@@ -1,0 +1,16 @@
+# JointSnapRigPoseModifilerData Documentation
+
+class:
+  description: |
+    The [pose modifier](/classes/baserigposemodifierdata) that does the work of a
+    [JointSnapEventData](/classes/jointsnapeventdata): it **stands one joint on another
+    joint or on a socket** while the event is active. It has no settings. The two joints
+    and the offset come from the event, and that page describes the snap.
+
+    The client adds this modifier to a unit by itself when a clip of the unit's animation
+    graph has a joint snap event. A skin does not need an entry of this class for the
+    event to work, and no shipped skin has one.
+  notes:
+    - "The name of the class is spelled `Modifiler` in the game."
+    - "The snap runs after the conform to path modifiers and before the springs and the joint orientation modifiers."
+    - "What an entry of this class in a skin's list adds to the modifier the client makes by itself was not checked."
