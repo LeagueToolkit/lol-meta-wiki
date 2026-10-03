@@ -88,7 +88,7 @@ properties:
       already passed is skipped for that pass. When false, such an event still starts and
       ends at once.
 
-  "0x4fce52ba":
+  AdditionalKillConfig:
     description: |
       An optional [0x1c0e452](/classes/0x1c0e452) that delays the stop of the effect. Not
       set, which is the default: the effect is stopped at once when the event ends.
