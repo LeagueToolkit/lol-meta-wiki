@@ -1,0 +1,21 @@
+# BaseRigPoseModifierData Documentation
+
+class:
+  description: |
+    The base of the **rig pose modifiers** of a skin. A pose modifier changes the pose of
+    the skeleton after the [animation graph](/classes/animationgraphdata) has produced it
+    and before the mesh is skinned. A skin lists its modifiers in
+    [`SkinMeshDataProperties.rigPoseModifierData`](/classes/skinmeshdataproperties#rigposemodifierdata).
+
+    On every pose evaluation the client runs the modifiers in two groups:
+
+    1. Every modifier except the dynamics chain, on the pose in joint-local space.
+    2. The joints are then converted to world space.
+    3. The [dynamics chains](/classes/dynamicschainrigposemodifierdata) run on the world
+       space pose.
+
+    Skinning, [sockets](/classes/socketdefinitionbase) and every lookup of a joint by name
+    read the pose after both groups.
+  notes:
+    - "The client also adds some modifiers by itself, with no entry in the list: the joint snap and the lock root orientation modifiers are added when a clip of the graph has an event of that kind."
+    - "A unit that is attached to a joint of another unit runs no pose modifiers."

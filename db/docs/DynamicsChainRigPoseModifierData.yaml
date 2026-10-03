@@ -1,0 +1,83 @@
+# DynamicsChainRigPoseModifierData Documentation
+
+class:
+  description: |
+    A [pose modifier](/classes/baserigposemodifierdata) that **simulates joints with
+    physics**: hair, cloth, tails, straps and other parts that should swing after the
+    motion of the character. The animation still plays on these joints. The simulation
+    starts from the animated pose on every frame and adds the swing.
+
+    The joints are given as [groups of joint trees](/classes/dynamicsjointtreegroupdata).
+    Each tree is a root joint and everything below it in the skeleton. The root follows
+    the animation exactly. Every joint below it is a particle that moves under gravity,
+    is pulled back to its animated place, collides, and keeps its distance to its parent.
+
+    **What happens on each frame**, in order:
+
+    1. The collision shapes are moved to the current pose.
+    2. Each simulated joint keeps a part of its velocity (`Damping`), falls under gravity,
+       and is pulled toward its animated position relative to its simulated parent
+       (`AnimPoseAttraction`).
+    3. The joints are pushed out of the collision shapes, and the constraints are solved:
+       the lateral links, and the rod constraints of groups with `UseRodPhysics`.
+    4. Each joint is kept inside a cone around its animated direction (`LimitAngle`) and
+       at its length from its parent (`Stretch`).
+    5. The result is written to the pose. Each joint is blended between its animated and
+       its simulated transform by the weight of the modifier times `GlobalEnvelope` times
+       the joint's `Envelope`.
+
+    **The simulation runs in world space**, after every other pose modifier. So the
+    movement and the turning of the unit swing the joints, with no setting for it. Lengths
+    and radii are in world units, with the scale of the skin already applied.
+
+    **Collision shapes** are spheres and capsules attached to joints, read from the file
+    named by `0xbb1d1aac`, plus a ground plane. The plane is horizontal, at the height of
+    the lowest joint of the bind pose, and moves with the unit.
+
+    The weight of the modifier is `1` when `DefaultOn` is true and `0` when it is false. A
+    [DynamicsChainBlendEventData](/classes/dynamicschainblendeventdata) on a clip changes
+    it while the event is active.
+  notes:
+    - "No shipped skin has a dynamics chain."
+    - "The simulation is not reset by a teleport, by a change of animation or when the weight reaches `0`. With a weight of `0` it stops stepping and keeps its last state."
+    - "While the game time does not advance, or the animation of the unit is paused, the modifier does nothing at all: the joints show the plain animated pose."
+    - "The step uses the frame time as it is. It has no fixed time step, so the motion changes with the frame rate."
+    - "The pose is evaluated only when something asks for it. A unit whose pose is not asked for in a frame does not step its simulation in that frame."
+
+properties:
+  JointTreeGroups:
+    description: |
+      The simulated joints, as [groups of joint trees](/classes/dynamicsjointtreegroupdata).
+      Each group has its own physical parameters.
+
+  "0xbb1d1aac":
+    description: |
+      The path of a file with the collision shapes. Empty, which is the default: the only
+      collision shape is the ground plane.
+
+      The file is binary, little endian: two 4-byte values that the client reads and does
+      not use, the number of spheres, the spheres, the number of capsules, the capsules.
+      A sphere is a joint name, a position and a radius. A capsule is that twice, one for
+      each end, so the two ends can have different radii and can be on different joints.
+      Positions are in model space in the bind pose. Each shape then moves with its joint.
+    notes:
+      - "A sphere whose joint is not in the skeleton is skipped. A capsule needs both joints."
+      - "A [socket](/classes/socketdefinitionbase) name does not work here. Only joints of the skeleton are looked up."
+      - "The name of the property and the extension of the file are not known."
+
+  GlobalEnvelope:
+    description: |
+      A weight for the whole modifier, multiplied into the `Envelope` of every joint. `1`
+      shows the full simulation, `0` shows the plain animation.
+
+  PhysicsSimLocalSettings:
+    description: |
+      The gravity of this modifier, see
+      [PhysicsSimLocalSettings](/classes/physicssimlocalsettings).
+
+  DefaultOn:
+    description: |
+      The weight of the modifier when no event changes it. True: the simulation shows.
+      False: the joints show the plain animation until a
+      [DynamicsChainBlendEventData](/classes/dynamicschainblendeventdata) turns the
+      simulation on.

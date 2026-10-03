@@ -1,0 +1,72 @@
+# DynamicsJointTreeGroupData Documentation
+
+class:
+  description: |
+    A group of joint trees of a [dynamics chain](/classes/dynamicschainrigposemodifierdata)
+    that share one set of physical parameters. A typical group is one part of the
+    character: the strands of a ponytail, or the strips of a skirt.
+
+    The parameters of `ChainProperties` are not one number for the whole group. Each one
+    can change along the tree, from the root to the tips, see
+    [CurveScaledFloat](/classes/curvescaledfloat).
+
+properties:
+  ChainProperties:
+    description: |
+      The physical parameters of every tree of the group, see
+      [DynamicsChainProperties](/classes/dynamicschainproperties).
+
+  JointTrees:
+    description: |
+      The [joint trees](/classes/dynamicsjointtreedata) of the group. The order matters
+      for `GenerateLateralLinks`, which links each tree to the next one in the list.
+
+  GenerateLateralLinks:
+    description: |
+      Links neighbouring trees so they move together, as the strips of a skirt do. For
+      each tree and the next tree in `JointTrees`, every simulated joint below the root
+      is tied to every simulated joint of the next tree that is at the same depth. A tie
+      keeps the two joints at the distance they have in the bind pose. How soft it is
+      comes from `LateralLinkMaterial`.
+    notes:
+      - "The last tree is not linked back to the first. For a closed ring, such as a skirt, the seam stays open."
+      - "Depth is counted in joints from the root of each tree, so trees with different joint counts link only as far as the shorter one goes."
+
+  LateralLinkMaterial:
+    description: |
+      How soft the lateral links are. Higher values stretch more.
+
+      | Value | Softness (compliance) | Like |
+      |-------|-----------------------|------|
+      | `0` | 4e-9 | Concrete |
+      | `1` | 1.6e-8 | Wood |
+      | `2` | 1e-6 | Leather |
+      | `3` | 2e-6 | Tendon |
+      | `4` | 1e-4 | Rubber |
+      | `5` | 0.02 | Muscle |
+      | `6` | 0.1 | Fat |
+
+      Any other value gives fully rigid links.
+    notes:
+      - "The material names are not in the game data. The seven values are a known table of material softness for this kind of solver, and the names are those of that table."
+      - "Read only when `GenerateLateralLinks` is true."
+
+  "0x4e1a2c8":
+    description: |
+      Sets the length that the parameter curves run over. Each curve is read at the
+      distance of the joint from the root of its tree, divided by a full length. False,
+      which is the default: the full length is the longest branch of the joint's own tree,
+      so every tree uses the whole curve. True: the full length is the longest branch of
+      any tree of the group, so shorter trees use only the first part of the curve.
+
+  "0x56670932":
+    description: |
+      Where the length of a segment between two joints comes from. True, which is the
+      default: the length is measured in the animated pose on every frame, so an animation
+      that moves or scales the joints changes the length the simulation keeps. False: the
+      length stays as it is in the skeleton.
+
+  "0x23382109":
+    description: |
+      Removed from current builds. When set, the joints at the tips of a tree, which have
+      no simulated child, had a collision radius of zero and did not collide.

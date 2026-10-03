@@ -1,0 +1,107 @@
+# DynamicsChainProperties Documentation
+
+class:
+  description: |
+    The physical parameters of a [group of joint trees](/classes/dynamicsjointtreegroupdata)
+    of a dynamics chain. Every parameter is a
+    [CurveScaledFloat](/classes/curvescaledfloat): a number, and an optional curve that
+    scales the number along the tree, from the root (`0`) to the tip of the longest
+    branch (`1`). So a tail can be stiff at its base and loose at its end.
+
+    A group simulates in one of two ways, set by `UseRodPhysics`:
+
+    - **Off, the default.** Each joint is a point. Its rotation is not simulated: it is
+      turned so the joint points at its simulated child, and the twist stays as animated.
+      `Stretch` sets how much the length of a segment can change.
+    - **On.** Each segment is a rod that also has a simulated rotation. The four `Rod`
+      parameters set how much the rod resists stretching, shearing, bending and twisting.
+      `Stretch` is not used.
+  notes:
+    - "If the length of the longest branch is zero, the client sets none of the parameters, and the tree keeps a damping of `0`, a radius of `0`, no angle limit, no stretch and no attraction."
+
+properties:
+  UseRodPhysics:
+    description: |
+      Simulates the segments of the group as rods with a rotation, in place of points. See
+      the class description. The rod constraints are added only on joints with exactly one
+      simulated child, so a joint where the tree branches and the tips of the tree get
+      none.
+
+  Damping:
+    description: |
+      How much of its velocity a joint loses on each frame, from `0` to `1`. The joint
+      keeps `1 - Damping` of the distance it moved in the last frame. `0` swings for a
+      long time, `1` removes all momentum, so the joint only moves by gravity and by the
+      attraction.
+    notes:
+      - "The loss is per frame and not per second, so the same value damps more at a higher frame rate."
+
+  AnimPoseAttraction:
+    description: |
+      How fast a joint is pulled back to its animated pose, from `0` to `1`. The target is
+      the place the joint has in the animation relative to its parent, taken from where
+      the parent is in the simulation. On each frame the joint moves toward the target by
+      the share `1 - (1 - AnimPoseAttraction) ^ time`, with the frame time in seconds. So
+      the value is the share of the way that is covered in one second: `0` never pulls,
+      `0.5` covers half of the way per second, `1` holds the joint in the animated pose.
+    notes:
+      - "With `UseRodPhysics`, the time is multiplied by the value of the settings class [0xf7c4193e](/classes/0xf7c4193e), and the rotation of the rod is pulled to the animated rotation the same way."
+
+  JointRadius:
+    description: |
+      The radius of the joint for collision, in world units. A joint is pushed out of a
+      collision shape until it is this far from the surface. `0` or less turns collision
+      off for the joint.
+
+  Envelope:
+    description: |
+      How much of the simulation shows on the joint, from `0` to `1`. The joint is blended
+      between its animated and its simulated transform by this value, times
+      `GlobalEnvelope`, times the weight of the modifier. The simulation runs in full
+      whatever the value is. Only the result on screen is blended.
+
+  LimitAngle:
+    description: |
+      The largest angle, in degrees, between the direction of a simulated segment and its
+      direction in the animated pose. A joint that swings further is put back on the edge
+      of that cone. `180` or more, which is the default, sets no limit.
+
+  Stretch:
+    description: |
+      How much the length of a segment can change, from `0` to `1`. After each step the
+      length is set to `(1 - Stretch)` of its rest length plus `Stretch` of the length it
+      has in the simulation. `0`, which is the default, keeps the length fixed. `1` lets
+      the joint go any distance from its parent.
+    notes:
+      - "Not used with `UseRodPhysics`."
+
+  RodStretchStiffness:
+    description: |
+      With `UseRodPhysics`: how much a rod resists a change of its length, from `0` to
+      `1`. `1`, which is the default, keeps the length fixed. The scale is logarithmic:
+      each step of `0.11` makes the rod ten times softer.
+
+  RodShearStiffness:
+    description: |
+      With `UseRodPhysics`: how much a rod resists pointing away from the line between its
+      two joints, from `0` to `1`. `1`, which is the default, keeps the rotation of the
+      rod on that line. The scale is the same as for `RodStretchStiffness`.
+
+  RodBendStiffness:
+    description: |
+      With `UseRodPhysics`: how much two rods in a row resist bending away from the angle
+      they have in the animated pose, from `0` to `1`. `1`, which is the default, keeps
+      the animated angle. The scale is logarithmic, and a longer segment bends more easily
+      at the same value.
+
+  RodTwistStiffness:
+    description: |
+      With `UseRodPhysics`: how much two rods in a row resist twisting around their length
+      away from the animated pose, from `0` to `1`. The scale is the same as for
+      `RodBendStiffness`.
+
+  StiffnessStart:
+    description: "Removed from current builds. The value of the pose attraction at the root, before the parameter had a curve. See `AnimPoseAttraction`."
+
+  StiffnessEnd:
+    description: "Removed from current builds. The value of the pose attraction at the tips. See `AnimPoseAttraction`."

@@ -349,7 +349,7 @@ properties:
 
   rigPoseModifierData:
     description: |
-      Rig pose modifiers for the skeleton. The client adds each entry to the mesh instance when it sets the instance up for a character skin.
+      [Rig pose modifiers](/classes/baserigposemodifierdata) for the skeleton: springs, dynamics chains and other changes to the pose after the animation. The client adds each entry to the mesh instance when it sets the instance up for a character skin.
     notes:
       - "Read only on a character skin's `skinMeshProperties`."
 

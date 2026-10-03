@@ -1,0 +1,54 @@
+# PhysicsSimGlobalSettings Documentation
+
+class:
+  description: |
+    The settings of the physics solver that every
+    [dynamics chain](/classes/dynamicschainrigposemodifierdata) uses. The client keeps one
+    object of this class. When the game data has none, the client uses the defaults of
+    the class.
+
+    The solver has two parts. The joints are moved and pushed out of collision shapes once
+    per frame. The constraints (the lateral links, and the rod constraints of groups with
+    `UseRodPhysics`) are then solved in several substeps.
+  notes:
+    - "No shipped file sets this class."
+
+properties:
+  Gravity:
+    description: |
+      The gravity of every simulation that does not override it, in world units per
+      second squared. The default points down the world Y axis at `981`, which is the
+      gravity of Earth with one world unit as one centimetre.
+
+  ConstraintSubsteps:
+    description: |
+      The number of substeps the constraints are solved in on each frame. The frame time
+      is divided by this number. More substeps make soft constraints behave as their
+      softness says, and cost more time.
+
+  ConstraintIterations:
+    description: |
+      The largest number of passes over the constraints in each substep. A substep stops
+      early when the largest error is below `ConvergenceThreshold`.
+
+  ConvergenceThreshold:
+    description: |
+      The error below which a substep stops its passes. The error of a constraint is how
+      far it is from being satisfied, in world units for a distance.
+
+  CollisionResolutionMode:
+    description: |
+      When the joints are pushed out of the collision shapes.
+
+      | Value | Meaning |
+      |-------|---------|
+      | `0` | Once per frame, before the constraints are solved |
+      | `1` | After every pass over the constraints |
+    notes:
+      - "What other values do is not known."
+
+  ConstraintSolverType:
+    description: |
+      `0`, which is the default, solves the constraints. Any other value creates no
+      constraint solver: lateral links and rod constraints do nothing, and the joints are
+      not pushed out of collision shapes.

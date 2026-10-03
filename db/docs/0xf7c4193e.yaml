@@ -1,0 +1,17 @@
+# 0xf7c4193e Documentation
+
+class:
+  description: |
+    A settings class of the [dynamics chain](/classes/dynamicschainrigposemodifierdata)
+    with one value. The client keeps one object of this class. When the game data has
+    none, the client uses `1` in place of the value.
+  notes:
+    - "No shipped file sets this class."
+
+properties:
+  "0xcff65b54":
+    description: |
+      For groups with `UseRodPhysics`: multiplies the time in the pull of
+      [`AnimPoseAttraction`](/classes/dynamicschainproperties#animposeattraction). With
+      a value of `4`, a rod group is pulled to its animated pose as if four times as much
+      time had passed. Groups without rod physics are not changed by it.

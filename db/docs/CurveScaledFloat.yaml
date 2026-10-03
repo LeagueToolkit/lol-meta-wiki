@@ -1,0 +1,31 @@
+# CurveScaledFloat Documentation
+
+class:
+  description: |
+    A number that can change along a chain of joints. It is used for the parameters of
+    [DynamicsChainProperties](/classes/dynamicschainproperties).
+
+    The result is `value` times the curve, where the curve is read at the position of the
+    joint along its tree: `0` at the root, `1` at the tip of the longest branch. The
+    position is measured as length along the joints, not as a count of joints. The curve
+    is clamped to the range `0` to `1` before it is multiplied, so the curve can only
+    scale `value` down.
+
+    With `UseCurve` false, or with no `Curve`, the result is `value` for every joint.
+
+properties:
+  value:
+    description: |
+      The number. With a curve, it is the largest value the parameter can have, reached
+      where the curve is `1`.
+
+  Curve:
+    description: |
+      The curve that scales `value` along the tree, see
+      [CurveFloat](/classes/curvefloat). Its times are positions along the tree from `0`
+      to `1`. Not set: `value` is used for every joint.
+
+  UseCurve:
+    description: |
+      False: `Curve` is ignored. It is true by default, and a new object has no curve, so
+      a default object behaves as a plain number.

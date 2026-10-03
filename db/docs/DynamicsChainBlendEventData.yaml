@@ -1,4 +1,4 @@
-# 0x5d9fffed Documentation
+# DynamicsChainBlendEventData Documentation
 
 class:
   description: |
@@ -14,14 +14,16 @@ class:
     Without that modifier on the skin, the event does nothing.
   notes:
     - "No shipped graph uses this event kind."
+    - "The event has no name to match. It changes every dynamics chain modifier of the unit."
+    - "The simulation does not step while its weight is `0`. When the weight comes back, the joints start from the state they had when it stopped."
 
 properties:
-  "0x2b969c0d":
+  BlendFromDefaultDuration:
     description: |
       The time of the change away from the default state when the event starts, in
       seconds. The change is linear. `0` changes at once.
 
-  "0xe61bf09e":
+  BlendToDefaultDuration:
     description: |
       The time of the change back to the default state when the event ends, in seconds.
       `0` changes at once.

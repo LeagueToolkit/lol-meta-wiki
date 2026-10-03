@@ -1,0 +1,78 @@
+# SpringPhysicsRigPoseModifierData Documentation
+
+class:
+  description: |
+    A [pose modifier](/classes/baserigposemodifierdata) that makes **one joint lag behind
+    the motion of the unit and swing back**, as a spring. It is the simple form of
+    secondary motion. For chains of joints with gravity and collision, see
+    [DynamicsChainRigPoseModifierData](/classes/dynamicschainrigposemodifierdata).
+
+    The spring does not look at the animation. Its only input is how the unit itself moved
+    and turned since the last frame:
+
+    - **`DoTranslation`.** When the unit moves, the joint is left behind by the distance
+      moved, and a spring pulls that offset back to zero.
+    - **`DoRotation`.** When the unit turns, the joint is turned back by the angle turned,
+      around the vertical axis, and a spring pulls that angle back to zero.
+
+    The spring force on each frame is `-(SpringStiffness / Mass) * offset -
+    (Damping / Mass) * velocity`. The offset, or the angle, is added to the animated
+    transform of the joint.
+
+    A [SpringPhysicsEventData](/classes/springphysicseventdata) on a clip turns a spring
+    on or off while the event is active.
+  notes:
+    - "A teleport of the unit gives the spring no push."
+    - "The spring takes one step per frame with the frame time, so a stiff spring with a low mass can become unstable at a low frame rate."
+
+properties:
+  name:
+    description: |
+      The name of the spring, as a hash. A
+      [SpringPhysicsEventData](/classes/springphysicseventdata) names the spring it
+      changes with `SpringToAffect`.
+
+  Joint:
+    description: |
+      The joint the spring moves, as the hash of its name (FNV-1a 32 of the lowercased
+      name). A name that is not a joint of the skeleton makes the spring do nothing.
+
+  Mass:
+    description: |
+      The mass on the spring. The stiffness and the damping are both divided by it, so a
+      higher mass makes the joint swing slower and settle later.
+    notes:
+      - "It must not be `0`."
+
+  SpringStiffness:
+    description: "How strongly the joint is pulled back to its animated place. A higher value swings faster."
+
+  Damping:
+    description: "How fast the swing dies out. `0` swings forever."
+
+  DoTranslation:
+    description: "Makes the position of the joint lag behind the movement of the unit. False by default."
+
+  DoRotation:
+    description: "Makes the rotation of the joint lag behind the turning of the unit, around the vertical axis. False by default."
+    notes:
+      - "With both `DoTranslation` and `DoRotation` false, the spring does nothing."
+
+  maxDistance:
+    description: |
+      The largest offset of the joint, in world units. An offset beyond it is cut to just
+      below the limit and the spring loses its velocity. `0`, which is the default, sets
+      no limit.
+
+  maxAngle:
+    description: |
+      The largest angle of the joint, in degrees. It works the same as `maxDistance`. `0`
+      sets no limit.
+
+  Invert:
+    description: "Applies the offset and the angle in the opposite direction, so the joint leads the motion of the unit in place of lagging behind it."
+
+  DefaultOn:
+    description: |
+      True: the spring is on, and an event turns it off. False: the spring is off, and an
+      event turns it on.
