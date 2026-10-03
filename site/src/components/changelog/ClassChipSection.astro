@@ -1,12 +1,10 @@
 ---
 // One "New classes" or "Removed classes" section. Both variants share this
-// component, parameterized by `kind`. Entries are bucketed into inheritance
-// families (see utils/classFamilies) so a patch that adds one base class plus
-// 90 subclasses reads as one family instead of 91 unrelated chips; when
-// nothing in the section shares a root, the flat chip list is kept.
-import { groupByFamily } from "../../utils/classFamilies";
-import ClassChipList from "./ClassChipList.astro";
-import ClassFamilyGroup from "./ClassFamilyGroup.astro";
+// component, parameterized by `kind`. Entries are split by domain (see
+// utils/classDomains); each domain then buckets its own into inheritance
+// families (ClassDomainGroup).
+import { groupByDomain } from "../../utils/classDomains";
+import ClassDomainGroup from "./ClassDomainGroup.astro";
 import CirclePlusIcon from "../icons/CirclePlusIcon.astro";
 import TrashIcon from "../icons/TrashIcon.astro";
 import type { ClassChange } from "../../types";
@@ -34,7 +32,7 @@ const meta = {
   },
 }[kind];
 
-const { families, loners } = groupByFamily(entries);
+const byDomain = groupByDomain(entries);
 ---
 
 {
@@ -49,36 +47,24 @@ const { families, loners } = groupByFamily(entries);
         {meta.title} <span class="count">{entries.length}</span>
       </Htag>
 
-      {families.length === 0 ? (
-        <ClassChipList kind={kind} entries={entries} />
-      ) : (
-        <div class="families">
-          {families.map((f) => (
-            <ClassFamilyGroup
-              kind={kind}
-              family={f.name}
-              entries={f.entries}
-              headingLevel={headingLevel + 1}
-            />
-          ))}
-          {loners.length > 0 && (
-            <ClassFamilyGroup
-              kind={kind}
-              family={null}
-              entries={loners}
-              headingLevel={headingLevel + 1}
-            />
-          )}
-        </div>
-      )}
+      <div class="domain-groups">
+        {byDomain.map((g) => (
+          <ClassDomainGroup
+            kind={kind}
+            domain={g.domain}
+            entries={g.entries}
+            headingLevel={headingLevel + 1}
+          />
+        ))}
+      </div>
     </div>
   )
 }
 
 <style>
-  .families {
+  .domain-groups {
     display: flex;
     flex-direction: column;
-    gap: 0.9rem;
+    gap: 1.25rem;
   }
 </style>

@@ -10,6 +10,7 @@
  *   api/v1/<name>.json                 /v1/<name>          (exact routes)
  *   api/v1/classes/<name>.json         /v1/classes/{x}
  *   api/v1/classes-inherited/<name>    /v1/classes/{x}?inherited=1
+ *   api/v1/classes-by-domain/<id>      /v1/classes?domain={id}
  *   api/v1/changelog/<slug>.json       /v1/changelog/{slug}
  *   api/v1/docs/<name>.json            /v1/docs/{x}
  *   db.json                            /v1/db              (raw, trimmed)
@@ -19,7 +20,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { canon } from "../../api/scripts/lib/resolver";
 import type { MetaDb } from "../../api/scripts/lib/types";
-import type { ApiChangelogPatch, ApiClass, ApiHashIndex, ApiNameList, ApiWikiIndex } from "../src/api-types";
+import type { ApiCategories, ApiChangelogPatch, ApiClass, ApiHashIndex, ApiNameList, ApiWikiIndex } from "../src/api-types";
 import { DEFAULT_API } from "../src/http";
 
 const API = process.env["RITO_META_API"] ?? DEFAULT_API;
@@ -76,6 +77,15 @@ for (const name of CLASSES) {
 }
 const names = [...classes.keys()].sort();
 write("api/v1/classes.json", { count: names.length, classes: names } satisfies ApiNameList);
+
+// The domain list keeps its real counts; each domain's class list is trimmed to the cast.
+const categories = await get<ApiCategories>("/v1/categories");
+write("api/v1/categories.json", categories);
+for (const { id } of categories.domains) {
+  const list = await get<ApiNameList>(`/v1/classes?domain=${id}`);
+  const kept = list.classes.filter((n) => classes.has(n));
+  write(`api/v1/classes-by-domain/${id}.json`, { count: kept.length, classes: kept } satisfies ApiNameList);
+}
 
 const hashes = await get<ApiHashIndex>("/v1/hashes");
 const keep = new Set([...classes.values()].map((c) => c.hash));

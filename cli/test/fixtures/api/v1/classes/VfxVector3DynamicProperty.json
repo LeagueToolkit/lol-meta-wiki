@@ -3,6 +3,12 @@
   "hash": "0x67104c43",
   "interface": false,
   "value": false,
+  "kind": "class",
+  "category": {
+    "domain": "vfx",
+    "via": "prefix",
+    "family": "VfxVector3DynamicProperty"
+  },
   "bases": [],
   "since": "15.22",
   "removedIn": null,

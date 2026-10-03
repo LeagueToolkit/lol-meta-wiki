@@ -61,6 +61,11 @@ const checks = {
     assert.equal(r.code, 0, r.stderr);
     assert.ok(r.json().changes.some((c) => c.class === "0x13f50786" && c.property === "imagePath" && c.newType.tag === 18));
   },
+  async "search within a domain"() {
+    const r = await rito("search", "color", "--domain", "vfx");
+    assert.equal(r.code, 0, r.stderr);
+    assert.equal(r.json().count, 3);
+  },
   async "raw is verbatim"() {
     const r = await rito("raw", "/v1/versions");
     assert.equal(r.code, 0, r.stderr);

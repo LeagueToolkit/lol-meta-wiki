@@ -8,8 +8,9 @@ sidebar:
 All endpoints are `GET` (plus `HEAD`/`OPTIONS`), return JSON, and live under
 `https://meta-api.leaguetoolkit.dev/v1`. A trailing slash is tolerated on any
 route. Errors come back as JSON too - `404` responses include a `hint` and a
-pointer back to `/v1`. Class names are exact and case-sensitive; hashes are
-accepted in any spelling (see [Names and hashes](/api/names-and-hashes/)).
+pointer back to `/v1`. Class names and domain ids are exact and
+case-sensitive; hashes are accepted in any spelling (see
+[Names and hashes](/api/names-and-hashes/)).
 
 ## Discovery
 
@@ -23,8 +24,10 @@ accepted in any spelling (see [Names and hashes](/api/names-and-hashes/)).
 | Endpoint | Returns |
 |---|---|
 | `/v1/classes` | The full class list: `{ count, classes: [name, …] }`. Unnamed classes appear as canonical hashes. |
-| `/v1/classes/{name-or-hash}` | One class: hash, `interface`/`value` flags, bases, lifetime, ancestor/descendant trees, and its **own** properties with types, defaults, and history. |
+| `/v1/classes?domain={id}` | The same list narrowed to the classes placed in one domain. Ids come from `/v1/categories`; an unknown id is a `404`. |
+| `/v1/classes/{name-or-hash}` | One class: hash, `interface`/`value` flags, `kind`, `category`, bases, lifetime, ancestor/descendant trees, and its **own** properties with types, defaults, and history. |
 | `/v1/classes/{name-or-hash}?inherited=1` | The same class in the precomputed flattened view: properties from all ancestors merged in, each stamped with a `from` field. |
+| `/v1/categories` | The domains classes are grouped into, in display order: `{ count, domains: [{ id, title, description, unreleased, counts }] }`. |
 
 ### Class shape
 
@@ -38,6 +41,8 @@ curl https://meta-api.leaguetoolkit.dev/v1/classes/VfxEmitterDefinitionData
   "hash": "0x09cde442",
   "interface": false,
   "value": true,
+  "kind": "value",
+  "category": { "domain": "vfx", "via": "prefix", "family": "VfxEmitterDefinitionData" },
   "bases": [],
   "since": null,
   "removedIn": null,
@@ -83,6 +88,15 @@ properties, with the full ancestry in `ancestorLevels` (nearest level first)
 and subclasses in `descendantTree`. With `?inherited=1`, properties from all
 ancestors are merged in (the nearest definition wins on a name conflict) and
 every property gains a `from` field naming the class that defines it.
+
+**Category:** every class sits in exactly one [domain](/domains/).
+`category.domain` is an id from `/v1/categories`, `category.via` is the rule
+that placed the class (`pin`, `seed`, `prefix`, `usage`, `shared`, or `none`),
+and `category.family` is the root of its primary base chain. A class used from
+several domains has the domain `shared` and lists them in `usedByDomains`; a
+class no rule claims has the domain `uncategorized`. `kind` is the two flags
+as one value: `interface`, `value`, or `class`. Placement is derived at build
+time, so it can change between dataset generations without the class changing.
 
 ## Lookup tables
 

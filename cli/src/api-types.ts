@@ -14,13 +14,19 @@ type JsonOf<P extends keyof paths> = paths[P] extends { get: { responses: { 200:
 
 export type ApiMeta = Schemas["Meta"];
 export type ApiVersions = Schemas["Versions"];
-export type ApiClass = Schemas["Class"];
+/**
+ * `category` is optional here although the API always sends it: a `--db` run
+ * has no placement rules to derive one from (see local.ts).
+ */
+export type ApiClass = Omit<Schemas["Class"], "category"> & { category?: ApiClassCategory };
+export type ApiClassCategory = Schemas["ClassCategory"];
 export type ApiProperty = Schemas["Property"];
 /** The `ft`/`kt`/`vt`/`kh` fields every typed thing carries (a property, a history entry, a change). */
 export type ApiTypeFields = Schemas["ChangeTuple"];
 export type ApiDescendantNode = Schemas["DescendantNode"];
 export type ApiHashIndex = Schemas["HashIndex"];
 export type ApiNameList = Schemas["NameList"];
+export type ApiCategories = Schemas["Categories"];
 export type ApiChangelogIndex = Schemas["ChangelogIndex"];
 export type ApiChangelogPatch = Schemas["ChangelogPatch"];
 export type ApiClassChange = Schemas["ClassChange"];

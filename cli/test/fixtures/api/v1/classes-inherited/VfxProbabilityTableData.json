@@ -3,6 +3,12 @@
   "hash": "0x53a6c97e",
   "interface": false,
   "value": true,
+  "kind": "value",
+  "category": {
+    "domain": "vfx",
+    "via": "prefix",
+    "family": "VfxProbabilityTableData"
+  },
   "bases": [],
   "since": null,
   "removedIn": null,

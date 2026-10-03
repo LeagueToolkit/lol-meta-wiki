@@ -1,0 +1,133 @@
+---
+/**
+ * One card per domain: what it covers, how many classes it holds and how many
+ * of them are documented. The way into the class reference for a reader who
+ * does not know a class name yet.
+ *
+ * Same card shape as TopicCards, minus the icon - a domain has a count where a
+ * topic has a glyph.
+ */
+import { domains, domainHref, isAuthoredDomain } from "../utils/domains";
+import ArrowRightIcon from "./icons/ArrowRightIcon.astro";
+import Pill from "./Pill.astro";
+
+// A domain every class of which has left the game (an unreleased mode that
+// was pulled) still gets its card: the pill explains why it reads as empty.
+const count = (n: number) => n.toLocaleString("en-US");
+---
+
+<div class="domains not-content">
+  {
+    domains.map((d) => (
+      <a
+        class:list={["domain", { "domain-leftover": !isAuthoredDomain(d.id) }]}
+        href={domainHref(d.id)}
+      >
+        <span class="head">
+          <span class="title">{d.title}</span>
+          {d.unreleased && <Pill variant="warning">Unreleased</Pill>}
+          <span class="arrow">
+            <ArrowRightIcon />
+          </span>
+        </span>
+        <span class="desc">{d.description}</span>
+        <span class="counts">
+          <span>
+            <b>{count(d.counts.live)}</b> {d.counts.live === 1 ? "class" : "classes"}
+          </span>
+          <span>
+            <b>{count(d.counts.documented)}</b> documented
+          </span>
+          {d.counts.classes > d.counts.live && (
+            <span>
+              <b>{count(d.counts.classes - d.counts.live)}</b> removed
+            </span>
+          )}
+        </span>
+      </a>
+    ))
+  }
+</div>
+
+<style>
+  .domains {
+    display: grid;
+    gap: 1rem;
+  }
+
+  @media (min-width: 45rem) {
+    .domains {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .domain {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.125rem 1.25rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: var(--ltk-radius-lg);
+    text-decoration: none;
+    transition:
+      border-color 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .domain:hover {
+    border-color: color-mix(in srgb, var(--sl-color-accent) 50%, transparent);
+    background-color: color-mix(in srgb, var(--sl-color-gray-6) 55%, transparent);
+  }
+
+  .domain:focus-visible {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: 3px;
+  }
+
+  /* Shared and Uncategorized are what is left over, not subject areas. */
+  .domain-leftover {
+    border-style: dashed;
+  }
+
+  .head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .title {
+    font-weight: var(--ltk-weight-semibold);
+    color: var(--sl-color-white);
+  }
+
+  .arrow {
+    display: inline-flex;
+    margin-inline-start: auto;
+    color: var(--sl-color-gray-3);
+    transition: color 0.2s ease;
+  }
+
+  .domain:hover .arrow {
+    color: var(--sl-color-accent-high);
+  }
+
+  .desc {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--sl-color-gray-2);
+  }
+
+  .counts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    margin-top: auto;
+    font-size: var(--sl-text-xs);
+    color: var(--sl-color-gray-3);
+  }
+
+  .counts b {
+    font-weight: var(--ltk-weight-semibold);
+    color: var(--sl-color-gray-1);
+  }
+</style>

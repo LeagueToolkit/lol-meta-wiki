@@ -17,6 +17,8 @@ site/src/content/docs/classes/*.mdx
 !site/src/content/docs/classes/index.mdx
 site/src/content/docs/changelog/*.mdx
 !site/src/content/docs/changelog/index.mdx
+site/src/content/docs/domains/*.mdx
+!site/src/content/docs/domains/index.mdx
 
 # API worker build output + wrangler state
 api/dist/

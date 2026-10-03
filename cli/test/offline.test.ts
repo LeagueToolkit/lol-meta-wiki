@@ -57,6 +57,21 @@ describe("--db", () => {
     expect(r.stderr).toContain("not part of /v1/db");
   });
 
+  test("categories are not in the database: a class keeps its kind, the domain listings say so", async () => {
+    const requests: Request[] = [];
+    const cls = await cli(["class", "VfxColorBase", "--db", DB], { requests });
+    const body = cls.json<{ class: Record<string, unknown> }>().class;
+    expect(body["kind"]).toBe("interface");
+    expect(body).not.toHaveProperty("category");
+    for (const args of [["domains"], ["search", "--domain", "vfx"], ["search", "color", "--domain", "vfx"]]) {
+      const r = await cli([...args, "--db", DB], { requests });
+      expect(r.code).toBe(1);
+      expect(r.stdout).toBe("");
+      expect(r.stderr).toContain("not part of /v1/db");
+    }
+    expect(requests).toEqual([]);
+  });
+
   test("raw still goes to the network; the database is not even read", async () => {
     const requests: Request[] = [];
     const r = await cli(["raw", "/v1/versions", "--db", "does/not/exist.json"], { requests });

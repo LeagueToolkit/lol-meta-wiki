@@ -1,0 +1,112 @@
+---
+// Filter chips for a domain page. "Removed" is the site-wide switch (the
+// sidebar has the same one, wired by its inline script); the other two only
+// affect this page and are not remembered. After any of them changes, a
+// section left with no visible rows is hidden, and the page says so when
+// nothing is left at all.
+---
+
+<div class="domain-filters" role="group" aria-label="Filter classes">
+  <button type="button" class="filter" data-wiki-toggle-removed aria-pressed="false">
+    Removed
+  </button>
+  <button type="button" class="filter" data-domain-filter="onlyDocumented" aria-pressed="false">
+    Documented only
+  </button>
+  <button type="button" class="filter" data-domain-filter="hideUnnamed" aria-pressed="false">
+    Hide unnamed
+  </button>
+</div>
+<p class="domain-empty" data-domain-empty hidden>
+  No class here matches the filters. Removed classes are hidden until you turn them on.
+</p>
+
+<style>
+  .domain-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    margin-top: 1.25rem;
+  }
+
+  .filter {
+    appearance: none;
+    margin: 0;
+    padding: 0.3rem 0.625rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 999px;
+    background: none;
+    color: var(--sl-color-gray-2);
+    font: inherit;
+    font-size: var(--sl-text-xs);
+    font-weight: 500;
+    line-height: 1.2;
+    cursor: pointer;
+    transition:
+      color 0.15s ease,
+      border-color 0.15s ease,
+      background 0.15s ease;
+  }
+
+  .filter:is(:hover, :focus-visible) {
+    border-color: var(--sl-color-gray-4);
+    color: var(--sl-color-white);
+  }
+
+  .filter[aria-pressed="true"] {
+    border-color: color-mix(in srgb, var(--sl-color-accent) 60%, transparent);
+    background: color-mix(in srgb, var(--sl-color-accent) 18%, transparent);
+    color: var(--sl-color-white);
+  }
+
+  .domain-empty {
+    margin-top: 1.5rem;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-3);
+  }
+</style>
+
+<script>
+  const page = document.querySelector<HTMLElement>(".domain-page");
+  const root = document.documentElement;
+
+  /** Hide the sections the filters emptied; flag the page when all are. */
+  function refresh(): void {
+    if (!page) return;
+    let anyVisible = false;
+    for (const section of page.querySelectorAll<HTMLElement>("[data-domain-section]")) {
+      section.hidden = false;
+      const visible = [...section.querySelectorAll<HTMLElement>(".class-row")].some(
+        (row) => row.offsetParent !== null,
+      );
+      section.hidden = !visible;
+      anyVisible ||= visible;
+    }
+    const empty = page.querySelector<HTMLElement>("[data-domain-empty]");
+    if (empty) empty.hidden = anyVisible;
+  }
+
+  if (page) {
+    page
+      .querySelector("[data-wiki-toggle-removed]")
+      ?.setAttribute("aria-pressed", String(!("wikiHideRemoved" in root.dataset)));
+
+    page.addEventListener("click", (event) => {
+      const button = (event.target as Element).closest<HTMLElement>("[data-domain-filter]");
+      if (!button) return;
+      const key = button.dataset.domainFilter!;
+      const on = !(key in page.dataset);
+      if (on) page.dataset[key] = "";
+      else delete page.dataset[key];
+      button.setAttribute("aria-pressed", String(on));
+    });
+    // The removed switch is flipped by the sidebar's delegated listener, which
+    // was registered first - by the time this runs the attribute has changed.
+    document.addEventListener("click", (event) => {
+      if ((event.target as Element).closest("[data-wiki-toggle-removed], [data-domain-filter]")) {
+        refresh();
+      }
+    });
+    refresh();
+  }
+</script>

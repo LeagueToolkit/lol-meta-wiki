@@ -44,6 +44,7 @@ database:
 site/db-data/classes/*        ->  classes/, classes-inherited/, docs/   (prose split off)
 site/db-data/changelog/*      ->  changelog/
 site/public/db/classIndex.json ->  index.json                            (absolute wiki URLs)
+site/public/db/categories.json ->  categories.json, classes-by-domain/   (one name list per domain)
 db/meta.db.json               ->  db.json, hashes.json, versions.json
 openapi.json                  ->  openapi.json
 (derived)                     ->  meta.json, src/generated/hash-to-name.json
@@ -60,6 +61,13 @@ The interesting work lives in `scripts/lib/`, and both files are pure:
 - **`transform.ts`** - site shape → API shape: structured type references instead of display
   strings, `"0x0"` sentinels turned into `null`, site page anchors dropped, prose split out.
 
+**Categories are repackaged, not recomputed.** The generator places every class in one domain
+(`scripts/categorize.ts`, from `db/categories.yaml`) and writes the result into each class file and
+into `categories.json`. The build copies `kind` and `category` onto the class, wraps the domain
+list as `{ count, domains }`, and groups the class names by `category.domain` into
+`classes-by-domain/{id}.json`. Every domain gets a list, empty or not, and a class whose domain is
+missing from `categories.json` stops the build as stale site data.
+
 **Facts and prose are split on purpose.** Class endpoints carry unrestricted factual data; the
 human-authored CC BY-SA prose is written only into the `docs/` tree, so a consumer that never calls
 `/v1/docs*` never ingests licensed content. Keep that split when you touch `transform.ts` - see
@@ -69,9 +77,9 @@ human-authored CC BY-SA prose is written only into the `docs/` tree, so a consum
 
 `src/index.ts` is the whole router, and it is deliberately small.
 
-- **Exact routes** come from the `EXACT` map (`/v1`, `/v1/openapi`, `/v1/classes`, `/v1/hashes`,
-  `/v1/index`, `/v1/versions`, `/v1/changelog`, `/v1/db`, `/v1/docs`). A trailing slash is tolerated
-  on any route.
+- **Exact routes** come from the `EXACT` map (`/v1`, `/v1/openapi`, `/v1/classes`,
+  `/v1/categories`, `/v1/hashes`, `/v1/index`, `/v1/versions`, `/v1/changelog`, `/v1/db`,
+  `/v1/docs`). A trailing slash is tolerated on any route.
 - **Parameterized routes** are `/v1/{classes,changelog,docs}/{segment}` and nothing else. The
   segment must match `[A-Za-z0-9._-]+`; rejecting anything else keeps traversal-shaped requests away
   from the asset binding.
@@ -81,6 +89,10 @@ human-authored CC BY-SA prose is written only into the `docs/` tree, so a consum
   their hash. Names are exact and case-sensitive, which is what the 404 `hint` tells the caller.
 - **`?inherited=1`** (or `true`) on a class route serves the precomputed flattened view from
   `classes-inherited/` instead, with each property stamped with the ancestor it came from.
+- **`?domain={id}`** on `/v1/classes` serves that domain's name list from `classes-by-domain/`
+  instead of the full one. It is a filter in the URL only: the list is precomputed like every other
+  response. The id must pass the same `[A-Za-z0-9._-]+` check as a path segment, and an id with no
+  list is a 404 whose `hint` points at `/v1/categories`.
 - `OPTIONS` gets a 204 preflight; anything other than `GET`/`HEAD`/`OPTIONS` gets a 405 with an
   `Allow` header. Unroutable paths get a JSON 404 pointing back at `/v1`.
 

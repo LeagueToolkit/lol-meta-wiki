@@ -1,0 +1,269 @@
+{
+  "count": 22,
+  "domains": [
+    {
+      "id": "ui",
+      "title": "UI and HUD",
+      "description": "View controllers, UI elements and the in-game HUD.",
+      "unreleased": false,
+      "counts": {
+        "classes": 1216,
+        "live": 1129,
+        "unnamed": 446,
+        "documented": 16
+      }
+    },
+    {
+      "id": "scripting",
+      "title": "Scripting and sequences",
+      "description": "Script blocks, sequences and the values they read.",
+      "unreleased": false,
+      "counts": {
+        "classes": 645,
+        "live": 541,
+        "unnamed": 224,
+        "documented": 1
+      }
+    },
+    {
+      "id": "tft",
+      "title": "Teamfight Tactics",
+      "description": "Classes that only Teamfight Tactics uses.",
+      "unreleased": false,
+      "counts": {
+        "classes": 366,
+        "live": 347,
+        "unnamed": 134,
+        "documented": 0
+      }
+    },
+    {
+      "id": "vfx",
+      "title": "VFX",
+      "description": "Particle systems, emitters and the drivers that animate them.",
+      "unreleased": false,
+      "counts": {
+        "classes": 310,
+        "live": 293,
+        "unnamed": 51,
+        "documented": 57
+      }
+    },
+    {
+      "id": "materials",
+      "title": "Materials and rendering",
+      "description": "Material definitions, shading models and textures.",
+      "unreleased": false,
+      "counts": {
+        "classes": 46,
+        "live": 46,
+        "unnamed": 4,
+        "documented": 1
+      }
+    },
+    {
+      "id": "logic",
+      "title": "Logic drivers and concepts",
+      "description": "Expression nodes evaluated per object, and the concepts they read.",
+      "unreleased": false,
+      "counts": {
+        "classes": 189,
+        "live": 177,
+        "unnamed": 23,
+        "documented": 68
+      }
+    },
+    {
+      "id": "animation",
+      "title": "Animation",
+      "description": "Animation graphs, clips, rig modifiers and animation events.",
+      "unreleased": false,
+      "counts": {
+        "classes": 111,
+        "live": 109,
+        "unnamed": 10,
+        "documented": 0
+      }
+    },
+    {
+      "id": "map",
+      "title": "Map and environment",
+      "description": "Map containers, placeables, lighting and visibility.",
+      "unreleased": false,
+      "counts": {
+        "classes": 259,
+        "live": 204,
+        "unnamed": 44,
+        "documented": 3
+      }
+    },
+    {
+      "id": "entities",
+      "title": "Game objects and entities",
+      "description": "Runtime object types and the components game entities are built from.",
+      "unreleased": false,
+      "counts": {
+        "classes": 193,
+        "live": 154,
+        "unnamed": 37,
+        "documented": 2
+      }
+    },
+    {
+      "id": "characters",
+      "title": "Characters and skins",
+      "description": "Character records, skins and the conditions that select them.",
+      "unreleased": false,
+      "counts": {
+        "classes": 150,
+        "live": 144,
+        "unnamed": 41,
+        "documented": 21
+      }
+    },
+    {
+      "id": "spells",
+      "title": "Spells and combat",
+      "description": "Spell data, calculations, missiles and targeting.",
+      "unreleased": false,
+      "counts": {
+        "classes": 257,
+        "live": 253,
+        "unnamed": 41,
+        "documented": 1
+      }
+    },
+    {
+      "id": "items",
+      "title": "Items",
+      "description": "Item data and the shop.",
+      "unreleased": false,
+      "counts": {
+        "classes": 34,
+        "live": 26,
+        "unnamed": 10,
+        "documented": 0
+      }
+    },
+    {
+      "id": "gamemodes",
+      "title": "Game modes",
+      "description": "Per-mode configuration, constants and mutators.",
+      "unreleased": false,
+      "counts": {
+        "classes": 211,
+        "live": 190,
+        "unnamed": 87,
+        "documented": 32
+      }
+    },
+    {
+      "id": "audio",
+      "title": "Audio and contextual actions",
+      "description": "Sound events and the contextual rules that trigger voice lines.",
+      "unreleased": false,
+      "counts": {
+        "classes": 140,
+        "live": 139,
+        "unnamed": 18,
+        "documented": 3
+      }
+    },
+    {
+      "id": "input",
+      "title": "Input and options",
+      "description": "Key bindings, input sources and the options menu.",
+      "unreleased": false,
+      "counts": {
+        "classes": 136,
+        "live": 115,
+        "unnamed": 90,
+        "documented": 0
+      }
+    },
+    {
+      "id": "loadouts",
+      "title": "Loadouts, catalog and store",
+      "description": "Cosmetic loadouts, catalog entries and rewards.",
+      "unreleased": false,
+      "counts": {
+        "classes": 111,
+        "live": 98,
+        "unnamed": 25,
+        "documented": 0
+      }
+    },
+    {
+      "id": "engine",
+      "title": "Engine and client state",
+      "description": "Client states and the event bus.",
+      "unreleased": false,
+      "counts": {
+        "classes": 53,
+        "live": 22,
+        "unnamed": 23,
+        "documented": 0
+      }
+    },
+    {
+      "id": "tools",
+      "title": "Cheats and debug",
+      "description": "Developer cheats and debugging helpers.",
+      "unreleased": false,
+      "counts": {
+        "classes": 49,
+        "live": 47,
+        "unnamed": 16,
+        "documented": 0
+      }
+    },
+    {
+      "id": "monarch",
+      "title": "Monarch",
+      "description": "An unreleased game mode. Its classes have left the live build.",
+      "unreleased": true,
+      "counts": {
+        "classes": 132,
+        "live": 0,
+        "unnamed": 67,
+        "documented": 0
+      }
+    },
+    {
+      "id": "nova",
+      "title": "Nova",
+      "description": "An unreleased item rework.",
+      "unreleased": true,
+      "counts": {
+        "classes": 53,
+        "live": 53,
+        "unnamed": 21,
+        "documented": 0
+      }
+    },
+    {
+      "id": "shared",
+      "title": "Shared",
+      "description": "Building blocks used by more than one domain.",
+      "unreleased": false,
+      "counts": {
+        "classes": 52,
+        "live": 51,
+        "unnamed": 17,
+        "documented": 4
+      }
+    },
+    {
+      "id": "uncategorized",
+      "title": "Uncategorized",
+      "description": "Classes no domain claims yet. Seeding a family in db/categories.yaml places everything under it.",
+      "unreleased": false,
+      "counts": {
+        "classes": 834,
+        "live": 572,
+        "unnamed": 572,
+        "documented": 11
+      }
+    }
+  ]
+}

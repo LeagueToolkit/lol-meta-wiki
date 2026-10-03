@@ -12,7 +12,7 @@ interface Props {
   /** Root class of the family, or null for the leftover bucket. */
   family: string | null;
   entries: ClassChange[];
-  headingLevel: number; // one below the section title (3 or 4)
+  headingLevel: number; // one below the domain heading (4 or 5)
 }
 
 const { kind, family, entries, headingLevel } = Astro.props;

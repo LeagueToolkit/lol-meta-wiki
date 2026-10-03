@@ -1,0 +1,102 @@
+---
+// A domain's browse page: what the domain is, then every class in it, family
+// by family. Reads the build-time JSON generate-db.ts emits per domain.
+import fs from "node:fs";
+import { root } from "astro:config/server";
+import { getCategoriesUrl } from "../config/repo";
+import { UNCATEGORIZED_DOMAIN, type DomainPageData } from "../types";
+import { isAuthoredDomain } from "../utils/domains";
+import DomainFamily from "./domain/DomainFamily.astro";
+import DomainFilters from "./domain/DomainFilters.astro";
+
+interface Props {
+  /** e.g. "/db/domains/vfx.a1b2c3d4e5f6.json" */
+  file: string;
+}
+
+const { file } = Astro.props;
+
+// Same mapping as ClassDetails: the stable "/db/domains/<file>" identifier
+// points into site/db-data/, which lives outside public/.
+const data: DomainPageData = JSON.parse(
+  fs.readFileSync(
+    new URL(`./db-data/domains/${file.replace(/^\/db\/domains\//, "")}`, root),
+    "utf8"
+  )
+);
+
+const { counts } = data;
+const removed = counts.classes - counts.live;
+const count = (n: number) => n.toLocaleString("en-US");
+// Only the leftover domains say what uses each family (see DomainFamily).
+const explainUsers = !isAuthoredDomain(data.id);
+---
+
+<!-- data-pagefind-ignore: the page names every class in the domain; indexing
+     it would make it match a search for any of them. -->
+<div class="domain-page not-content" data-pagefind-ignore>
+  <p class="domain-lede">{data.description}</p>
+  <p class="domain-counts">
+    <span><b>{count(counts.live)}</b> {counts.live === 1 ? "class" : "classes"}</span>
+    <span><b>{count(counts.documented)}</b> documented</span>
+    <span><b>{count(counts.unnamed)}</b> unnamed</span>
+    {removed > 0 && <span><b>{count(removed)}</b> removed</span>}
+  </p>
+  {
+    data.id === UNCATEGORIZED_DOMAIN && (
+      <p class="domain-hint">
+        A family lands here when it derives from no seeded class, carries no
+        known prefix, and the classes using it do not agree on a domain.
+        Adding its root to a domain in{" "}
+        <a href={getCategoriesUrl()} target="_blank" rel="noopener noreferrer">
+          db/categories.yaml
+        </a>{" "}
+        places the whole family and everything only it uses.
+      </p>
+    )
+  }
+
+  <DomainFilters />
+
+  {
+    data.families.map((family) => (
+      <DomainFamily
+        name={family.name}
+        entries={family.entries}
+        usedBy={explainUsers ? family.usedBy : undefined}
+      />
+    ))
+  }
+  {data.loose.length > 0 && <DomainFamily name={null} entries={data.loose} />}
+</div>
+
+<style>
+  .domain-lede {
+    margin: 0;
+    font-size: var(--sl-text-lg);
+    color: var(--sl-color-gray-2);
+  }
+
+  .domain-counts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.25rem;
+    margin: 0.75rem 0 0;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-3);
+  }
+
+  .domain-counts b {
+    font-weight: var(--ltk-weight-semibold);
+    color: var(--sl-color-gray-1);
+  }
+
+  .domain-hint {
+    margin: 1rem 0 0;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: var(--ltk-radius-lg);
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-2);
+  }
+</style>

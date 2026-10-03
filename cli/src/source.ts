@@ -7,6 +7,7 @@
 
 import type {
   ApiAllDocs,
+  ApiCategories,
   ApiChangelogIndex,
   ApiChangelogPatch,
   ApiClass,
@@ -39,6 +40,9 @@ export interface Source {
   versions(): Promise<VersionMap>;
   /** null when the API has no such class. */
   class(nameOrHash: string, inherited: boolean): Promise<ApiClass | null>;
+  categories(): Promise<ApiCategories>;
+  /** The names of the classes in one domain; null when there is no such domain. */
+  domainClasses(domain: string): Promise<ApiNameList | null>;
   hashes(): Promise<ApiHashIndex>;
   wikiIndex(): Promise<ApiWikiIndex>;
   changelogIndex(): Promise<ApiChangelogIndex>;
@@ -101,6 +105,14 @@ export class ApiSource implements Source {
 
   class(nameOrHash: string, inherited: boolean): Promise<ApiClass | null> {
     return this.optional<ApiClass>(`/v1/classes/${segment(nameOrHash)}${inherited ? "?inherited=1" : ""}`);
+  }
+
+  categories(): Promise<ApiCategories> {
+    return this.required<ApiCategories>("/v1/categories");
+  }
+
+  domainClasses(domain: string): Promise<ApiNameList | null> {
+    return this.optional<ApiNameList>(`/v1/classes?domain=${segment(domain)}`);
   }
 
   hashes(): Promise<ApiHashIndex> {

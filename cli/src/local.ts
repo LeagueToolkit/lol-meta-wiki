@@ -4,8 +4,10 @@
  * Name/hash resolution and canonicalization come from the API's own
  * resolver, and the API shapes from its transforms, so a `--db` run and an
  * online run are built by the same code from the same database. Prose is
- * not part of `/v1/db`, so the docs commands are the one thing this source
- * cannot serve.
+ * not part of `/v1/db`, so the docs commands are one thing this source
+ * cannot serve. Class categories are the other: they are placed by rules the
+ * wiki authors (db/categories.yaml), so an offline class carries its `kind`
+ * but no `category`, and the domain listings refuse to run.
  */
 
 import fs from "node:fs";
@@ -14,6 +16,7 @@ import { flattenClass, transformChangelog, transformClass } from "../../api/scri
 import type { ApiClass as TransformedClass, MetaDb } from "../../api/scripts/lib/types";
 import type {
   ApiAllDocs,
+  ApiCategories,
   ApiChangelogIndex,
   ApiChangelogPatch,
   ApiClass,
@@ -123,6 +126,18 @@ export class LocalSource implements Source {
     const cls = byName.get(key);
     if (!cls) return null;
     return inherited ? flattenClass(cls, byName) : cls;
+  }
+
+  private noCategories(): never {
+    throw new CliError("class categories are not part of /v1/db, so `domains` and `--domain` cannot run with --db", "run it without --db");
+  }
+
+  async categories(): Promise<ApiCategories> {
+    return this.noCategories();
+  }
+
+  async domainClasses(): Promise<ApiNameList | null> {
+    return this.noCategories();
   }
 
   async hashes(): Promise<ApiHashIndex> {

@@ -3,6 +3,12 @@
   "hash": "0x3df230bf",
   "interface": false,
   "value": false,
+  "kind": "class",
+  "category": {
+    "domain": "vfx",
+    "via": "seed",
+    "family": "IVfxEmissionSurface"
+  },
   "bases": [
     "IVfxEmissionSurface"
   ],

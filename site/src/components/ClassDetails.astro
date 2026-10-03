@@ -8,6 +8,7 @@ import InheritanceTree from "./InheritanceTree.astro";
 import PropertiesSection from "./PropertiesSection.astro";
 import ReferencedBySection from "./ReferencedBySection.astro";
 import ClassDocumentation from "./ClassDocumentation.astro";
+import CategoryNote from "./CategoryNote.astro";
 // import InheritanceDiagram from "./InheritanceDiagram.astro";
 // import MermaidLoader from "./MermaidLoader.astro";
 // import { generateInheritanceDiagram } from "../utils/mermaidGenerator";
@@ -34,6 +35,8 @@ const docExists = fs.existsSync(docsFileUrl);
 // For Mermaid diagram (future use):
 // const mermaidDiagram = generateInheritanceDiagram(data, classIndex);
 ---
+
+<CategoryNote category={data.category} />
 
 <InheritanceTree
   currentClass={data.name}

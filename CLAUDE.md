@@ -11,6 +11,9 @@ build script). For documentation-content rules (the `db/docs/*.yaml` files) see
   (`site/src/content/docs/…`). This is the **producer** of the site's data.
 - `site/` - Astro + Starlight wiki. Components are the **consumers**: they read
   the generated JSON at build time and render it.
+- `scripts/categorize.ts` - pure: places every class in one domain from
+  `db/categories.yaml`, inheritance and usage. `generate-db.ts` calls it and
+  projects the result into the sidebar, the domain pages and each class.
 - `site/src/types.ts` - the shared data shapes both sides agree on.
 - `api/` - the Cloudflare Worker serving the generated data as `/v1/*`; its
   `scripts/lib/{resolver,transform}.ts` are pure and shared with the CLI.

@@ -3,6 +3,12 @@
   "hash": "0x13f50786",
   "interface": false,
   "value": false,
+  "kind": "class",
+  "category": {
+    "domain": "uncategorized",
+    "via": "none",
+    "family": "0x13f50786"
+  },
   "bases": [],
   "since": "15.23",
   "removedIn": null,

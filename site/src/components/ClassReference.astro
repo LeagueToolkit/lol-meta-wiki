@@ -1,43 +1,46 @@
 ---
-// ClassBrowser.astro - Class Reference landing page
+// Class Reference landing page: the headline numbers, then the domains to
+// browse by. Everything is known at build time (categories.json), so the page
+// ships no script.
+import { domains, isAuthoredDomain } from "../utils/domains";
+import DomainCards from "./DomainCards.astro";
+
+const sum = (pick: (d: (typeof domains)[number]) => number) =>
+  domains.reduce((n, d) => n + pick(d), 0);
+
+// Counts cover classes that still exist in the game; removed classes keep
+// their pages but shouldn't inflate the headline.
+const stats = [
+  { label: "Classes", value: sum((d) => d.counts.live) },
+  { label: "Documented", value: sum((d) => d.counts.documented) },
+  { label: "Domains", value: domains.filter((d) => isAuthoredDomain(d.id)).length },
+];
 ---
 
-<div id="class-reference">
-  <!-- Quick Stats -->
+<div id="class-reference" class="not-content">
   <div class="stats-row">
-    <div class="stat-box">
-      <span class="stat-number" id="total-classes">-</span>
-      <span class="stat-label">Total Classes</span>
-    </div>
-    <div class="stat-box">
-      <span class="stat-number" id="documented-count">-</span>
-      <span class="stat-label">Documented</span>
-    </div>
-    <div class="stat-box">
-      <span class="stat-number" id="base-count">-</span>
-      <span class="stat-label">Base Classes</span>
-    </div>
+    {
+      stats.map((stat) => (
+        <div class="stat-box">
+          <span class="stat-number">{stat.value.toLocaleString("en-US")}</span>
+          <span class="stat-label">{stat.label}</span>
+        </div>
+      ))
+    }
   </div>
 
-  <!-- Search Tip -->
   <div class="search-tip">
     💡 <strong>Tip:</strong> Use the search bar above to find any class instantly
   </div>
 
-  <!-- Popular Base Classes -->
   <section class="section">
-    <h2>Popular Base Classes</h2>
-    <p class="section-desc">Most commonly inherited classes - good starting points for understanding the hierarchy</p>
-    <div id="popular-bases" class="class-list">
-      <div class="loading-inline">Loading...</div>
-    </div>
+    <h2>Browse by domain</h2>
+    <p class="section-desc">
+      Every class sits in one domain, placed by what it derives from and what uses it.
+      The sidebar is grouped the same way.
+    </p>
+    <DomainCards />
   </section>
-
-
-  <!-- Browse All Link -->
-  <div class="browse-all">
-    <p>Looking for a specific class? Use the search above or browse the sidebar →</p>
-  </div>
 </div>
 
 <style>
@@ -101,178 +104,9 @@
     margin: 0 0 1rem 0;
   }
 
-  .class-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .class-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem 1rem;
-    background: var(--sl-color-gray-6);
-    border: 1px solid var(--sl-color-gray-5);
-    border-radius: 0.375rem;
-    transition: all 0.15s;
-  }
-
-  .class-item:hover {
-    border-color: var(--sl-color-blue);
-    background: var(--sl-color-gray-5);
-  }
-
-  .class-item-left {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex: 1;
-  }
-
-  .class-item a {
-    color: var(--sl-color-text);
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 0.95rem;
-  }
-
-  .class-item a:hover {
-    color: var(--sl-color-blue);
-  }
-
-  .class-item-meta {
-    font-size: 0.8rem;
-    color: var(--sl-color-gray-2);
-  }
-
-  .badge {
-    display: inline-block;
-    padding: 0.125rem 0.5rem;
-    border-radius: 0.25rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    background: var(--sl-color-gray-5);
-    color: var(--sl-color-gray-2);
-  }
-
-  .badge-children {
-    background: var(--sl-color-purple-low);
-    color: var(--sl-color-purple-high);
-  }
-
-  .badge-props {
-    background: var(--sl-color-blue-low);
-    color: var(--sl-color-blue-high);
-  }
-
-  .loading-inline {
-    color: var(--sl-color-gray-2);
-    font-size: 0.9rem;
-    padding: 1rem;
-    text-align: center;
-  }
-
-  .browse-all {
-    margin-top: 3rem;
-    padding: 1.5rem;
-    background: var(--sl-color-gray-6);
-    border-radius: 0.5rem;
-    text-align: center;
-    color: var(--sl-color-gray-2);
-  }
-
-  .browse-all p {
-    margin: 0;
-  }
-
   @media (max-width: 768px) {
     .stats-row {
       flex-direction: column;
     }
   }
 </style>
-
-<script>
-  interface ClassInfo {
-    name: string;
-    file: string;
-    bases: string[];
-    propCount: number;
-    since?: string;
-    removed?: boolean;
-  }
-
-  interface IndexData {
-    classes: ClassInfo[];
-    total: number;
-  }
-
-  function slugify(name: string): string {
-    return name.replace(/[^A-Za-z0-9._-]/g, '_').toLowerCase();
-  }
-
-  function renderClassItem(cls: ClassInfo, childrenCount?: number): string {
-    const slug = slugify(cls.name);
-    const badges = [];
-    
-    if (childrenCount && childrenCount > 0) {
-      badges.push(`<span class="badge badge-children">${childrenCount} children</span>`);
-    }
-    if (cls.propCount > 0) {
-      badges.push(`<span class="badge badge-props">${cls.propCount} props</span>`);
-    }
-
-    return `
-      <div class="class-item">
-        <div class="class-item-left">
-          <a href="/classes/${slug}">${cls.name}</a>
-        </div>
-        <div class="class-item-meta">
-          ${badges.join(' ')}
-        </div>
-      </div>
-    `;
-  }
-
-  async function loadAndDisplay() {
-    try {
-      const response = await fetch('/db/index.json');
-      const data: IndexData = await response.json();
-      
-      // Stats and listings only cover classes that still exist in the game;
-      // removed classes keep their pages but shouldn't inflate the counts
-      const liveClasses = data.classes.filter(c => !c.removed);
-
-      // Calculate children count for each class
-      const childrenCount = new Map<string, number>();
-      for (const cls of liveClasses) {
-        for (const base of cls.bases) {
-          childrenCount.set(base, (childrenCount.get(base) || 0) + 1);
-        }
-      }
-
-      // Update stats
-      const baseClasses = liveClasses.filter(c => c.bases.length === 0).length;
-      document.getElementById('total-classes')!.textContent = liveClasses.length.toLocaleString();
-      document.getElementById('documented-count')!.textContent = '2';
-      document.getElementById('base-count')!.textContent = baseClasses.toLocaleString();
-
-      // Popular base classes (most inherited)
-      const popularBases = liveClasses
-        .map(cls => ({ cls, children: childrenCount.get(cls.name) || 0 }))
-        .filter(item => item.children > 0)
-        .sort((a, b) => b.children - a.children)
-        .slice(0, 8);
-
-      document.getElementById('popular-bases')!.innerHTML = 
-        popularBases.map(item => renderClassItem(item.cls, item.children)).join('');
-
-
-    } catch (error) {
-      console.error('Failed to load classes:', error);
-    }
-  }
-
-  loadAndDisplay();
-</script>

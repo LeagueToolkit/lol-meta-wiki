@@ -6,7 +6,8 @@
  * (see astro.config.mjs): baking them into every page made each HTML file
  * ~850KB and dominated build time. Instead, the group is built in the browser
  * from /db/classSidebar.json (grouped at generate time by
- * scripts/generate-db.ts) and cached per tab:
+ * scripts/generate-db.ts: domain, then inheritance family, then class) and
+ * cached per tab:
  *
  * - First page view in a tab: the is:inline script injects a skeleton
  *   placeholder, then the module script fetches the JSON, builds the group
@@ -14,6 +15,11 @@
  * - Later navigations: the is:inline script re-injects the cached HTML
  *   synchronously during HTML parsing, so the group appears without any
  *   flash or delay.
+ *
+ * Classes the game no longer ships are hidden unless the reader turns them
+ * on with the switch at the top of the group. The choice lives on <html>
+ * (data-wiki-hide-removed, styled in custom.css) and in localStorage, so the
+ * cached markup is the same either way.
  *
  * Must be rendered *after* the default sidebar - both scripts attach to the
  * server-rendered sidebar DOM.
@@ -28,12 +34,40 @@
   // current-page marking, branch expansion, scroll centering) because inline
   // scripts can't share code with it - keep in sync.
   (() => {
+    // Removed classes are hidden by default; "false" is the reader opting in
+    // to seeing them. Set before anything renders so the list never jumps.
+    const HIDE_REMOVED_KEY = "wiki-hide-removed";
+    const root = document.documentElement;
+    try {
+      if (localStorage.getItem(HIDE_REMOVED_KEY) !== "false") {
+        root.dataset.wikiHideRemoved = "";
+      }
+    } catch {
+      root.dataset.wikiHideRemoved = "";
+    }
+    // One delegated listener serves the switch on both paths (cached markup
+    // and the module script's first build), so neither has to wire it.
+    document.addEventListener("click", (event) => {
+      const toggle = event.target.closest?.("[data-wiki-toggle-removed]");
+      if (!toggle) return;
+      const hide = !("wikiHideRemoved" in root.dataset);
+      if (hide) root.dataset.wikiHideRemoved = "";
+      else delete root.dataset.wikiHideRemoved;
+      // The switch exists twice on a domain page (sidebar + filter chips)
+      document
+        .querySelectorAll("[data-wiki-toggle-removed]")
+        .forEach((el) => el.setAttribute("aria-pressed", String(!hide)));
+      try {
+        localStorage.setItem(HIDE_REMOVED_KEY, String(hide));
+      } catch {}
+    });
+
     try {
       const topLevel = document.querySelector("#starlight__sidebar ul.top-level");
       if (!topLevel || topLevel.querySelector("[data-wiki-classes-group]"))
         return;
 
-      const cached = sessionStorage.getItem("wiki-classes-group-html-v4");
+      const cached = sessionStorage.getItem("wiki-classes-group-html-v5");
       if (!cached) {
         injectSkeleton(topLevel);
         return;
@@ -41,6 +75,9 @@
       topLevel.insertAdjacentHTML("beforeend", cached);
 
       const group = topLevel.querySelector("[data-wiki-classes-group]");
+      group
+        .querySelector("[data-wiki-toggle-removed]")
+        ?.setAttribute("aria-pressed", String(!("wikiHideRemoved" in root.dataset)));
       const details = group.querySelector("details");
       const path = location.pathname.replace(/\/$/, "");
       const currentLink =
@@ -149,13 +186,17 @@
    * path). Clones existing server-rendered sidebar DOM as templates so the
    * new elements inherit Starlight's scoped style classes.
    */
-  import type { ClassSidebar, ClassSidebarEntry } from "../../../types";
+  import type {
+    ClassSidebar,
+    ClassSidebarDomain,
+    ClassSidebarEntry,
+  } from "../../../types";
 
   // Duplicated in the is:inline fast-path script above - keep in sync.
   const OPEN_STATE_KEY = "wiki-classes-group-open";
   // Bump the version whenever a rendered row changes shape - a stale cache
   // would keep re-injecting the old markup for the life of the tab.
-  const HTML_CACHE_KEY = "wiki-classes-group-html-v4";
+  const HTML_CACHE_KEY = "wiki-classes-group-html-v5";
 
   interface Templates {
     /** A collapsible group <li> - cloned for the group and its subgroups. */
@@ -207,9 +248,9 @@
   }
 
   /**
-   * Builds the "Classes" group <li>: collapsible subgroups first, then the
-   * flat stragglers, then the unresolved-hash group last - mirroring the
-   * classSidebar.json shape 1:1.
+   * Builds the "Classes" group <li>, mirroring the classSidebar.json shape
+   * 1:1: one collapsible group per domain, holding its family groups, then
+   * its loose classes, then the unnamed ones.
    */
   function renderGroup(
     data: ClassSidebar,
@@ -247,21 +288,74 @@
 
     // Collapsed by default; the branch holding the current page is expanded
     // once the whole group is built.
-    const makeSubgroup = (
-      label: string,
-      entries: ClassSidebarEntry[],
-    ): HTMLElement => {
+    const makeSubgroup = (label: string, rows: HTMLElement[]): HTMLElement => {
       const li = templates.group.cloneNode(true) as HTMLElement;
       li.querySelectorAll("sl-sidebar-restore").forEach((el) => el.remove());
       const details = li.querySelector("details")!;
       details.removeAttribute("open");
       const labelEl = li.querySelector("summary .group-label .large");
       if (labelEl) labelEl.textContent = label;
-      const list = details.querySelector("ul")!;
-      list.innerHTML = "";
-      const fragment = document.createDocumentFragment();
-      for (const entry of entries) fragment.appendChild(makeLink(entry));
-      list.appendChild(fragment);
+      details.querySelector("ul")!.replaceChildren(...rows);
+      return li;
+    };
+
+    // A group whose every class is gone hides with them (custom.css), or the
+    // reader would open it to find nothing.
+    const allRemoved = (entries: ClassSidebarEntry[]) =>
+      entries.every(([, , removedIn]) => removedIn !== undefined);
+    const makeClassGroup = (
+      label: string,
+      entries: ClassSidebarEntry[],
+    ): HTMLElement => {
+      const li = makeSubgroup(label, entries.map(makeLink));
+      if (allRemoved(entries)) li.setAttribute("data-wiki-all-removed", "");
+      return li;
+    };
+
+    const makeDomain = (domain: ClassSidebarDomain): HTMLElement => {
+      const overview = makeLink(["Overview", `/domains/${domain.id}`]);
+      overview.querySelector("a")!.classList.add("wiki-domain-overview");
+      const li = makeSubgroup(domain.title, [
+        overview,
+        ...domain.groups.map((g) => makeClassGroup(g.label, g.entries)),
+        ...domain.loose.map(makeLink),
+        ...(domain.unnamed.length
+          ? [makeClassGroup("Unnamed", domain.unnamed)]
+          : []),
+      ]);
+      li.setAttribute("data-wiki-domain", domain.id);
+      if (domain.unreleased) {
+        const flag = document.createElement("span");
+        flag.className = "wiki-domain-flag";
+        flag.textContent = "unreleased";
+        li.querySelector("summary .group-label")?.append(flag);
+      }
+      const everything = [
+        ...domain.groups.flatMap((g) => g.entries),
+        ...domain.loose,
+        ...domain.unnamed,
+      ];
+      if (allRemoved(everything)) li.setAttribute("data-wiki-all-removed", "");
+      return li;
+    };
+
+    // The switch for removed classes. A real button in its own row: the
+    // delegated listener in the inline script above flips it.
+    const makeRemovedToggle = (): HTMLElement => {
+      const li = document.createElement("li");
+      li.className = "wiki-classes-toggle";
+      const button = document.createElement("button");
+      button.type = "button";
+      button.setAttribute("data-wiki-toggle-removed", "");
+      button.setAttribute(
+        "aria-pressed",
+        String(!("wikiHideRemoved" in document.documentElement.dataset)),
+      );
+      const knob = document.createElement("span");
+      knob.className = "wiki-classes-toggle-knob";
+      knob.setAttribute("aria-hidden", "true");
+      button.append(knob, "Show removed classes");
+      li.append(button);
       return li;
     };
 
@@ -274,21 +368,10 @@
     const label = group.querySelector("summary .group-label .large");
     if (label) label.textContent = "Classes";
 
-    const list = group.querySelector("details")!.querySelector("ul")!;
-    list.innerHTML = "";
-    const fragment = document.createDocumentFragment();
-    for (const g of data.groups) {
-      fragment.appendChild(makeSubgroup(g.label, g.entries));
-    }
-    for (const entry of data.other) {
-      fragment.appendChild(makeLink(entry));
-    }
-    if (data.hashed.length) {
-      fragment.appendChild(
-        makeSubgroup(`Unhashed (${data.hashed.length})`, data.hashed),
-      );
-    }
-    list.appendChild(fragment);
+    group
+      .querySelector("details")!
+      .querySelector("ul")!
+      .replaceChildren(makeRemovedToggle(), ...data.domains.map(makeDomain));
 
     expandBranch(currentLink, group);
     return { group, currentLink };
@@ -307,7 +390,8 @@
   /**
    * Caches the group HTML (without page-specific state) for instant injection
    * on later navigations. ~800KB, well within quota; cleared when the tab
-   * closes.
+   * closes. The switch's pressed state is page state too: the inline script
+   * sets it from localStorage on every injection.
    */
   function cacheGroupHtml(group: HTMLElement): void {
     try {

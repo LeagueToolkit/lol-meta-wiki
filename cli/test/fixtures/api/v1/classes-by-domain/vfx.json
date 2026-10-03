@@ -1,0 +1,13 @@
+{
+  "count": 8,
+  "classes": [
+    "IVfxEmissionSource",
+    "VfxAnimatedColor",
+    "VfxAnimatedColorVariableData",
+    "VfxColorBase",
+    "VfxEmissionSkeleton",
+    "VfxEmissionSkeletonData",
+    "VfxProbabilityTableData",
+    "VfxVector3DynamicProperty"
+  ]
+}

@@ -1,0 +1,126 @@
+---
+// The rows of a domain page: one linked class per row, with the facts a
+// reader filters by (documented, kind, removed, still unnamed) as markers.
+// The is-* classes are what DomainFilters hides rows by.
+import type { DomainClass } from "../../types";
+import FileTextIcon from "../icons/FileTextIcon.astro";
+
+interface Props {
+  entries: DomainClass[];
+}
+
+const { entries } = Astro.props;
+
+const isUnnamed = (name: string) => /^0x[0-9a-f]+$/i.test(name);
+const kindLabel = { class: undefined, interface: "interface", value: "value" };
+---
+
+<ul class="class-rows">
+  {
+    entries.map((c) => (
+      <li
+        class:list={[
+          "class-row",
+          {
+            "is-removed": c.removedIn !== undefined,
+            "is-unnamed": isUnnamed(c.name),
+            "is-documented": c.documented,
+          },
+        ]}
+      >
+        <a href={c.href} title={c.removedIn && `Removed from the game in patch ${c.removedIn}`}>
+          <span class="class-name">{c.name}</span>
+          {c.documented && (
+            <span class="marker marker-docs" title="Documented">
+              <FileTextIcon size={12} />
+            </span>
+          )}
+          {kindLabel[c.kind] && <span class="marker marker-kind">{kindLabel[c.kind]}</span>}
+          {c.removedIn && <span class="marker marker-removed">removed {c.removedIn}</span>}
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .class-rows {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+    gap: 0.125rem 1rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .class-row {
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+  }
+
+  .class-row a {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--ltk-radius-sm);
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-1);
+    text-decoration: none;
+  }
+
+  .class-row a:hover {
+    background: var(--sl-color-gray-6);
+    color: var(--sl-color-white);
+  }
+
+  .class-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* An unresolved hash is an identifier, not a name: mono and muted, so a
+     column of them does not compete with the readable rows. */
+  .is-unnamed .class-name {
+    font-family: var(--sl-font-mono);
+    font-size: var(--sl-text-xs);
+    color: var(--sl-color-gray-3);
+  }
+
+  .is-removed .class-name {
+    color: var(--sl-color-gray-3);
+  }
+
+  .marker {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.6875rem;
+    line-height: 1;
+    color: var(--sl-color-gray-3);
+  }
+
+  .marker-docs {
+    color: var(--sl-color-accent-high);
+  }
+
+  .marker-kind {
+    padding: 0.125rem 0.3rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.25rem;
+  }
+
+  .marker-removed {
+    color: var(--cl-removed-text);
+  }
+
+  /* Filters. Removed classes follow the site-wide switch (the same one the
+     sidebar has); the other two are local to the page (DomainFilters). */
+  :global(:root[data-wiki-hide-removed]) .is-removed,
+  :global(.domain-page[data-hide-unnamed]) .is-unnamed,
+  :global(.domain-page[data-only-documented]) .class-row:not(.is-documented) {
+    display: none;
+  }
+</style>

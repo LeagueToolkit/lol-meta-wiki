@@ -12,11 +12,16 @@
  *          outDir/index.json (fetched client-side)
  *          outDir/classIndex.json (fetched client-side)
  *          outDir/classSidebar.json (fetched client-side, grouped sidebar view)
+ *          outDir/categories.json (the ordered domain list, with counts)
+ *          domainsOutDir/<id>.<sha12>.json + domainsMdxDir/<id>.mdx (one
+ *          browse page per domain)
  *          outDir/classHashes.json (fetched client-side by the 404 resolver)
  *          mdxDir/<ClassName>.mdx (Starlight docs)
  *
  * Usage:
  *   bun run scripts/generate-db.ts --in db/meta.db.json --out site/public/db --classes-out site/db-data/classes --mdx site/src/content/docs/classes
+ *   --strict turns warnings from db/categories.yaml (a root or pin naming a
+ *   class the db does not have) into errors; PR checks pass it, deploys don't.
  *
  * Notes:
  * - Everything in meta.db.json is keyed by FNV-1a hash; resolved names are
@@ -33,33 +38,48 @@ import { basename, dirname, join } from "node:path";
 import { parse as parseYAML } from "yaml";
 // Output shapes are the generator↔consumer contract - defined once in the
 // site package and imported here so the producer can't drift from the
-// consumers (components and api/scripts). Type-only, so it's erased at
-// runtime (no cross-package dep).
-import type {
-  ChangeTuple,
-  PropChange,
-  ClassChange,
-  ChangelogBuildGroup,
-  ChangelogCounts,
-  ChangelogPatch,
-  ClassDocumentation,
-  ClassGraph,
-  ClassHashIndex,
-  ClassJson,
-  ClassSidebar,
-  ClassSidebarEntry,
-  ClassSidebarGroup,
-  DescendantNode,
-  Property,
-  PropertyDocumentation,
-  SymbolClassEntry,
-  SymbolsIndex,
-  TypeHistoryEntry,
-  UsedByClass,
-  UsedByProp,
+// consumers (components and api/scripts). Types only, plus the two reserved
+// domain ids - plain constants, so there is still no cross-package dep.
+import {
+  SHARED_DOMAIN,
+  UNCATEGORIZED_DOMAIN,
+  type CategoryVia,
+  type ChangeTuple,
+  type PropChange,
+  type ClassChange,
+  type ChangelogCounts,
+  type ChangelogPatch,
+  type ClassDocumentation,
+  type ClassCategory,
+  type ClassGraph,
+  type ClassHashIndex,
+  type ClassJson,
+  type ClassKind,
+  type ClassSidebar,
+  type ClassSidebarDomain,
+  type ClassSidebarEntry,
+  type ClassSidebarGroup,
+  type DescendantNode,
+  type DomainClass,
+  type DomainFamily,
+  type DomainInfo,
+  type DomainPageData,
+  type Property,
+  type PropertyDocumentation,
+  type SymbolClassEntry,
+  type SymbolsIndex,
+  type TypeHistoryEntry,
+  type UsedByClass,
+  type UsedByProp,
 } from "../site/src/types";
 // Raw meta.db.json shapes, shared with api/scripts.
 import type { MetaDb, PropRevision } from "./meta-db";
+import {
+  categorize,
+  parseCategoryConfig,
+  type CategoryConfig,
+  type UsageEdge,
+} from "./categorize";
 
 // --- intermediate build shape ---
 // The generator's working shape before ancestors/descendants and docs are
@@ -68,6 +88,7 @@ type ClassDoc = {
   name: string; // resolved type name or raw hex
   hash: string; // canonical class hash (see canonHash)
   bases: string[]; // zero or more base names (resolved or hex)
+  kind: ClassKind;
   properties: Property[];
   since?: string; // patch the class was added in
   removedIn?: string; // patch the class was removed in
@@ -95,7 +116,11 @@ const changelogOutDir =
   args.get("changelog-out") ?? "site/db-data/changelog";
 const changelogMdxDir =
   args.get("changelog-mdx") ?? "site/src/content/docs/changelog";
+const domainsOutDir = args.get("domains-out") ?? "site/db-data/domains";
+const domainsMdxDir = args.get("domains-mdx") ?? "site/src/content/docs/domains";
 const docsDir = args.get("docs") ?? "db/docs";
+const categoriesFile = args.get("categories") ?? "db/categories.yaml";
+const strict = args.get("strict") === "true" || args.get("strict") === "1";
 const pretty = args.get("pretty") === "true" || args.get("pretty") === "1";
 
 // --- helpers ---
@@ -217,6 +242,7 @@ function loadMetaDb(db: MetaDb): ClassDoc[] {
       name: klass.name ?? khash,
       hash: canonHash(khash),
       bases: currentClass.bases.map(nameOf),
+      kind: currentClass.interface ? "interface" : currentClass.value ? "value" : "class",
       properties: [],
     };
     if (classFrom > firstBuild) doc.since = patchOf(classFrom);
@@ -287,6 +313,72 @@ function loadMetaDb(db: MetaDb): ClassDoc[] {
   return classes;
 }
 
+// --- categories ---
+/**
+ * Every "class A has a property typed as class B" pair, at each class's final
+ * state: a property counts when it was still there at its class's last build.
+ * For a class in the latest build that is exactly the "Referenced by" edge set;
+ * a removed class contributes the references it had when it was last seen, so
+ * removed families can still be placed by what used them.
+ */
+function usageEdges(db: MetaDb): UsageEdge[] {
+  const edges: UsageEdge[] = [];
+  for (const [khash, klass] of Object.entries(db.classes)) {
+    const last = klass.revisions[klass.revisions.length - 1];
+    for (const prop of Object.values(klass.properties)) {
+      const rev = prop.revisions[prop.revisions.length - 1];
+      if (rev.to !== last.to) continue;
+      const target = db.classes[rev.type[3]];
+      if (!target) continue;
+      edges.push({
+        user: klass.name ?? khash,
+        used: target.name ?? rev.type[3],
+        live: last.to === undefined,
+      });
+    }
+  }
+  return edges;
+}
+
+/**
+ * Read db/categories.yaml. A mistake in the file always stops the run; a
+ * reference to a class the db does not have only does under --strict (see
+ * parseCategoryConfig for why).
+ */
+async function loadCategoryConfig(classes: ClassDoc[]): Promise<CategoryConfig> {
+  const names = new Set(classes.map((c) => c.name));
+  const nameByHash = new Map(classes.map((c) => [c.hash, c.name]));
+  const resolve = (ref: string) =>
+    names.has(ref)
+      ? ref
+      : /^0x[0-9a-f]+$/i.test(ref)
+        ? nameByHash.get(canonHash(ref))
+        : undefined;
+
+  const raw = parseYAML(await readFile(categoriesFile, "utf8"));
+  const { config, errors, warnings } = parseCategoryConfig(raw, resolve);
+  for (const w of warnings) console.warn(`[warn] ${basename(categoriesFile)}: ${w}`);
+  const fatal = strict ? [...errors, ...warnings] : errors;
+  if (fatal.length > 0) {
+    throw new Error(`${basename(categoriesFile)}:\n  - ${fatal.join("\n  - ")}`);
+  }
+  return config;
+}
+
+// Titles for the two domains no file defines.
+const RESERVED_DOMAINS: Pick<DomainInfo, "id" | "title" | "description">[] = [
+  {
+    id: SHARED_DOMAIN,
+    title: "Shared",
+    description: "Building blocks used by more than one domain.",
+  },
+  {
+    id: UNCATEGORIZED_DOMAIN,
+    title: "Uncategorized",
+    description: "Classes no domain claims yet.",
+  },
+];
+
 // --- changelog builder ---
 /**
  * Derive a per-patch changelog from meta.db.json revision boundaries.
@@ -298,6 +390,9 @@ function loadMetaDb(db: MetaDb): ClassDoc[] {
  * drop the first tracked build (where everything "appears" - tracking-start
  * noise, same reason generate-db suppresses `since` for firstBuild).
  *
+ * `domainOf` is the class's domain *today*: unlike `family` it is not resolved
+ * at the build of the change, because categories.yaml has no history.
+ *
  * A revision carries {from, to} with both bounds inclusive: the entity is
  * present from build `from` through build `to` (or through the latest build
  * when `to` is absent). db_build closes a revision at the last build with the
@@ -305,7 +400,10 @@ function loadMetaDb(db: MetaDb): ClassDoc[] {
  * value change, so a *consecutive* to/from split is a change, while a gap
  * (to << next from) is a real removal followed by a re-add.
  */
-function buildChangelog(db: MetaDb): ChangelogPatch[] {
+function buildChangelog(
+  db: MetaDb,
+  domainOf: (className: string) => string | undefined
+): ChangelogPatch[] {
   const builds = db.versions.map((v) => v.build); // sorted by build
   const patchByBuild = new Map(db.versions.map((v) => [v.build, v.patch]));
   const buildIndex = new Map(builds.map((b, i) => [b, i]));
@@ -509,6 +607,7 @@ function buildChangelog(db: MetaDb): ChangelogPatch[] {
           kind: e.classKind,
           build,
           family: e.family,
+          domain: domainOf(e.name),
           propChanges: [],
         });
       } else if (e.classKind === "changed" || e.propChanges.length > 0) {
@@ -569,7 +668,7 @@ function buildChangelog(db: MetaDb): ChangelogPatch[] {
 /**
  * Generate MDX content for a class documentation page
  */
-function generateMDX(c: ClassDoc, fileName: string): string {
+function generateMDX(c: ClassDoc, fileName: string, category: ClassCategory): string {
   const displayName = c.name.startsWith("0x") ? `Class ${c.name}` : c.name;
 
   // Generate invisible heading anchors for TOC
@@ -582,7 +681,12 @@ function generateMDX(c: ClassDoc, fileName: string): string {
   const headerFrontmatter =
     (c.since ? `\nsince: "${c.since}"` : "") +
     (c.removedIn ? `\nremovedIn: "${c.removedIn}"` : "") +
-    `\nhash: "${c.hash}"`;
+    `\nhash: "${c.hash}"` +
+    `\nkind: ${c.kind}` +
+    `\ndomain: ${category.domain}` +
+    `\nvia: ${category.via}` +
+    // The root of a family is its own family; the breadcrumb has nothing to add
+    (category.family !== c.name ? `\nfamily: "${category.family}"` : "");
 
   // Hash-named classes stay searchable (by hash and by property name), but
   // their property headings are heavily down-weighted in Pagefind so classes
@@ -625,6 +729,20 @@ sidebar:
 import PatchChangelog from '../../../components/PatchChangelog.astro';
 
 <PatchChangelog file="/db/changelog/${fileName}" />
+`;
+}
+
+/** MDX stub for a domain's browse page, same pattern as the changelog. */
+function generateDomainMDX(d: DomainInfo, fileName: string): string {
+  return `---
+title: ${JSON.stringify(d.title)}
+description: ${JSON.stringify(`${d.title} - meta classes in this domain. ${d.description}`)}
+domain: ${d.id}
+---
+
+import DomainPage from '../../../components/DomainPage.astro';
+
+<DomainPage file="/db/domains/${fileName}" />
 `;
 }
 
@@ -694,6 +812,21 @@ async function main() {
       .map(([n, props]) => ({ name: n, props }))
       .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 
+  // Categories: every class gets one domain (see categorize.ts). The primary
+  // base is the first base that is itself a class - a base naming an external
+  // type ends the chain there.
+  const categoryConfig = await loadCategoryConfig(classes);
+  const categories = categorize(
+    classes.map((c) => ({
+      name: c.name,
+      base: c.bases.find((b) => classMap.has(b)),
+      removed: c.removedIn !== undefined,
+    })),
+    usageEdges(metaDb),
+    categoryConfig
+  );
+  const categoryOf = (name: string) => categories.get(name)!;
+
   // Ancestors as BFS levels going up: [direct bases, their bases, ...].
   // Multiple inheritance puts several classes on one level; each class
   // appears only once, at its shallowest depth.
@@ -745,6 +878,8 @@ async function main() {
   let mdxChanged = 0;
   const generatedMDX = new Set<string>();
   const generatedJSON = new Set<string>();
+  // Classes with a db/docs YAML that says something
+  const documented = new Set<string>();
 
   for (const c of classes) {
     const ancestorLevels = getAncestorLevels(c.name);
@@ -752,6 +887,7 @@ async function main() {
 
     // Load documentation from unified YAML file
     const { classDocs, propertyDocs } = await loadDocs(c.name, docsDir);
+    if (classDocs || Object.keys(propertyDocs).length > 0) documented.add(c.name);
 
     // Merge property documentation
     const propertiesWithDocs = c.properties.map(prop => ({
@@ -769,6 +905,8 @@ async function main() {
       descendantTree,
       docs: classDocs || null,
       usedBy: usedByOf(c.name),
+      kind: c.kind,
+      category: categoryOf(c.name),
     };
     const json = JSON.stringify(classJson, null, pretty ? 2 : 0);
     const hash = contentHash(classJson);
@@ -781,7 +919,7 @@ async function main() {
     // Generate MDX file (lowercase for Starlight URL compatibility)
     const mdxFileName = `${safeName(c.name).toLowerCase()}.mdx`;
     const mdxFilePath = join(mdxDir, mdxFileName);
-    const mdxContent = generateMDX(c, fileName);
+    const mdxContent = generateMDX(c, fileName, categoryOf(c.name));
     const didMdx = await writeIfChanged(mdxFilePath, mdxContent);
     if (didMdx) mdxChanged++;
     generatedMDX.add(mdxFileName);
@@ -942,62 +1080,191 @@ async function main() {
   };
   await writeIfChanged(join(outDir, "symbols.json"), JSON.stringify(symbols));
 
-  // Emit classSidebar.json - the grouped view the client-rendered "Classes"
-  // sidebar group consumes (ResizableSidebar.astro). Named classes bucket by
-  // first PascalCase word; buckets of MIN_GROUP_SIZE+ become collapsible
-  // groups, stragglers stay flat, and unresolved 0x… names sort last so they
-  // stop burying the readable classes (issue #6).
-  const MIN_GROUP_SIZE = 5;
+  // --- categories: the domain list, the sidebar and one page per domain ---
+  // All three are the same partition of `classes` (domain → family → class),
+  // so it is built once and projected three ways.
   const isHashName = (n: string) => /^0x[0-9a-fA-F]+$/.test(n);
-  const firstWord = (n: string) =>
-    n.match(/^(?:[A-Z]+(?![a-z])|[A-Z][a-z0-9]*|[a-z0-9]+)/)?.[0] ?? n;
-  const byName = (a: ClassSidebarEntry, b: ClassSidebarEntry) =>
-    a[0].localeCompare(b[0], "en", { sensitivity: "base" });
+  // Named classes A→Z, then unresolved hashes numerically: an unnamed class is
+  // the least useful row in any list, so it never sits above a readable one.
+  const byClassName = (a: string, b: string) => {
+    const ha = isHashName(a);
+    const hb = isHashName(b);
+    if (ha !== hb) return ha ? 1 : -1;
+    return ha
+      ? parseInt(a, 16) - parseInt(b, 16)
+      : a.localeCompare(b, "en", { sensitivity: "base" });
+  };
+  // The root leads its own family (same as the changelog's family groups).
+  const rootFirst = (family: string, names: string[]) => {
+    const sorted = names.sort(byClassName);
+    const at = sorted.indexOf(family);
+    if (at > 0) sorted.unshift(...sorted.splice(at, 1));
+    return sorted;
+  };
 
-  const sidebarEntry = (name: string, href: string): ClassSidebarEntry =>
-    removedByName[name] ? [name, href, removedByName[name]] : [name, href];
-
-  const buckets = new Map<string, ClassSidebarEntry[]>();
-  const hashed: ClassSidebarEntry[] = [];
-  for (const [name, href] of Object.entries(classIndex)) {
-    if (isHashName(name)) {
-      hashed.push(sidebarEntry(name, href));
-    } else {
-      const word = firstWord(name);
-      let bucket = buckets.get(word);
-      if (!bucket) buckets.set(word, (bucket = []));
-      bucket.push(sidebarEntry(name, href));
-    }
-  }
-  hashed.sort((a, b) => parseInt(a[0], 16) - parseInt(b[0], 16));
-
-  const sidebarGroups: ClassSidebarGroup[] = [];
-  const sidebarOther: ClassSidebarEntry[] = [];
-  for (const [label, entries] of buckets) {
-    if (entries.length >= MIN_GROUP_SIZE) {
-      sidebarGroups.push({ label, entries: entries.sort(byName) });
-    } else {
-      sidebarOther.push(...entries);
-    }
-  }
-  sidebarGroups.sort((a, b) =>
-    a.label.localeCompare(b.label, "en", { sensitivity: "base" })
+  const domainDefs = [
+    ...categoryConfig.domains.map(({ id, title, description, unreleased }) => ({
+      id,
+      title,
+      description,
+      unreleased,
+    })),
+    ...RESERVED_DOMAINS.map((d) => ({ ...d, unreleased: false })),
+  ];
+  // domain id → family root → member names
+  const partition = new Map<string, Map<string, string[]>>(
+    domainDefs.map((d) => [d.id, new Map()])
   );
-  sidebarOther.sort(byName);
+  for (const c of classes) {
+    const { domain, family } = categoryOf(c.name);
+    const families = partition.get(domain)!;
+    let members = families.get(family);
+    if (!members) families.set(family, (members = []));
+    members.push(c.name);
+  }
+
+  const domains: DomainInfo[] = domainDefs.map((d) => {
+    const names = [...partition.get(d.id)!.values()].flat();
+    return {
+      ...d,
+      counts: {
+        classes: names.length,
+        live: names.filter((n) => !removedByName[n]).length,
+        unnamed: names.filter(isHashName).length,
+        documented: names.filter((n) => documented.has(n)).length,
+      },
+    };
+  });
+  await writeIfChanged(
+    join(outDir, "categories.json"),
+    JSON.stringify(domains, null, pretty ? 2 : 0)
+  );
+
+  // Emit classSidebar.json - the grouped view the client-rendered "Classes"
+  // sidebar group consumes (sidebar/ClassesGroup.astro): domain → family →
+  // class. Families of MIN_GROUP_SIZE+ become collapsible groups; smaller ones
+  // would be more headers than rows, so their classes stay flat in the domain.
+  const MIN_GROUP_SIZE = 5;
+  const sidebarEntry = (name: string): ClassSidebarEntry =>
+    removedByName[name]
+      ? [name, classIndex[name], removedByName[name]]
+      : [name, classIndex[name]];
 
   const classSidebar: ClassSidebar = {
-    groups: sidebarGroups,
-    other: sidebarOther,
-    hashed,
+    domains: domains.map((d): ClassSidebarDomain => {
+      const groups: ClassSidebarGroup[] = [];
+      const flat: string[] = [];
+      for (const [family, members] of partition.get(d.id)!) {
+        if (members.length >= MIN_GROUP_SIZE) {
+          groups.push({
+            label: family,
+            entries: rootFirst(family, [...members]).map(sidebarEntry),
+          });
+        } else {
+          flat.push(...members);
+        }
+      }
+      groups.sort((a, b) => byClassName(a.label, b.label));
+      flat.sort(byClassName);
+      return {
+        id: d.id,
+        title: d.title,
+        ...(d.unreleased ? { unreleased: true as const } : {}),
+        groups,
+        loose: flat.filter((n) => !isHashName(n)).map(sidebarEntry),
+        unnamed: flat.filter(isHashName).map(sidebarEntry),
+      };
+    }),
   };
   await writeIfChanged(
     join(outDir, "classSidebar.json"),
     JSON.stringify(classSidebar, null, pretty ? 2 : 0)
   );
 
+  // Emit one browse page per domain: build-time JSON (outside public/, like
+  // the class JSON) plus an MDX stub. Here a family is a section from two
+  // members up - the page has room the sidebar does not.
+  const kindByName = new Map(classes.map((c) => [c.name, c.kind]));
+  const domainClass = (name: string): DomainClass => ({
+    name,
+    href: classIndex[name],
+    kind: kindByName.get(name)!,
+    ...(removedByName[name] ? { removedIn: removedByName[name] } : {}),
+    ...(documented.has(name) ? { documented: true as const } : {}),
+  });
+  let domainsChanged = 0;
+  const generatedDomainJSON = new Set<string>();
+  const generatedDomainMDX = new Set<string>();
+  for (const d of domains) {
+    // Only the domains nothing claimed say who uses each family: that is the
+    // evidence a contributor needs to decide where it belongs.
+    const explainUsers = d.id === SHARED_DOMAIN || d.id === UNCATEGORIZED_DOMAIN;
+    const families: DomainFamily[] = [];
+    const loose: string[] = [];
+    for (const [family, members] of partition.get(d.id)!) {
+      if (members.length < 2) {
+        loose.push(...members);
+        continue;
+      }
+      const users = new Set<string>();
+      if (explainUsers) {
+        for (const m of members) {
+          for (const user of usedByMap.get(m)?.keys() ?? []) {
+            if (!members.includes(user)) users.add(user);
+          }
+        }
+      }
+      families.push({
+        name: family,
+        entries: rootFirst(family, [...members]).map(domainClass),
+        ...(users.size > 0 ? { usedBy: [...users].sort(byClassName) } : {}),
+      });
+    }
+    families.sort(
+      (a, b) => b.entries.length - a.entries.length || byClassName(a.name, b.name)
+    );
+    const page: DomainPageData = {
+      ...d,
+      families,
+      loose: loose.sort(byClassName).map(domainClass),
+    };
+    const fileName = `${d.id}.${contentHash(page)}.json`;
+    if (
+      await writeIfChanged(
+        join(domainsOutDir, fileName),
+        JSON.stringify(page, null, pretty ? 2 : 0)
+      )
+    ) {
+      domainsChanged++;
+    }
+    generatedDomainJSON.add(fileName);
+    const mdxFileName = `${d.id}.mdx`;
+    await writeIfChanged(join(domainsMdxDir, mdxFileName), generateDomainMDX(d, fileName));
+    generatedDomainMDX.add(mdxFileName);
+  }
+  // Stale domain files: a content hash renames the JSON, a deleted domain
+  // leaves its MDX behind. index.mdx is hand-written, keep it.
+  let domainsDeleted = 0;
+  try {
+    for (const file of await readdir(domainsOutDir)) {
+      if (file.endsWith(".json") && !generatedDomainJSON.has(file)) {
+        await unlink(join(domainsOutDir, file));
+        domainsDeleted++;
+      }
+    }
+    for (const file of await readdir(domainsMdxDir)) {
+      if (file.endsWith(".mdx") && file !== "index.mdx" && !generatedDomainMDX.has(file)) {
+        await unlink(join(domainsMdxDir, file));
+        domainsDeleted++;
+      }
+    }
+  } catch {
+    // Directory might not exist yet, that's fine
+  }
+
   // --- changelog: per-patch JSON (build-time only, outside public/ like the
   // class JSON) + MDX stubs + an index.json for the overview page ---
-  const changelog = buildChangelog(metaDb);
+  const changelog = buildChangelog(metaDb, (name) => categories.get(name)?.domain);
   let clJsonChanged = 0;
   let clMdxChanged = 0;
   const generatedChangelogJSON = new Set<string>(["index.json"]);
@@ -1083,6 +1350,28 @@ async function main() {
   console.log(
     `     - Changelog: ${changelog.length} patches, JSON ${clJsonChanged} changed / ${clJsonDeleted} deleted, MDX ${clMdxChanged} changed / ${clMdxDeleted} deleted`
   );
+
+  // Category coverage: how each class was placed, and what is left to seed.
+  // Printed on every run - this table is where a stale or missing seed shows.
+  const viaCounts = new Map<CategoryVia, number>();
+  for (const { via } of categories.values()) viaCounts.set(via, (viaCounts.get(via) ?? 0) + 1);
+  const share = (n: number) => `${n} (${((100 * n) / classes.length).toFixed(1)}%)`;
+  console.log(
+    `     - Categories: ${domains.length} domains, ${domainsChanged} changed / ${domainsDeleted} deleted; ` +
+      (["pin", "seed", "prefix", "usage", "shared", "none"] as const)
+        .map((via) => `${via} ${share(viaCounts.get(via) ?? 0)}`)
+        .join(", ")
+  );
+  console.log(
+    `       ${domains.map((d) => `${d.id} ${d.counts.classes}`).join(", ")}`
+  );
+  const unplaced = [...partition.get(UNCATEGORIZED_DOMAIN)!]
+    .sort(([a, am], [b, bm]) => bm.length - am.length || byClassName(a, b))
+    .slice(0, 10)
+    .map(([family, members]) => `${family} ${members.length}`);
+  if (unplaced.length > 0) {
+    console.log(`       largest uncategorized families: ${unplaced.join(", ")}`);
+  }
 }
 
 main().catch((err) => {

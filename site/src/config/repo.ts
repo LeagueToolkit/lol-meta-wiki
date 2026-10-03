@@ -2,7 +2,14 @@ export const REPO_CONFIG = {
   repoUrl: 'https://github.com/LeagueToolkit/lol-meta-wiki',
   branch: 'main',
   docsDir: 'db/docs',
+  categoriesFile: 'db/categories.yaml',
 };
+
+/** GitHub's web editor for the class categories file. */
+export function getCategoriesUrl(): string {
+  const { repoUrl, branch, categoriesFile } = REPO_CONFIG;
+  return `${repoUrl}/edit/${branch}/${categoriesFile}`;
+}
 
 /**
  * URL for documenting a class on GitHub: the web editor for an existing

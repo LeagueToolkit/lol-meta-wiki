@@ -106,9 +106,10 @@ const firstWith = {
     flex-shrink: 0;
     color: color-mix(in srgb, var(--family-accent) 70%, var(--sl-color-gray-3));
   }
-  /* The same count pill rides the section titles and the family headings
-     inside them, one step smaller. */
+  /* The same count pill rides the section titles and the domain and family
+     headings inside them, one step smaller. */
   :global(.patch-changelog .change-title .count),
+  :global(.patch-changelog .domain-title .count),
   :global(.patch-changelog .family-title .count) {
     font-size: 0.75rem;
     font-weight: 600;
@@ -117,9 +118,14 @@ const firstWith = {
     border-radius: 999px;
     padding: 0.05rem 0.5rem;
   }
+  :global(.patch-changelog .domain-title .count),
   :global(.patch-changelog .family-title .count) {
     font-size: 0.7rem;
     padding: 0.05rem 0.4rem;
+  }
+  /* The domain heading is set in small caps; its count is a number, not a label */
+  :global(.patch-changelog .domain-title .count) {
+    letter-spacing: 0;
   }
 
   :global(.patch-changelog .change-detail) {
