@@ -1,0 +1,24 @@
+# DynamicsJointTreeData Documentation
+
+class:
+  description: |
+    One tree of simulated joints in a
+    [group](/classes/dynamicsjointtreegroupdata) of a dynamics chain: a root joint and all
+    the joints below it in the skeleton. A tree can branch. Every branch is simulated.
+
+    **The root is not simulated.** It follows the animation and holds the tree in place.
+    Every joint below it is simulated, apart from the joints of `ExcludeJointNames`.
+
+properties:
+  RootJointName:
+    description: |
+      The joint the tree starts at, as the hash of its name (FNV-1a 32 of the lowercased
+      name). A name that is not a joint of the skeleton makes the client skip the tree.
+
+  ExcludeJointNames:
+    description: |
+      Joints of the tree that are not simulated, as hashes of their names. An excluded
+      joint, and every joint below it, keeps its animated transform relative to its
+      parent. So it follows the simulated joint it hangs on without swinging by itself.
+    notes:
+      - "A joint that is the root of another tree of the same modifier ends the walk of an excluded branch."

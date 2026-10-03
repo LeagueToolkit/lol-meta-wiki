@@ -1,0 +1,23 @@
+# PhysicsSimLocalSettings Documentation
+
+class:
+  description: |
+    The gravity of one [dynamics chain](/classes/dynamicschainrigposemodifierdata). The
+    gravity of the simulation is `GravityScale` times a gravity vector. The vector is
+    `GravityOverride` when that is set, and the `Gravity` of
+    [PhysicsSimGlobalSettings](/classes/physicssimglobalsettings) when it is not.
+  notes:
+    - "The gravity is fixed when the modifier is created. Nothing changes it afterward."
+
+properties:
+  GravityScale:
+    description: |
+      Multiplies the gravity. `1` is normal gravity, `0` gives no gravity, so the joints
+      only move by the motion of the character and by the pull to the animated pose. A
+      negative value makes the joints rise.
+
+  GravityOverride:
+    description: |
+      A gravity vector for this modifier, in world units per second squared, in world
+      axes. It replaces the global gravity. `GravityScale` still applies to it. Not set:
+      the global gravity is used.

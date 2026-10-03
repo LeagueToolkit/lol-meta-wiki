@@ -13,13 +13,25 @@ class:
     Bone names that use this lookup include `MissileMovementSpec.mStartBoneName`,
     `SpellDataResource.mHitBoneName`, `SkinCharacterDataProperties_CharacterIdleEffect.boneName`,
     `SeqInputCreateEffectEmitter.AttachTargetBone` and the bone that a VFX system is attached
-    to.
+    to. A [JointSnapEventData](/classes/jointsnapeventdata) can also snap a joint to a socket.
 
     The socket's transform is calculated from the skeleton's current pose at each lookup.
-    Each kind of socket calculates it differently.
+    Each kind of socket calculates it differently:
+
+    - [SocketDefinitionSingleJoint](/classes/socketdefinitionsinglejoint) follows one joint.
+    - [SocketDefinitionWorld](/classes/socketdefinitionworld) is fixed to the character's
+      origin.
+
+    The pose a socket reads is the pose after every
+    [pose modifier](/classes/baserigposemodifierdata). So a socket on a joint of a
+    [dynamics chain](/classes/dynamicschainrigposemodifierdata) follows the simulated joint.
   notes:
     - "Only the socket list of a character skin is read, from `SkinCharacterDataProperties.skinMeshProperties`. The list on other classes that embed `SkinMeshDataProperties` is ignored."
     - "No shipped skin defines sockets."
+    - "Two sockets with the same name: the first in the list is used. The second is never tried, even when the first cannot be resolved."
+    - "A socket cannot be attached to another socket."
+    - "The joint snap is the exception to the pose order: it resolves its socket before the dynamics chains run, and without the position of the unit in the world."
+    - "A socket is not a joint for the systems that take joints by index or only search the skeleton: a dynamics chain, the collision shapes of a dynamics chain and the `BoneTransform` driver do not find sockets."
 
 properties:
   name:

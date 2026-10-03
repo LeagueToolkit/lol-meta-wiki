@@ -1,0 +1,41 @@
+# CurveFloat Documentation
+
+class:
+  description: |
+    A curve of float values over an input, stored as keys. `times` holds the input of
+    each key, in rising order. Between two keys the value is interpolated the way
+    `InterpModes` says for that span. Before the first key the curve has the value of the
+    first key. After the last key it has the last entry of `values`.
+
+    What the input is depends on the class that holds the curve. For
+    [CurveScaledFloat](/classes/curvescaledfloat) it is the position along a chain of
+    joints from `0` to `1`.
+
+properties:
+  times:
+    description: "The input of each key, in rising order."
+
+  values:
+    description: |
+      The values of the keys. With only linear and stepped spans there is one value for
+      each key, in the order of `times`. A cubic span uses four entries: the value of its
+      first key, the slope leaving that key, the slope entering the next key, and the
+      value of the next key. So each cubic span adds two entries, and the list is longer
+      than `times`.
+    notes:
+      - "A list with a single value makes the curve constant."
+
+  InterpModes:
+    description: |
+      How the curve gets from each key to the next, one entry for each span between two
+      keys.
+
+      | Value | Interpolation |
+      |-------|---------------|
+      | `0` | Linear |
+      | `1` | Stepped: the value of the first key holds until the next key |
+      | `2` | Cubic, with the two slopes from `values` |
+
+      An empty list makes every span linear.
+    notes:
+      - "A span with any other value is not evaluated. An input inside such a span gives the last entry of `values`."

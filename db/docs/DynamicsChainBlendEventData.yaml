@@ -14,6 +14,8 @@ class:
     Without that modifier on the skin, the event does nothing.
   notes:
     - "No shipped graph uses this event kind."
+    - "The event has no name to match. It changes every dynamics chain modifier of the unit."
+    - "The simulation does not step while its weight is `0`. When the weight comes back, the joints start from the state they had when it stopped."
 
 properties:
   BlendFromDefaultDuration:
