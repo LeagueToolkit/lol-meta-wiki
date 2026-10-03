@@ -1,7 +1,12 @@
 ---
 // Override of Starlight's PageTitle: renders a class's click-to-copy hash chip
-// and its "Added"/"Removed" patch pills (hash/since/removedIn frontmatter).
+// and its "Added"/"Removed" patch pills (hash/since/removedIn frontmatter),
+// plus where the class sits - a domain / family breadcrumb above the title
+// (domain/family/via frontmatter) and a pill for its kind.
 import Pill from '../Pill.astro';
+import type { CategoryVia, ClassKind } from '../../types';
+import { classIndex } from '../../utils/classIndex';
+import { domainHref, domainOf, VIA_REASON } from '../../utils/domains';
 import CirclePlusIcon from '../icons/CirclePlusIcon.astro';
 import HashIcon from '../icons/HashIcon.astro';
 import TrashIcon from '../icons/TrashIcon.astro';
@@ -10,21 +15,56 @@ import TrashIcon from '../icons/TrashIcon.astro';
 // export); the skip-link and TOC target the h1 through this id
 const PAGE_TITLE_ID = '_top';
 
-const { title, removedIn, since, hash } = Astro.locals.starlightRoute.entry.data as {
+const { title, removedIn, since, hash, kind, domain: domainId, via, family } = Astro.locals
+	.starlightRoute.entry.data as {
 	title: string;
 	removedIn?: string;
 	since?: string;
 	hash?: string;
+	kind?: ClassKind;
+	domain?: string;
+	via?: CategoryVia;
+	family?: string;
 };
+
+// A class page carries a hash; a domain's own page carries only `domain`, and
+// its breadcrumb stops at "Classes".
+const domain = domainId ? domainOf(domainId) : undefined;
+const isClassPage = hash !== undefined;
+const familyHref = family ? classIndex[family] : undefined;
+const kindLabel = { class: undefined, interface: 'Interface', value: 'Value struct' }[
+	kind ?? 'class'
+];
 
 // Each patch pill links to that patch's changelog page (slug = dots → dashes)
 const changelogHref = (patch: string) => `/changelog/${patch.replace(/\./g, "-")}/`;
 ---
 
 <div class="page-title">
+	{
+		domain && (
+			<nav class="crumbs" aria-label="Category">
+				<a href="/classes/">Classes</a>
+				{isClassPage && (
+					<>
+						<span class="crumb-sep" aria-hidden="true">/</span>
+						<a href={domainHref(domain.id)} title={via && VIA_REASON[via]}>
+							{domain.title}
+						</a>
+					</>
+				)}
+				{family && (
+					<>
+						<span class="crumb-sep" aria-hidden="true">/</span>
+						{familyHref ? <a href={familyHref}>{family}</a> : <span>{family}</span>}
+					</>
+				)}
+			</nav>
+		)
+	}
 	<h1 id={PAGE_TITLE_ID}>{title}</h1>
 	{
-		(hash || removedIn || since) && (
+		(hash || removedIn || since || kindLabel || domain?.unreleased) && (
 			<div class="title-pills">
 				{hash && (
 					<button
@@ -58,6 +98,12 @@ const changelogHref = (patch: string) => `/changelog/${patch.replace(/\./g, "-")
 						</Pill>
 					</a>
 				)}
+				{kindLabel && <Pill variant="neutral">{kindLabel}</Pill>}
+				{domain?.unreleased && (
+					<Pill variant="warning" title={domain.description}>
+						Unreleased
+					</Pill>
+				)}
 			</div>
 		)
 	}
@@ -74,8 +120,35 @@ const changelogHref = (patch: string) => `/changelog/${patch.replace(/\./g, "-")
 
 	.title-pills {
 		display: flex;
+		flex-wrap: wrap;
 		align-items: center;
 		gap: 0.375rem;
+	}
+
+	/* Where the class sits. Quiet on purpose: orientation, not a headline -
+	   the negative margin pulls it up against the title it belongs to. */
+	.crumbs {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.375rem;
+		margin-bottom: -0.25rem;
+		font-size: var(--sl-text-sm);
+		color: var(--sl-color-gray-3);
+	}
+
+	.crumbs a {
+		color: var(--sl-color-gray-2);
+		text-decoration: none;
+	}
+
+	.crumbs a:hover {
+		color: var(--sl-color-white);
+		text-decoration: underline;
+	}
+
+	.crumb-sep {
+		color: var(--sl-color-gray-4);
 	}
 
 	.pill-link {

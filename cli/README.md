@@ -38,9 +38,10 @@ The package major tracks the API major: `1.x` speaks `/v1`.
 | Command                                | Answers                                               |
 | -------------------------------------- | ----------------------------------------------------- |
 | `rito-meta property <Class>.<field>`   | What type this property is, at `--at`                 |
-| `rito-meta class <nameOrHash>`         | Hash, flags, bases, lifetime, properties              |
+| `rito-meta class <nameOrHash>`         | Hash, flags, kind, domain, bases, lifetime, properties |
 | `rito-meta hash <hashOrName>`          | Name to hash and back, plus the wiki URL              |
 | `rito-meta search <pattern>`           | Find a class by substring or glob (`Vfx*Emitter*`)    |
+| `rito-meta domains`                    | The domains classes are grouped into, with counts     |
 | `rito-meta diff <from> <to>`           | Every property whose type changed in `(from, to]`     |
 | `rito-meta changelog [patch]`          | The patch index, or one patch in full                 |
 | `rito-meta versions`                   | The patch to build map, and the newest build covered  |
@@ -56,12 +57,19 @@ names both.
 `property` looks the class up with inherited properties included, so a field defined on an ancestor
 still answers, and the payload names the defining class when it differs.
 
+Every class sits in exactly one domain (`vfx`, `ui`, `scripting`, ...). `class` reports it as
+`category`: the domain id, the rule that placed the class there (`via`), and the root of its
+inheritance family. `domains` lists the ids, and `search --domain <id>` keeps only that domain's
+classes; with `--domain` the pattern is optional, so `rito-meta search --domain vfx` lists the whole
+domain. An id that `domains` does not list is an error (exit 1), not an empty answer.
+
 ### Flags
 
 | Flag                 | Effect                                                                    |
 | -------------------- | ------------------------------------------------------------------------- |
 | `--at <build\|patch>` | Answer as of this build or patch (`property`, `class`); default: latest   |
 | `--db <path>`        | Answer from a downloaded database instead of the network                  |
+| `--domain <id>`      | `search`: only classes in this domain; the pattern becomes optional       |
 | `--json`             | Force JSON output (the default when stdout is not a terminal)             |
 | `--no-color`         | Plain text, no ANSI colors (`NO_COLOR` is honored too)                    |
 | `--cache-dir <dir>`  | Where to keep ETag-validated responses (or `RITO_META_CACHE_DIR`)         |
@@ -143,10 +151,14 @@ rito-meta db check pinned.json                          # exit 5 when the publis
 rito-meta property SomeClass.someField --db pinned.json # no network at all
 ```
 
-With `--db`, every read command except `docs` answers from the file: the raw database is turned into
-the API's shapes by the same resolver and transforms the Worker is built with, so an offline answer
-and an online answer for the same database are identical (the test suite asserts it). `docs` needs
-the network because the prose is not part of `/v1/db`.
+With `--db`, every read command except `docs` and `domains` answers from the file: the raw database
+is turned into the API's shapes by the same resolver and transforms the Worker is built with, so an
+offline answer and an online answer for the same database are identical (the test suite asserts
+it). `docs` needs the network because the prose is not part of `/v1/db`.
+
+Class categories are the one field that differs. They are placed by rules the wiki authors, not by
+anything in `/v1/db`, so an offline `class` answer carries `kind` but no `category`, and `domains`
+and `search --domain` refuse to run with `--db` instead of answering without them.
 
 `db check` fetches only `/v1` (about 1 KB) and compares its `dataset.fetchedAt` and latest build
 against the file. A CI job can pin a database and refresh it only when it is stale:

@@ -3,6 +3,12 @@
   "hash": "0x7c893a73",
   "interface": true,
   "value": false,
+  "kind": "interface",
+  "category": {
+    "domain": "vfx",
+    "via": "prefix",
+    "family": "VfxColorBase"
+  },
   "bases": [],
   "since": "13.16",
   "removedIn": null,

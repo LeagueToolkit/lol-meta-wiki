@@ -12,6 +12,7 @@ import { classCommand } from "./commands/class";
 import { db } from "./commands/db";
 import { diff } from "./commands/diff";
 import { docs } from "./commands/docs";
+import { domains } from "./commands/domains";
 import { hash } from "./commands/hash";
 import { property } from "./commands/property";
 import { raw } from "./commands/raw";
@@ -47,6 +48,7 @@ const COMMANDS: Readonly<Record<string, Command>> = {
   class: classCommand,
   hash,
   search,
+  domains,
   diff,
   changelog,
   versions,
@@ -58,6 +60,7 @@ const COMMANDS: Readonly<Record<string, Command>> = {
 /** Flags that only some commands understand; anywhere else they are a mistake, not noise. */
 const FLAG_SCOPE: readonly { flag: string; isSet: (flags: Flags) => boolean; commands: readonly string[] }[] = [
   { flag: "at", isSet: (f) => f.at !== undefined, commands: ["property", "class"] },
+  { flag: "domain", isSet: (f) => f.domain !== undefined, commands: ["search"] },
   { flag: "inherited", isSet: (f) => f.inherited, commands: ["class"] },
   { flag: "tree", isSet: (f) => f.tree, commands: ["class"] },
 ];

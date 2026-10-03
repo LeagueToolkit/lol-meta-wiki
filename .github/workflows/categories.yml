@@ -1,0 +1,43 @@
+name: Categories
+
+# The site has no pull request build, so nothing would catch a broken
+# db/categories.yaml before it reached main. This runs the categoriser's tests
+# and the generator in --strict mode, where a root or pin naming a class the
+# db does not have is an error (the deploy build only warns, so a class renamed
+# upstream cannot take the site down).
+
+on:
+  pull_request:
+    paths:
+      - 'db/categories.yaml'
+      - 'scripts/categorize.ts'
+      - 'scripts/categorize.test.ts'
+      - 'scripts/generate-db.ts'
+      - '.github/workflows/categories.yml'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: pnpm
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Categoriser tests
+        run: bun test scripts
+
+      - name: Generate with --strict
+        run: bun scripts/generate-db.ts --strict

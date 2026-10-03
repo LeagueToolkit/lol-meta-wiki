@@ -14,11 +14,14 @@
 export type { ClassRevision, MetaClass, MetaDb, PropRevision } from "../../../scripts/meta-db";
 
 import type {
+  CategoryVia,
   ChangeTuple,
   ClassChange,
   ClassJson,
+  ClassKind,
   ChangelogPatch,
   DescendantNode,
+  DomainInfo,
   PropChange,
   Property,
   TypeHistoryEntry,
@@ -28,7 +31,13 @@ export type SiteTypeTuple = ChangeTuple;
 export type SiteHistoryEntry = TypeHistoryEntry;
 export type SiteProperty = Property;
 export type SiteTreeNode = DescendantNode;
-export type SiteClass = ClassJson;
+/**
+ * `category` is optional because the CLI's --db run derives its site classes
+ * from a bare /v1/db, and the placement rules (db/categories.yaml) are not in
+ * it. Generated site data always carries one; build-assets insists on it.
+ */
+export type SiteClass = Omit<ClassJson, "category"> & Partial<Pick<ClassJson, "category">>;
+export type SiteDomain = DomainInfo;
 export type SitePropChange = PropChange;
 export type SiteClassChange = ClassChange;
 export type SiteChangelogPatch = ChangelogPatch;
@@ -72,11 +81,25 @@ export interface ApiTreeNode {
   children: ApiTreeNode[];
 }
 
+/** Where a class sits in the wiki's domain list, and the rule that put it there. */
+export interface ApiClassCategory {
+  /** a domain id from /v1/categories */
+  domain: string;
+  via: CategoryVia;
+  /** root of the class's primary base chain; the class itself when it has none */
+  family: string;
+  /** shared classes only: the domains of the classes using it */
+  usedByDomains?: string[];
+}
+
 export interface ApiClass {
   name: string;
   hash: string;
   interface: boolean;
   value: boolean;
+  kind: ClassKind;
+  /** absent only when the source was a bare /v1/db (see SiteClass) */
+  category?: ApiClassCategory;
   bases: string[];
   since: string | null;
   removedIn: string | null;

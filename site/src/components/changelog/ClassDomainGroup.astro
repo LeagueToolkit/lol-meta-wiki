@@ -1,0 +1,88 @@
+---
+// One domain inside a "New"/"Removed" section: the domain it links to, then
+// its classes bucketed into inheritance families (see utils/classFamilies) so
+// one base class arriving with 90 subclasses reads as one family, not 91
+// chips. When nothing in the domain shares a root, the flat chip list is kept.
+import { groupByFamily } from "../../utils/classFamilies";
+import { domainHref } from "../../utils/domains";
+import ClassChipList from "./ClassChipList.astro";
+import ClassFamilyGroup from "./ClassFamilyGroup.astro";
+import type { ClassChange, DomainInfo } from "../../types";
+
+interface Props {
+  kind: "added" | "removed";
+  /** Undefined renders the entries without a domain heading. */
+  domain: DomainInfo | undefined;
+  entries: ClassChange[];
+  headingLevel: number; // one below the section title (3 or 4)
+}
+
+const { kind, domain, entries, headingLevel } = Astro.props;
+
+const Htag = `h${headingLevel}`;
+const { families, loners } = groupByFamily(entries);
+---
+
+<div class="domain-group">
+  {
+    domain && (
+      <Htag class="domain-title">
+        <a href={domainHref(domain.id)}>{domain.title}</a>
+        <span class="count">{entries.length}</span>
+      </Htag>
+    )
+  }
+  {
+    families.length === 0 ? (
+      <ClassChipList kind={kind} entries={entries} />
+    ) : (
+      <div class="families">
+        {families.map((f) => (
+          <ClassFamilyGroup
+            kind={kind}
+            family={f.name}
+            entries={f.entries}
+            headingLevel={headingLevel + 1}
+          />
+        ))}
+        {loners.length > 0 && (
+          <ClassFamilyGroup
+            kind={kind}
+            family={null}
+            entries={loners}
+            headingLevel={headingLevel + 1}
+          />
+        )}
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .domain-title {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0 0 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1.4;
+    color: var(--sl-color-gray-3);
+  }
+  .domain-title a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .domain-title a:hover {
+    color: var(--sl-color-white);
+    text-decoration: underline;
+  }
+
+  .families {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+</style>

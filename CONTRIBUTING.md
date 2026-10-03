@@ -133,6 +133,48 @@ properties:
 - ❌ Don't use offensive or inappropriate language
 - ❌ Don't break the YAML formatting (the build will fail)
 
+## Categories
+
+Every class sits in one **domain** (VFX, UI, Scripting, ...). Domains are
+listed in `db/categories.yaml`; the build places every class by the first rule
+that applies:
+
+1. **Pin** - `pins:` names the class.
+2. **Seed** - its nearest ancestor (or the class itself) is listed under a
+   domain's `roots:`.
+3. **Prefix** - the root of its inheritance family starts with one of a
+   domain's `prefixes:`.
+4. **Usage** - every class using its family is in the same domain.
+5. **Shared** - the classes using its family span several domains.
+6. **Uncategorized** - none of the above.
+
+```yaml
+domains:
+  logic:
+    title: Logic drivers and concepts
+    description: Expression nodes evaluated per object, and the concepts they read.
+    roots: [ILogicDriver, ILogicDriverSource, ConceptBase]
+pins:
+  SomeHelperStruct: logic
+```
+
+- **To place a family**, add its root class to a domain's `roots`. A class
+  name or an unpadded `0x` hash both work, so a family whose root is still
+  unnamed can be seeded too. The [Uncategorized](https://meta-wiki.leaguetoolkit.dev/domains/uncategorized/)
+  page lists what is waiting, largest family first, with what uses each one.
+- **To split a family**, seed the subclass: the nearest seeded ancestor wins,
+  so a root in one domain can have a subtree in another.
+- **Prefer a seed to a prefix.** A prefix only looks at a name; keep the lists
+  short and use them for families that have no single root.
+- **Pin last.** A pin is for one class the rules put in the wrong place.
+- A domain for content the game has not shipped sets `unreleased: true`. When
+  it ships, move its entries into the real domain and delete it.
+
+The generator prints a coverage table on every run (classes per domain, how
+many each rule placed, and the largest uncategorized families). A root or pin
+that names a class the db does not have is a warning there, and an error in the
+pull request check.
+
 ## Testing Your Changes
 
 Before submitting a PR, you can test your documentation locally:

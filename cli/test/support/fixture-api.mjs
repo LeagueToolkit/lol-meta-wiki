@@ -16,17 +16,19 @@ const EXACT = {
   "/v1": "api/v1.json",
   "/v1/versions": "api/v1/versions.json",
   "/v1/classes": "api/v1/classes.json",
+  "/v1/categories": "api/v1/categories.json",
   "/v1/hashes": "api/v1/hashes.json",
   "/v1/index": "api/v1/index.json",
   "/v1/changelog": "api/v1/changelog.json",
   "/v1/docs": "api/v1/docs.json",
   "/v1/db": "db.json",
 };
+const SEGMENT = /^[A-Za-z0-9._-]+$/;
 const HEX = /^0x[0-9a-fA-F]{1,8}$/;
 const canon = (h) => "0x" + h.slice(2).toLowerCase().padStart(8, "0");
 
 const NOT_FOUND = JSON.stringify(
-  { error: "not found", hint: "names are exact and case-sensitive; look them up via /v1/classes, /v1/hashes, or /v1/changelog", meta: "/v1" },
+  { error: "not found", hint: "names and domain ids are exact and case-sensitive; look them up via /v1/classes, /v1/hashes, /v1/categories, or /v1/changelog", meta: "/v1" },
   null,
   2
 );
@@ -41,6 +43,8 @@ function nameOf(hash) {
 
 function fileFor(pathname, params) {
   const clean = pathname.length > 1 && pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
+  const domain = clean === "/v1/classes" ? params.get("domain") : null;
+  if (domain !== null) return SEGMENT.test(domain) ? `api/v1/classes-by-domain/${domain}.json` : null;
   if (clean in EXACT) return EXACT[clean];
   const m = /^\/v1\/(classes|changelog|docs)\/([A-Za-z0-9._-]+)$/.exec(clean);
   if (!m) return null;

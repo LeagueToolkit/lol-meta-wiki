@@ -1,5 +1,6 @@
 /**
- * `class <nameOrHash>` - hash, flags, bases, lifetime and properties.
+ * `class <nameOrHash>` - hash, flags, kind, domain, bases, lifetime and
+ * properties.
  *
  * `--inherited` serves the flattened view (each property stamped with the
  * class defining it), `--tree` adds the descendant tree, and `--at` narrows
@@ -7,7 +8,7 @@
  * were then.
  */
 
-import type { ApiDescendantNode } from "../api-types";
+import type { ApiClassCategory, ApiDescendantNode } from "../api-types";
 import { classLiveAt, propertyAt, propertyHistory } from "../at";
 import { indent, keyValues, table } from "../output";
 import { type TypeShape, typeShape } from "../tags";
@@ -71,6 +72,8 @@ export const classCommand: Command = async (ctx, args) => {
       hash: cls.hash,
       interface: cls.interface,
       value: cls.value,
+      kind: cls.kind,
+      ...(cls.category && { category: cls.category }),
       bases: cls.bases,
       since: cls.since,
       removedIn: cls.removedIn,
@@ -87,9 +90,12 @@ export const classCommand: Command = async (ctx, args) => {
     payload,
     text: (fmt) => {
       const flags = [cls.interface && "interface", cls.value && "value"].filter(Boolean).join(", ") || "-";
+      const domain: [string, string][] = cls.category ? [["domain", domainText(cls.category)]] : [];
       const pairs: [string, string][] = [
         ["hash", fmt.hash(cls.hash)],
         ["flags", flags],
+        ["kind", cls.kind],
+        ...domain,
         ["bases", cls.bases.length ? cls.bases.map(fmt.name).join(", ") : "-"],
         ["ancestors", cls.ancestorLevels.length ? cls.ancestorLevels.map((l) => l.join(", ")).join(" > ") : "-"],
         ["since", cls.since ?? "start of tracking"],
@@ -111,6 +117,13 @@ export const classCommand: Command = async (ctx, args) => {
     },
   };
 };
+
+/** `vfx (via seed, family IVfxEmissionSource)`; a shared class names the domains using it instead of a rule. */
+function domainText(c: ApiClassCategory): string {
+  const placed = c.via === "shared" || c.via === "none" ? [] : [`via ${c.via}`];
+  const users = c.usedByDomains ? [`used by ${c.usedByDomains.join(", ")}`] : [];
+  return `${c.domain} (${[...placed, `family ${c.family}`, ...users].join(", ")})`;
+}
 
 function treeLines(nodes: ApiDescendantNode[], depth = 0): string[] {
   return nodes.flatMap((n) => [`${"  ".repeat(depth)}${n.name}`, ...treeLines(n.children, depth + 1)]);

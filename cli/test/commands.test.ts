@@ -94,7 +94,7 @@ describe("class", () => {
   test("hash, flags, bases, lifetime, properties", async () => {
     const r = await cli(["class", "VfxAnimatedColor"]);
     const body = r.json<{ class: Record<string, unknown> & { properties: { name: string }[] } }>();
-    expect(body.class).toMatchObject({ name: "VfxAnimatedColor", hash: "0x6878c1b5", interface: false, value: false, bases: ["VfxColorBase"], since: "13.16", removedIn: null, ancestorLevels: [["VfxColorBase"]] });
+    expect(body.class).toMatchObject({ name: "VfxAnimatedColor", hash: "0x6878c1b5", interface: false, value: false, kind: "class", bases: ["VfxColorBase"], since: "13.16", removedIn: null, ancestorLevels: [["VfxColorBase"]] });
     expect(body.class.properties.map((p) => p.name)).toEqual(["InterpModes", "modes", "probabilityTables", "times", "values"]);
     expect(body.class).not.toHaveProperty("descendants");
   });
@@ -119,6 +119,21 @@ describe("class", () => {
     const r = await cli(["class", "VfxAnimatedColor", "--no-color"], { tty: true });
     expect(r.stdout).toContain("properties (5)");
     expect(r.stdout).toContain("List<Pointer<VfxProbabilityTableData>>[4] (128)");
+  });
+
+  test("kind, and the domain with the rule that placed the class there", async () => {
+    const seeded = await cli(["class", "VfxEmissionSkeleton"]);
+    expect(seeded.json<{ class: unknown }>().class).toMatchObject({ kind: "class", category: { domain: "vfx", via: "seed", family: "IVfxEmissionSource" } });
+    const iface = await cli(["class", "VfxColorBase", "--inherited"]);
+    expect(iface.json<{ class: unknown }>().class).toMatchObject({ kind: "interface", category: { domain: "vfx", via: "prefix", family: "VfxColorBase" } });
+    const value = await cli(["class", "VfxProbabilityTableData"]);
+    expect(value.json<{ class: unknown }>().class).toMatchObject({ kind: "value" });
+
+    const tty = await cli(["class", "VfxEmissionSkeleton", "--no-color"], { tty: true });
+    expect(tty.stdout).toMatch(/kind\s+class\n/);
+    expect(tty.stdout).toMatch(/domain\s+vfx \(via seed, family IVfxEmissionSource\)\n/);
+    const unplaced = await cli(["class", "0x13f50786", "--no-color"], { tty: true });
+    expect(unplaced.stdout).toMatch(/domain\s+uncategorized \(family 0x13f50786\)\n/);
   });
 });
 
@@ -146,6 +161,52 @@ describe("search", () => {
     const none = await cli(["search", "zzz"]);
     expect(none.code).toBe(0);
     expect(none.json().count).toBe(0);
+  });
+
+  test("--domain keeps one domain's classes, with or without a pattern", async () => {
+    const requests: Request[] = [];
+    const all = await cli(["search", "--domain", "vfx"], { requests });
+    expect(all.json()).toMatchObject({ domain: "vfx", count: 8 });
+    expect(all.json()).not.toHaveProperty("pattern");
+    expect(all.json<{ matches: { name: string }[] }>().matches.map((m) => m.name)).not.toContain("0x13f50786");
+    expect(requests.map((q) => q.url)).toContain("http://fixture.test/v1/classes?domain=vfx");
+
+    const narrowed = await cli(["search", "color", "--domain=vfx"]);
+    expect(narrowed.json()).toMatchObject({ pattern: "color", domain: "vfx", count: 3 });
+    const unnamed = await cli(["search", "0x*", "--domain", "uncategorized"]);
+    expect(unnamed.json<{ matches: unknown[] }>().matches).toEqual([{ name: "0x13f50786", hash: "0x13f50786" }]);
+
+    // A domain the fixtures hold no class of is an empty answer, not an error.
+    const empty = await cli(["search", "--domain", "ui", "--no-color"], { tty: true });
+    expect(empty.code).toBe(0);
+    expect(empty.stdout).toContain("no class in ui");
+  });
+
+  test("--domain with an id the API does not list is an error that names the fix", async () => {
+    const r = await cli(["search", "vfx", "--domain", "nope"]);
+    expect(r.code).toBe(1);
+    expect(r.stdout).toBe("");
+    expect(r.stderr).toContain("no such domain: nope");
+    expect(r.stderr).toContain("rito-meta domains");
+  });
+});
+
+describe("domains", () => {
+  test("every domain in display order, with its counts", async () => {
+    const r = await cli(["domains"]);
+    const body = r.json<{ count: number; domains: { id: string; title: string; unreleased: boolean; counts: Record<string, number> }[] }>();
+    expect(body.count).toBe(body.domains.length);
+    expect(body.domains[0]).toMatchObject({ id: "ui", title: "UI and HUD", unreleased: false });
+    expect(body.domains.slice(-2).map((d) => d.id)).toEqual(["shared", "uncategorized"]);
+    const vfx = body.domains.find((d) => d.id === "vfx")!;
+    expect(Object.keys(vfx.counts)).toEqual(["classes", "live", "unnamed", "documented"]);
+  });
+
+  test("a terminal rendering is a table that marks the unreleased ones", async () => {
+    const r = await cli(["domains", "--no-color"], { tty: true });
+    expect(r.stdout).toMatch(/^domain\s+title\s+classes\s+live\s+unnamed\s+documented\n/);
+    expect(r.stdout).toMatch(/\nmonarch\s+Monarch \(unreleased\)\s+\d+/);
+    expect(r.stdout).toMatch(/\nvfx\s+VFX\s+\d+/);
   });
 });
 

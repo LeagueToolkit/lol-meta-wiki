@@ -39,6 +39,7 @@ const EXACT: Record<string, string> = {
   "/v1": "/v1/meta.json",
   "/v1/openapi": "/v1/openapi.json",
   "/v1/classes": "/v1/classes/index.json",
+  "/v1/categories": "/v1/categories.json",
   "/v1/hashes": "/v1/hashes.json",
   "/v1/index": "/v1/index.json",
   "/v1/versions": "/v1/versions.json",
@@ -49,10 +50,11 @@ const EXACT: Record<string, string> = {
   // build-assets reserves "all" (and "index") as class names.
 };
 
-// Class names ("AbilityObject"), hashes ("0x1003c990"), and patch slugs
-// ("16-13"). Rejecting everything else keeps traversal-shaped requests away
-// from ASSETS. (The URL parser resolves "." / ".." segments before we see
-// them, so allowing "." here cannot re-open traversal.)
+// Class names ("AbilityObject"), hashes ("0x1003c990"), patch slugs ("16-13"),
+// and domain ids ("vfx"). Rejecting everything else keeps traversal-shaped
+// requests away from ASSETS. (The URL parser resolves "." / ".." segments
+// before we see them, so allowing "." here cannot re-open traversal; a domain
+// id arrives in the query instead, but always gains a ".json" suffix.)
 const SEGMENT = /^[A-Za-z0-9._-]+$/;
 // FNV-1a 32-bit hash in any spelling; canonicalized before lookup.
 const HEX_SEGMENT = /^0x[0-9a-fA-F]{1,8}$/;
@@ -73,6 +75,11 @@ function json(status: number, body: unknown): Response {
 function resolveAsset(url: URL): string | null {
   const pathname = url.pathname;
   const clean = pathname.length > 1 && pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
+  if (clean === "/v1/classes") {
+    // ?domain={id} narrows the list to one domain's precomputed name list.
+    const domain = url.searchParams.get("domain");
+    if (domain !== null) return SEGMENT.test(domain) ? `/v1/classes-by-domain/${domain}.json` : null;
+  }
   if (clean in EXACT) return EXACT[clean];
   const param = /^\/v1\/(classes|changelog|docs)\/([^/]+)$/.exec(clean);
   if (!param || !SEGMENT.test(param[2])) return null;
@@ -120,7 +127,7 @@ export default {
       // Class names are case-sensitive; hashes are the stable spelling.
       return json(404, {
         error: "not found",
-        hint: "names are exact and case-sensitive; look them up via /v1/classes, /v1/hashes, or /v1/changelog",
+        hint: "names and domain ids are exact and case-sensitive; look them up via /v1/classes, /v1/hashes, /v1/categories, or /v1/changelog",
         meta: "/v1",
       });
     }

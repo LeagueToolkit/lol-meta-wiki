@@ -1,0 +1,28 @@
+---
+title: Domains
+description: The subject areas the meta classes are grouped into, and how a class ends up in one.
+---
+
+import DomainCards from '../../../components/DomainCards.astro';
+
+Every class sits in exactly one domain. A domain is seeded with a few root
+classes; everything deriving from a root joins it, and the classes nothing was
+seeded for are placed by what uses them.
+
+<DomainCards />
+
+## How a class is placed
+
+The first rule that applies decides:
+
+1. **Pin** - the class is pinned to a domain by name.
+2. **Seed** - its nearest ancestor that is a domain root.
+3. **Prefix** - its family root's name starts with a domain's prefix.
+4. **Usage** - every class using its family is in the same domain.
+5. **Shared** - the classes using its family span several domains.
+6. **Uncategorized** - none of the above.
+
+Hover the domain in a class page's breadcrumb to see which rule put it there.
+The seeds live in
+[`db/categories.yaml`](https://github.com/LeagueToolkit/lol-meta-wiki/blob/main/db/categories.yaml);
+moving a family is a one-line change.

@@ -59,6 +59,83 @@ export interface ClassJson {
   docs: ClassDocumentation | null;
   /** Classes whose live properties reference this class, A→Z. */
   usedBy: UsedByClass[];
+  kind: ClassKind;
+  category: ClassCategory;
+}
+
+/** How the game registers a class: an interface, a value struct, or neither. */
+export type ClassKind = "class" | "interface" | "value";
+
+// --- class category shapes ---
+// Every class sits in exactly one domain. Domains are authored in
+// db/categories.yaml; scripts/categorize.ts places each class by the first
+// rule that applies and records which one in `via`.
+
+/** Reserved domain ids for the classes no authored domain claims. */
+export const SHARED_DOMAIN = "shared";
+export const UNCATEGORIZED_DOMAIN = "uncategorized";
+
+/**
+ * The rule that placed a class: a pin on the class, a seeded ancestor, a name
+ * prefix on its family root, or every user of its family agreeing on a domain.
+ * "shared" = its users span several domains; "none" = no rule applied.
+ */
+export type CategoryVia = "pin" | "seed" | "prefix" | "usage" | "shared" | "none";
+
+export interface ClassCategory {
+  /** A domain id from db/categories.yaml, or one of the two reserved ids. */
+  domain: string;
+  via: CategoryVia;
+  /** Root of the class's primary base chain - the class itself when it has none. */
+  family: string;
+  /** Shared classes only: the domains of the classes using it, in display order. */
+  usedByDomains?: string[];
+}
+
+export interface DomainCounts {
+  classes: number;
+  /** Classes still in the latest game build. */
+  live: number;
+  /** Classes whose name is still an unresolved hash. */
+  unnamed: number;
+  /** Classes with a db/docs YAML file. */
+  documented: number;
+}
+
+/** One entry of categories.json - the ordered domain list the site browses by. */
+export interface DomainInfo {
+  id: string;
+  title: string;
+  description: string;
+  /** A codename domain for content the game has not shipped. */
+  unreleased: boolean;
+  counts: DomainCounts;
+}
+
+// --- domain page shapes ---
+// One build-time JSON per domain (db-data/domains/), rendered by DomainPage.astro.
+
+export interface DomainClass {
+  name: string;
+  href: string;
+  kind: ClassKind;
+  removedIn?: string;
+  documented?: true;
+}
+
+export interface DomainFamily {
+  /** Root class of the family. */
+  name: string;
+  entries: DomainClass[];
+  /** Shared and uncategorized domains only: the classes using the family, A→Z. */
+  usedBy?: string[];
+}
+
+export interface DomainPageData extends DomainInfo {
+  /** Families with two or more members in this domain, biggest first. */
+  families: DomainFamily[];
+  /** Classes that are alone in their family here: named A→Z, then unnamed. */
+  loose: DomainClass[];
 }
 
 // --- referenced-by shapes ---
@@ -108,6 +185,8 @@ export interface ClassChange {
    * sections render (added / readded / removed).
    */
   family?: string;
+  /** Domain of the class today (see ClassCategory); same kinds as `family`. */
+  domain?: string;
   baseChange?: { old: string[]; new: string[] };
   propChanges: PropChange[];
 }
@@ -167,13 +246,21 @@ export interface ClassSidebarGroup {
   entries: ClassSidebarEntry[];
 }
 
-export interface ClassSidebar {
-  /** First-word buckets large enough to be collapsible groups, A→Z. */
+export interface ClassSidebarDomain {
+  id: string;
+  title: string;
+  unreleased?: true;
+  /** Families large enough to be collapsible groups, labelled by their root. */
   groups: ClassSidebarGroup[];
-  /** Named classes whose bucket was too small, flat, A→Z. */
-  other: ClassSidebarEntry[];
-  /** Unresolved 0x… names, sorted numerically — rendered last, collapsed. */
-  hashed: ClassSidebarEntry[];
+  /** Named classes outside any group, A→Z. */
+  loose: ClassSidebarEntry[];
+  /** Unresolved 0x… names outside any group, sorted numerically. */
+  unnamed: ClassSidebarEntry[];
+}
+
+export interface ClassSidebar {
+  /** Display order: categories.yaml order, unreleased, shared, uncategorized. */
+  domains: ClassSidebarDomain[];
 }
 
 // --- class hash index ---

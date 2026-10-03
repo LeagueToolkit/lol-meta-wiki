@@ -37,19 +37,31 @@
     "/v1/classes": {
       "get": {
         "operationId": "listClasses",
-        "summary": "All class names, sorted.",
+        "summary": "All class names, sorted; or one domain's, with `domain`.",
+        "description": "Unnamed classes appear as their canonical hash. Pass `domain` to narrow the list to the classes placed in that domain (see `/v1/categories`); every class sits in exactly one, so the per-domain lists partition the full one.",
+        "parameters": [
+          {
+            "name": "domain",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$" },
+            "description": "A domain id from `/v1/categories`. An unknown id is a 404.",
+            "example": "vfx"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Class name list",
             "content": { "application/json": { "schema": { "$ref": "#/components/schemas/NameList" } } }
-          }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
         }
       }
     },
     "/v1/classes/{nameOrHash}": {
       "get": {
         "operationId": "getClass",
-        "summary": "One class: hash, flags, bases, lifetime, and its properties with types, defaults, and history.",
+        "summary": "One class: hash, flags, kind, category, bases, lifetime, and its properties with types, defaults, and history.",
         "description": "Accepts a resolved class name (exact, case-sensitive) or a class hash (any hex length/case). By default `properties` contains only the class's own properties; pass `inherited=1` to get the precomputed flattened view, where properties from all ancestors are merged in (nearest ancestor wins on a name conflict) and each property carries `from`, the class that defines it.",
         "parameters": [
           { "$ref": "#/components/parameters/nameOrHash" },
@@ -67,6 +79,19 @@
             "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Class" } } }
           },
           "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/categories": {
+      "get": {
+        "operationId": "listCategories",
+        "summary": "The domains classes are grouped into, in display order, with per-domain class counts.",
+        "description": "Every class sits in exactly one domain; `/v1/classes/{nameOrHash}` reports it as `category.domain`, and `/v1/classes?domain={id}` lists a domain's classes. Released domains come first, then unreleased (codename) ones, then the two reserved ids: `shared` (classes used from several domains) and `uncategorized` (classes no domain claims yet).",
+        "responses": {
+          "200": {
+            "description": "Domain list",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Categories" } } }
+          }
         }
       }
     },
@@ -210,7 +235,7 @@
     },
     "responses": {
       "NotFound": {
-        "description": "Unknown name, hash, or patch slug.",
+        "description": "Unknown name, hash, patch slug, or domain id.",
         "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
       }
     },
@@ -282,6 +307,12 @@
           "hash": { "$ref": "#/components/schemas/Hash" },
           "interface": { "type": "boolean" },
           "value": { "type": "boolean", "description": "Whether this is a value type." },
+          "kind": {
+            "type": "string",
+            "enum": ["class", "interface", "value"],
+            "description": "The two flags as one facet: `interface` when the interface flag is set, else `value` when the value flag is, else `class`."
+          },
+          "category": { "$ref": "#/components/schemas/ClassCategory" },
           "bases": { "type": "array", "items": { "type": "string" } },
           "since": { "type": ["string", "null"], "description": "Patch the class was added in; null = present when tracking began (see dataset.firstPatch)." },
           "removedIn": { "type": ["string", "null"] },
@@ -294,7 +325,54 @@
           "descendantTree": { "type": "array", "items": { "$ref": "#/components/schemas/DescendantNode" } },
           "flattened": { "type": "boolean", "description": "Present (true) only in the `inherited=1` view." }
         },
-        "required": ["name", "hash", "interface", "value", "bases", "since", "removedIn", "properties", "ancestorLevels", "descendantTree"]
+        "required": ["name", "hash", "interface", "value", "kind", "category", "bases", "since", "removedIn", "properties", "ancestorLevels", "descendantTree"]
+      },
+      "ClassCategory": {
+        "type": "object",
+        "description": "Where a class sits in the domain list, and the rule that placed it. Placement is derived at build time from a few authored seeds, so it can change between dataset generations without the class changing.",
+        "properties": {
+          "domain": { "type": "string", "description": "A domain id from `/v1/categories`." },
+          "via": {
+            "type": "string",
+            "enum": ["pin", "seed", "prefix", "usage", "shared", "none"],
+            "description": "The rule that placed the class: `pin` (the class is named outright), `seed` (its nearest seeded ancestor), `prefix` (a name prefix on its family root), `usage` (every class using its family agrees on one domain), `shared` (its users span several domains), `none` (no rule applied; the domain is `uncategorized`)."
+          },
+          "family": { "type": "string", "description": "Root of the class's primary (first) base chain; the class itself when it has no bases." },
+          "usedByDomains": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Only when `via` is `shared`: the domains of the classes using it, in display order."
+          }
+        },
+        "required": ["domain", "via", "family"]
+      },
+      "Domain": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "description": "What `category.domain` and the `domain` query parameter name the domain by." },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "unreleased": { "type": "boolean", "description": "A codename domain for content the game has not shipped." },
+          "counts": {
+            "type": "object",
+            "properties": {
+              "classes": { "type": "integer" },
+              "live": { "type": "integer", "description": "Classes still in the latest game build." },
+              "unnamed": { "type": "integer", "description": "Classes whose name is still an unresolved hash." },
+              "documented": { "type": "integer", "description": "Classes with written documentation." }
+            },
+            "required": ["classes", "live", "unnamed", "documented"]
+          }
+        },
+        "required": ["id", "title", "description", "unreleased", "counts"]
+      },
+      "Categories": {
+        "type": "object",
+        "properties": {
+          "count": { "type": "integer" },
+          "domains": { "type": "array", "items": { "$ref": "#/components/schemas/Domain" } }
+        },
+        "required": ["count", "domains"]
       },
       "DocEntry": {
         "type": "object",

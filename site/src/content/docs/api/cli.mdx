@@ -22,9 +22,10 @@ npx @leaguetoolkit/meta-cli diff 16.16 16.17
 | Command                       | Answers                                              |
 |-------------------------------|------------------------------------------------------|
 | `property <Class>.<field>`    | What type this property is, at `--at`                |
-| `class <nameOrHash>`          | Hash, flags, bases, lifetime, properties             |
+| `class <nameOrHash>`          | Hash, flags, kind, domain, bases, lifetime, properties |
 | `hash <hashOrName>`           | Name to hash and back, plus the wiki URL             |
-| `search <pattern>`            | Find a class by substring or glob                    |
+| `search <pattern>`            | Find a class by substring or glob; `--domain <id>` keeps one domain |
+| `domains`                     | The domains classes are grouped into, with counts    |
 | `diff <from> <to>`            | Every property whose type changed across the span    |
 | `changelog [patch]`           | The patch index, or one patch in full                |
 | `versions`                    | The patch to build map, and the newest build covered |
@@ -68,10 +69,13 @@ its own.
 ## Offline
 
 `rito-meta db fetch <path>` writes `/v1/db` to a file and `--db <path>` serves
-every read command except `docs` from it, deriving the same shapes this API
-serves with the same code the Worker is built from. `db check <path>`
-compares the file against the published generation by fetching only `/v1`,
-so a CI job can pin a snapshot and refresh it only when it is stale.
+every read command except `docs` and `domains` from it, deriving the same
+shapes this API serves with the same code the Worker is built from. `db check
+<path>` compares the file against the published generation by fetching only
+`/v1`, so a CI job can pin a snapshot and refresh it only when it is stale.
+
+Class categories are not part of `/v1/db`, so an offline `class` answer
+carries `kind` but no `category`, and `search --domain` needs the network.
 
 The full reference, including the output contract and caching behavior, is in
 the package's [README](https://github.com/LeagueToolkit/lol-meta-wiki/tree/main/cli#readme).

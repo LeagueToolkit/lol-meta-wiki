@@ -7,6 +7,7 @@
 import { canonName, type ClassInfo, type Resolver } from "./resolver";
 import type {
   ApiClass,
+  ApiClassCategory,
   ApiClassChange,
   ApiProperty,
   ApiTreeNode,
@@ -58,12 +59,20 @@ function transformProperty(r: Resolver, p: SiteProperty, cls: ClassInfo, classNa
 const transformTree = (nodes: SiteTreeNode[]): ApiTreeNode[] =>
   nodes.map((n) => ({ name: canonName(n.name), children: transformTree(n.children) }));
 
+// The family root is a class name like any other; the domain ids are not.
+const transformCategory = (c: NonNullable<SiteClass["category"]>): ApiClassCategory => ({
+  ...c,
+  family: canonName(c.family),
+});
+
 export function transformClass(r: Resolver, site: SiteClass): ApiClass {
   const { hash, info } = r.classInfo(site.name);
   return {
     name: canonName(site.name),
     hash,
     ...info.flags,
+    kind: site.kind,
+    ...(site.category && { category: transformCategory(site.category) }),
     bases: site.bases.map(canonName),
     since: site.since,
     removedIn: site.removedIn,

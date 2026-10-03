@@ -52,5 +52,10 @@ export async function cli(args: string[], opts: CliOptions = {}): Promise<CliRes
 /** Everything in a payload except the fields that legitimately differ between sources. */
 export function comparable(payload: Record<string, unknown>): Record<string, unknown> {
   const { source: _source, ...rest } = payload;
+  // A class's category is placed by rules only the API has; `--db` leaves it out.
+  if (typeof rest["class"] === "object" && rest["class"] !== null && "category" in rest["class"]) {
+    const { category: _category, ...cls } = rest["class"] as Record<string, unknown>;
+    return { ...rest, class: cls };
+  }
   return rest;
 }

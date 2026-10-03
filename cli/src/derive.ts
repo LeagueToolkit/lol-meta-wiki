@@ -8,7 +8,9 @@
  * and `buildChangelog` (lifetime, history collapsing, add/re-add/remove
  * classification); if either changes, this must follow, and the offline test
  * that compares `--db` answers against recorded API responses catches it.
- * The changelog's `family` grouping is site-only and not derived.
+ * The changelog's `family` grouping is site-only and not derived, and
+ * neither is a class's `category`: it is placed by db/categories.yaml, which
+ * is not in the database.
  */
 
 import type {
@@ -155,6 +157,7 @@ export function deriveClasses(db: MetaDb): SiteClass[] {
     classes.push({
       name: klass.name ?? khash,
       bases: current.bases.map(nameOf),
+      kind: current.interface ? "interface" : current.value ? "value" : "class",
       since: first.from > t.firstBuild ? t.patchOf(first.from) : null,
       removedIn: current.to !== undefined ? t.patchAfter(current.to) : null,
       properties: deriveProperties(db, t, khash),

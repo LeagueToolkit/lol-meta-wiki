@@ -1,0 +1,140 @@
+# Class categories. See CONTRIBUTING.md ("Categories") for how classes are placed.
+#
+# A domain lists a few seed classes (`roots`) and, optionally, name prefixes.
+# Everything deriving from a root joins its domain; the generator places the
+# rest by who uses it. `roots` and `pins` take a class name or an unpadded
+# 0x hash. File order is display order; `unreleased` domains sort last.
+
+domains:
+  ui:
+    title: UI and HUD
+    description: View controllers, UI elements and the in-game HUD.
+    roots: [ViewController, UiElementIData, IFilterItem, IOptionItemFilter,
+            UiMetricTypeI, UiMetricUnitTypeI, IUiTextureDataProvider,
+            ViewControllerFilterI, IValueUpdateElement, IUiVariable,
+            IPictureInPictureSource, ILoadoutInfoPanel, LoadoutGridButtonData,
+            RadialMenuBase, UIElementI, InstanceDataBase, ElementDataBase,
+            FloatingInfoBarData, TooltipInstance, UiPositionBase,
+            HealthBarTickStyleBase, SpellSlotBasicUiDefinition, LayoutStyleBase,
+            AnchorBase, UiDraggableBasic, TipStyleBase,
+            DeathRecapShowcaseSlotData, MinimapIconBehavior,
+            IMinimapIconModifier, IOptionTemplate, UiPropertyLoadable,
+            "0x2a4d735b"]  # the runtime UiElement tree
+    prefixes: [Ui, UI, Hud, Minimap, Loading, Tooltip, Scoreboard]
+  scripting:
+    title: Scripting and sequences
+    description: Script blocks, sequences and the values they read.
+    roots: [IScriptBlock, ISequenceAction, IScriptEvent,
+            ISequenceActionInstance, IScriptValueGet, ScriptTable,
+            ScriptTableSet, SeqInputFloat, SeqInputVector, SeqInputColor,
+            SeqInputObjectArray, SeqInputCreateObject, SeqInputBool, RScript,
+            IScriptCondition, IScriptSequence, IFloatGet, SeqSplinePointBase,
+            ISequenceLocation]
+    prefixes: [Seq, Script, Sequence]
+  tft:
+    title: Teamfight Tactics
+    description: Classes that only Teamfight Tactics uses.
+    prefixes: [Tft, TFT]
+  vfx:
+    title: VFX
+    description: Particle systems, emitters and the drivers that animate them.
+    roots: [IVfxBaseDriver, VfxPrimitiveBase, VfxComponentBase,
+            VfxPhysicsModifierBase, IVfxShimmerGeometry, IVfxMaterialDriver,
+            IVfxEmissionSource, IVfxShape, VfxShimmerFacingMode,
+            IVfxDynamicParameterModifier, VfxModifierBase,
+            VfxBeamBaseDefinitionData, VfxSpawnBehavior, IVfxEmissionSurface,
+            VfxSystemDefinitionData]
+    prefixes: [Vfx, IVfx]
+  materials:
+    title: Materials and rendering
+    description: Material definitions, shading models and textures.
+    roots: [IX3dShadingModel, SkinnedMeshDataMaterialController,
+            StaticMaterialDef, TextureResource]
+    prefixes: [Material, StaticMaterial, DynamicMaterial, CustomShader, X3d, Shader]
+  logic:
+    title: Logic drivers and concepts
+    description: Expression nodes evaluated per object, and the concepts they read.
+    roots: [ILogicDriver, ILogicDriverSource, ConceptBase]
+  animation:
+    title: Animation
+    description: Animation graphs, clips, rig modifiers and animation events.
+    roots: [IBaseParametricUpdater, ClipBaseData, BaseRigPoseModifierData, BaseEventData]
+    prefixes: [Anim, Clip, Rig, Blend]
+  map:
+    title: Map and environment
+    description: Map containers, placeables, lighting and visibility.
+    roots: [MapPlaceableBase, MapComponent, MapAction, IMapVisibilityController,
+            EnvironmentEffectorBase, IMapLightUpdater, IMapGroup, ILevelController]
+    prefixes: [Map, Environment]
+  entities:
+    title: Game objects and entities
+    description: Runtime object types and the components game entities are built from.
+    roots: [IGeComponentDef, GameEntityComponent, GameEntityDefinition,
+            IComponentData, IDeathGeComponentDef,
+            "0xa4795108",  # the GameObject tree
+            "0x129e311"]   # the *GeComponent tree
+  characters:
+    title: Characters and skins
+    description: Character records, skins and the conditions that select them.
+    roots: [ICharacterSubcondition, ISkinAugmentModifier, ICharacter]
+    prefixes: [Character, Skin, Champion]
+  spells:
+    title: Spells and combat
+    description: Spell data, calculations, missiles and targeting.
+    roots: [IGameCalculationPart, ICastRequirement, MissileBehaviorSpec,
+            TargetingTypeData, MissileMovementSpec, MissileTriggeredActionSpec,
+            TargeterDefinition, IGameCalculation, HeightSolverType,
+            ISpellRankUpRequirement, ITargetingRangeValue, ICcBehaviorData,
+            ITargeterFadeBehavior, AreaTriggerShapeData, SpellObject]
+    prefixes: [Spell, Missile, Buff, Targeting, Targeter]
+  items:
+    title: Items
+    description: Item data and the shop.
+    roots: [ItemData]
+    prefixes: [Item]
+  gamemodes:
+    title: Game modes
+    description: Per-mode configuration, constants and mutators.
+    roots: [IGameModeConfigBase, GameModeConstant, IMinionWaveBehavior]
+    prefixes: [GameMode, Mutator]
+  audio:
+    title: Audio and contextual actions
+    description: Sound events and the contextual rules that trigger voice lines.
+    roots: [IContextualCondition, IContextualAction, AudioContextEventType,
+            AudioContextEvent, ListenerConstraintInfo, ContextualActionData]
+    prefixes: [Contextual, Audio, Sound, Music, Announcer]
+  input:
+    title: Input and options
+    description: Key bindings, input sources and the options menu.
+    roots: [IKeyBind, ILolKeybindCheck, IInputSourceBool, IInputSourceFloat,
+            IInputUpdater, InputEventBase]
+    prefixes: [Option, Keybind, Input]
+  loadouts:
+    title: Loadouts, catalog and store
+    description: Cosmetic loadouts, catalog entries and rewards.
+    roots: [ICatalogEntryOwner, IStatStoneLogicDriver, IRewardBase]
+    prefixes: [Catalog, Loadout, Store, Companion, Regalia, Emote, Ward]
+  engine:
+    title: Engine and client state
+    description: Client states and the event bus.
+    roots: ["0xf8cc0ea3",  # the ClientState tree
+            EventBusObject]
+  tools:
+    title: Cheats and debug
+    description: Developer cheats and debugging helpers.
+    roots: [Cheat]
+    prefixes: [Cheat, Debug]
+  monarch:
+    title: Monarch
+    description: An unreleased game mode. Its classes have left the live build.
+    unreleased: true
+    prefixes: [Monarch, IMonarch]
+  nova:
+    title: Nova
+    description: An unreleased item rework.
+    unreleased: true
+    prefixes: [Nova]
+
+# Per-class overrides, for a class the rules above put in the wrong place:
+#   SomeClass: logic
+pins: {}

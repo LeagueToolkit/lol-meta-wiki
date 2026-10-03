@@ -6,6 +6,7 @@
  *                                              docs/ (prose split off)
  *   site/db-data/changelog/*               ->  changelog/
  *   site/public/db/classIndex.json         ->  index.json (absolute wiki URLs)
+ *   site/public/db/categories.json         ->  categories.json, classes-by-domain/
  *   db/meta.db.json                        ->  db.json, hashes.json, versions.json
  *   openapi.json                           ->  openapi.json
  *   (derived)                              ->  meta.json, src/generated/hash-to-name.json
@@ -28,7 +29,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { Resolver, canonName } from "./lib/resolver";
 import { extractDocs, flattenClass, transformChangelog, transformClass } from "./lib/transform";
-import type { ApiClass, ClassDocs, MetaDb, SiteClass, SiteChangelogPatch } from "./lib/types";
+import type { ApiClass, ClassDocs, MetaDb, SiteClass, SiteChangelogPatch, SiteDomain } from "./lib/types";
 
 const apiRoot = path.resolve(import.meta.dir, "..");
 const repoRoot = path.resolve(apiRoot, "..");
@@ -36,6 +37,7 @@ const src = {
   classes: path.join(repoRoot, "site", "db-data", "classes"),
   changelog: path.join(repoRoot, "site", "db-data", "changelog"),
   classIndex: path.join(repoRoot, "site", "public", "db", "classIndex.json"),
+  categories: path.join(repoRoot, "site", "public", "db", "categories.json"),
   db: path.join(repoRoot, "db", "meta.db.json"),
   openapi: path.join(apiRoot, "openapi.json"),
 };
@@ -52,6 +54,9 @@ const HASHED = /^(.+)\.([0-9a-f]{12})\.json$/;
 // names that would shadow derived files at the same route (case-insensitive:
 // on a case-insensitive filesystem "Index.json" would clobber "index.json")
 const RESERVED = new Set(["index", "all"]);
+// a domain id becomes a file name and a ?domain= value; this is the Worker's
+// SEGMENT rule, so an id that fails it would be an asset no route can reach
+const DOMAIN_ID = /^[A-Za-z0-9._-]+$/;
 
 const readJson = (file: string) => JSON.parse(fs.readFileSync(file, "utf8"));
 const writeJson = (file: string, value: unknown) =>
@@ -61,7 +66,7 @@ const sortedRecord = (entries: [string, unknown][]) =>
 
 function resetOutputDirs() {
   fs.rmSync(outFile(), { recursive: true, force: true });
-  for (const dir of ["classes", "classes-inherited", "changelog", "docs"]) {
+  for (const dir of ["classes", "classes-inherited", "classes-by-domain", "changelog", "docs"]) {
     fs.mkdirSync(outFile(dir), { recursive: true });
   }
   fs.mkdirSync(generatedDir, { recursive: true });
@@ -91,6 +96,33 @@ function writeClassTree(classes: Map<string, ApiClass>) {
   }
   const names = [...classes.keys()].sort();
   writeJson(outFile("classes", "index.json"), { count: names.length, classes: names });
+}
+
+/**
+ * The domain list, plus one class-name list per domain: the precomputed
+ * answers to /v1/classes?domain={id}. Every domain gets a list, empty or not,
+ * so a known id never 404s.
+ */
+function writeCategories(classes: Map<string, ApiClass>): number {
+  const domains: SiteDomain[] = readJson(src.categories);
+  const members = new Map<string, string[]>();
+  for (const { id } of domains) {
+    if (!DOMAIN_ID.test(id)) throw new Error(`domain id is not routable: ${id}`);
+    members.set(id, []);
+  }
+  for (const [name, cls] of classes) {
+    const list = cls.category && members.get(cls.category.domain);
+    if (!list) {
+      throw new Error(`class ${name} has no domain from ${src.categories} - site data is stale, re-run generate-db`);
+    }
+    list.push(name);
+  }
+  for (const [id, names] of members) {
+    names.sort();
+    writeJson(outFile("classes-by-domain", `${id}.json`), { count: names.length, classes: names });
+  }
+  writeJson(outFile("categories.json"), { count: domains.length, domains });
+  return domains.length;
 }
 
 function writeDocsTree(docs: Map<string, ClassDocs>) {
@@ -183,8 +215,10 @@ function writeMeta(resolver: Resolver, db: MetaDb, counts: { classes: number; do
       meta: "/v1",
       openapi: "/v1/openapi",
       classList: "/v1/classes",
+      classListByDomain: "/v1/classes?domain={id}",
       classDetail: "/v1/classes/{name-or-hash}",
       classDetailInherited: "/v1/classes/{name-or-hash}?inherited=1",
+      categories: "/v1/categories",
       hashIndex: "/v1/hashes",
       wikiUrlIndex: "/v1/index",
       versions: "/v1/versions",
@@ -213,6 +247,7 @@ const resolver = new Resolver(db);
 resetOutputDirs();
 const { classes, docs } = loadClasses(resolver);
 writeClassTree(classes);
+const domains = writeCategories(classes);
 writeDocsTree(docs);
 const patches = writeChangelog(resolver);
 writeIndexes(resolver, db);
@@ -221,5 +256,5 @@ fs.copyFileSync(src.openapi, outFile("openapi.json"));
 writeMeta(resolver, db, { classes: classes.size, documented: docs.size, patches });
 
 console.log(
-  `assets built: ${classes.size} classes (${resolver.classHashByName.size} named, ${docs.size} documented), ${patches} patches -> ${outFile()}`
+  `assets built: ${classes.size} classes (${resolver.classHashByName.size} named, ${docs.size} documented), ${domains} domains, ${patches} patches -> ${outFile()}`
 );

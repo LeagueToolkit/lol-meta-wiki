@@ -9,6 +9,7 @@ import { UsageError } from "./outcome";
 export interface Flags {
   at?: string;
   db?: string;
+  domain?: string;
   api?: string;
   cacheDir?: string;
   json: boolean;
@@ -28,9 +29,10 @@ export interface ParsedArgs {
 }
 
 /** Flags that take a value: spelling on the command line -> field. */
-const VALUE_FLAGS: Readonly<Record<string, "at" | "db" | "api" | "cacheDir">> = {
+const VALUE_FLAGS: Readonly<Record<string, "at" | "db" | "domain" | "api" | "cacheDir">> = {
   at: "at",
   db: "db",
+  domain: "domain",
   api: "api",
   "cache-dir": "cacheDir",
 };
@@ -91,9 +93,10 @@ Usage: rito-meta <command> [args] [flags]
 
 Commands
   property <Class>.<field>      What type this property is, at --at
-  class <nameOrHash>            Hash, flags, bases, lifetime, properties
+  class <nameOrHash>            Hash, flags, kind, domain, bases, lifetime, properties
   hash <hashOrName>             Name to hash and back, plus the wiki URL
   search <pattern>              Find a class by substring or glob
+  domains                       The domains classes are grouped into, with counts
   diff <from> <to>              Every property whose type changed across the span
   changelog [patch]             The patch index, or one patch in full
   versions                      The patch to build map, and the newest build covered
@@ -113,6 +116,7 @@ Flags
   --cache-dir <dir>     Where to keep ETag-validated responses (RITO_META_CACHE_DIR)
   --no-cache            Skip the response cache for this run
   --api <base-url>      API base URL (default ${DEFAULT_API})
+  --domain <id>         search: only classes in this domain; the pattern becomes optional
   --inherited           class: include inherited properties, each stamped with its origin
   --tree                class: include the descendant tree
   -h, --help            Show this help

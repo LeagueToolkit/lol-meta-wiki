@@ -1,0 +1,91 @@
+---
+// One section of a domain page: an inheritance family (its root links to the
+// class page), or the leftover bucket of classes that are alone in theirs
+// (`name={null}`). `usedBy` is only passed for the Shared and Uncategorized
+// pages, where "what uses this" is the evidence for where a family belongs.
+import { classIndex } from "../../utils/classIndex";
+import type { DomainClass } from "../../types";
+import HierarchyIcon from "../icons/HierarchyIcon.astro";
+import DomainClassList from "./DomainClassList.astro";
+
+interface Props {
+  /** Root class of the family, or null for the leftover bucket. */
+  name: string | null;
+  entries: DomainClass[];
+  usedBy?: string[];
+}
+
+const { name, entries, usedBy = [] } = Astro.props;
+
+// Hub families are used by dozens of classes; the first few say enough.
+const VISIBLE_USERS = 8;
+const users = usedBy.slice(0, VISIBLE_USERS);
+const moreUsers = usedBy.length - users.length;
+---
+
+<section class="domain-family" data-domain-section>
+  <h2 class="family-title">
+    {name ? <HierarchyIcon size={16} strokeWidth={2} /> : null}
+    {name ? <a href={classIndex[name]}>{name}</a> : <span>Other classes</span>}
+    <span class="family-count">{entries.length}</span>
+  </h2>
+  {
+    users.length > 0 && (
+      <p class="family-users">
+        Used by{" "}
+        {users.map((user, i) => <>{i > 0 && ", "}<a href={classIndex[user]}>{user}</a></>)}
+        {moreUsers > 0 && ` and ${moreUsers} more`}
+      </p>
+    )
+  }
+  <DomainClassList entries={entries} />
+</section>
+
+<style>
+  .domain-family {
+    margin-top: 1.75rem;
+  }
+
+  .family-title {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0 0 0.5rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--sl-color-gray-5);
+    font-size: var(--sl-text-base);
+    font-weight: var(--ltk-weight-semibold);
+    line-height: 1.4;
+    color: var(--sl-color-white);
+  }
+
+  .family-title a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .family-title a:hover {
+    text-decoration: underline;
+  }
+
+  .family-title :global(svg) {
+    flex-shrink: 0;
+    color: var(--sl-color-gray-3);
+  }
+
+  .family-count {
+    font-size: var(--sl-text-xs);
+    font-weight: 500;
+    color: var(--sl-color-gray-3);
+  }
+
+  .family-users {
+    margin: 0 0 0.5rem;
+    font-size: var(--sl-text-xs);
+    color: var(--sl-color-gray-3);
+  }
+
+  .family-users a {
+    color: var(--sl-color-gray-2);
+  }
+</style>
