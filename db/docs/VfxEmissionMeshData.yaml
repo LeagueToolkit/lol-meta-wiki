@@ -1,0 +1,71 @@
+# VfxEmissionMeshData Documentation
+
+class:
+  description: |
+    Emits particles from the surface of a skinned mesh, posed like the unit the effect is
+    bound to. This page describes its use as an
+    [emission surface](/classes/vfxemissionsurfacedata) of a complex emitter.
+
+    **The pose comes from the bound unit.** The mesh has no animation of its own. Every
+    frame the emitter copies the joint transforms of the unit the effect is bound to, and
+    when a particle is born it skins the chosen triangle with them. So `meshName` and
+    `skeletonName` are normally the bound unit's own mesh and skeleton, and the particles
+    are born on its body as it animates. An effect that is bound to nothing, or to
+    something without a skeleton, gets no surface point.
+
+    **Loading.** Both `meshName` and `skeletonName` must be set. With either one empty the
+    surface is ignored without an error, and it is also ignored when the mesh or the
+    skeleton fails to load. Loaded meshes are shared and looked up by `meshName` alone:
+    the first surface to load a mesh fixes the `skeletonName` and `maxJointWeights` that
+    every later surface with the same `meshName` gets.
+
+    **Picking the point.** One triangle is picked at random from the selected submeshes.
+    Every triangle is equally likely whatever its size, so particles are denser where the
+    mesh is more finely tessellated, not spread evenly by area. The point is uniformly
+    random inside the triangle. Its position and normal are skinned from the triangle's
+    three vertices and interpolated.
+
+    The point is multiplied by `meshScale` and added to the particle's birth position.
+  notes:
+    - "Embedded in a component emitter's [VfxEmissionSkin](/classes/vfxemissionskin), an empty `meshName` falls back to the bound unit's own mesh and skeleton. A complex emitter has no such fallback."
+
+properties:
+  meshName:
+    description: |
+      Path of the skinned mesh (`.skn`) to emit from. Required: with an empty name the
+      surface is ignored. It is also the key the loaded mesh is shared under.
+
+  skeletonName:
+    description: |
+      Path of the skeleton (`.skl`) that `meshName` is rigged to. Required. It is read
+      once, when the mesh loads, to translate the mesh's bone indices into joints of the
+      skeleton. The load fails when a vertex names a bone the skeleton does not have. The
+      pose itself never comes from this file, only from the bound unit.
+
+  AnimationName:
+    description: |
+      Not read by a complex emitter. The mesh is posed by the unit the effect is bound to,
+      whatever animation is named here.
+
+  meshScale:
+    description: |
+      Multiplies the sampled point before it is added to the birth position. It scales
+      where particles are born, not the particles.
+
+  maxJointWeights:
+    description: |
+      How many joint influences per vertex are kept for skinning the emission mesh, from
+      `1` to `4`. Larger values are treated as `4` and `0` as `1`. It is applied when the
+      mesh loads, so it follows the sharing rule in the class description.
+
+  useSurfaceNormalForBirthPhysics:
+    description: |
+      Points the particle along the surface. When set, the birth velocity and the birth
+      acceleration keep their length and take the direction of the surface normal at the
+      sampled point. When clear, the surface only moves the birth position.
+
+  Submeshes:
+    description: |
+      The submeshes to emit from, as hashes of their names. An empty list emits from the
+      whole mesh. Names are matched without regard to case. A name that matches no submesh
+      is skipped, and when none of the names match, the whole mesh is used.

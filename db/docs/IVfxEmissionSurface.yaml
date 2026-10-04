@@ -1,0 +1,16 @@
+# IVfxEmissionSurface Documentation
+
+class:
+  description: |
+    A surface that a complex emitter takes particle birth points from, held by
+    [`VfxEmissionSurfaceData.EmissionSurface`](/classes/vfxemissionsurfacedata#emissionsurface).
+    That page describes how the point and the surface normal are applied to a particle.
+
+    | Surface | Point | Normal |
+    |---|---|---|
+    | [VfxEmissionMeshData](/classes/vfxemissionmeshdata) | on a triangle of a skinned mesh, in the bound unit's current pose | the skinned vertex normals, used only when `useSurfaceNormalForBirthPhysics` is set |
+    | [VfxEmissionSkeletonData](/classes/vfxemissionskeletondata) | along a bone of the bound unit's skeleton | a random direction at right angles to the bone, always used |
+    | [VfxEmissionLinkedMeshData](/classes/vfxemissionlinkedmeshdata) | on a triangle of a mesh the game links to the effect | the triangle's face normal, used only when the emitter's `UseEmissionMeshNormalForBirth` is set |
+
+    The mesh and skeleton surfaces need the effect to be **bound to a unit**: both read
+    that unit's joint transforms every frame, and give no point when there is none.

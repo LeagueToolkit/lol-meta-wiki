@@ -1,0 +1,23 @@
+# IParticleSpawnDataGenerator Documentation
+
+class:
+  description: |
+    A source of extra spawn data for a complex emitter that the game implements, held by
+    [`VfxEmissionSurfaceData.ParticleSpawnDataGenerator`](/classes/vfxemissionsurfacedata#particlespawndatagenerator).
+    The particle system only declares it, so an implementation can use game state that the particle
+    system does not know about, such as the navigation grid.
+
+    An implementation supplies two things:
+
+    - **A point per particle.** When a particle is born, the emitter asks for a point in
+      the world on the X and Z axes, subtracts the emitter's own position from it and adds
+      the result to the particle's birth position. Y is left alone. When the generator has
+      no point to give, the birth position is not changed.
+    - **A rate factor.** The emitter's emission rate is multiplied by it before the number
+      of particles to spawn is worked out. A factor of `0` stops the emitter from emitting.
+
+    It runs after the [emission surface](/classes/ivfxemissionsurface) and independently of
+    it, and it never touches the birth velocity.
+
+    The only implementation is
+    [NavigationGridParticleSpawnDataGenerator](/classes/navigationgridparticlespawndatagenerator).

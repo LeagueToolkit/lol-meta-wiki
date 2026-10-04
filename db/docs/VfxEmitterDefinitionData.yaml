@@ -123,12 +123,20 @@ properties:
 
   EmissionMeshScale:
     description: "Scale applied to the emission mesh. Default `1`."
+    notes:
+      - "Also scales the point of a linked-mesh emission surface ([VfxEmissionLinkedMeshData](/classes/vfxemissionlinkedmeshdata)). The mesh and skeleton surfaces ignore it."
 
   UseEmissionMeshNormalForBirth:
     description: "Orient/emit particles along the emission-mesh surface normals. Default `true`."
+    notes:
+      - "Also the normal switch of a linked-mesh emission surface ([VfxEmissionLinkedMeshData](/classes/vfxemissionlinkedmeshdata)). The mesh and skeleton surfaces ignore it."
 
   EmissionSurfaceDefinition:
-    description: "Pointer to an emission-surface definition used to spawn particles across a surface."
+    description: |
+      An [emission surface](/classes/vfxemissionsurfacedata): each particle gets an extra
+      birth offset from a random point on a skinned mesh, on a skeleton's bones or on a mesh
+      the game links to the effect, and can be sent off along the surface normal. Read by
+      **complex** emitters only. It applies on top of `EmissionMeshName`, not instead of it.
 
   TranslationOverride:
     description: "Overrides the emitter's translation within the system."
