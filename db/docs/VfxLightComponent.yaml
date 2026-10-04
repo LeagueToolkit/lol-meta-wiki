@@ -1,0 +1,68 @@
+# VfxLightComponent Documentation
+
+class:
+  description: |
+    A **point light carried by a
+    [shimmer emitter](/classes/vfxshimmeremitterdefinitiondata)**. It is not one of the five
+    named slots: it goes in the `components` list of the emitter's
+    [VfxComponents](/classes/vfxcomponents) graph.
+
+    There is one light per emitter, never one per particle. The light is created with the
+    emitter and removed with it, but it is lit only while the emitter has at least one live
+    particle:
+
+    - On each update with a live particle, the client evaluates `lightColor` and `radius`
+      and refreshes the position.
+    - When the last particle dies the colour is set to black. The light stays registered
+      and comes back with the next particle.
+
+    `lightColor` and `radius` are evaluated for the emitter's **first particle**, so a
+    driver that follows particle age follows that one particle.
+
+    It is drawn only on a map that has a
+    [MapDynamicLighting](/classes/mapdynamiclighting) component. That page describes which
+    surfaces take the light, the falloff, the masks and the light types.
+  notes:
+    - "No shipped data uses this class."
+    - "There is no intensity property. A brighter light is a colour above 1."
+
+properties:
+  lightColor:
+    description: |
+      Colour of the light, as a driver-graph value. The red, green and blue values are used
+      as they are; values above 1 make the light brighter. Left unset, the light is white.
+    examples:
+      - "A constant colour is a `VfxColorConstantDriver` in the property's `Vector4` slot."
+
+  radius:
+    description: |
+      Reach of the light, in world units, as a driver-graph value. Brightness falls off
+      linearly and is zero at this distance.
+    examples:
+      - "A constant radius is a `VfxFloatConstantDriver` in the property's `Float` slot."
+
+  UseFirstParticlePosition:
+    description: |
+      Where the light sits. When `false` it sits at the particle system's world position.
+      When `true` it follows the emitter's first particle.
+
+  type:
+    description: |
+      How the light is drawn: `0` stationary, `1` dynamic without a shadow, `2` dynamic with
+      a shadow map. See the light types on
+      [MapDynamicLighting](/classes/mapdynamiclighting).
+
+  Impacts:
+    description: |
+      Which kind of surface the light reaches. Bit `0x1` is environment, bit `0x2` is
+      characters.
+
+  LightChannels:
+    description: |
+      Bitmask of light channels. The light reaches an object only when the object's own
+      light channels share a bit with it.
+
+  HdrScale:
+    description: |
+      Extra multiplier on the colour, used only by PBR-style shaders. Non-PBR environment and
+      character shaders ignore it.

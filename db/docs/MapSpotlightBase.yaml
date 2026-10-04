@@ -1,0 +1,22 @@
+# MapSpotlightBase Documentation
+
+class:
+  description: |
+    The colour and masks of a map spotlight. See
+    [MapDynamicSpotlight](/classes/mapdynamicspotlight) for how the light is drawn.
+
+properties:
+  Color:
+    description: |
+      Colour of the light. The red, green and blue values are multiplied by `intensity`;
+      alpha is not used. The result is multiplied again by the projected texture.
+
+  intensity:
+    description: |
+      Multiplier on `Color`. On non-PBR surfaces the lit result is clamped, so a large value
+      turns the lit area white instead of tinting it.
+
+  Impact:
+    description: |
+      Which kind of surface the light reaches. Bit `0x1` is environment, bit `0x2` is
+      characters.

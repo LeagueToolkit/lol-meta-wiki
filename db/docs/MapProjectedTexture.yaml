@@ -1,0 +1,21 @@
+# MapProjectedTexture Documentation
+
+class:
+  description: |
+    A placed frustum that projects a texture. For a
+    [MapDynamicSpotlight](/classes/mapdynamicspotlight) the texture is the light's shape and
+    tint.
+
+properties:
+  ProjectedTexture:
+    description: |
+      The texture projected through the frustum. Its colour multiplies the light: where the
+      texture is black there is no light, so the texture draws the cone.
+
+      For a spotlight it is required. A spotlight without a texture that resolves is never
+      drawn.
+    examples:
+      - "A soft white disc on a black background gives a round pool of light with a soft edge."
+
+  falloffTexture:
+    description: "Purpose not yet identified."

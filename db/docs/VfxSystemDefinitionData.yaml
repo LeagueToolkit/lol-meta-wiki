@@ -168,10 +168,13 @@ properties:
 
   PointLight:
     description: |
-      Optional **dynamic light** emitted by the system. The light definition carries a
-      type, an optional lifetime (default 5 s), a color track, an intensity-scale track
-      (default 1), a radius track (default 500), an HDR scale (default 5) and an impact
-      setting. Instantiated together with the emitters and updated every simulation step.
+      Optional **point light** that belongs to the system, described by a
+      [ParticlePointLightInfo](/classes/particlepointlightinfo). It is created together with
+      the emitters and updated on every simulation step from the system's age, at the
+      system's world position. It does not depend on any emitter or particle.
+
+      The light is drawn only on a map that has a
+      [MapDynamicLighting](/classes/mapdynamiclighting) component.
 
   AssetRemappingTable:
     description: "List of asset remap entries that substitute assets referenced by the system's emitters."

@@ -27,6 +27,7 @@ class:
     3. The physics component moves the particles.
     4. The render component builds the render data.
     5. The child component, if set, and the geometry component update.
+    6. Every entry of `components` updates.
 
     Every component is told how many particles were spawned. The count comes straight from
     the lifetime component. There is no emission-rate accumulator and no burst clamp on this
@@ -69,7 +70,11 @@ properties:
 
   components:
     description: |
-      A general list of components. The prepare and update paths described above read only
-      the five named slots. What reads this list is not yet identified.
+      Extra components beyond the five named slots. Each entry is built into a running part
+      when the emitter is created, and from then on it is updated after the five slots on
+      every update and told about each particle that dies.
+
+      [VfxLightComponent](/classes/vfxlightcomponent), which gives the emitter a point light,
+      is the component made for this list.
     notes:
       - "No shipped graph sets it."

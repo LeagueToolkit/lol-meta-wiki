@@ -1,0 +1,43 @@
+# SkinCharacterGeComponentDef Documentation
+
+class:
+  description: |
+    Says **which character and which skin** a map-placed entity is. It sits in the
+    `Character` field of an entity template, and the template's other components read it
+    when they build the unit or the mesh.
+
+    Both properties are paths, but the client does not resolve them as paths. When the
+    object loads it cuts three values out of the two strings:
+
+    | Value | Taken from |
+    |---|---|
+    | character name | the second segment of `CharacterRecord` |
+    | record name | the last segment of `CharacterRecord`; `Root` means the default record |
+    | skin number | the number after `Skin` in the last segment of `Skin`; `0` when it does not parse |
+
+    So `Characters/Turret/CharacterRecords/SR_Outer` with `Characters/Turret/Skins/Skin3`
+    reads as character `Turret`, record `SR_Outer`, skin `3`.
+
+    The three values are used to **preload** the character record, and they are what the
+    entity's unit and character mesh components pass on when they create a turret, an
+    inhibitor, a nexus, a minion, another unit, or a decorative mesh.
+  notes:
+    - "Only the folder names and the trailing `Skin<N>` matter. The rest of each path is ignored."
+    - "On the client, whether a changed value alters a unit that the server spawns has not been tested."
+
+properties:
+  CharacterRecord:
+    description: |
+      Path of the character record, in the form
+      `Characters/<Name>/CharacterRecords/<Record>`. `<Name>` becomes the character name and
+      `<Record>` the record name.
+    examples:
+      - "`Characters/SRU_Blue/CharacterRecords/Root`"
+      - "`Characters/Turret/CharacterRecords/SR_Inhibitor`"
+
+  Skin:
+    description: |
+      Path of the skin, in the form `Characters/<Name>/Skins/Skin<N>`. Only `<N>` is used as
+      the skin number.
+    examples:
+      - "`Characters/Turret/Skins/Skin3`"

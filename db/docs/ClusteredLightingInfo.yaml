@@ -1,0 +1,34 @@
+# ClusteredLightingInfo Documentation
+
+class:
+  description: |
+    The settings of the **light grid** that [MapDynamicLighting](/classes/mapdynamiclighting)
+    uses to hand each pixel only the lights near it.
+
+    The grid is not fixed in the world. Each frame the client takes the bounding box of the
+    visible lights and fits the grid to it. A point light claims a box of 1.5 times its
+    radius around its position. On each axis the cell size is the box size divided by the
+    maximum cell count, but never smaller than `MinClusterSize`; the cell count is then
+    whatever fits, up to the maximum.
+
+properties:
+  MaxNumClustersX:
+    description: "Upper bound on the number of cells along the world X axis."
+
+  MaxNumClustersY:
+    description: |
+      Upper bound on the number of cells along the world Y axis, which is up. The small
+      default suits a map seen from above: the lights sit in a thin horizontal slab.
+
+  MaxNumClustersZ:
+    description: "Upper bound on the number of cells along the world Z axis."
+
+  MinClusterSize:
+    description: |
+      Smallest size of a cell on each axis, in world units. With few lights close together
+      the grid uses fewer cells of this size instead of many smaller ones.
+
+  "0x8a0d61c2":
+    description: |
+      Capacity of the buffer that holds the per-cell light lists and the light data, in
+      entries. It is allocated once, when the map feature loads.

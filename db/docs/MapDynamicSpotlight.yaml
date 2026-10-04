@@ -1,0 +1,63 @@
+# MapDynamicSpotlight Documentation
+
+class:
+  description: |
+    A **spotlight placed on the map**. It lights a frustum that starts at the position in
+    its `transform`, and its shape and colour come from a projected texture.
+
+    **Direction.** The light looks along the **negative Z axis** of its transform, with the
+    Y axis as up. The frustum itself is described by the
+    [MapFrustum](/classes/mapfrustum) properties.
+
+    **The projected texture is the cone.** There is no cone angle falloff. A lit pixel is
+    projected into the light's frustum and the light is multiplied by the texture sample at
+    that point, so a white disc on black gives a round pool and a plain white texture gives
+    a square one. A spotlight whose
+    [`ProjectedTexture`](/classes/mapprojectedtexture#projectedtexture) does not resolve is
+    not drawn at all.
+
+    **Range.** Brightness falls off linearly with distance from the light and is zero at
+    `far`.
+
+    It is drawn only on a map that has a
+    [MapDynamicLighting](/classes/mapdynamiclighting) component. That page describes which
+    surfaces take the light, the masks and the light types.
+
+    **Several spotlights.** When every visible spotlight uses the same texture and none has
+    a material, that texture is used directly. Otherwise each distinct texture is copied
+    into one tile of a shared atlas of 16 tiles, and each light samples its own tile.
+  notes:
+    - "No shipped data uses this class."
+    - "A bright texture with a high `intensity` clamps to white on non-PBR surfaces. Keep the product near 1 to see the colour."
+
+properties:
+  type:
+    description: |
+      How the light is drawn: `0` stationary, `1` dynamic without a shadow, `2` dynamic with
+      a shadow map. See the light types on
+      [MapDynamicLighting](/classes/mapdynamiclighting).
+
+  LightChannels:
+    description: |
+      Bitmask of light channels. The light reaches an object only when the object's own
+      light channels share a bit with it.
+
+  HdrScale:
+    description: |
+      Extra multiplier on the colour, used only by PBR-style shaders. Non-PBR environment and
+      character shaders ignore it.
+
+  "0xf6298343":
+    description: |
+      A material that draws the projected texture into its atlas tile, in place of a plain
+      copy. Setting it forces the atlas path even for a single spotlight. The property's
+      name is not yet known.
+
+  VisibilityController:
+    description: |
+      Ties the light to a map visibility state. The light is registered only if the
+      controller reports visible when the object loads, and while it is drawn its colour is
+      scaled by the controller's fade weight.
+
+  UpdaterType:
+    description: "Selects a per-frame updater for the light. Not yet traced."
