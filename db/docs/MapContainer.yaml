@@ -51,6 +51,7 @@ properties:
       | `MapNavGridOverlaysComponent` | Registers its overlays with the navigation system. |
       | `MapQualityLodComponent` | Its `LodQualities` bitmask is tested against the current graphics-quality level; a match changes the geometry asset key to `<container>.LOD<n>`. |
       | `MapMinimap` | Supplies the minimap texture and receives the map instance's world bounding box, which is what maps world positions onto it. |
+      | [`MapDynamicLighting`](/classes/mapdynamiclighting) | Turns on dynamic point lights and spotlights for the map: it builds the light grid and switches the environment and character shaders to their dynamic-light variant. No shipped container has it. |
       | `MapTerrainPaint`, `MapChunkVisibility`, `MapLightingV2`, `MapSSAO`, `MapThemeMusic`, `MapAntiAliasing`, `MapContainsOtherMaps` | Consumed by their own subsystems. |
 
       A container with no `MapNavGrid` logs a warning and **continues with no navigation grid

@@ -1,0 +1,32 @@
+# MapFrustum Documentation
+
+class:
+  description: |
+    A placed object with a view frustum. The frustum starts at the position in the object's
+    `transform` and looks along the transform's **negative Z axis**, with the Y axis as up.
+
+    For a [MapDynamicSpotlight](/classes/mapdynamicspotlight) the frustum is the lit volume:
+    a pixel is lit only when it falls inside it.
+
+properties:
+  fov:
+    description: |
+      Opening angle of the frustum, in degrees. Whether it is the vertical or the horizontal
+      angle is not established; with `Aspect` at 1 the two are the same.
+
+  Aspect:
+    description: "Width of the frustum divided by its height."
+
+  Near:
+    description: "Distance from the position to the near plane, in world units."
+
+  far:
+    description: |
+      Distance from the position to the far plane, in world units. For a spotlight it is
+      also the range: brightness falls off linearly and is zero at this distance.
+
+  Orthographic:
+    description: "Not yet traced for spotlights."
+
+  OrthoHeight:
+    description: "Not yet traced for spotlights."

@@ -1,0 +1,70 @@
+# ParticlePointLightInfo Documentation
+
+class:
+  description: |
+    A **point light that belongs to a particle system**. It is the value of
+    [`VfxSystemDefinitionData.PointLight`](/classes/vfxsystemdefinitiondata#pointlight).
+
+    The light belongs to the system, not to an emitter, and it never looks at particles:
+
+    - It is created when the system's emitters are instantiated, one light per system
+      instance, and removed with the system.
+    - It is updated on every simulation step, after the emitters, from the **system's age**:
+      the time since the system started, scaled by the system's time scale.
+    - Its position is the system's world position plus the offset.
+
+    Once the age passes `lifetime` the colour is set to black and the light stays dark for
+    the rest of the system's life.
+
+    It is drawn only on a map that has a
+    [MapDynamicLighting](/classes/mapdynamiclighting) component. That page describes which
+    surfaces take the light, the falloff, the masks and the light types.
+  notes:
+    - "Whether the animated values read the age in seconds or as a fraction of `lifetime` is not established."
+    - "The few shipped instances set only `lightColor` and sit on a map without the lighting component, so none of them is visible."
+
+properties:
+  lifetime:
+    description: |
+      How long the light stays on, in seconds of system age. After that it is black. A
+      looping system that should stay lit has to set this to a large value: the default
+      turns the light off a few seconds after the system starts.
+
+  lightColor:
+    description: |
+      Colour of the light, as a value that can be animated over the system's age. The result
+      is multiplied by `intensityScale`. Values above 1 make the light brighter.
+
+  intensityScale:
+    description: "Multiplier on `lightColor`, as a value that can be animated over the system's age."
+
+  radius:
+    description: |
+      Reach of the light, in world units, as a value that can be animated over the system's
+      age. Brightness falls off linearly and is zero at this distance.
+
+  "0xac3cf5bd":
+    description: |
+      Offset of the light from the system's world position, in world units, as a value that
+      can be animated over the system's age. The property's name is not yet known.
+
+  type:
+    description: |
+      How the light is drawn: `0` stationary, `1` dynamic without a shadow, `2` dynamic with
+      a shadow map. See the light types on
+      [MapDynamicLighting](/classes/mapdynamiclighting).
+
+  Impact:
+    description: |
+      Which kind of surface the light reaches. Bit `0x1` is environment, bit `0x2` is
+      characters.
+
+  LightChannels:
+    description: |
+      Bitmask of light channels. The light reaches an object only when the object's own
+      light channels share a bit with it.
+
+  HdrScale:
+    description: |
+      Extra multiplier on the colour, used only by PBR-style shaders. Non-PBR environment and
+      character shaders ignore it.

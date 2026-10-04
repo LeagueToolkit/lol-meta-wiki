@@ -1,0 +1,75 @@
+# MapDynamicLighting Documentation
+
+class:
+  description: |
+    The map feature that turns on **dynamic lights**. It is a component of the map's
+    [MapContainer](/classes/mapcontainer), in its `components` list.
+
+    Light sources always register themselves with the renderer. Without this component they
+    are never drawn: it is the only thing that creates the light grid, and the only thing
+    that switches the map's shaders to their dynamic-light variant.
+
+    **Light sources.** Four classes feed the same light lists:
+
+    | Source | Kind | Carried by |
+    |---|---|---|
+    | [MapDynamicPointLight](/classes/mapdynamicpointlight) | point | a placed map object |
+    | [MapDynamicSpotlight](/classes/mapdynamicspotlight) | spot | a placed map object |
+    | [ParticlePointLightInfo](/classes/particlepointlightinfo) | point | a particle system |
+    | [VfxLightComponent](/classes/vfxlightcomponent) | point | a shimmer emitter |
+
+    **Each frame** the client keeps the lights that are inside the camera frustum, fits a
+    grid of cells around them, and writes into each cell the list of lights that reach it.
+    A pixel finds its cell from its world position and runs only that cell's lights. The
+    grid is configured by the embedded
+    [ClusteredLightingInfo](/classes/clusteredlightinginfo).
+
+    **What is lit.** Environment geometry and characters, with or without PBR materials.
+    Characters here means every skinned mesh: champions, minions, monsters and structures.
+    Particles are not lit, with one exception: materials built on the `DefaultParticleLit`
+    shader.
+
+    **Brightness.** A point light falls off linearly, `1 - distance / radius`, and reaches
+    zero at its radius. On a non-PBR surface the light adds
+    `albedo * color * N.L * falloff`, and the result is clamped. Only PBR-style shaders
+    multiply the colour by the light's `HdrScale`.
+
+    **Masks.** Every light carries two bitmasks, and a surface takes the light only when
+    both match:
+
+    - Its impact mask says which kind of surface it lights: bit `0x1` is environment, bit
+      `0x2` is characters.
+    - Its light channels are compared with the light channels of the object being drawn.
+      They must share at least one bit.
+
+    **Light types.** The `type` of a light selects how it is drawn:
+
+    | Value | Meaning |
+    |---|---|
+    | `0` | Stationary. The light is multiplied by a baked mask, so it only shows where the map's baked data lets it through. |
+    | `1` | Dynamic, no shadow. |
+    | `2` | Dynamic with a shadow map, when the shadow quality setting allows it. Otherwise it is drawn like `1`. For point lights only the first visible light of this type gets a shadow map. |
+
+    A light whose colour is black is dropped before it reaches the renderer.
+  notes:
+    - "No shipped map has this component, so no shipped light of any of the four kinds is visible."
+    - "Adding the component to a map that ships without it is enough. Its settings can be left empty; the defaults work."
+    - "The whole map pays for it: every environment and character pixel shader runs its light-loop variant while the component is present."
+
+properties:
+  DynamicLightsEnabled:
+    description: |
+      Lets the map's environment and character shaders use their dynamic-light variant. When
+      `false` the component still loads and builds its grid, but no shader reads it, so no
+      light is drawn.
+
+  "0xbe053e8":
+    description: |
+      The size and resolution of the light grid. See
+      [ClusteredLightingInfo](/classes/clusteredlightinginfo).
+
+  "0x2451a0b":
+    description: "Unknown bool. Purpose not yet identified."
+
+  "0xb41ddb79":
+    description: "Unknown bool. Purpose not yet identified."

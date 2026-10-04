@@ -1,0 +1,61 @@
+# MapDynamicPointLight Documentation
+
+class:
+  description: |
+    A **point light placed on the map**. It lights in every direction from the position in
+    its `transform`, out to `radius`.
+
+    It is drawn only on a map that has a
+    [MapDynamicLighting](/classes/mapdynamiclighting) component. That page describes which
+    surfaces take the light, the falloff, the masks and the light types.
+
+    The light is set up once, when the object loads: position, colour, radius and masks are
+    copied from the properties. Without an `UpdaterType` nothing changes them afterwards.
+  notes:
+    - "The few shipped instances sit on maps without the lighting component, so none of them is visible."
+
+properties:
+  lightColor:
+    description: |
+      Colour of the light. The red, green and blue values are multiplied by `intensityScale`;
+      alpha is not used. Values above 1 are allowed and make the light brighter.
+
+  intensityScale:
+    description: |
+      Multiplier on `lightColor`. On non-PBR surfaces the lit result is clamped, so a large
+      value turns everything inside the radius white instead of tinting it.
+
+  radius:
+    description: |
+      Reach of the light, in world units. Brightness falls off linearly from the position
+      and is zero at this distance.
+
+  type:
+    description: |
+      How the light is drawn: `0` stationary, `1` dynamic without a shadow, `2` dynamic with
+      a shadow map. See the light types on
+      [MapDynamicLighting](/classes/mapdynamiclighting).
+
+  Impact:
+    description: |
+      Which kind of surface the light reaches. Bit `0x1` is environment, bit `0x2` is
+      characters.
+
+  LightChannels:
+    description: |
+      Bitmask of light channels. The light reaches an object only when the object's own
+      light channels share a bit with it.
+
+  HdrScale:
+    description: |
+      Extra multiplier on the colour, used only by PBR-style shaders. Non-PBR environment and
+      character shaders ignore it.
+
+  VisibilityController:
+    description: |
+      Ties the light to a map visibility state. The light is registered only if the
+      controller reports visible when the object loads, and while it is drawn its colour is
+      scaled by the controller's fade weight.
+
+  UpdaterType:
+    description: "Selects a per-frame updater for the light. Not yet traced."
