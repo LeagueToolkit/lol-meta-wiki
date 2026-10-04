@@ -1,0 +1,53 @@
+# VfxEmissionSurfaceData Documentation
+
+class:
+  description: |
+    Spreads an emitter's particles over a surface instead of a single point. Set through
+    [`VfxEmitterDefinitionData.EmissionSurfaceDefinition`](/classes/vfxemitterdefinitiondata#emissionsurfacedefinition).
+
+    Only **complex** emitters read it. A simple emitter ignores the surface, and a component
+    emitter uses its own [emission sources](/classes/ivfxemissionsource) instead.
+
+    Each time a particle is born, the emitter works out the birth position, birth velocity
+    and birth acceleration as usual and then applies the surface in two steps:
+
+    1. `EmissionSurface` picks a random point on its surface and **adds** it to the birth
+       position. The point is an offset, not a replacement. It can also turn the particle
+       along the surface: the birth velocity and the birth acceleration each keep their
+       length and take the direction of the surface normal at that point. Nothing is
+       blended, and a vector of length zero stays zero.
+    2. `ParticleSpawnDataGenerator` then adds its own offset, and scales the emitter's
+       emission rate.
+
+    The two properties are independent. Either can be set alone, and both apply when both
+    are set. A surface that sets neither does nothing.
+
+    When the surface cannot give a point, because its mesh did not load or the effect is
+    bound to nothing, the particle is still born, at its unchanged position and with its
+    unchanged velocity.
+  notes:
+    - "Most shipped surfaces set neither property, so they have no effect."
+    - "The mesh and skeleton properties that used to be on this class are now on the object in `EmissionSurface`."
+    - "The emitter's own `EmissionMeshName` is a separate, older feature that still applies next to a surface. The emission mesh is applied first, so both offsets add up, and where both redirect the velocity the surface's direction is the one that remains."
+
+properties:
+  EmissionSurface:
+    description: |
+      The surface that gives each particle its extra birth offset:
+
+      | Class | Points come from |
+      |---|---|
+      | [VfxEmissionMeshData](/classes/vfxemissionmeshdata) | the triangles of a skinned mesh, posed by the unit the effect is bound to |
+      | [VfxEmissionSkeletonData](/classes/vfxemissionskeletondata) | the bones of the bound unit's skeleton |
+      | [VfxEmissionLinkedMeshData](/classes/vfxemissionlinkedmeshdata) | a mesh that the game links to the effect when it spawns it |
+
+      Unset, no surface point is added.
+
+  ParticleSpawnDataGenerator:
+    description: |
+      A game-side generator of spawn data, applied after `EmissionSurface`. It adds a
+      second offset to the birth position on X and Z only, and multiplies the emitter's
+      emission rate by its own factor, which can be zero. See
+      [IParticleSpawnDataGenerator](/classes/iparticlespawndatagenerator). The one
+      implementation scatters particles over tagged cells of the navigation grid:
+      [NavigationGridParticleSpawnDataGenerator](/classes/navigationgridparticlespawndatagenerator).

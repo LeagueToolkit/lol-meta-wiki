@@ -1,0 +1,23 @@
+# VfxEmissionLinkedMeshData Documentation
+
+class:
+  description: |
+    An [emission surface](/classes/vfxemissionsurfacedata) that emits from a mesh the game
+    **links to the effect** when it spawns it, instead of a mesh named in data. It has no
+    properties of its own.
+
+    The one place the game links a mesh is the superward region
+    ([SuperwardGeComponentDef](/classes/superwardgecomponentdef)): when it spawns its
+    effects it turns the outline of its region into a flat triangle mesh and links that,
+    so the particles fill the region's area. An effect spawned in any other way has no
+    linked mesh, and this surface then does nothing.
+
+    **Picking the point.** A triangle is picked at random, weighted by its area, and the
+    point is random inside it. The normal is the triangle's face normal.
+
+    The scale and the normal switch come from the emitter, not from this class:
+
+    - The point is multiplied by the emitter's `EmissionMeshScale` and added to the
+      particle's birth position.
+    - When the emitter's `UseEmissionMeshNormalForBirth` is set, the birth velocity and
+      the birth acceleration keep their length and take the direction of the face normal.

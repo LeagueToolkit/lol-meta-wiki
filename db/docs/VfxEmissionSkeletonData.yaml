@@ -1,0 +1,41 @@
+# VfxEmissionSkeletonData Documentation
+
+class:
+  description: |
+    Emits particles from the bones of the skeleton of the unit the effect is bound to. This
+    page describes its use as an [emission surface](/classes/vfxemissionsurfacedata) of a
+    complex emitter.
+
+    A **bone** here is the segment between a joint and its parent. When the skeleton
+    loads, every joint that has a parent and passes `JointMask` contributes one bone. Root
+    joints contribute none, though a root can still be the parent end of a bone.
+
+    **Picking the point.** A bone is picked at random, weighted by its length in the
+    skeleton file's rest pose, so long bones emit more and a bone of zero length never
+    emits. The point is then uniformly random along that bone, between the joint and its
+    parent, measured in the bound unit's **current** pose. The emitter copies that pose
+    every frame. The point is added to the particle's birth position.
+
+    **Direction.** The surface also returns a random direction at right angles to the
+    bone, and the emitter always applies it: the birth velocity and the birth acceleration
+    keep their length and take that direction. There is no property to turn this off, as
+    there is on [VfxEmissionMeshData](/classes/vfxemissionmeshdata).
+
+    An effect that is bound to nothing, or to something without a skeleton, gets no point.
+  notes:
+    - "Loaded skeletons are shared and looked up by `skeletonName` alone, so the first surface to load a skeleton fixes the `JointMask` that every later surface with the same `skeletonName` gets."
+    - "The unit's pose is indexed with the joint numbers of `skeletonName`, without a range check. Name the bound unit's own skeleton."
+
+properties:
+  skeletonName:
+    description: |
+      Path of the skeleton (`.skl`) whose joints define the bones and their weights.
+      Required: with an empty name the surface is ignored. It is also ignored when the
+      file fails to load or when no bone passes `JointMask`.
+
+  JointMask:
+    description: |
+      The joints to emit from, as hashes of their names, matched without regard to case.
+      An empty list keeps every joint. A joint that is not listed contributes no bone. The
+      listed joint is the child end of its bone, so the bone runs from it to its parent
+      whether or not the parent is listed.

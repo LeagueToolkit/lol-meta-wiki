@@ -1,0 +1,36 @@
+# NavigationGridParticleSpawnDataGenerator Documentation
+
+class:
+  description: |
+    Scatters an emitter's particles over the cells of the **navigation grid** that carry
+    one tag, and scales the emission rate with the size of that area. It is the
+    [spawn data generator](/classes/iparticlespawndatagenerator) of a
+    [VfxEmissionSurfaceData](/classes/vfxemissionsurfacedata).
+
+    **Which cells.** Every cell of the navigation grid holds one tag per region group.
+    `VfxGroupName` is looked up among the tags of the region group named `Vfx` only, the
+    one declared in `NavGridConfig.RegionGroups`. The grid keeps the set of cells that
+    carry each `Vfx` tag and updates it whenever the game changes a cell's tag during
+    play. It does so only for tags that the game mode lists by `name` in the `VfxSystems`
+    of its [NavGridRegionRenderData](/classes/navgridregionrenderdata). A tag that is not
+    listed there never has any cells.
+
+    **Position.** For each particle one cell of the set is picked, every cell equally
+    likely, and then a uniformly random point inside that cell. Only X and Z are produced.
+    The particle keeps the height it would have had.
+
+    **Rate.** The emission rate is multiplied by `cells x 0.01`, where `cells` is the
+    number of cells in the set. A set of 100 cells emits at the authored rate, and the
+    particles per cell stay the same as the tagged area grows or shrinks. When the tag
+    has no set, the factor is `0` and the emitter emits nothing.
+  notes:
+    - "Whether cells that already carry the tag in the navigation grid file are counted, or only cells tagged during play, is not established."
+    - "The shipped emitters all name `Void`, a tag that no shipped game mode lists, so they emit nothing."
+
+properties:
+  VfxGroupName:
+    description: |
+      Name of the tag, in the `Vfx` region group of the navigation grid, whose cells the
+      particles are scattered over. Matched without regard to case. A name that is not a
+      tag of that group, or a tag the game mode does not list, gives no position and a
+      rate of zero.
