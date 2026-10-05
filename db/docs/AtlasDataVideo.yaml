@@ -20,7 +20,11 @@ class:
       After a long frame every frame in between is decoded; none is skipped.
     - At the end of the stream the video stops on its last frame, unless `Loop` is set.
     - Each icon element gets its own copy of the provider, with its own decoder and
-      texture. Two icons that name the same file play independently.
+      texture. Two icons that name the same file play independently. That includes every
+      copy of an icon in a scene the client instantiates more than once, such as the
+      floating health bars, where each unit's bar runs a decoder of its own.
+    - Until the first frame is ready the provider has no texture and the icon draws
+      nothing.
 
     **Transparency.** A WebM file with an alpha channel plays with it: the alpha stream is
     decoded next to the colour stream and becomes the alpha of each pixel.
@@ -28,8 +32,8 @@ class:
     **Audio.** A Vorbis audio track with one or two channels is decoded and sent to the
     audio system together with the video. A track with more channels is ignored.
   notes:
-    - "No shipped file uses this class. The behaviour here is read from the client and has not been observed in game."
-    - "The provider has no texture until the file has loaded and the first frame is ready. What the icon draws before that is not established."
+    - "No shipped file uses this class. A mod that adds one gets a playing, looping video."
+    - "Whether the audio track is audible in game is not established."
 
 properties:
   File:

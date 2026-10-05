@@ -1,0 +1,14 @@
+# IUiEffectTextureDataProvider Documentation
+
+class:
+  description: |
+    Marks the [texture providers](/classes/iuitexturedataprovider) a UI **effect element**
+    accepts in its `TextureData`.
+
+    An effect element draws one rectangle of a texture and has no sliced form, so only the
+    two plain file providers carry the mark: [AtlasData](/classes/atlasdata) and
+    [LooseUiTextureData](/classes/looseuitexturedata). A sliced provider, the video provider
+    or the solid colour provider cannot be put on an effect.
+
+    The mark adds no behaviour of its own. The effect gets its texture and its rectangle
+    from the provider the same way an icon does.

@@ -4,14 +4,56 @@ class:
   description: |
     The source of the picture an icon element draws, held by `UiElementIconData.TextureData`.
 
-    When the icon is drawn it asks its provider for two things: a **texture**, and the
-    **rectangle of that texture** to use. The provider decides both, so the same icon can
-    show a region of a shared atlas, a whole texture file, a flat colour or a video
+    The icon asks its provider for three things: a **texture**, the **part of that texture**
+    to use, and how the picture is **sliced**. The provider decides all three, so the same
+    icon can show a region of a hand-made atlas, a packed image, a flat colour or a video
     without the icon's own data changing.
 
-    Two providers do not name a texture file:
-
-    | Provider | Texture | Rectangle |
+    | Provider | Texture | Part used |
     |---|---|---|
+    | [AtlasData](/classes/atlasdata) and its sliced forms | the texture file it names | a rectangle given in pixels |
+    | [LooseUiTextureData](/classes/looseuitexturedata) and its sliced forms | an auto atlas page | the rectangle one packed image occupies |
     | [SolidColorTextureData](/classes/solidcolortexturedata) | the renderer's built-in white texture | the whole texture |
-    | [AtlasDataVideo](/classes/atlasdatavideo) | a texture the provider fills with decoded video frames | the whole frame, mirrored by the icon's `FlipX` and `FlipY` |
+    | [AtlasDataVideo](/classes/atlasdatavideo) | a texture the provider fills with decoded video frames | the whole frame |
+
+    An icon whose provider has no texture draws nothing. That is the normal state of an icon
+    with no `TextureData`, which waits for code to give it a picture, and of any icon whose
+    texture failed to load. Neither case is reported.
+
+    **Slicing**
+
+    | Kind | Drawn as | Providers |
+    |---|---|---|
+    | plain | one quad | `AtlasData`, `LooseUiTextureData`, `SolidColorTextureData`, `AtlasDataVideo` |
+    | three-slice, horizontal | three quads side by side | `AtlasData3SliceH`, `LooseUiTextureData3SliceH` |
+    | three-slice, vertical | three quads stacked | `AtlasData3SliceV`, `LooseUiTextureData3SliceV` |
+    | nine-slice | a 3 x 3 grid of quads | `AtlasData9Slice`, `LooseUiTextureData9Slice` |
+
+    A sliced icon keeps its edge pieces at a fixed size and gives the rest of its rectangle
+    to the middle. Every piece is one stretched quad; nothing tiles.
+
+    The **edge sizes** a sliced provider carries are in pixels of the icon's own layout, the
+    `SourceResolutionWidth` x `SourceResolutionHeight` of its `UiPositionRect.UIRect`. They
+    are not texture pixels. On screen an edge of `n` is
+    `n x screen height / SourceResolutionHeight` pixels on both axes, times the element's UI
+    scale. It stays that size however the element is resized.
+
+    - Nothing shrinks the edges for a small element. When the element is narrower or
+      shorter than its two edges together, the edge quads overlap and the middle quad turns
+      inside out.
+    - The edge size is divided by the position's source resolution, so a sliced icon needs
+      a position that sets one.
+
+    **Icon properties that act on the provider's result**
+
+    | Icon property | Plain provider | Sliced provider |
+    |---|---|---|
+    | `FlipX`, `FlipY` | swaps the two ends of the U or V range | reverses the order of the columns or rows and swaps the two edge sizes with them |
+    | `FillType` = 1 | crops the picture around its centre to the element's aspect ratio, so it fills the element without distortion | ignored |
+    | `PerPixelUvsX`, `PerPixelUVsY` | the U or V range follows the icon's runtime extents, so a shortened icon shows less of the picture instead of a squashed one | ignored |
+
+    A plain provider on an icon positioned with `UiPositionFullScreen` crops the picture to
+    the screen's aspect ratio in the same way, and that takes the place of `FillType`.
+  notes:
+    - "`AtlasDataVideo` and `SolidColorTextureData` always use the whole texture; `FillType` and the per-pixel flags do not apply to them."
+    - "What drives the runtime extents behind `PerPixelUvsX` and `PerPixelUVsY` is not established."

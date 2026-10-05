@@ -1,0 +1,32 @@
+# LooseUiTextureDataBase Documentation
+
+class:
+  description: |
+    A [texture provider](/classes/iuitexturedataprovider) that names **one image** and draws
+    all of it. The author never writes a rectangle: the client knows where the image is.
+
+    Despite the name, the image is not a loose file in the game. When the UI is built, the
+    images one part of the UI uses through this provider are packed into **auto atlas**
+    pages, and the source images themselves are not shipped. Two files stand in for them,
+    both named after the owner, which in most cases is a view controller's path:
+
+    | File | Path | Holds |
+    |---|---|---|
+    | atlas page | `uiautoatlas/<owner path>/atlas_<n>.tex` | the packed images |
+    | manifest | `<owner path>`, with no extension | for each source image path, the page it is on and the rectangle it occupies there |
+
+    The provider looks its image path up in the manifests that are loaded and draws that
+    rectangle of that page. It does not fall back to loading the path as a texture file. To
+    change such an image a mod replaces the atlas page, and the manifest too if the layout
+    changes; a file placed at the image's own path is not read by the provider.
+
+    The concrete classes differ in slicing only. Their edge sizes are measured in texels of
+    the atlas page, inward from the edges of the image's rectangle.
+  notes:
+    - "The texture files named by the atlas family, [AtlasDataBase](/classes/atlasdatabase), are ordinary shipped files and are never listed in a manifest."
+
+properties:
+  TextureName:
+    description: |
+      Path of the source image. It is a lookup key into the loaded auto atlas manifests, not
+      a file the client opens, and it has to be listed in one of them.

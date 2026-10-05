@@ -1,0 +1,20 @@
+# AtlasData Documentation
+
+class:
+  description: |
+    The plain [atlas provider](/classes/atlasdatabase): one rectangle of the named texture,
+    drawn as a single quad stretched over the icon.
+
+    It is one of the two providers a UI effect element accepts; see
+    [IUiEffectTextureDataProvider](/classes/iuieffecttexturedataprovider).
+
+properties:
+  mTextureUV:
+    description: |
+      The rectangle to draw, as `{left, top, right, bottom}` in pixels of the source
+      resolution. Left and right are divided by `mTextureSourceResolutionWidth`, top and
+      bottom by `mTextureSourceResolutionHeight`.
+
+      The result is used as it comes out: no half-pixel inset, and no clamp to the texture.
+    notes:
+      - "If either source resolution is zero the four values are used as UVs unchanged, and the icon's `FlipX`, `FlipY` and `FillType` are not applied. An `AtlasData` that sets neither the rectangle nor a source resolution therefore draws the whole texture."

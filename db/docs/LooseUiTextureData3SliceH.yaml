@@ -1,0 +1,17 @@
+# LooseUiTextureData3SliceH Documentation
+
+class:
+  description: |
+    A horizontal three-slice [packed image provider](/classes/looseuitexturedatabase): the
+    whole image is cut into a left cap, a middle and a right cap. The caps keep their width
+    and the middle stretches. All three pieces stretch to the icon's full height.
+
+    Slicing and the scaling of the edge sizes are described on
+    [IUiTextureDataProvider](/classes/iuitexturedataprovider).
+
+properties:
+  EdgeSizesLeftRight:
+    description: |
+      Width of the left and of the right cap. In the image it is a distance in texels from
+      the left and from the right edge to the cut. On screen it is the width of the cap in
+      pixels of the icon's layout.

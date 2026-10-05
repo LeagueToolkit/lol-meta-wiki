@@ -1,0 +1,35 @@
+# AtlasDataBase Documentation
+
+class:
+  description: |
+    A [texture provider](/classes/iuitexturedataprovider) that draws from a **texture file
+    it names**, usually a hand-made atlas shared by many icons. The concrete classes differ
+    only in how they cut the texture up: [AtlasData](/classes/atlasdata) uses one
+    rectangle, the sliced forms use a row, a column or a grid of them.
+
+    The texture is loaded when the object loads, not when the icon is first drawn. A file
+    that is missing leaves the provider without a texture, and the icon draws nothing.
+
+    Every position inside the texture is written in **pixels of the source resolution**, the
+    size the atlas had when the icon was authored. The client only divides by those two
+    numbers; it never reads the size of the texture it loaded. So a replacement texture at a
+    different resolution keeps working as long as its layout is the same.
+
+properties:
+  mTextureName:
+    description: |
+      Path of the texture file. The whole file is one texture; the rectangle to draw comes
+      from the concrete class.
+
+  mTextureSourceResolutionWidth:
+    description: |
+      Width, in pixels, of the texture the coordinates were authored against. Horizontal
+      coordinates are divided by it to get U.
+
+      Zero turns the division off, and the coordinates are then used as U values as they
+      are. The class defaults of the sliced forms, which are fractions, rely on that.
+
+  mTextureSourceResolutionHeight:
+    description: |
+      Height, in pixels, of the texture the coordinates were authored against. Vertical
+      coordinates are divided by it to get V. Zero works as for the width.
