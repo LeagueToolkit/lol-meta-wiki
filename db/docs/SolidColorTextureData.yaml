@@ -1,0 +1,14 @@
+# SolidColorTextureData Documentation
+
+class:
+  description: |
+    A [texture provider](/classes/iuitexturedataprovider) that gives an icon element the
+    renderer's built-in **plain white texture** instead of a texture file. Set through
+    `UiElementIconData.TextureData`.
+
+    The icon then draws as a flat rectangle, tinted by the icon's own `Color`.
+
+    There is nothing to configure: the texture is the same shared one for every icon, and
+    the whole of it is used.
+  notes:
+    - "The icon's `FlipX` and `FlipY` have no effect on this provider."
