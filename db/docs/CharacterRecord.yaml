@@ -1,0 +1,60 @@
+# CharacterRecord Documentation
+
+properties:
+  unitTagsString:
+    description: |
+      The **unit tags** of every unit that uses this record, as tag names separated by
+      `|`. Spaces around a name are ignored.
+
+      The engine looks up each name in `UnitObjectTagsSettings.UnitTags` and builds the
+      unit's tag mask from the names it finds. A name that is not in that list is dropped
+      without an error. [ObjectTags](/classes/objecttags) describes how the mask is built
+      and compared.
+
+      The mask belongs to the record, not to the unit. All units on the same record have
+      the same tags, and a unit gets other tags only when it changes to the data of
+      another character.
+    notes:
+      - "The string is resolved when the record is loaded, and again each time character data that uses the record is loaded."
+      - "The match ignores letter case."
+
+  friendlyUxOverrideTeam:
+    description: |
+      Team id for the **friendly UX override**: a rule that makes the client show some
+      units of another team as friendly. `0` turns the override off.
+
+      The engine reads the three override properties from the record of the **local
+      player's champion**, not from the unit that is drawn. Another unit is shown as
+      friendly when all of these are true:
+
+      1. `friendlyUxOverrideTeam` is not `0` and is the team id of that unit.
+      2. That unit has at least one of the tags in `friendlyUxOverrideIncludeTagsString`.
+      3. That unit has none of the tags in `friendlyUxOverrideExcludeTagsString`.
+
+      The floating health bar reads the result: a unit that matches is not marked as an
+      enemy, so its bar uses the values for allies. The code that picks the outline colour
+      of a unit, the mouse cursor over a unit and the style of the target frame reads the
+      same result.
+
+      Team ids are `100` and `200` for the two player teams and `300` for the neutral
+      team.
+    notes:
+      - "The record of the unit that is drawn is not read. Setting these properties on a monster has no effect."
+      - "With no local champion, the override never applies."
+      - "Only the health bar reader is identified with certainty. The outline, cursor and target frame readers are identified from the structure of the code."
+
+  friendlyUxOverrideIncludeTagsString:
+    description: |
+      Unit tag names separated by `|`, in the same form as `unitTagsString`. A unit needs
+      at least one of these tags to match the friendly UX override. See
+      `friendlyUxOverrideTeam`.
+    notes:
+      - "An empty string, or a string with no known tag name, means the override never applies."
+
+  friendlyUxOverrideExcludeTagsString:
+    description: |
+      Unit tag names separated by `|`, in the same form as `unitTagsString`. A unit with
+      any of these tags does not match the friendly UX override. See
+      `friendlyUxOverrideTeam`.
+    notes:
+      - "An empty string excludes nothing."

@@ -1,0 +1,36 @@
+# HasUnitTagBoolDriver Documentation
+
+class:
+  description: |
+    Bool logic driver that tests the **unit tags** of the unit it is evaluated on against
+    the set in `UnitTags`. [ObjectTags](/classes/objecttags) describes unit tags and where
+    a unit's tags come from.
+
+    Evaluation:
+
+    1. The driver takes the source it is evaluated on. With no source, or with a source
+       that is not an [AiBaseClient](/classes/aibaseclient), it returns `false`.
+    2. It reads the unit's tags and compares them with `UnitTags` in the way `Has` selects.
+
+    | `Has` | Returns `true` when | Empty `UnitTags` |
+    |---|---|---|
+    | `false` | the unit has at least one of the tags | `false` |
+    | `true` | the unit has every one of the tags | `true` |
+
+    The result follows the unit's character record. It changes during a game only when the
+    unit changes to the data of another character.
+  notes:
+    - "A tag that is not in `UnitObjectTagsSettings.UnitTags` is ignored. With `Has` set to `true`, such a tag does not count as missing."
+    - "Shipped data uses the driver in `PersistentEffectConditionData.OwnerCondition`, with the tags `Champion` and `Champion_Clone`."
+
+properties:
+  UnitTags:
+    description: |
+      The [ObjectTags](/classes/objecttags) set that the unit's tags are compared with.
+
+  Has:
+    description: |
+      Selects the comparison. `false` passes when the unit has at least one tag of the set.
+      `true` passes only when the unit has all of them.
+    notes:
+      - "Both values test that tags are present. To test that a unit does not have a tag, put the driver inside a `NotMaterialDriver`."

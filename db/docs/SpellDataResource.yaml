@@ -1,0 +1,30 @@
+# SpellDataResource Documentation
+
+properties:
+  mRequiredUnitTags:
+    description: |
+      Unit tags that a unit needs to be a valid target of the spell. The unit must have
+      **at least one** of the tags. An empty set means no requirement.
+      [ObjectTags](/classes/objecttags) describes unit tags and where a unit's tags come
+      from.
+
+      The client tests a unit as a target in this order, and every step must pass:
+
+      1. The affects flags of the spell, `mAffectsTypeFlags` and `mAffectsStatusFlags`.
+      2. `mRequiredUnitTags`.
+      3. `mExcludedUnitTags`.
+      4. Each requirement in `mCastRequirementsTarget`.
+
+      The client runs the test on the hovered unit while a spell that needs a target is
+      armed, and again when the spell is cast: a unit that fails is not sent as the target
+      of the cast.
+    notes:
+      - "Only the tags of the target are read. The tags of the caster have no effect here."
+      - "This is the client's own check. Whether the server repeats it is not established."
+      - "What the hover test changes on screen is not confirmed. The code suggests the mouse cursor."
+
+  mExcludedUnitTags:
+    description: |
+      Unit tags that make a unit an invalid target of the spell. A unit with **any** of the
+      tags fails the target test. An empty set excludes nothing. See `mRequiredUnitTags`
+      for the full test.

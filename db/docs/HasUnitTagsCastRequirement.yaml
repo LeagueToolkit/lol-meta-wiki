@@ -1,0 +1,31 @@
+# HasUnitTagsCastRequirement Documentation
+
+class:
+  description: |
+    Cast requirement that passes when the **tested unit** has at least one of the unit
+    tags in `mUnitTags`. [ObjectTags](/classes/objecttags) describes unit tags and where a
+    unit's tags come from.
+
+    Which unit is tested: a requirement is evaluated with a caster and a target, and this
+    class always reads the target. Code that evaluates a list for one unit only, such as a
+    caster requirement list, passes that unit as both, so the requirement then tests the
+    caster.
+
+    The code that evaluates the requirement applies `mInvertResult` afterwards. With
+    `mInvertResult` set, the requirement passes when the unit has **none** of the tags.
+
+    | `mUnitTags` | `mInvertResult` clear | `mInvertResult` set |
+    |---|---|---|
+    | the unit has one or more of the tags | passes | fails |
+    | the unit has none of the tags | fails | passes |
+    | empty | fails | passes |
+
+    There is no mode that needs every tag. To need several tags, put one requirement for
+    each tag in a `HasAllSubRequirementsCastRequirement`.
+  notes:
+    - "In `SpellDataResource.mCastRequirementsTarget` the client evaluates the requirement on each unit it considers as a target, in the same check as `mRequiredUnitTags` and `mExcludedUnitTags`."
+
+properties:
+  mUnitTags:
+    description: |
+      The [ObjectTags](/classes/objecttags) set. The tested unit needs one of its tags.

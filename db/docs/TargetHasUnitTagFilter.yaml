@@ -1,0 +1,27 @@
+# TargetHasUnitTagFilter Documentation
+
+class:
+  description: |
+    Stat stone event filter that passes when the **target unit of the tracked event** has
+    at least one of the unit tags in `UnitTags`. [ObjectTags](/classes/objecttags)
+    describes unit tags and where a unit's tags come from.
+
+    Evaluation:
+
+    1. The filter takes the target unit from the event. Each kind of event stores its
+       target in its own place, and a kind of event that has no target fails the filter.
+    2. The target must still exist and must be an
+       [AiBaseClient](/classes/aibaseclient). If not, the filter fails.
+    3. The filter passes when the tags of the target's character record and `UnitTags`
+       have at least one tag in common.
+
+    There is no mode that needs every tag. To need several tags, add one filter for each
+    tag.
+  notes:
+    - "An empty `UnitTags` never passes."
+    - "Which client code runs the filters of a tracked event is not yet identified."
+
+properties:
+  UnitTags:
+    description: |
+      The [ObjectTags](/classes/objecttags) set. The target needs one of its tags.

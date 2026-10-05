@@ -1,0 +1,36 @@
+# ContextualConditionCharacterUnitTags Documentation
+
+class:
+  description: |
+    Character subcondition that compares the **unit tags** of a character with the set in
+    `mUnitTags`. [ObjectTags](/classes/objecttags) describes unit tags and where a unit's
+    tags come from.
+
+    The condition does not choose the character itself. Its parent condition does:
+    `ContextualConditionCharacter` evaluates it on the one character that its
+    `mCharacterType` selects, and `ContextualConditionAnyOtherHero` evaluates it on every
+    hero other than the unit the situation belongs to.
+
+    `mTagMode` selects the comparison.
+
+properties:
+  mUnitTags:
+    description: |
+      The [ObjectTags](/classes/objecttags) set that the character's tags are compared
+      with.
+
+  mTagMode:
+    description: |
+      How the character's tags are compared with `mUnitTags`.
+
+      | Value | Name | Passes when | Empty `mUnitTags` |
+      |---|---|---|---|
+      | `0` | `kHasAll` | the character has every one of the tags | passes |
+      | `1` | `kHasAny` | the character has at least one of the tags | fails |
+      | `2` | `kHasNone` | the character has none of the tags | passes |
+
+      Any other value makes the condition fail.
+    notes:
+      - "The names are the client's own enum names."
+      - "A tag that is not in `UnitObjectTagsSettings.UnitTags` is ignored in every mode."
+      - "Shipped data leaves the property at its default."
