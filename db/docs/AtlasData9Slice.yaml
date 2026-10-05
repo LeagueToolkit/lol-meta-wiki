@@ -1,0 +1,36 @@
+# AtlasData9Slice Documentation
+
+class:
+  description: |
+    A nine-slice [atlas provider](/classes/atlasdatabase): the picture is a 3 x 3 grid cut
+    out of the named texture. The four corners keep their size, the four sides stretch along
+    one axis, and the centre stretches along both. It is how a frame or a panel is drawn at
+    any size from one small sprite.
+
+    Slicing and the scaling of the edge sizes are described on
+    [IUiTextureDataProvider](/classes/iuitexturedataprovider).
+
+properties:
+  TextureUs:
+    description: |
+      The four column boundaries of the grid, left to right, in pixels of the source
+      resolution: the left edge of the sprite, the two cuts, and the right edge. Each is
+      divided by `mTextureSourceResolutionWidth`.
+
+  TextureVs:
+    description: |
+      The four row boundaries of the grid, top to bottom, in pixels of the source
+      resolution. Each is divided by `mTextureSourceResolutionHeight`.
+
+  LeftRightWidths:
+    description: |
+      Width of the left and of the right column on screen, in pixels of the icon's layout.
+      They are independent of the texture: `TextureUs` chooses which pixels a column shows,
+      this chooses how wide it is drawn.
+
+      Most shipped sprites use the column's own pixel width, which draws the edge at its
+      authored size when the screen matches the layout's resolution.
+
+  TopBottomHeights:
+    description: |
+      Height of the top and of the bottom row on screen, in pixels of the icon's layout.

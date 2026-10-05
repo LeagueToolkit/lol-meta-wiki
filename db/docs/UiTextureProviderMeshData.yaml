@@ -1,0 +1,47 @@
+# UiTextureProviderMeshData Documentation
+
+class:
+  description: |
+    A [texture provider](/classes/iuitexturedataprovider) that drew an **animated skinned
+    mesh** on an icon element. Removed from current builds; what follows is how it worked
+    while it existed.
+
+    The mesh was not drawn into the UI directly. The provider rendered it into an offscreen
+    target of its own and gave that target to the icon as its texture, so to the icon it
+    was one more plain picture.
+
+    **Target.** The target was as large as the icon's rectangle in screen pixels, with each
+    side rounded up to a power of two, and was created again when the icon's pixel size
+    changed. The icon drew the centred part of it that matched its own size. The icon's
+    `FlipX` and `FlipY` mirrored the picture.
+
+    **Camera.** The view was orthographic, looking down the negative Z axis with Y up, with
+    a depth range of 1000 units on each side of the origin. One model unit covered one
+    pixel of the target, and the model's origin sat at the centre of the icon. Nothing
+    fitted the mesh to the icon and there was no perspective: `ModelTransformation` was the
+    only control over where the mesh sat and how large it appeared.
+
+    The provider was always plain. It had no sliced form.
+  notes:
+    - "Nothing in the client named this class apart from the generic icon path, so which parts of the UI used it is not established."
+    - "How the mesh was lit, and which clock advanced its animation, are not established."
+
+properties:
+  skinMeshProperties:
+    description: |
+      The mesh to draw, in the form a character skin describes its own mesh:
+      [SkinMeshDataProperties](/classes/skinmeshdataproperties), with skeleton, skin,
+      textures and material. The mesh came from the client's shared skinned mesh cache.
+
+  animationGraphData:
+    description: |
+      The [AnimationGraphData](/classes/animationgraphdata) that posed the mesh. The
+      provider named no clip of its own; it started the graph's entry states.
+
+      The link had to be set. The provider used it without checking for an empty one.
+
+  ModelTransformation:
+    description: |
+      The model matrix, applied to the mesh before the camera. Because one model unit is
+      one pixel and the origin is the icon's centre, this matrix carries the scale, rotation
+      and offset that place the mesh inside the icon.

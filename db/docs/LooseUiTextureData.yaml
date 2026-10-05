@@ -1,0 +1,9 @@
+# LooseUiTextureData Documentation
+
+class:
+  description: |
+    The plain [packed image provider](/classes/looseuitexturedatabase): the whole image,
+    drawn as a single quad stretched over the icon.
+
+    It is one of the two providers a UI effect element accepts; see
+    [IUiEffectTextureDataProvider](/classes/iuieffecttexturedataprovider).

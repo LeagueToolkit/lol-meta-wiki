@@ -1,0 +1,25 @@
+# AtlasData3SliceH Documentation
+
+class:
+  description: |
+    A horizontal three-slice [atlas provider](/classes/atlasdatabase): the sprite is cut
+    into a left cap, a middle and a right cap. The caps keep their width and the middle
+    stretches, so a bar or a button can be any width. All three pieces stretch to the
+    icon's full height.
+
+    Slicing and the scaling of the edge sizes are described on
+    [IUiTextureDataProvider](/classes/iuitexturedataprovider).
+
+properties:
+  TextureUs:
+    description: |
+      The four column boundaries, left to right, in pixels of the source resolution: the
+      left edge of the sprite, the two cuts, and the right edge.
+
+  TextureVs:
+    description: |
+      The top and the bottom of the sprite, in pixels of the source resolution.
+
+  LeftRightWidths:
+    description: |
+      Width of the left and of the right cap on screen, in pixels of the icon's layout.

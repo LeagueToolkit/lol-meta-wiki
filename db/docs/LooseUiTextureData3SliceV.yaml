@@ -1,0 +1,17 @@
+# LooseUiTextureData3SliceV Documentation
+
+class:
+  description: |
+    A vertical three-slice [packed image provider](/classes/looseuitexturedatabase): the
+    whole image is cut into a top cap, a middle and a bottom cap. The caps keep their height
+    and the middle stretches. All three pieces stretch to the icon's full width.
+
+    Slicing and the scaling of the edge sizes are described on
+    [IUiTextureDataProvider](/classes/iuitexturedataprovider).
+
+properties:
+  EdgeSizesTopBottom:
+    description: |
+      Height of the top and of the bottom cap. In the image it is a distance in texels from
+      the top and from the bottom edge to the cut. On screen it is the height of the cap in
+      pixels of the icon's layout.

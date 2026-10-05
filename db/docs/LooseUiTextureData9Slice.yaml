@@ -1,0 +1,24 @@
+# LooseUiTextureData9Slice Documentation
+
+class:
+  description: |
+    A nine-slice [packed image provider](/classes/looseuitexturedatabase): the whole image
+    is cut into a 3 x 3 grid by four margins. The corners keep their size, the sides stretch
+    along one axis, and the centre stretches along both.
+
+    One pair of numbers does two jobs here. It places the cuts in the image, and it is also
+    the size the edges are drawn at. Slicing and the scaling of the edge sizes are described
+    on [IUiTextureDataProvider](/classes/iuitexturedataprovider).
+
+properties:
+  EdgeSizesLeftRight:
+    description: |
+      Width of the left and of the right column. In the image it is a distance in texels
+      from the left and from the right edge to the cut. On screen it is the width of the
+      column in pixels of the icon's layout.
+
+  EdgeSizesTopBottom:
+    description: |
+      Height of the top and of the bottom row: texels from the top and from the bottom edge
+      of the image to the cut, and the height of the row on screen in pixels of the icon's
+      layout.

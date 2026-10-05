@@ -1,0 +1,25 @@
+# AtlasData3SliceV Documentation
+
+class:
+  description: |
+    A vertical three-slice [atlas provider](/classes/atlasdatabase): the sprite is cut into
+    a top cap, a middle and a bottom cap. The caps keep their height and the middle
+    stretches, so a panel can be any height. All three pieces stretch to the icon's full
+    width.
+
+    Slicing and the scaling of the edge sizes are described on
+    [IUiTextureDataProvider](/classes/iuitexturedataprovider).
+
+properties:
+  TextureUs:
+    description: |
+      The left and the right of the sprite, in pixels of the source resolution.
+
+  TextureVs:
+    description: |
+      The four row boundaries, top to bottom, in pixels of the source resolution: the top
+      edge of the sprite, the two cuts, and the bottom edge.
+
+  TopBottomHeights:
+    description: |
+      Height of the top and of the bottom cap on screen, in pixels of the icon's layout.
