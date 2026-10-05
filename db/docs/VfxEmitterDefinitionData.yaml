@@ -2,503 +2,1432 @@
 
 class:
   description: |
-    The definition of a single **emitter** inside a
-    [VfxSystemDefinitionData](/classes/vfxsystemdefinitiondata) particle system.
-    An emitter spawns particles over time and defines everything about them:
-    emission timing and rate, birth state (velocity, rotation, scale, color),
-    over-lifetime evolution, the rendered primitive (billboard quad, mesh, beam,
-    trail, …), texturing/UV animation, blending, and per-emitter audio and child
-    effects.
+    The definition of one **emitter** of a
+    [particle system](/classes/vfxsystemdefinitiondata): when and how many particles it
+    spawns, where they are born, how they move and how they are drawn.
 
-    Systems reference emitters through two lists: `ComplexEmitterDefinitionData`
-    (full feature set) and `SimpleEmitterDefinitionData` (lightweight path).
+    ## Complex and simple emitters
 
-    Many properties come in **`Birth*` / non-`Birth` pairs**: the `Birth*` property is
-    evaluated once when a particle spawns (its initial value, often with a random
-    range), while the non-`Birth` counterpart evolves the value over the particle's
-    lifetime. Most of these use a *value-with-dynamics* embed: a `ConstantValue`
-    plus optional `Dynamics` (keyframed/randomized curves).
+    The system list an emitter sits in decides how it runs. An emitter in
+    `complexEmitterDefinitionData` runs the full particle simulation and reads every
+    live property on this page. An emitter in `simpleEmitterDefinitionData` runs a
+    lightweight path: it takes size, rotation, quad plane and UV scroll from its
+    `LegacySimple` block, moves particles in a straight line, and is known to read only
+    these properties of this class:
+
+    - Gates and timing: `disabled`, `importance`, `Filtering`, `rate`, `flexRate`,
+      `lifetime`, `period`, `timeActiveDuringPeriod`, `timeBeforeFirstEmission`,
+      `isSingleParticle`, `doesLifetimeScale`, `doesParticleLifetimeScale`,
+      `particleLifetime`, `flexParticleLifetime`, `particleLinger`, `emitterLinger`.
+    - Placement and motion: `EmitterPosition`, `SpawnShape`, `FlexShapeDefinition`,
+      `birthVelocity`, `flexBirthVelocity`, `flexScaleBirthScale`,
+      `isLocalOrientation`, `particleIsLocalOrientation`, `isFollowingTerrain`,
+      `isRotationEnabled`, `fieldCollectionDefinition`.
+    - Appearance: `primitive`, `texture`, `particleColorTexture` with the
+      `ColorLookUp*` properties, `modulationFactor`, `numFrames`, `frameRate`,
+      `startFrame`, `isRandomStartFrame`.
+    - Render state: `blendMode`, `pass`, `renderPhaseOverride`, `isGroundLayer`,
+      `alphaRef`, `miscRenderFlags`, `colorRenderFlags`, `meshRenderFlags`,
+      `disableBackfaceCull`, `doesCastShadow`, `depthBiasFactors`, `DepthPushPull`,
+      `sliceTechniqueRange`, `softParticleParams`, `distortionDefinition`,
+      `SortEmittersByPos`.
+    - Attached data: `Audio`, `materialOverrideDefinitions`, `LegacySimple`.
+
+    Where a property means something else on a simple emitter, its description says so.
+
+    ## Clocks
+
+    - **System time**: simulated seconds since the system started. It advances in the
+      system's fixed steps. `timeBeforeFirstEmission`, `lifetime`, `period` and
+      `timeActiveDuringPeriod` are all measured on it from the system's start. None of
+      them is measured from the end of another.
+    - **Emitter phase**: `(system time - timeBeforeFirstEmission) / D`, where `D` is
+      the smallest of the emitter's end time (`lifetime`), `timeActiveDuringPeriod` and
+      `period` that is set. With none of them set the phase is always `0`. The phase
+      is neither clamped nor wrapped, so it does not restart each `period`.
+    - **Particle age**: seconds since the particle was born, and its **age fraction**
+      of the particle's lifetime, `0` at birth and `1` at death.
+
+    ## Animated values
+
+    Most numeric properties are an embed of `constantValue` plus optional `dynamics`.
+
+    - Without `dynamics` the constant is the value. With `dynamics`, its curve supplies
+      the value and a scalar's `constantValue` is ignored. A curve is a list of `times`
+      and `values`, interpolated linearly and held at its first and last key. `times`
+      are positions on the clock the property is sampled on, not seconds.
+    - Every `Birth*` property, `particleLifetime`, `rate` and `EmitterPosition` are
+      sampled on the **emitter phase**. A birth value is sampled once, when the
+      particle spawns: its curve changes what later particles get and never changes a
+      live particle.
+    - The properties without `Birth` (`Color`, `scale0`, `velocity`, `acceleration`,
+      `drag`, `bindWeight`, the UV values) are sampled every step on the **particle age
+      fraction**.
+    - A `dynamics` object can carry a **probability table** per channel. A table is a
+      multiplier on the curve's result, looked up with a random number in 0..1 along
+      its `keyTimes`. It never replaces or adds.
+    - **Integrated values** (`rotation0`, `worldAcceleration`, `particleUVScrollRate`,
+      `particleUVRotateRate`) hold a rate. When the definition loads, the curve is
+      replaced by its running integral over the particle's life, so the effect at any
+      age is the accumulated rate. Only a `dynamics` curve is integrated. With a bare
+      `constantValue` the engine applies one fixed amount for the whole life, and
+      nothing moves. A constant rate needs a `dynamics` with a single key.
+
+    When the random number of a probability table is drawn:
+
+    | Value | Draw |
+    |---|---|
+    | The birth vectors (`birthVelocity`, `birthAcceleration`, `birthDrag`, `birthScale0`, the birth rotation properties, `birthOrbitalVelocity`) and `birthColor` | One independent draw per channel, per particle. |
+    | `particleLifetime` | Its own draw per particle. |
+    | `birthFrameRate`, `birthUVOffset`, `birthUvScrollRate`, `birthUvRotateRate` | One number shared per particle. `isRandomStartFrame` and the birth-random colour lookup use the same number, and `ParticlesShareRandomValue` makes it one number per emitter. |
+    | `rate` | Drawn again every step. |
+    | Values sampled over the particle's life | Drawn again every step, so a table there flickers. |
+
+    ## Flex values
+
+    An effect instance has three **flex values**, slots `0`, `1` and `2`. The game
+    supplies them per instance while the effect lives: as a constant, or bound to the
+    resource fraction (current over maximum, 0..1) of a unit. A `Flex*` property names
+    a slot with `mFlexID` and combines the slot's current value with a base property.
+    A slot nobody supplied reads `0`, and every flex property is built so that `0`
+    means no change. An `mFlexID` outside 0..2 also reads `0`. Flex values are not
+    passed on to child effects.
+
+    Two kinds exist. A `FlexValue*` property is **additive**: it adds
+    `flex * mValue` to its base. A `FlexTypeFloat` property is a **multiplier** that is
+    skipped unless it is above zero. No flex property replaces its base.
+
+    Four of the additive ones (`flexParticleLifetime`, `flexBirthVelocity`,
+    `flexBirthRotationalVelocity0` and the `flexBirthTranslation` of
+    `FlexShapeDefinition`) apply the flex value twice. With plain constants the result
+    is `(base + flex * mValue) * (1 + flex)`, so it is not linear in the flex value.
+
+    ## Spawn gates
+
+    An emitter is dropped for good while the system definition is prepared when
+    `disabled` is set, when `Filtering` rejects it by spectator policy, when it is a
+    simple emitter of a HUD-layer system, or when it can never emit: `rate` is zero, it
+    is not `isSingleParticle`, and it has neither `flexRate` nor material overrides.
+
+    Each time the system spawns, every remaining emitter is tested and instantiated
+    only if it passes all of: `ChanceToNotExist`, `importance` against the
+    `EffectsQuality` setting, `colorblindVisibility`, the keywords of `Filtering`.
+    Simple emitters skip `ChanceToNotExist` and `colorblindVisibility`.
+
+    ## Emission
+
+    Every step, an emitter spawns only when all of these hold: system time has reached
+    `timeBeforeFirstEmission`, the end time `lifetime` has not passed, and
+    `system time mod period` is below `timeActiveDuringPeriod`. The count is
+    `(time since the last spawn) * rate`, truncated, and at most
+    `rate * 0.33 + 1` particles per step and 1000 per step overall. A step that
+    spawns nothing keeps accumulating time, so slow rates still emit. Particles
+    spawned in one step are spread evenly over the step in birth time and along the
+    system's movement.
+
+    ## Particle update
+
+    Positions, velocities and accelerations live in the **emitter's local frame**.
+    Each step, for every particle of a complex emitter:
+
+    1. Stored velocity gains `(birthAcceleration + acceleration) * dt`.
+    2. The step velocity is the stored velocity plus `velocity`.
+    3. Drag (`birthDrag + drag`) damps the step velocity.
+    4. Force fields (`fieldCollectionDefinition`) change it, and their change is kept.
+    5. Position advances by the step velocity.
+    6. The spin angle is rebuilt from the birth rotation properties and `rotation0`.
+    7. The particle's matrix is built: spin, then `postRotateOrientationAxis`, then the
+       position, then the attachment's current orientation when
+       `particleIsLocalOrientation` is set, then the orbit of `birthOrbitalVelocity`,
+       then the system's `transform`, then direction orientation.
+    8. The matrix is placed in the world through the spawn frame captured at the
+       particle's birth, and `bindWeight`, `worldAcceleration` and
+       `isFollowingTerrain` are applied in world space.
+    9. Colour, scale, UV transform and flipbook frame are evaluated.
+
+    ## Colour
+
+    A complex particle's colour is the product
+    `Color * birthColor * system colour * modulationFactor`, all four channels. For
+    `blendMode` `Add` and `Subtract` the result is then premultiplied: RGB is multiplied by
+    alpha and alpha is set to `1`. In the shader the colour multiplies the `texture`
+    sample and the `particleColorTexture` sample, and the `textureMult` sample when
+    that layer is bound.
+
+    ## Draw order
+
+    Emitters are drawn in **render phases**, see `renderPhaseOverride`. Inside one
+    phase, emitters of all systems are ordered by:
+
+    1. `pass`, lower first. Among emitters with the same `pass`, complex emitters draw
+       before simple ones.
+    2. Blend rank from `blendMode`: `None`, then `Add` and `Subtract`, then `Alpha`,
+       `AlphaAdd`, `PremultipliedAlpha`, `Min` and `Max`, then `TargetAlpha`.
+    3. System position, only between two emitters that both set `SortEmittersByPos`.
+    4. The whole `miscRenderFlags` byte, lower first.
+
+    Below that the order is not authored.
   notes:
-    - "Whether an emitter is actually instantiated is gated by `Disabled`, `Importance` (vs. the `EffectsQuality` setting), `ColorblindVisibility` (vs. colorblind mode), and `ChanceToNotExist`."
+    - "The system colour and system alpha in the colour product are per-instance values of the system, not emitter properties."
 
 properties:
-  EmitterName:
-    description: "The emitter's name, used for identification and by overrides that target emitters by name."
-
-  Disabled:
-    description: "Kill switch - a disabled emitter is skipped entirely when the effect is loaded."
-
-  Importance:
+  emitterName:
     description: |
-      Quality-culling priority, checked against the `EffectsQuality` video setting
-      (0-4) when the system instantiates its emitters:
+      The emitter's name. Its hash is the key under which the system's
+      [`DynamicParameterData`](/classes/vfxdynamicparametersdata) addresses this
+      emitter. No other use by the client was found.
 
-      | EffectsQuality | Skipped importance values |
+  disabled:
+    description: "A disabled emitter is dropped while the system definition is prepared and never exists in any instance."
+
+  importance:
+    description: |
+      Quality tier of the emitter, compared with the `EffectsQuality` setting. It has
+      two effects.
+
+      **Existence**, decided once when the system spawns:
+
+      | EffectsQuality | Importance values not instantiated |
       |---|---|
-      | 0-1 (Very Low / Low) | 0, 1, 5 |
-      | 2 (Medium) | 0, 1 |
-      | 3 (High) | 0, 4 |
-      | 4 (Very High) | 4 |
+      | Very Low, Low | `0`, `1`, `5` |
+      | Medium | `0`, `1` |
+      | High | `0`, `4` |
+      | Very High | `4` |
 
-      So `0`-`3` ascend in priority (`3` = gameplay-critical, never culled), `4` is a
-      low-quality substitute shown **only** on low settings, and `5` is shown only on
-      Medium and above.
+      So `0` exists only on Very High, `1` on High and above, `2` and `3` always, `4`
+      only on Medium and below, and `5` on Medium and above.
+
+      **Emission rate multiplier**, applied every step:
+
+      | EffectsQuality | `0` | `1` | `2` | `3`, `4`, `5` |
+      |---|---|---|---|---|
+      | Very Low | 0.05 | 0.10 | 0.20 | 1 |
+      | Low | 0.10 | 0.20 | 0.40 | 1 |
+      | Medium | 0.20 | 0.40 | 0.60 | 1 |
+      | High | 0.50 | 1 | 1 | 1 |
+      | Very High | 1 | 1 | 1 | 1 |
+
+      `0` and `1` are not instantiated wherever their factor is below 1, so `2` is the
+      only value whose rate is really reduced. `3` is never removed and never scaled.
     notes:
-      - "Default `2`."
-      - "Systems with `Flags` bit `0x800` opt into an aggressive low-spec mode that strips everything except importance 3 and 4."
+      - "Changing the setting during a game changes the rate of effects that are already playing, but cannot add or remove their emitters."
+      - "A system with the `AggressiveImportanceCulling` flag (`0x800`) also drops complex emitters of importance `2` and lower on Low and Very Low, see [`flags`](/classes/vfxsystemdefinitiondata#flags)."
 
-  ColorblindVisibility:
+  colorblindVisibility:
     description: |
-      Filters the emitter by colorblind mode: `0` = always visible (default),
-      `1` = only in normal mode, `2` = only in colorblind mode.
+      Filters the emitter by colour palette when the system spawns.
+
+      | Value | Emitter is instantiated |
+      |---|---|
+      | `0` | always |
+      | `1` | only with the normal palette |
+      | `2` | only with the colourblind palette |
+      | `3` and above | never |
+    notes:
+      - "Switching colourblind mode affects effects spawned afterwards, not ones already playing."
 
   ChanceToNotExist:
-    description: "Probability (0-1) that the emitter is skipped when the system is instantiated."
+    description: |
+      Probability that the emitter is left out of an instance. One random number in
+      0..1 is drawn per emitter when the system spawns, and the emitter is skipped when
+      this value is greater. `0` always instantiates it, `1` or more never does.
 
   # --- Emission timing ---
 
-  Rate:
+  rate:
     description: |
-      Emission rate in particles per second (value-with-dynamics). For
-      single-particle emitters (`IsSingleParticle`) the rate instead controls the
-      particle count.
+      Emission rate in particles per second, sampled on the emitter phase. The rate
+      used for a step is built in this order:
 
-  Lifetime:
-    description: "How long the emitter emits, in seconds. Unset (default) makes the emitter run for the life of the system."
+      1. `rateByVelocityFunction`, when it is non-zero, replaces `rate` and steps 2
+         and 3.
+      2. `rate`.
+      3. `flexRate` is added.
+      4. The emission-surface factor multiplies it, when the emitter has an
+         [emission surface](/classes/vfxemissionsurfacedata) with a spawn-data
+         generator.
+      5. The `importance` rate multiplier for the current `EffectsQuality`.
 
-  Period:
-    description: "Length of one emission cycle, in seconds, for looping emitters."
+      The first time the emitter emits, a count of zero is raised to one particle
+      unless `HasVariableStartTime` is set.
+    notes:
+      - "An emitter with a zero rate is dropped at load unless it is `isSingleParticle` or has a `flexRate` or material overrides."
+      - "On a simple emitter the `importance` multiplier is applied to `rate` before `flexRate` is added, and steps 1 and 4 do not exist."
 
-  TimeActiveDuringPeriod:
-    description: "How much of each `Period` the emitter actually emits, in seconds. Unset = active for the whole period."
+  lifetime:
+    description: |
+      **End time** of emission, in seconds of system time. It is measured from the
+      start of the system, not from `timeBeforeFirstEmission`: with a delay of 1 and a
+      `lifetime` of 3 the emitter emits for 2 seconds. Unset means the emitter has no
+      end.
+    notes:
+      - "A negative value means no end on a complex emitter. A simple emitter with a negative value never emits."
+      - "On a complex `isSingleParticle` emitter without material overrides, a `lifetime` that is unset or more than 10 seconds longer than `particleLifetime` is replaced by `particleLifetime`."
 
-  TimeBeforeFirstEmission:
-    description: "Delay, in seconds, before the emitter starts emitting."
+  period:
+    description: |
+      Length of the emission cycle, in seconds. The emitter may spawn only while
+      `system time mod period` is below `timeActiveDuringPeriod`. The cycle is aligned
+      to the system's start, not to `timeBeforeFirstEmission`. Unset means one cycle
+      that never repeats.
+    notes:
+      - "Without `timeActiveDuringPeriod` it gates nothing, but it still divides the emitter phase."
+      - "It does not make an `isSingleParticle` emitter emit again."
 
-  ParticleLifetime:
-    description: "How long each particle lives, in seconds (value-with-dynamics). Default 3."
+  timeActiveDuringPeriod:
+    description: |
+      Seconds at the start of each `period` during which the emitter may spawn. Unset
+      means always. With `period` unset it limits emission to the first seconds of the
+      system. Zero or a negative value never spawns.
 
-  ParticleLinger:
-    description: "Extra time particles are allowed to live out after the emitter stops, in seconds."
+  timeBeforeFirstEmission:
+    description: |
+      Seconds of system time before the emitter may spawn. It is also subtracted from
+      system time in the emitter phase. It does not move `lifetime`, `period` or
+      `timeActiveDuringPeriod`, which keep counting from the system's start.
 
-  ParticleLingerType:
-    description: "Selects how lingering particles behave after the emitter stops (see `ParticleLinger`)."
+  particleLifetime:
+    description: |
+      How long each particle lives, in seconds, sampled on the emitter phase when the
+      particle spawns and multiplied by its own probability draw. The birth lifetime is
+      then adjusted by `flexParticleLifetime`, `doesParticleLifetimeScale` and
+      `offsetLifetimeScaling`. A negative result means the particle never expires.
+    notes:
+      - "The linger rules can shorten or rewrite a particle's lifetime once the emitter is finished, see `particleLingerType`."
 
-  EmitterLinger:
-    description: "Extra time the emitter lingers after the system is deactivated, letting existing particles finish."
+  particleLinger:
+    description: |
+      Seconds, used only once the emitter is **finished**: its end time has passed, or
+      the system is being stopped and `emitterLinger` has passed. How it is applied to
+      the particles still alive depends on `particleLingerType`. It is also the time
+      span the `Linger` replacements are sampled over.
+
+      The value is capped at `particleLifetime + 10` on a complex emitter and at 10 on
+      a simple one. Unset takes the cap.
+    notes:
+      - "With the defaults (`0` and type `0`), stopping a system cuts the remaining lifetime of its particles to zero, so they vanish at once."
+      - "A simple emitter always applies it as type `0`."
+
+  particleLingerType:
+    description: |
+      How `particleLinger` (`L`) is applied to the particles still alive when the
+      emitter finishes.
+
+      | Value | Name | Starts when | Effect on each live particle |
+      |---|---|---|---|
+      | `0` | MaxLifetimeAfterEmitterDies | the system is stopping and the emitter is finished | Every step its lifetime is cut to at most `L`, counted from its birth. |
+      | `1` | FixedLifetimeAfterEmitterDies | the system is stopping and the emitter is finished | Once: its lifetime becomes its current age plus `L`. |
+      | `2` | FixedLifetimeAfterEmitterStops | the emitter is finished, stopping or not | The same rewrite as `1`. |
+      | `3` and above | | | No change. |
+
+  emitterLinger:
+    description: |
+      A system age, in seconds. While the system is being stopped, the emitter keeps
+      spawning until the system's age exceeds this value, then counts as finished. The
+      age is counted from the system's start and not from the stop, so an emitter of a
+      system already older than this value finishes at once.
+
+      Capped at `lifetime + 10` on a complex emitter that has a `lifetime`, and at 10
+      on a simple one.
 
   Linger:
-    description: "Pointer to an extended linger definition with more detailed control over post-deactivation behavior than the plain `ParticleLinger` / `EmitterLinger` values."
+    description: |
+      Optional replacements for over-life properties while the particles **linger**,
+      that is from the moment the linger rule of `particleLingerType` starts. Each
+      replacement has its own switch in the definition:
 
-  IsSingleParticle:
-    description: "The emitter maintains a single (or fixed set of) persistent particle(s) instead of streaming them over time."
+      | Property | Switch | Replaces |
+      |---|---|---|
+      | `LingerRotation` | `UseLingerRotation` | `rotation0` |
+      | `LingerScale` | `UseLingerScale` | `scale0` |
+      | `KeyedLingerAcceleration` | `UseKeyedLingerAcceleration` | `acceleration` |
+      | `KeyedLingerDrag` | `UseKeyedLingerDrag` | `drag` |
+      | `KeyedLingerVelocity` | `UseKeyedLingerVelocity` | `velocity` |
+      | `SeparateLingerColor` | `UseSeparateLingerColor` | `Color` |
+
+      The scale and colour replacements are sampled on linger progress: time since the
+      linger started divided by `particleLinger`.
+
+  isSingleParticle:
+    description: |
+      The emitter emits **once**: a single burst of `rate` particles (truncated, at
+      least one) at its first emission, and never again, including in later periods.
+      Restarting the system makes it emit once more.
+    notes:
+      - "It is exempt from the zero-rate drop."
+      - "A complex one without material overrides counts as finished from the step after its burst."
 
   HasVariableStartTime:
-    description: "Randomizes the emitter's start phase so multiple instances of a looping effect don't visibly sync up."
+    description: |
+      Removes the guaranteed first particle. Normally, when the first emission computes
+      to zero particles, one is spawned anyway. With this flag it is not.
 
-  DoesLifetimeScale:
-    description: "Whether the emitter's lifetime scales when the owning effect's duration is scaled."
+  doesLifetimeScale:
+    description: |
+      Multiplies the emitter's end time (`lifetime`) by a scale factor of the effect
+      instance, once, when the emitter is created. The game supplies the factor when it
+      creates the effect, and it is `1` otherwise. What the game bases it on is not
+      established.
 
-  DoesParticleLifetimeScale:
-    description: "Whether particle lifetime scales when the owning effect's duration is scaled."
+  doesParticleLifetimeScale:
+    description: "Multiplies each particle's lifetime at birth by the same instance scale factor as `doesLifetimeScale`."
 
-  RateByVelocityFunction:
-    description: "Scales emission rate by the emitter's movement speed (input/output mapping) - e.g. dust trails that only emit while moving."
+  rateByVelocityFunction:
+    description: |
+      A pair `(x, y)` that, when not `(0, 0)`, **replaces** the emission rate with
+      `speed * x + y`, where `speed` is how fast the whole system instance moved in the
+      last step, in world units per second. `rate` and `flexRate` are not read in that
+      case. The emission-surface factor, the `importance` multiplier and the per-step
+      cap still apply.
+    notes:
+      - "The result is limited by `MaximumRateByVelocity`."
 
   MaximumRateByVelocity:
-    description: "Upper clamp for the velocity-driven emission rate (see `RateByVelocityFunction`)."
+    description: "Upper limit of the rate produced by `rateByVelocityFunction`, in particles per second. Unset means 300."
+
+  ParticlesShareRandomValue:
+    description: |
+      Every particle of the emitter uses one stored random number where it would draw
+      its own shared number at birth: for the probability tables of `birthFrameRate`
+      and the birth UV values, for `isRandomStartFrame` and for the birth-random colour
+      lookup. The number is drawn again only when the emitter restarts.
+    notes:
+      - "It does not cover the birth vectors, `birthColor` or `particleLifetime`, which draw independently."
+
+  Filtering:
+    description: |
+      Optional conditions on the emitter's existence, checked when the system spawns.
+      Unset passes everything.
+
+      - **Keywords.** The effect instance carries a list of keywords. The emitter is
+        instantiated only if no instance keyword is in `keywordsExcluded`, every entry
+        of `keywordsRequired` is among the instance keywords, and, when
+        `keywordsIncluded` is not empty, at least one instance keyword is in it.
+      - **`spectatorPolicy`.** `0` (EnableAlways) always passes. `1`
+        (DisableWhenSpectating) passes only while a client mode flag is off, any other
+        value (`2` is EnableWhenSpectating) only while it is on. That the flag is
+        spectator mode rests on these names and is not verified.
+      - **`censorPolicy`.** No code that reads it was found.
+    notes:
+      - "Who fills the instance's keyword list is not established."
 
   # --- Spawn placement ---
 
   EmitterPosition:
-    description: "The emitter's position offset relative to the system (value-with-dynamics)."
+    description: |
+      Offset of the birth position in the emitter's local frame, sampled on the emitter
+      phase. It is the base of the birth position: the `SpawnShape` offset, the
+      emission mesh point and the emission surface point are added to it.
+
+      Normally it is added once, at birth. With `IsEmitterSpace` it is added again
+      every step with its current value, so live particles follow a keyed
+      `EmitterPosition`.
 
   SpawnShape:
-    description: "Pointer to a spawn-shape object that distributes particle birth positions (and optionally velocities) over a shape instead of a single point."
-
-  EmissionMeshName:
     description: |
-      Name of a mesh whose surface is used for particle emission. Only resolved for
-      **complex** emitters.
+      A shape object that gives each new particle a random offset from the birth
+      position. A shape can also turn the particle's birth velocity and birth
+      acceleration with the same random rotation as the offset. Unset means no offset.
 
-  EmissionMeshScale:
-    description: "Scale applied to the emission mesh. Default `1`."
+      | Shape | Offset | Rotation of offset, velocity and acceleration |
+      |---|---|---|
+      | `VfxShapeLegacy` | `emitOffset` | one turn per entry of `emitRotationAngles` (degrees) about the matching `emitRotationAxes` entry, in order |
+      | `VfxShapeBox` | x and y uniform within `Size` as half extents; z on the `+Size.z` face, or uniform through the depth with `flags` bit `0x1` | random quarter turns about Y and Z, or none with `flags` bit `0x1` |
+      | `VfxShapeCylinder` | `radius` out along X, or uniform up to it with `flags` bit `0x1`; y uniform in `0..height` | a full random turn about Y |
+      | `VfxShapeSphere` | `radius` out along X, or uniform up to it with `flags` bit `0x1` | full random turns about Y, then Z |
+
+      `flags` bit `0x1` fills the volume; without it only the boundary is sampled. The
+      offset is multiplied by the system scale and by the offset factors of
+      `FlexShapeDefinition`.
+    notes:
+      - "None of the distributions is corrected for area or volume, so the samples are not evenly spread."
+
+  emissionMeshName:
+    description: |
+      Path of a static mesh whose surface particles are born on. Each new particle gets
+      a random point of the mesh, picked by triangle area, added to its birth position
+      and multiplied by `emissionMeshScale`. An empty string, a mesh that fails to load
+      or a mesh without area turns the feature off.
+    notes:
+      - "The mesh is not skinned or animated. For a posed surface use `emissionSurfaceDefinition`."
+
+  emissionMeshScale:
+    description: "Uniform multiplier on the point sampled from the emission mesh."
     notes:
       - "Also scales the point of a linked-mesh emission surface ([VfxEmissionLinkedMeshData](/classes/vfxemissionlinkedmeshdata)). The mesh and skeleton surfaces ignore it."
 
-  UseEmissionMeshNormalForBirth:
-    description: "Orient/emit particles along the emission-mesh surface normals. Default `true`."
+  useEmissionMeshNormalForBirth:
+    description: |
+      When a point was sampled from the emission mesh, the particle's birth velocity
+      and birth acceleration are pointed along the triangle's normal. Their magnitudes
+      are kept. The particle's own orientation is not changed.
     notes:
+      - "The `SpawnShape` rotation runs afterwards and turns the result."
       - "Also the normal switch of a linked-mesh emission surface ([VfxEmissionLinkedMeshData](/classes/vfxemissionlinkedmeshdata)). The mesh and skeleton surfaces ignore it."
 
-  EmissionSurfaceDefinition:
+  emissionSurfaceDefinition:
     description: |
       An [emission surface](/classes/vfxemissionsurfacedata): each particle gets an extra
       birth offset from a random point on a skinned mesh, on a skeleton's bones or on a mesh
-      the game links to the effect, and can be sent off along the surface normal. Read by
-      **complex** emitters only. It applies on top of `EmissionMeshName`, not instead of it.
+      the game links to the effect, and can be sent off along the surface normal. It is
+      applied after `emissionMeshName`, on top of it and not instead of it.
 
-  TranslationOverride:
-    description: "Overrides the emitter's translation within the system."
+  translationOverride:
+    description: |
+      Translation of the **emitter frame**: an extra frame `scale, then rotation, then
+      translation` built from the three `*Override` properties, in which the emitter's
+      local frame sits. The translation moves the origin every particle is born around.
+      It follows the attachment's orientation when `isLocalOrientation` is set and world
+      axes otherwise.
+    notes:
+      - "Nothing is overridden. A legacy troybin reads the three values per emitter slot from its system section."
 
-  RotationOverride:
-    description: "Overrides the emitter's rotation within the system (degrees per axis)."
+  rotationOverride:
+    description: |
+      Rotation of the emitter frame (see `translationOverride`), as Euler angles in
+      degrees. It turns everything in the emitter's local frame: birth positions,
+      velocities, accelerations and the particles' own orientation.
+    notes:
+      - "Has no effect with `particleIsLocalOrientation`, which drops the rotation of the frame captured at birth."
 
-  ScaleOverride:
-    description: "Overrides the emitter's scale within the system. Default `[1, 1, 1]`."
+  scaleOverride:
+    description: |
+      Per-axis scale of the emitter frame (see `translationOverride`). It scales birth
+      offsets and travelled distance, and it scales mesh and arbitrary quad particles
+      because their matrix carries it. Camera-facing quads take only their position
+      from the matrix, so their size does not change.
+    notes:
+      - "Has no effect with `particleIsLocalOrientation`."
 
   # --- Space & orientation ---
 
-  IsLocalOrientation:
-    description: "Orient the emitter in the space of what the system is attached to instead of world space. Default `true`."
+  isLocalOrientation:
+    description: |
+      The spawn frame of each particle takes the orientation of what the system is
+      attached to, **as it is when the particle is born**. Without the flag the spawn
+      frame is axis aligned and only the system's position is used.
 
-  ParticleIsLocalOrientation:
-    description: "Orient individual particles in local (attachment) space instead of world space."
+      A particle keeps the orientation captured at its birth. To make live particles
+      turn with the attachment, set `particleIsLocalOrientation`.
+    notes:
+      - "Force fields and child effects also take the attachment's orientation only when this flag is set."
+
+  particleIsLocalOrientation:
+    description: |
+      Every step, the particle's matrix is multiplied by the attachment's **current**
+      orientation, so live particles turn with the attachment, positions included. The
+      spawn frame captured at birth then contributes only its translation, which drops
+      `rotationOverride`, `scaleOverride` and the birth-time orientation.
+    notes:
+      - "Positions still do not follow the attachment's movement. That is `bindWeight`."
 
   IsEmitterSpace:
-    description: "Simulate particles in emitter space, so already-spawned particles move with the emitter, rather than being left behind in world space."
-
-  BindWeight:
     description: |
-      How strongly existing particles follow the moving emitter (value-with-dynamics,
-      0 = fully world-space, 1 = fully emitter-bound) - a blend between the two
-      behaviors of `IsEmitterSpace`.
+      Changes how `EmitterPosition` is applied: the particle is born at the origin of
+      the emitter's local frame and the **current** `EmitterPosition` is added every
+      step. The speed at which `EmitterPosition` moves is added to the particle's world
+      velocity. It makes a difference only when `EmitterPosition` is keyed.
+    notes:
+      - "It does not make particles follow the attachment. That is `bindWeight`."
+      - "Force fields see the particle's position without `EmitterPosition` in this mode."
 
-  IsFollowingTerrain:
-    description: "Particles follow the terrain height instead of keeping their spawn height."
+  bindWeight:
+    description: |
+      How strongly a live particle follows the **system's movement**, sampled on the
+      particle age fraction. Each step the particle is moved by `weight` times the
+      distance the system moved in that step, and the offset accumulates. `1` rides
+      along with the bound object, `0` stays where it was born. Only translation
+      follows, never rotation.
+    notes:
+      - "The value is not clamped."
+      - "It also scales down the height correction of `isFollowingTerrain` by `1 - weight`."
 
-  IsGroundLayer:
-    description: "Renders the emitter as part of the ground layer (projected onto the ground, e.g. AoE indicators and decal-like effects)."
+  isFollowingTerrain:
+    description: |
+      Keeps the particle's height relative to the ground. The ground height under the
+      spawn point is stored at birth, and every step the particle's world Y is shifted
+      by the difference between the ground height under its current position and that
+      stored height. The particle is not flattened onto the terrain.
 
-  UseNavmeshMask:
-    description: "Masks the effect using the navigation mesh (e.g. so ground effects don't render over walls)."
+  isGroundLayer:
+    description: |
+      Draws the emitter in the **ground layer** render phase and in no other: not the
+      normal or post-distortion phases, not the shadow phase (`doesCastShadow` is
+      ignored) and not the distortion phases. It has no effect on simulation.
+    notes:
+      - "`renderPhaseOverride` set to anything but `7` takes precedence."
 
-  IsDirectionOriented:
-    description: "Orient particles along their movement direction."
+  useNavmeshMask:
+    description: |
+      Selects the masked shader variant: the vertex shader passes a mask coordinate
+      built from the particle's world X and Z. What the mask texture holds and how the
+      pixel shader uses it is not established.
 
-  DirectionVelocityScale:
-    description: "How much particles stretch along their movement direction with speed (used with `IsDirectionOriented`)."
+  isDirectionOriented:
+    description: |
+      Orients particles along their movement. The result depends on the primitive:
 
-  DirectionVelocityMinScale:
-    description: "Minimum stretch factor for velocity-oriented particles. Default `1`."
+      - **Camera-facing quads**: the quad stays camera facing, and its `scale0.y` axis
+        is turned to the particle's velocity projected on the screen. The particle's
+        own roll is ignored.
+      - **Arbitrary quads, meshes and attached meshes**: the particle's local +Z is
+        pointed along its direction of travel in that step.
+      - **Other primitives**: no effect.
 
-  HasPostRotateOrientation:
-    description: "Applies an extra fixed rotation after the particle's normal orientation is computed, around `PostRotateOrientationAxis`."
+  directionVelocityScale:
+    description: |
+      Stretches quad particles with their speed. When not zero, one quad axis is
+      multiplied by `max(directionVelocityMinScale, speed * directionVelocityScale)`,
+      with `speed` in world units per second. Camera-facing quads stretch their
+      `scale0.y` axis, arbitrary quads their `scale0.x` axis.
+    notes:
+      - "It does not need `isDirectionOriented`."
+      - "Meshes, rays, trails and beams do not read it."
 
-  PostRotateOrientationAxis:
-    description: "Axis for the post-orientation rotation (see `HasPostRotateOrientation`)."
+  directionVelocityMinScale:
+    description: "Lower bound of the stretch factor of `directionVelocityScale`. At `0` a particle that stops collapses on the stretched axis."
+
+  hasPostRotateOrientation:
+    description: |
+      Applies a fixed rotation, `postRotateOrientationAxis`, after the particle's own
+      spin. It turns the orientation of meshes, arbitrary quads and rays.
+      Camera-facing quads ignore it.
+
+  postRotateOrientationAxis:
+    description: |
+      The fixed rotation used by `hasPostRotateOrientation`. Despite the name it is not
+      an axis: the three components are Euler angles in degrees about X, Y and Z.
 
   # --- Motion ---
 
-  BirthVelocity:
-    description: "Initial particle velocity at spawn, per axis (value-with-dynamics; dynamics give each particle a random value in a range)."
-
-  Velocity:
-    description: "Velocity applied over the particle's lifetime, on top of its integrated birth velocity."
-
-  BirthAcceleration:
-    description: "Initial particle acceleration at spawn, per axis."
-
-  Acceleration:
-    description: "Acceleration over the particle's lifetime, in emitter/particle space."
-
-  WorldAcceleration:
-    description: "Acceleration applied in **world space** regardless of particle orientation - typically gravity (negative Y)."
-
-  BirthDrag:
-    description: "Initial per-axis drag (velocity damping) assigned at spawn."
-
-  Drag:
+  birthVelocity:
     description: |
-      Per-axis drag over the particle's lifetime - velocity is damped proportionally
-      to this value.
+      Velocity the particle starts with, in world units per second, in the emitter's
+      local frame. It is stored on the particle and integrated: acceleration, drag and
+      force fields change it over time.
     notes:
-      - "Systems with `Flags` bit `0x100` use velocity and drag analytically: the particle moves in closed form toward the fixed displacement `BirthVelocity / Drag` instead of integrating."
+      - "`flexBirthVelocity` adds to it. The `SpawnShape` rotation, the emission mesh normal and an emission surface can redirect it."
+      - "Under analytic drag it is not integrated, see `birthDrag`."
 
-  BirthOrbitalVelocity:
-    description: "Initial orbital velocity - particles revolve around the emitter origin, per-axis, in degrees per second."
+  velocity:
+    description: |
+      Extra velocity over the particle's life, in world units per second, in the
+      emitter's local frame. It is added to the stored velocity for each step's
+      movement and is **not stored**: when the curve returns to zero its contribution
+      stops at once.
+    notes:
+      - "Drag is computed on the sum of stored velocity and `velocity`, and what drag removes is taken from the stored velocity."
 
-  BirthRotation0:
-    description: "Initial particle rotation at spawn, in degrees per axis."
+  birthAcceleration:
+    description: |
+      Constant acceleration fixed per particle at birth, in world units per second
+      squared, in the emitter's local frame. Added to `acceleration` every step.
 
-  Rotation0:
-    description: "Particle rotation over lifetime, in degrees per axis."
+  acceleration:
+    description: |
+      Acceleration over the particle's life, in world units per second squared, in the
+      emitter's local frame. Added to `birthAcceleration` and accumulated into the
+      stored velocity every step.
+    notes:
+      - "The emitter frame and the attachment turn it. For gravity use `worldAcceleration`."
 
-  BirthRotationalVelocity0:
-    description: "Initial particle spin rate at spawn, in degrees per second per axis."
+  worldAcceleration:
+    description: |
+      Acceleration in **world axes**, in world units per second squared. It is an
+      integrated value: the engine integrates the curve twice and adds the resulting
+      displacement to the particle's world position, after every frame of the emitter.
+      Drag and force fields do not affect it.
+    notes:
+      - "With a bare `constantValue` and no `dynamics` it is a fixed offset of `constantValue * lifetime * lifetime`, not an acceleration."
 
-  BirthRotationalAcceleration:
-    description: "Particle spin acceleration, in degrees per second squared per axis."
+  birthDrag:
+    description: |
+      Drag per axis fixed at birth, in units of 1 per second. It is added to `drag`.
+      Each step every axis of the step velocity loses `drag * velocity * dt`. Drag can
+      stop an axis but never reverses it.
 
-  IsRotationEnabled:
-    description: "Enables particle rotation (the `*Rotation*` properties)."
+      **Analytic drag.** In a system with the `UseCalculusForPhysics` flag (`0x100` of
+      [`flags`](/classes/vfxsystemdefinitiondata#flags)), a particle with
+      drag is not integrated. Its velocity is not stored and it follows the closed form
+      `offset(t) = (birthVelocity / birthDrag) * (1 - e^(-birthDrag * t))` per axis, so
+      it eases to a fixed end offset whatever the frame rate. An axis without
+      `birthDrag` gets no motion from `birthVelocity`, and `drag` is not part of the
+      formula.
+
+  drag:
+    description: |
+      Drag per axis over the particle's life, in units of 1 per second, added to
+      `birthDrag`. See `birthDrag` for how drag is applied.
+
+  birthOrbitalVelocity:
+    description: |
+      Angular rate, in **radians per second** per axis, at which the particle revolves
+      around the origin of the emitter's local frame. Each step the particle's whole
+      matrix is turned by `rate * age`, so the particle orbits and its orientation
+      turns with it. A particle sitting on the origin only spins.
+
+  birthRotation0:
+    description: |
+      Starting orientation as Euler angles in degrees. All particle rotations are
+      composed as a turn about Z, then X, then Y. Which components a primitive uses is
+      listed on [VfxLegacyPrimitiveBase](/classes/vfxlegacyprimitivebase):
+      camera-facing quads read only the X component, as a roll.
+    notes:
+      - "It applies whether or not `isRotationEnabled` is set."
+      - "A simple emitter takes its single rotation angle from `LegacySimple`."
+
+  rotation0:
+    description: |
+      Spin **rate** over the particle's life, per axis, as an integrated value. The
+      rate is in degrees per 1/60 second, so `1` turns 60 degrees per second. The
+      accumulated angle is added to the birth rotation terms. It needs
+      `isRotationEnabled` and a particle with a finite lifetime.
+    notes:
+      - "With a bare `constantValue` and no `dynamics` it is a fixed extra angle of `constantValue * 60 * lifetime` degrees and the particle does not spin."
+
+  birthRotationalVelocity0:
+    description: |
+      Spin rate fixed at birth, in degrees per second per axis. It contributes
+      `age * rate` to the particle's angle for its whole life.
+    notes:
+      - "It applies whether or not `isRotationEnabled` is set. `flexBirthRotationalVelocity0` adds to it."
+
+  birthRotationalAcceleration:
+    description: "Spin acceleration fixed at birth, in degrees per second squared per axis. It contributes `0.5 * age * age * value` to the particle's angle."
+
+  isRotationEnabled:
+    description: |
+      On a complex emitter it enables only `rotation0` (and the `LingerRotation` of
+      `Linger`). The three birth rotation properties work without it.
+
+      On a simple emitter it makes the `rotation` of `LegacySimple` overwrite the
+      particle's angle every step.
 
   # --- Size ---
 
-  BirthScale0:
-    description: "Initial particle scale at spawn, per axis. Default `[1, 1, 1]`."
+  birthScale0:
+    description: |
+      Scale fixed per particle at birth. It is multiplied into `scale0` every step.
+      What each component does on each primitive is listed on
+      [VfxLegacyPrimitiveBase](/classes/vfxlegacyprimitivebase).
+    notes:
+      - "`flexScaleBirthScale` multiplies it."
 
-  Scale0:
-    description: "Particle scale over lifetime, multiplied with the birth scale. Default `[1, 1, 1]`."
+  scale0:
+    description: |
+      Scale over the particle's life. The final scale is
+      `scale0 * birthScale0 * the scale factors of FlexShapeDefinition * FlexInstanceScale`,
+      and the system scale multiplies it when the particle is drawn.
 
-  IsUniformScale:
-    description: "Use a single uniform scale (X drives all axes) instead of independent per-axis scale."
+      What each component does on each primitive is listed on
+      [VfxLegacyPrimitiveBase](/classes/vfxlegacyprimitivebase).
 
-  OffsetLifetimeScaling:
-    description: "Scales particle lifetime by the particle's spawn offset from the emitter, per axis."
+  isUniformScale:
+    description: |
+      The X scale is used for every axis: for both axes of a quad and all three of a
+      mesh. Rays, trails and beams do not read the flag.
 
-  OffsetLifeScalingSymmetryMode:
-    description: "How the offset-based lifetime scaling treats negative offsets (see `OffsetLifetimeScaling`)."
+  offsetLifetimeScaling:
+    description: |
+      Changes a particle's lifetime by where it was born in the `SpawnShape`. The
+      lifetime becomes `lifetime + offset.x * s.x + offset.y * s.y + offset.z * s.z`,
+      never below zero, so the value is in seconds per world unit and it **adds**. The
+      offset is the raw shape sample, before the shape's rotation and before any
+      scaling, and without `EmitterPosition`.
+    notes:
+      - "It needs a `SpawnShape`. All zero turns it off."
+
+  offsetLifeScalingSymmetryMode:
+    description: |
+      Bit mask that makes `offsetLifetimeScaling` use the absolute value of the offset
+      on an axis.
+
+      | Bit | Name | Axis |
+      |---|---|---|
+      | `0x1` | XSymmetry | X |
+      | `0x2` | YSymmetry | Y |
+      | `0x4` | ZSymmetry | Z |
 
   # --- Color ---
 
-  BirthColor:
-    description: "Initial particle color/alpha (RGBA) at spawn. Default `[1, 1, 1, 1]`."
+  birthColor:
+    description: |
+      Colour multiplier fixed per particle at birth, RGBA. It is multiplied into
+      `Color` every step, see Colour above. Each channel with a probability table draws
+      its own random number.
 
   Color:
-    description: "Particle color/alpha (RGBA) over lifetime, multiplied with the birth color. Default `[1, 1, 1, 1]`."
-
-  ParticleColorTexture:
     description: |
-      Gradient texture sampled to color particles (commonly over lifetime).
-      The lookup axes are configured with `ColorLookUpTypeX` / `ColorLookUpTypeY`
-      and shaped with `ColorLookUpScales` / `ColorLookUpOffsets`.
+      Colour over the particle's life, RGBA, multiplied with `birthColor`. See Colour
+      above for the full product.
     notes:
-      - "Default `ASSETS/Shared/Particles/DefaultColorOverlifetime.png`."
+      - "On a planar projection primitive the particle colour is replaced by the projection's own colour."
 
-  ColorLookUpTypeX:
-    description: "What drives the X axis of the `ParticleColorTexture` lookup (e.g. particle lifetime). Default `1`."
+  particleColorTexture:
+    description: |
+      A texture multiplied into the base texel, all four channels. It is sampled at a
+      per-particle coordinate chosen by `colorLookUpTypeX` and `colorLookUpTypeY`,
+      always with clamp addressing. An empty string binds a white texture.
 
-  ColorLookUpTypeY:
-    description: "What drives the Y axis of the `ParticleColorTexture` lookup. Default `0`."
+      The sample is dropped in two cases: when the emitter has an
+      `alphaErosionDefinition`, and on mesh primitives when a `textureMult` texture is
+      bound. On quads, trails, rays and beams with a `textureMult` texture it is
+      sampled at the mult layer's UV instead of the lookup coordinate.
+    notes:
+      - "It is separate from `paletteDefinition`."
 
-  ColorLookUpScales:
-    description: "Scale applied to the color-lookup coordinates. Default `[1, 1]`."
+  colorLookUpTypeX:
+    description: |
+      What drives the U coordinate of the `particleColorTexture` sample, with `s` and
+      `o` the matching components of `colorLookUpScales` and `colorLookUpOffsets`.
 
-  ColorLookUpOffsets:
-    description: "Offset applied to the color-lookup coordinates."
+      | Value | Name | Coordinate |
+      |---|---|---|
+      | `0` | Constant | `s`. The offset is not added. |
+      | `1` | Lifetime | `s * age fraction + o` |
+      | `2` | Velocity | `s * speed + o`, with speed in world units per second, not normalised |
+      | `3` | BirthRandom | `s * r + o`, with `r` the particle's shared birth random number |
+      | `4` and above | | the same as `0` |
 
-  FalloffTexture:
-    description: "Falloff texture used by the emitter's shading. Default `ASSETS/Shared/Particles/DefaultFalloff.png`."
+      With the defaults of both axes the sample point is `(age fraction, 1)`.
 
-  ModulationFactor:
-    description: "RGBA modulation factor applied to the emitter's output. Default `[1, 1, 1, 1]`."
+  colorLookUpTypeY:
+    description: "What drives the V coordinate of the `particleColorTexture` sample. Same values as `colorLookUpTypeX`."
 
-  CensorModulateValue:
-    description: "RGBA modulation applied when censored/toned-down visuals are active (regional content restrictions). Default `[1, 1, 1, 1]`."
+  colorLookUpScales:
+    description: "Multipliers of the two colour lookup drivers. On an axis whose type is `0` the scale is the coordinate itself."
+
+  colorLookUpOffsets:
+    description: "Added to the two colour lookup coordinates after the scale. Ignored on an axis whose type is `0`."
+
+  falloffTexture:
+    description: |
+      Loaded and bound to a sampler that no shipped particle shader reads. No visible
+      effect was found.
+
+  modulationFactor:
+    description: |
+      A constant RGBA multiplier on every particle of the emitter, applied after
+      `Color` and `birthColor` and before the premultiply of `blendMode` `Add` and `Subtract`.
+      With those blend modes its alpha therefore scales the colour.
+
+  censorModulateValue:
+    description: "Purpose not established: no code that reads the value was found."
 
   # --- Texturing & UVs ---
 
-  Texture:
-    description: "The emitter's main texture."
+  texture:
+    description: |
+      The base texture. An empty name or a texture that fails to load binds a
+      transparent black texture, so the emitter draws nothing visible in the usual
+      blend modes.
 
-  TextureMult:
-    description: "Optional secondary texture multiplied over the main texture, with its own UV controls."
+  textureMult:
+    description: |
+      A second texture layer, multiplied into the base texel on all four channels. The
+      layer has its own UV transform and its own flipbook grid (`texDivMult`), but it
+      shares the base layer's frame number. It is active only when its texture loads.
+    notes:
+      - "Its `uvScrollAlphaMult`, `isRandomStartFrameMult` and `emitterUvScrollRateMult` have no reader."
+      - "The slice shaders (`sliceTechniqueRange`) ignore the layer."
 
-  TexDiv:
-    description: "Columns × rows the texture is divided into for flipbook animation (see `NumFrames`, `FrameRate`). Default `[1, 1]`."
+  texDiv:
+    description: |
+      Columns and rows of the base texture's **flipbook grid**. The frame number is
+      split into a cell, left to right and then top to bottom, and the primitive's UV
+      is mapped into that cell. On quads the whole UV transform acts inside the cell.
 
-  NumFrames:
-    description: "Number of flipbook frames in the texture (laid out per `TexDiv`). Default `1`."
+  numFrames:
+    description: |
+      Length of the frame loop: the animation runs over `numFrames` frames starting at
+      `startFrame` and wraps. It is also the range of `isRandomStartFrame`. It is not
+      checked against `texDiv`. At `0` and at `1` only `startFrame` shows.
 
-  FrameRate:
-    description: "Flipbook playback rate, in frames per second."
+  frameRate:
+    description: |
+      Flipbook speed in frames per second. Each particle's own rate is
+      `frameRate * birthFrameRate`, fixed at birth, and its frame advances with its
+      age. There is no blending between frames. Zero or a negative rate means no
+      animation.
+    notes:
+      - "A simple emitter uses `frameRate` alone."
 
-  BirthFrameRate:
-    description: "Flipbook frame-rate multiplier assigned at particle spawn (value-with-dynamics). Default `1`."
+  birthFrameRate:
+    description: "Per-particle multiplier on `frameRate`, sampled once at birth."
 
-  StartFrame:
-    description: "First flipbook frame to play."
+  startFrame:
+    description: "First frame of the loop, and the frame shown when there is no animation."
 
-  IsRandomStartFrame:
-    description: "Each particle starts on a random flipbook frame."
+  isRandomStartFrame:
+    description: |
+      Offsets each particle's place in the frame loop by `numFrames` times its shared
+      birth random number. The offset is continuous, so particles are also out of step
+      within a frame. Without animation it picks a random fixed frame of the loop.
 
   TextureFlipU:
-    description: "Flip the texture horizontally."
+    description: "Mirrors the base layer's U as the last step of the UV transform. A flipped axis also scrolls the other way."
 
   TextureFlipV:
-    description: "Flip the texture vertically."
+    description: "Mirrors the base layer's V as the last step of the UV transform."
 
-  IsTexturePixelated:
-    description: "Use nearest-neighbor (pixelated) texture filtering instead of bilinear."
+  isTexturePixelated:
+    description: |
+      Switches the filtering mode of the emitter's texture samplers; by its name, to
+      point sampling. The palette and alpha erosion samplers are not affected. The
+      mapping to the final filter is not verified.
 
-  TexAddressModeBase:
-    description: "Texture addressing mode (wrap/clamp) for the base texture."
+  texAddressModeBase:
+    description: |
+      Address mode of the base texture, on all axes.
 
-  UvMode:
-    description: "Selects how UVs are generated/interpreted for the primitive."
+      | Value | Mode |
+      |---|---|
+      | `0` | Wrap |
+      | `1` | Mirror |
+      | `2` | Clamp |
+      | `3` | Border |
+      | other | Wrap |
 
-  UvScale:
-    description: "UV scale (value-with-dynamics). Default `[1, 1]`."
+      It also applies to the distortion normal map. `textureMult`, the palette and the
+      erosion map have their own address modes, and `particleColorTexture` and the
+      reflection map always clamp.
 
-  BirthUvoffset:
-    description: "Initial UV offset assigned at particle spawn."
+  uvMode:
+    description: |
+      How texture coordinates are produced.
 
-  UvRotation:
-    description: "UV rotation, in degrees, around `UvTransformCenter`."
+      | Value | Name | Effect |
+      |---|---|---|
+      | `0` | Default | UV from the primitive, through the UV transform. |
+      | `1` | ScreenSpace | Both layers are sampled with screen-space coordinates, run through their UV transforms. |
+      | `2` | LockAlpha | Colour is sampled at the transformed UV, alpha at a UV that does not scroll. |
+      | `3` | LocalSpace | The base layer's UV comes from the vertex position in particle space (x and z). Meshes only. |
+      | `4` | LocalSpaceMult | The same for the `textureMult` layer only. |
+      | `5` | LocalSpaceBoth | The same for both layers. |
 
-  BirthUvRotateRate:
-    description: "Initial UV rotation speed assigned at particle spawn, in degrees per second."
+      On anything but a mesh, `3`, `4` and `5` behave as `0`.
 
-  ParticleUvRotateRate:
-    description: "Per-particle UV rotation speed over lifetime, in degrees per second."
+  uvScale:
+    description: |
+      Scale of the UV about `uvTransformCenter`, sampled on the particle age fraction.
 
-  UvTransformCenter:
-    description: "Pivot for UV rotation/scaling. Default `[0.5, 0.5]` (texture center)."
+      The **UV transform** of a complex particle runs in this order:
 
-  BirthUvScrollRate:
-    description: "Initial UV scroll speed assigned at particle spawn, in UVs per second."
+      1. Rotation about `uvTransformCenter` by `uvRotation`, plus
+         `age * birthUvRotateRate`, plus the accumulated `particleUVRotateRate`.
+      2. Scale about `uvTransformCenter` by `uvScale`.
+      3. Translation by `birthUVOffset + age * birthUvScrollRate`, wrapped or clamped
+         (`uvScrollClamp`), then the accumulated `particleUVScrollRate` and the
+         `flexBirthUVOffset` term.
+      4. `TextureFlipU` and `TextureFlipV`.
 
-  EmitterUvScrollRate:
-    description: "UV scroll speed applied uniformly by the emitter, in UVs per second."
+      `emitterUvScrollRate` is added to the translation afterwards.
 
-  ParticleUvScrollRate:
-    description: "Per-particle UV scroll speed over lifetime, in UVs per second."
+  birthUVOffset:
+    description: |
+      UV translation fixed per particle at birth, in UV units: `1` is one whole texture,
+      or one flipbook cell on quads. It is the starting value of the scroll and is
+      inside the wrap or clamp of `uvScrollClamp`.
 
-  UvScrollClamp:
-    description: "Clamp scrolled UVs instead of wrapping them."
+  uvRotation:
+    description: "Rotation of the UV about `uvTransformCenter`, in degrees, sampled on the particle age fraction. The two rotate rates add to it."
 
-  UvParallaxScale:
-    description: "Strength of a view-dependent UV parallax offset."
+  birthUvRotateRate:
+    description: "UV spin speed fixed per particle at birth, in degrees per second. It contributes `age * rate`."
+
+  particleUVRotateRate:
+    description: |
+      UV spin speed over the particle's life, in degrees per second, as an integrated
+      value.
+    notes:
+      - "With a bare `constantValue` and no `dynamics` it is a fixed angle of `constantValue * lifetime`, not a spin."
+
+  uvTransformCenter:
+    description: "Pivot of the UV rotation and UV scale, in UV units. It does not affect scrolling or the flips."
+
+  birthUvScrollRate:
+    description: |
+      UV scroll speed fixed per particle at birth, in UV units per second. The offset is
+      `age * rate`, so each particle scrolls from its own birth.
+    notes:
+      - "`flexBirthUVScrollRate` adds to the rate at birth."
+
+  emitterUvScrollRate:
+    description: |
+      UV scroll speed of the whole emitter, in UV units per second. The offset is
+      `system time * rate`, the same for every particle, so all particles scroll in
+      step. It is added after the wrap or clamp of `uvScrollClamp` and after the flips,
+      and it also moves the `textureMult` layer.
+    notes:
+      - "Applied on quads. No application was found for mesh primitives."
+
+  particleUVScrollRate:
+    description: |
+      UV scroll speed over the particle's life, in UV units per second, as an
+      integrated value. It is added after the wrap or clamp of `uvScrollClamp`, so it is
+      never clamped.
+    notes:
+      - "With a bare `constantValue` and no `dynamics` it is a fixed offset of `constantValue * lifetime`, not a scroll. For a plain constant scroll use `birthUvScrollRate`."
+
+  uvScrollClamp:
+    description: |
+      Changes how `birthUVOffset + age * birthUvScrollRate` is bounded. Off, the sum is
+      reduced to its fractional part every step, so it wraps. On, it is clamped to
+      -1..1 per component, so the scroll runs once and stops. The other scroll terms
+      are never bounded, and the texture's address mode is not changed.
+
+  uvParallaxScale:
+    description: |
+      Adds a UV offset that depends on where the particle is relative to the camera,
+      multiplied by this value. Camera-facing quads apply it only with `uvMode` `0`,
+      mesh primitives only with `uvMode` `1` and only from the X and Z distance. The
+      visual result is not established.
 
   # --- Rendering ---
 
-  Primitive:
+  primitive:
     description: |
-      Pointer to the **primitive** the emitter renders - the object that defines
-      particle geometry (camera-facing quad billboards by default, or meshes, beams,
-      trails, planar projections, arbitrary quads, …). Unset means the default
-      billboard quad.
+      The object that turns each particle into geometry, see
+      [VfxLegacyPrimitiveBase](/classes/vfxlegacyprimitivebase). Unset means a
+      [camera-facing quad](/classes/vfxprimitivecameraquad).
 
-  BlendMode:
-    description: "How the emitter's output is blended with the scene (alpha-blend, additive and related modes)."
+      | Primitive | Draws | Simple emitters |
+      |---|---|---|
+      | [VfxPrimitiveCameraQuad](/classes/vfxprimitivecameraquad) | a camera-facing quad | drawn |
+      | [VfxPrimitiveCameraUnitQuad](/classes/vfxprimitivecameraunitquad) | a camera-facing quad of half the size | nothing |
+      | [VfxPrimitiveArbitraryQuad](/classes/vfxprimitivearbitraryquad) | a quad on the particle's own X and Y axes | drawn |
+      | [VfxPrimitiveRay](/classes/vfxprimitiveray) | a quad along the particle's +Z | nothing |
+      | [VfxPrimitiveMesh](/classes/vfxprimitivemesh) | one mesh per particle | drawn |
+      | [VfxPrimitiveAttachedMesh](/classes/vfxprimitiveattachedmesh) | the bound character's own skinned mesh, per particle | drawn |
+      | [VfxPrimitiveCameraTrail](/classes/vfxprimitivecameratrail) | a camera-facing ribbon through the particles in birth order | nothing |
+      | [VfxPrimitiveArbitraryTrail](/classes/vfxprimitivearbitrarytrail) | the same ribbon, oriented by the particles | nothing |
+      | [VfxPrimitiveBeam](/classes/vfxprimitivebeam) | one segment from the system position to the target attachment | nothing |
+      | [VfxPrimitiveCameraSegmentBeam](/classes/vfxprimitivecamerasegmentbeam) | a segmented beam | nothing |
+      | [VfxPrimitivePlanarProjection](/classes/vfxprimitiveplanarprojection) | a projection onto the ground | drawn |
+      | [VfxPrimitiveNonRenderable](/classes/vfxprimitivenonrenderable) | nothing; the particles still simulate | nothing |
 
-  RenderPhaseOverride:
-    description: "Overrides which render phase the emitter draws in. Default `7` (no override)."
+      A simple emitter with a primitive it cannot draw still simulates its particles.
+    notes:
+      - "A beam ignores particle positions: both ends are system level, so every particle draws the same segment."
+      - "A trail primitive also limits how many particles are spawned per step."
 
-  Pass:
-    description: "Sort key for draw order among emitters; higher/lower values shift when this emitter renders relative to others."
+  blendMode:
+    description: |
+      How the emitter is blended with what is already drawn.
 
-  AlphaRef:
-    description: "Alpha-test threshold (0-255): pixels with alpha below this are discarded. Default `5`."
+      | Value | Mode | Result |
+      |---|---|---|
+      | `0` | Add | `dest + colour * alpha` |
+      | `1` | Alpha | `colour * alpha + dest * (1 - alpha)` |
+      | `2` | Subtract | `dest * (1 - colour * alpha)` |
+      | `3` | None | The colour replaces the destination. The only mode that writes depth. |
+      | `4` | AlphaAdd | `colour * alpha + dest` |
+      | `5` | PremultipliedAlpha | `colour + dest * (1 - alpha)` |
+      | `6` | Min | `min(colour, dest)` |
+      | `7` | Max | `max(colour, dest)` |
+      | `8` | TargetAlpha | `colour * (1 - dest alpha) + dest * dest alpha` |
+
+      For `Add` and `Subtract` the multiply by alpha is done on the particle colour before it
+      reaches the shader, and the colour's alpha is then `1`, see Colour above.
+    notes:
+      - "It is also the second key of the draw order, see Draw order above."
+      - "The shadow phase ignores it."
+      - "Whether a simple emitter's quads get the premultiply of `Add` and `Subtract` is not established."
+
+  renderPhaseOverride:
+    description: |
+      Forces the emitter into one **render phase**. `7` means not set, and the phase is
+      then chosen automatically.
+
+      | Value | Phase | Drawn |
+      |---|---|---|
+      | `0` | Default | third |
+      | `1` | Shadow | into the shadow map, only when shadows are on |
+      | `2` | DistortionNoCharacter | first |
+      | `3` | DistortionAll | fourth |
+      | `4` | PostDistortion | fifth |
+      | `5` | GroundLayer | second |
+      | `6` | HudLayer | last |
+
+      Automatic choice, when the value is `7`:
+
+      - An emitter of a HUD-layer system draws only in `HudLayer`.
+      - `isGroundLayer` puts it in `GroundLayer` only.
+      - An active `distortionDefinition` puts it in the distortion phases only.
+      - Otherwise the sign of `pass` decides: negative draws in `Default`, zero or more
+        in `PostDistortion`.
+      - `doesCastShadow` adds `Shadow`.
+
+      A forced value drops all of those rules, and a value above `7` matches no phase,
+      so the emitter is never drawn. An emitter with a
+      [VfxPrimitiveNonRenderable](/classes/vfxprimitivenonrenderable) is in no phase.
+    notes:
+      - "The two distortion phases are skipped below Medium `EffectsQuality`."
+
+  pass:
+    description: |
+      Draw order among emitters, lower first. It is the first key of the order inside a
+      render phase and it works across systems and emitter lists, see Draw order above.
+
+      For an emitter whose phase is chosen automatically, the sign also picks the phase:
+      a negative `pass` draws in the `Default` phase, before `DistortionAll`, and `0` or
+      more draws in `PostDistortion`, after it.
+    notes:
+      - "Emitters with different `pass` values are never batched together."
+
+  alphaRef:
+    description: |
+      Alpha test threshold. A pixel is discarded when its final alpha, texture times
+      colour after erosion, is below `alphaRef / 255`. `0` turns the test off.
+    notes:
+      - "The shadow phase uses its own fixed threshold."
 
   WriteAlphaOnly:
-    description: "Write only to the alpha channel of the render target."
+    description: "The emitter writes only the alpha channel of the render target. Blending and depth are unchanged. Simple emitters ignore it."
 
-  DisableBackfaceCull:
-    description: "Render both faces of the primitive instead of culling back faces."
+  disableBackfaceCull:
+    description: |
+      Draws both sides of the geometry. Without it, mesh primitives cull their back
+      faces. Quads, beams and trails are always two sided, and a planar projection
+      always culls whatever this flag says.
 
-  DoesCastShadow:
-    description: "The emitter's geometry casts shadows."
+  doesCastShadow:
+    description: |
+      Also draws the emitter in the shadow phase, into the shadow map with depth write
+      on and blending off. It applies to an emitter whose phase is chosen
+      automatically, not to HUD-layer, ground layer or distortion emitters.
+    notes:
+      - "Setting `renderPhaseOverride` to `1` makes a shadow-only emitter without this flag."
 
-  DepthBiasFactors:
-    description: "Depth-bias slope/constant factors applied when rendering, to fight z-fighting with nearby geometry."
+  depthBiasFactors:
+    description: |
+      Depth bias of the emitter: x is the slope-scaled bias, y the constant bias.
+      `(0, 0)` turns the bias off. Which sign moves the emitter toward the camera is
+      not established.
 
-  MiscRenderFlags:
-    description: "Additional low-level render flags."
+  DepthPushPull:
+    description: |
+      Moves every vertex along the line from the camera through it by this many world
+      units before projection. A positive value pushes away from the camera, a negative
+      one pulls toward it. The position on screen does not change; only the depth the
+      particle is tested at does.
+    notes:
+      - "The shadow phase does not apply it."
 
-  ColorRenderFlags:
-    description: "Render flags controlling color output."
+  miscRenderFlags:
+    description: |
+      Bit flags.
 
-  MeshRenderFlags:
-    description: "Render flags for mesh primitives. Default `1`."
+      | Bit | Name | Effect |
+      |---|---|---|
+      | `0x1` | DisableZBuffer | Depth test off. Geometry in front of the emitter does not hide it, and it writes no depth. |
+      | `0x2` | Projected | The emitter is never batched with another. |
+      | `0x4` | DisableFow | No fog of war darkening. |
 
-  StencilMode:
-    description: "Stencil-buffer mode used when rendering the emitter."
+      The other bits have no reader. The whole byte is also the last key of the draw
+      order, so any bit changes the order among emitters that tie on the other keys.
+    notes:
+      - "Every emitter of a HUD-layer system gets the effect of `DisableFow`."
 
-  StencilRef:
-    description: "Stencil reference value used with `StencilMode`."
+  colorRenderFlags:
+    description: |
+      Bit `0x1`, `ApplyTeamColorCorrection`, applies the **colourblind recolour** to
+      the emitter's output: with the
+      colourblind palette active, pixels that are more green than red are shifted
+      toward blue, pixels that are more red than green toward orange, and both gain
+      alpha. It has no effect with the normal palette.
+      The other bits have no reader.
+
+  meshRenderFlags:
+    description: |
+      Bit `0x1`, `ForceAnimatedMeshZWrite`, forces **depth write** when the emitter
+      draws a skinned mesh: an
+      attached mesh primitive, or a mesh primitive that resolved to a skinned mesh.
+      Static meshes and quads are not affected. The other bits have no reader.
+
+  stencilMode:
+    description: |
+      How the emitter uses the stencil buffer, with the reference value from
+      `stencilRef` or `StencilReferenceId`.
+
+      | Value | Name | Test | Writes |
+      |---|---|---|---|
+      | `0` | Disabled | off | no |
+      | `1` | WriteMask | always passes | the reference where it draws |
+      | `2` | TestEqual | draws only where the stencil equals the reference | no |
+      | `3` | TestNotEqual | draws only where the stencil differs from the reference | no |
+      | `4` | WriteMaskIfTestNotEqual | draws only where the stencil differs | the reference where it draws |
+
+      An emitter in mode `1` or `4` still draws its colour. Only the low 6 bits are
+      compared. Complex emitters only, and not in the shadow phase.
+    notes:
+      - "The emitter that writes must draw before the ones that test, so it needs the lower `pass`."
+
+  stencilRef:
+    description: "Stencil reference value for `stencilMode`. Used only when `StencilReferenceId` is zero. Values that are equal modulo 64 compare as equal."
 
   StencilReferenceId:
-    description: "Hash identifying a named stencil reference shared between effects."
+    description: |
+      A name hash that **replaces** `stencilRef` when it is not zero. Every distinct
+      hash drawn in a frame is given a reference value automatically, counting down
+      from 63, and every emitter or material pass that uses the same hash gets the same
+      value, across systems. This lets effects share a stencil mask without agreeing on
+      a number.
+    notes:
+      - "More than 64 distinct hashes in one frame collide."
 
   SortEmittersByPos:
-    description: "Sort this emitter against others by position for correct transparency ordering."
+    description: |
+      Tie-break of the draw order between two emitters that **both** set the flag and
+      have the same `pass` and blend rank: the one whose system has the greater
+      position value draws first. It compares the systems, so emitters of one system
+      always tie. Which coordinate of the position is compared is not verified.
 
-  SoftParticleParams:
-    description: "Pointer to soft-particle parameters - fades particles where they intersect scene geometry to avoid hard clipping edges."
+  sliceTechniqueRange:
+    description: |
+      Above zero, the emitter uses the **slice** shaders. The red channel of `texture`
+      is treated as a position map, and the alpha of the `particleColorTexture` sample
+      picks a position on it. A pixel is visible in a band around that position, and
+      this value is the band's half-width in red-channel units. Colour comes from the
+      `particleColorTexture` sample, the particle colour and the texture's green
+      channel; alpha from the band and the texture's alpha.
+    notes:
+      - "The slice shaders have no alpha erosion, palette or soft particle variant."
+      - "On a quad a bound `textureMult` texture takes precedence over slicing. On a mesh slicing wins."
 
-  DistortionDefinition:
-    description: "Pointer to a screen-distortion definition - the emitter warps the scene behind it (heat haze, shockwaves) instead of/in addition to normal rendering."
+  softParticleParams:
+    description: |
+      Fades the emitter where it comes close to scene geometry. With `d` the depth
+      distance between the scene and the particle pixel, the fade is a smooth step in
+      from `beginIn` over `deltaIn`, minus a smooth step out from `beginOut` over
+      `deltaOut`. A `beginOut` of zero or less means no fade out.
 
-  AlphaErosionDefinition:
-    description: "Pointer to an alpha-erosion definition - dissolves particles via an erosion texture/threshold over lifetime."
+      It is active only on Medium `EffectsQuality` and above, and only on plain quad
+      and mesh emitters.
+    notes:
+      - "Its unnamed byte `0x3bf176bc` picks what is faded: `0` colour and alpha, `1` colour only, `2` alpha only."
 
-  ReflectionDefinition:
-    description: "Pointer to a reflection definition (fresnel/environment reflection parameters) for the emitter's shading."
+  distortionDefinition:
+    description: |
+      Makes the emitter **distort the scene** behind it. The emitter samples a copy of
+      the scene at an offset taken from `normalMapTexture`, scaled by `distortion`, and
+      draws that tinted by its texture and colour.
 
-  PaletteDefinition:
-    description: "Pointer to a palette definition used to recolor the emitter via a palette texture."
+      `distortionMode` is a bit mask: `1` draws in the late distortion phase, `2` in
+      the early one, `3` in both, and `0` turns the definition off. With a non-zero
+      mode the emitter draws **only** in the distortion phases, not as a normal emitter
+      as well, and it casts no shadow.
+    notes:
+      - "The distortion phases need Medium `EffectsQuality` or above, so on lower settings a distortion emitter is not drawn at all."
+      - "`isGroundLayer` cancels the distortion phases."
+
+  alphaErosionDefinition:
+    description: |
+      **Alpha erosion**: the emitter's alpha is multiplied by a band function of an
+      erosion map against a per-particle drive value that changes over the particle's
+      life, so particles dissolve along the map. Only alpha is affected.
+    notes:
+      - "An emitter with an erosion definition does not sample `particleColorTexture`."
+
+  reflectionDefinition:
+    description: |
+      Fresnel and reflection terms for **mesh** emitters.
+
+      - A fresnel rim, always applied when the definition exists: `fresnelColor`
+        added toward grazing angles.
+      - A cube map reflection from `reflectionMapTexture`, added to the colour with an
+        opacity between `reflectionOpacityDirect` and `reflectionOpacityGlancing`. It
+        needs the map to load, a `uvMode` of `0`, `3`, `4` or `5`, and a quality
+        setting above the lowest.
+    notes:
+      - "Its effect on an emitter without a mesh is not established."
+
+  paletteDefinition:
+    description: |
+      **Palette recolour**: the base texel's RGB is replaced by a lookup into
+      `paletteTexture`, and its alpha is kept. It is active when the palette texture
+      loads and `paletteCount` is above zero.
+    notes:
+      - "Independent of `particleColorTexture` and the colour lookup."
 
   CustomMaterial:
-    description: "Pointer to a custom material used instead of the stock particle shading."
+    description: |
+      Draws the emitter with a material in place of the stock particle shading. When
+      its `Material` link resolves, none of the stock render state is built: `blendMode`,
+      `alphaRef`, the stencil and depth bias properties, `disableBackfaceCull`,
+      `WriteAlphaOnly`, `DepthPushPull`, `sliceTechniqueRange` and the soft particle,
+      distortion, erosion, palette and reflection definitions do nothing, and the
+      material's own passes decide.
 
-  MaterialOverrideDefinitions:
-    description: "Material overrides applied to this emitter (per-submesh/priority overrides of textures or materials)."
+      Still read from the emitter: the render phase rules, every key of the draw order,
+      and `meshRenderFlags` and `colorRenderFlags`.
+
+      Each entry of `materialDrivers` drives the material parameter of that name, once
+      per emitter or once per particle depending on the driver.
+    notes:
+      - "An unresolved link falls back to the stock material."
+
+  materialOverrideDefinitions:
+    description: |
+      Material overrides for the **object the system is attached to**. They do not
+      change the emitter's own particles. Each entry becomes an override that is applied
+      to the attached object while the system runs, in the same way as the system's
+      own [`materialOverrideDefinitions`](/classes/vfxsystemdefinitiondata#materialoverridedefinitions).
+      Only the entries of emitters that were instantiated take part.
+    notes:
+      - "An emitter with at least one entry is kept at load even with a zero `rate`."
+
+  "0xd1ee8634":
+    description: |
+      Reverses which winding counts as the front face, so back-face culling removes the
+      opposite side. Stock material only. The property's name is not yet known.
 
   # --- Attached data & behaviors ---
 
-  ChildParticleSetDefinition:
-    description: "Pointer to a child-particle set - child VFX systems spawned from this emitter's particles (e.g. on particle death or over its life)."
+  childParticleSetDefinition:
+    description: |
+      Gives every particle of the emitter a nested **particle system** of its own.
+
+      - **When.** By default the child is created at the particle's birth. With
+        `childEmitOnDeath` it is created when the particle dies instead. The two are
+        mutually exclusive.
+      - **How many.** One child per particle, picked from `childrenIdentifiers` by
+        `childrenProbability` used as an index. With `boneToSpawnAt`, every child
+        spawns, each on the bone at the same position in the list.
+      - **A birth child** follows its parent particle: position, orientation and scale
+        every step. It does not take the particle's colour or velocity, and it gets no
+        flex values.
+      - **A death child** gets the particle's transform once and is not bound.
+      - When the parent particle dies, a birth child is stopped, not removed: its live
+        particles play out where they are.
+    notes:
+      - "A set whose `boneToSpawnAt` is shorter than `childrenIdentifiers` spawns nothing."
+      - "Nesting has no depth limit and no cycle guard."
 
   Audio:
-    description: "Pointer to the emitter's audio definition (sound events tied to the emitter/particles)."
+    description: |
+      Replaces the system's two sound names. A system has one create sound and one
+      persistent sound, from its `soundOnCreateDefault` and `soundPersistentDefault`.
+      When the system spawns, every emitter that is **instantiated** and has an `Audio`
+      block replaces them: a non-empty `SoundOnCreate` replaces the create sound, a
+      non-empty `SoundPersistent` the persistent one. The last one wins, complex
+      emitters first and then simple ones.
 
-  FieldCollectionDefinition:
-    description: "Pointer to a collection of force fields (attraction, acceleration, drag, noise) that act on this emitter's particles."
+      An emitter removed by a spawn gate does not count, so `Audio` can pick a
+      different sound per `EffectsQuality` tier or per `ChanceToNotExist` roll. It does
+      not play a sound per emitter or per particle.
 
-  Filtering:
-    description: "Pointer to filtering settings that further gate the emitter's visibility (e.g. by keyword/context)."
+  fieldCollectionDefinition:
+    description: |
+      **Force fields** acting on the emitter's particles. Field values are sampled on
+      the emitter phase, one value for all particles. Each step they change the
+      particle's velocity in this order, and the change is kept:
+
+      | List | Effect on velocity |
+      |---|---|
+      | `fieldAccelerationDefinitions` | Adds `acceleration * dt`. No position or radius. |
+      | `fieldAttractionDefinitions` | Inside `radius`, adds `acceleration * dt` toward the field's position, at constant strength. |
+      | `fieldNoiseDefinitions` | Inside `radius`, adds a random kick of `velocityDelta * axisFraction`, `frequency` times per second. |
+      | `fieldDragDefinitions` | Inside `radius`, each axis loses `speed * strength * dt`, down to zero. |
+      | `fieldOrbitalDefinitions` | Turns the part of the velocity that is perpendicular to `direction` into a circle around that axis. Speed is unchanged. |
+
+      A field's position is relative to the system and is never rotated. No scale
+      reaches a radius.
+    notes:
+      - "A field's `isLocalSpace` turns its vector by the attachment's orientation, and only when the emitter has `isLocalOrientation`."
+      - "A noise field with the default `axisFraction` does nothing."
 
   LegacySimple:
-    description: "Pointer to the legacy simple-emitter parameter block, used by emitters in the system's `SimpleEmitterDefinitionData` list."
-
-  ParticlesShareRandomValue:
-    description: "All particles of the emitter share one random roll instead of rolling per particle (synchronizes randomized dynamics)."
-
-  # --- Flex overrides ---
-
-  FlexBirthVelocity:
     description: |
-      Flex-driven override of `BirthVelocity`. **Flex** properties scale or replace
-      their base property depending on an externally provided flex value (identified
-      by a flex ID), letting one effect definition adapt to spell rank, character
-      size, or similar parameters.
+      The parameter block of a **simple** emitter, read only by emitters in the system's
+      `simpleEmitterDefinitionData` list. Unset means a block of defaults. It is the
+      list, not this pointer, that makes an emitter simple.
 
-  FlexBirthRotationalVelocity0:
-    description: "Flex-driven override of `BirthRotationalVelocity0` (see `FlexBirthVelocity` for how flex properties work)."
+      | Field | Effect |
+      |---|---|
+      | `birthScale`, `scale` | Uniform scale at birth and over life. |
+      | `birthRotation`, `birthRotationalVelocity` | In-plane angle in degrees and its rate in degrees per second. |
+      | `rotation` | Overwrites the angle every step when `isRotationEnabled` is set. |
+      | `orientation` | Plane of the quad: `0` camera facing, `1`, `2` and `3` facing world X, Y and Z. `2` lies flat on the ground. |
+      | `scaleBias` | Multiplies the quad's two half extents. |
+      | `scaleUpFromOrigin` | On a quad that is not camera facing, pins the lower edge and grows upward. |
+      | `uvScrollRate` | UV scroll in UV units per second of each particle's age, wrapped. |
+      | `hasFixedOrbit`, `fixedOrbitType` | Replaces straight-line motion by circling the emitter at a fixed radius; the type picks the axis (`0`, `1`, `2` for +X, +Y, +Z and `3`, `4`, `5` for the negative ones). |
+      | `particleBind` | A ramp over the particle's age that controls how much the particle's height follows the terrain, with `isFollowingTerrain`. |
+      | `lockedToEmitter` | Turns `particleBind` off. |
 
-  FlexBirthUvoffset:
-    description: "Flex-driven override of `BirthUvoffset`."
+  # --- Flex ---
 
-  FlexBirthUvScrollRate:
-    description: "Flex-driven override of `BirthUvScrollRate`."
+  flexBirthVelocity:
+    description: |
+      Adds `flex * mValue` to `birthVelocity`, per axis, at particle birth. See Flex
+      values above for where the flex value comes from and for the double application
+      of this property.
 
-  FlexScaleBirthScale:
-    description: "Flex-driven scale applied to `BirthScale0`."
+  flexBirthRotationalVelocity0:
+    description: "Adds `flex * mValue` to `birthRotationalVelocity0` at particle birth, with the double application described under Flex values above."
+
+  flexBirthUVOffset:
+    description: |
+      Adds `flex * mValue` to the particle's UV offset. `mValue` is fixed at birth, but
+      the flex value is read every step, so the UVs of live particles move when the
+      flex value changes. The term is added after the wrap or clamp of `uvScrollClamp`.
+
+  flexBirthUVScrollRate:
+    description: "Adds `flex * mValue` to `birthUvScrollRate` at particle birth."
+
+  flexScaleBirthScale:
+    description: |
+      Multiplies the particle's birth scale by `flex * mValue`, when that product is
+      above zero. With no flex value, or a product of zero or less, nothing happens, so
+      it cannot shrink a particle to nothing.
 
   FlexInstanceScale:
-    description: "Flex-driven scale applied to the whole emitter instance."
+    description: |
+      Multiplies the final scale of every particle by the flex value itself, every
+      step, when the value is above zero. Only `mFlexID` is used; `mValue` is not read.
+      It scales particle size, not positions.
 
-  FlexParticleLifetime:
-    description: "Flex-driven override of `ParticleLifetime`."
+  flexParticleLifetime:
+    description: "Adds `flex * mValue` seconds to `particleLifetime` at particle birth, with the double application described under Flex values above."
 
-  FlexRate:
-    description: "Flex-driven override of `Rate`."
+  flexRate:
+    description: |
+      Adds `flex * mValue` to `rate`, every step. Not applied when
+      `rateByVelocityFunction` is in use.
+    notes:
+      - "Its presence alone keeps an emitter with a zero `rate` from being dropped at load."
 
   FlexShapeDefinition:
-    description: "Flex-driven spawn-shape parameters."
+    description: |
+      Scales spawn placement and particle size by the **size of the object the effect is
+      bound to**, and carries two flex values. The bound object supplies three numbers:
+      its size, a radius and a height.
 
-  FlexOffset:
-    description: "Flex-driven emitter offset. Removed from current builds."
+      | Field | Effect |
+      |---|---|
+      | `ScaleBirthTranslationByBoundObjectSize` | Multiplies the birth position (`EmitterPosition`) by `size * value`, when that is above zero. Complex emitters only. |
+      | `scaleBirthScaleByBoundObjectSize`, `...Radius`, `...Height` | Weights of a scale multiplier `size * a + radius * b + height * c` on every particle. A sum of zero or less means `1`. |
+      | `scaleEmitOffsetByBoundObjectSize`, `...Radius`, `...Height` | The same weighted sum, multiplying the `SpawnShape` offset when above zero. |
+      | `flexScaleEmitOffset` | Multiplies the `SpawnShape` offset by `flex * mValue`, when above zero. |
+      | `flexBirthTranslation` | Adds `flex * mValue` to the birth position, with the double application described under Flex values above. |
+
+      The scale multiplier is applied every step and follows the bound object's size
+      while the particle lives, despite the "birth" in the field names. With no bound
+      object all three numbers are zero and the bound-object fields do nothing.
+    notes:
+      - "The size is limited by the system's [`overrideScaleCap`](/classes/vfxsystemdefinitiondata#overridescalecap)."
+
+  flexOffset:
+    description: "Removed from current builds."
 
   # --- Removed / legacy ---
 
-  Shape:
-    description: "Legacy embedded spawn-shape (emit offsets/rotations and birth translation). Removed from current builds - superseded by `SpawnShape`."
+  shape:
+    description: "Removed from current builds. `SpawnShape` and `EmitterPosition` were added when it was removed."
 
   Material:
-    description: "Legacy link to a material. Removed from current builds - superseded by `CustomMaterial` / `MaterialOverrideDefinitions`."
+    description: "Removed from this class. The link now lives in the `CustomMaterial` object."
 
-  MaterialDrivers:
-    description: "Legacy map of named material drivers. Removed from current builds."
+  materialDrivers:
+    description: "Removed from this class. The map now lives in the `CustomMaterial` object."

@@ -18,7 +18,7 @@ Every description should answer: *what does the engine do with this value?*
 
 ✅ **Do** describe the data and its behavior:
 
-> Radius (in world units) of the bounding box used for **visibility culling**. The system's cull box is its position ± `VisibilityRadius · √½` on each axis; when the box leaves the camera frustum the system is hidden and (unless flagged otherwise) its simulation is paused.
+> Sets the system's **cull box**: an axis-aligned cube centred on the system's position with each face `visibilityRadius · √½` world units away. The box is rebuilt whenever the position changes and tested against the camera frustum every update.
 
 Balance numbers, champion trivia, and strategy belong on gameplay wikis, not here. Mention gameplay only when it explains *why* the data behaves the way it does (e.g. "gameplay-critical emitters are never culled").
 
