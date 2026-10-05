@@ -10,6 +10,8 @@ class:
     The effector force is bound to the system instance for the duration of its
     lifetime. The linked effector data describes its shape and physical properties,
     which are used for surface displacement.
+  notes:
+    - "A system creates a handle for its effector when it spawns, but nothing in the client collects those handles, so the effector has no effect."
 
 properties:
   EffectorData:

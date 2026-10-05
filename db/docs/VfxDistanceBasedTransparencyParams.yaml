@@ -11,6 +11,7 @@ class:
     Typically authored on large ground-plane ability indicators, which cover a big part
     of the screen.
   notes:
+    - "No code that reads the ramp was found, so whether the client applies it, and which distance it would measure, is not established."
     - "Left at its default, `FarthestDistance` puts the far end of the ramp effectively at infinity and the system never reaches `AlphaAtFarthestDistance`."
 
 properties:

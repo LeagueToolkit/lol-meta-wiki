@@ -2,198 +2,406 @@
 
 class:
   description: |
-    The definition of a complete **particle system** ("troy") - the root object that a
-    VFX entry in a bin file deserializes into. A system is a container of
-    [emitters](/classes/vfxemitterdefinitiondata) plus system-wide settings:
-    visibility/culling, audio hooks, HUD-layer placement, an optional dynamic light,
-    and a set of behavior flags.
+    The definition of one **particle system**: three lists of
+    [emitters](/classes/vfxemitterdefinitiondata) plus settings for the system as a whole
+    (culling, audio, HUD placement, a point light and a set of behaviour flags). One
+    definition is shared by every instance spawned from it.
 
-    The same in-memory object is also produced by the legacy `.troybin` loader, so both
-    content pipelines (modern bin and legacy troybin) feed the exact same structure -
-    the bin format simply exposes more of it (several `Flags` bits and properties have
-    no legacy troybin equivalent).
+    ## Emitter lists
 
-    Emitters are split into three lists. `ComplexEmitterDefinitionData` gets the full
-    feature set (e.g. emission-mesh geometry resolution), `SimpleEmitterDefinitionData`
-    is a lightweight path, and `ShimmerEmitterDefinitionData` holds emitters that
-    delegate their behavior to a component graph instead of carrying it as properties.
+    | List | What its emitters are |
+    |---|---|
+    | `complexEmitterDefinitionData` | Full particle simulation. Reads almost every emitter property. |
+    | `simpleEmitterDefinitionData` | A lightweight path that reads a small subset of the emitter properties plus the emitter's `LegacySimple` block. |
+    | `ShimmerEmitterDefinitionData` | Emitters that take emission, lifetime, physics, rendering and geometry from a component graph. |
+
+    The lists also differ in which spawn gates apply, see
+    [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata).
+
+    ## Life of an instance
+
+    1. **Prepare**, once per definition. The emitters are turned into prepared
+       descriptors and their textures and meshes are loaded. `assetRemappingTable` is
+       applied here, and the texture group `0x9836cd87` is active for these loads.
+    2. **Spawn**. Each emitter goes through its gates and the survivors are
+       instantiated. The point light is created, the material overrides are handed to
+       the attached object and `selfIllumination` is pushed.
+    3. **Update**. The instance takes position, velocity, orientation and scale from its
+       attachment, tests its cull box, and simulates.
+    4. **Simulation** runs in fixed steps: 30 per second on High and Very High
+       `EffectsQuality`, 20 on Medium, 15 on Low and Very Low. Within a step the
+       component emitters update first, then the complex emitters, then the simple
+       ones, then the point light. `flags` bits `0x8` and `0x40` change the stepping.
+    5. **End**. The system is finished when every emitter of every list reports
+       finished, or when it is stopped. A soft stop lets each emitter finish by its
+       linger rules, a hard stop ends the system at once.
+
+    ## Visibility
+
+    The cull box comes from `visibilityRadius`. A hidden system that may not simulate
+    off screen (`flags` bit `0x1` clear) is **not paused**. Its emitters are reset when
+    it hides: particles are cleared and child effects released. If it stays hidden
+    until its duration has elapsed, it is finished for good. The duration is the
+    longest duration among its instantiated emitters. Teamfight Tactics turns
+    off-screen simulation off for every system.
+
+    ## HUD layer
+
+    A system with `drawingLayer` `1` is drawn through its own orthographic projection
+    instead of the scene camera. See `drawingLayer`, `hudLayerDimension`,
+    `HudLayerAspect` and `hudAnchorPositionFromWorldProjection`.
+
+    ## Legacy troybin
+
+    The client still carries a loader for `.troy` files. It runs when an effect is
+    requested by a name ending in `.troy` and no definition object was found, and it
+    fills this same object from the file. Properties without a troybin key keep their
+    defaults. Whether any shipped content still reaches this loader is not established.
   notes:
-    - "Systems whose `mEyeCandy` is set are hidden by the `[General] HideEyeCandy` game setting."
-    - "Per-emitter quality culling is controlled by each emitter's `importance` value together with the `EffectsQuality` video setting - see [`VfxEmitterDefinitionData.importance`](/classes/vfxemitterdefinitiondata#importance)."
+    - "An instance created by the legacy loader skips the `mEyeCandy` and `mIsPoseAfterimage` checks."
 
 properties:
-  ComplexEmitterDefinitionData:
+  complexEmitterDefinitionData:
     description: |
-      The system's **complex emitters**. Complex emitters support the full emitter
-      feature set - notably emission-mesh geometry (`EmissionMeshName`) is only
-      resolved for emitters in this list.
+      The system's **complex emitters**: the full particle path. Every spawn gate
+      applies to them (`disabled`, `importance`, `ChanceToNotExist`,
+      `colorblindVisibility`, `Filtering`).
     notes:
-      - "In the legacy troybin format these correspond to `GroupPart<N>` slots whose `GroupPart<N>Type` is not `Simple`."
+      - "In a legacy troybin these are the `GroupPart<N>` slots whose `GroupPart<N>Type` is not `Simple`."
 
-  SimpleEmitterDefinitionData:
+  simpleEmitterDefinitionData:
     description: |
-      The system's **simple emitters** - a lightweight emitter path that skips the
-      heavier complex-emitter features (no emission-mesh resolution). See also the
-      emitter's `LegacySimple` property.
+      The system's **simple emitters**, a lightweight path. It differs from the complex
+      list in three ways a definition can run into:
+
+      - `ChanceToNotExist` and `colorblindVisibility` are not checked, and the low-spec
+        cull of `flags` bit `0x800` does not touch them.
+      - Every simple emitter is dropped when `drawingLayer` is `1`.
+      - Most emitter properties are not read. The emitter page says per property
+        whether the simple path uses it.
 
   ShimmerEmitterDefinitionData:
     description: |
-      The system's **component emitters** - see
+      The system's **component emitters**, see
       [VfxShimmerEmitterDefinitionData](/classes/vfxshimmeremitterdefinitiondata).
       Emitters in this list carry only a few gates of their own and take emission,
       lifetime, physics, rendering and geometry from a component graph. An entry whose
-      graph does not supply all four of those components is dropped while the system is
-      prepared, rather than running misconfigured.
-
-  ParticleName:
-    description: "The system's short name, as authored (e.g. the troy name)."
-
-  ParticlePath:
-    description: "The full content path identifying this system (the key other objects use to reference it)."
-
-  VisibilityRadius:
-    description: |
-      Radius (in world units) of the bounding box used for **visibility culling**.
-      The system's cull box is its position ± `VisibilityRadius · √½` on each axis;
-      when the box leaves the camera frustum the system is hidden and (unless flagged
-      otherwise) its simulation is paused.
+      graph does not supply lifetime, physics, rendering and geometry is dropped while
+      the system is prepared.
     notes:
-      - "Default `250`."
-      - "See `Flags` bits `SimulateWhileOffScreen` (0x1) and `SoundsPlayWhileOffScreen` (0x20) for off-screen behavior."
-      - "Systems with `DrawingLayer` = 1 (HUD) skip frustum culling entirely."
+      - "`Filtering` is not checked for this list. The other spawn gates are."
 
-  OverrideScaleCap:
-    description: "Optional cap applied to the system's scale. Unset (the default) means no cap."
-
-  SoundOnCreateDefault:
-    description: "Audio event fired once when a system instance is created."
-
-  VoiceOverOnCreateDefault:
-    description: "Voice-over event fired once when a system instance is created."
-
-  SoundPersistentDefault:
+  particleName:
     description: |
-      Looping audio event started with the system and stopped when it ends.
-      Whether it is cut immediately on deactivation or allowed to run out is
-      controlled by `Flags` bit 0x10; whether it keeps playing off-screen by bit 0x20.
+      The system's short name. When an instance is created, the string is copied into
+      the name of the game object that owns it. It is not a lookup key.
+    notes:
+      - "The legacy loader sets it to the file name without directory or extension."
 
-  VoiceOverPersistentDefault:
-    description: "Looping voice-over counterpart of `SoundPersistentDefault`, with the same lifetime rules."
-
-  AudioParameterFlexId:
-    description: "Flex ID used to drive an audio parameter (RTPC) for this system's sounds. `-1` (default) disables it."
-
-  AudioParameterTimeScaledDuration:
-    description: "Duration used to derive a time-scaled audio parameter for the system's sounds, paired with `AudioParameterFlexId`."
-
-  DrawingLayer:
+  particlePath:
     description: |
-      Which layer the system renders in. `0` (default) is the normal world layer;
-      `1` renders on the **HUD layer** - the system skips world frustum culling and is
-      placed on a virtual canvas defined by `HudLayerDimension` / `HudLayerAspect`.
+      The system's content path as authored. No use of the value by the client was
+      found: systems are referenced through resource resolver keys and object links,
+      not through this string.
+
+  objectPath:
+    description: |
+      Hash of the path of the bin entry that holds this system. The client passes it as
+      the **lookup scope** when this system resolves another effect by name: the child
+      effects named by its emitters' `childParticleSetDefinition`, and effects created
+      by reference from this system. How the scope narrows the lookup is not
+      established.
+
+  visibilityRadius:
+    description: |
+      Sets the system's **cull box**: an axis-aligned cube centred on the system's
+      position with each face `visibilityRadius · √½` world units away. The box is
+      rebuilt whenever the position changes and tested against the camera frustum every
+      update. What happens to a system that fails the test is described under
+      Visibility above.
+
+      The test is skipped, and the system always counts as visible, when `drawingLayer`
+      is `1` and `hudAnchorPositionFromWorldProjection` is `false`.
+    notes:
+      - "A system hidden by its attachment stays hidden whatever the box says."
+
+  overrideScaleCap:
+    description: |
+      Cap on the **bound object's size** that the system's emitters scale by through
+      their [`FlexShapeDefinition`](/classes/vfxemitterdefinitiondata#flexshapedefinition).
+      A size up to 200 passes unchanged. Between 200 and 500 it is remapped linearly
+      onto the range from 200 to the cap, and a size of 500 or more becomes the cap.
+      Unset means a cap of 250. Zero or a negative value turns the cap off.
+    notes:
+      - "The legacy troybin key for it is `group-scale-cap`."
+
+  soundOnCreateDefault:
+    description: |
+      Audio event played once for a new instance. It is a **default**: when the system
+      spawns, an instantiated complex or simple emitter whose `Audio` block names a
+      create sound replaces it for that instance. If several do, the last one
+      instantiated wins.
+
+      The event fires on the first update in which the system is visible, and only if
+      the system is younger than 1 second at that moment. A system first seen later
+      than that never plays it.
+
+  voiceOverOnCreateDefault:
+    description: |
+      Voice-over event played once for a new instance, under the same rule as
+      `soundOnCreateDefault`. Emitters cannot replace it.
+
+  soundPersistentDefault:
+    description: |
+      Audio event that plays for as long as the instance lives. Like
+      `soundOnCreateDefault` it is a default that an emitter's `Audio` block can
+      replace.
+
+      It starts when the system becomes visible, follows the system's position, stops
+      when the system is hidden and starts again when it reappears. `flags` bit `0x20`
+      keeps it playing while hidden and lets it start before the system was ever
+      visible. When the system is stopped, the sound is stopped only if `flags` bit
+      `0x10` is set.
+    notes:
+      - "What ends the sound of a system that finishes with bit `0x10` clear is not established."
+
+  voiceOverPersistentDefault:
+    description: |
+      Voice-over counterpart of `soundPersistentDefault`, with the same start, hide and
+      stop rules. Emitters cannot replace it, and the audio parameter of
+      `audioParameterFlexID` is not sent to it.
+
+  audioParameterFlexID:
+    description: |
+      Index of one of the instance's three **flex values** (`0`, `1` or `2`, see Flex
+      values on [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata)). While
+      the persistent sound plays, the client sends that flex value to it every update as
+      the audio parameter `VFX_RTPC`, clamped to 0..1. `-1` turns the feature off. Any
+      other index, or a flex value nobody supplied, sends `0`.
+    notes:
+      - "`audioParameterTimeScaledDuration` turns the value into a ramp."
+
+  audioParameterTimeScaledDuration:
+    description: |
+      Ramp time, in seconds, for the `VFX_RTPC` parameter of `audioParameterFlexID`.
+      At `0` or below the parameter is the flex value. Above `0` it is
+      `flex · elapsed / duration`, clamped to 0..1. `elapsed` is counted from a time
+      the sound reports, presumably its start.
+
+  drawingLayer:
+    description: |
+      `0` is the world layer. `1` puts the system on the **HUD layer**:
+
+      - It is drawn with its own orthographic projection, sized by `hudLayerDimension`
+        and `HudLayerAspect`, instead of the scene camera.
+      - Every emitter in `simpleEmitterDefinitionData` is dropped.
+      - `transform` is not multiplied into the particles. Only its translation is used,
+        for placement.
+      - Its emitters draw in the HUD render phase and never take fog of war
+        darkening.
+      - Frustum culling is skipped only when `hudAnchorPositionFromWorldProjection` is
+        `false`.
+
+      Values other than `0` and `1` are not established.
 
   ClockToUse:
-    description: "Selects which game clock drives the system's simulation time."
-
-  Flags:
     description: |
-      Bitfield of system behavior flags. The value is used **verbatim** as serialized -
-      the game never adds bits at runtime. Default `212` (`0xD4`).
+      An enum: `0` auto, `1` game, `2` system. No code that reads the value was found,
+      so what each setting changes is not established.
 
-      | Bit | Name (legacy troybin key) | Effect |
+  flags:
+    description: |
+      Bitfield of system behaviour flags. The client uses the serialized value as it is
+      and never changes the definition's bits at run time.
+
+      | Bit | Name | Effect |
       |---|---|---|
-      | `0x0001` | SimulateWhileOffScreen | Keep simulating while culled off-screen instead of pausing. |
-      | `0x0002` | PersistThruDeath | Don't kill the instance when its owner dies. |
-      | `0x0004` | PersistThruRevive | Don't kill the instance when its owner revives. **Default on.** |
-      | `0x0008` | SimulateOncePerFrame | One variable-timestep simulation step per frame instead of fixed-timestep substeps. |
-      | `0x0010` | *(bin only)* | On deactivation, stop persistent sound/voice-over immediately instead of letting them run out. **Default on** (troybin effects never set it, so their persistent audio finishes naturally). |
-      | `0x0020` | SoundsPlayWhileOffScreen | Persistent sounds keep playing while the system is hidden (otherwise they are stopped on hide). |
-      | `0x0040` | SimulateEveryFrame | Force at least one simulation step even on frames where the fixed-rate accumulator would yield none. **Default on** (bin); legacy default off. |
-      | `0x0080` | KeepOrientationAfterSpellCast | Written by the legacy loader (default on) but **vestigial** - no consumer exists in current builds. |
-      | `0x0100` | *(bin only)* | Analytic drag motion: particle position is driven in closed form toward the fixed displacement `BirthVelocity / Drag` (the exponential-drag asymptote) instead of numeric integration. Frame-rate independent with an exact end position - used for UI/HUD particles. |
-      | `0x0200` | *(bin only)* | HUD layer: take the pixel size from the hosting UI element (`UiElementEffectData`) instead of `HudLayerDimension` / `HudLayerAspect`. |
-      | `0x0400` | *(bin only)* | Scale by bound object size: every update, multiply particle scale by the owner unit's current model scale (including size modifiers and death shrink). With a target attachment, the scale can instead lerp by 2D distance to the target. |
-      | `0x0800` | *(bin only)* | Opt in to aggressive low-spec culling: on very low `EffectsQuality` (when the server-side feature is enabled), all emitters except `importance` 3 (gameplay-critical) and 4 (low-quality substitute) are skipped. |
+      | `0x0001` | SimulateWhileOffScreen | Keep simulating while hidden. Without it a hidden system is reset and can finish while hidden, see Visibility above. |
+      | `0x0002` | PersistThruDeath | Without it, the death of the attached object marks the instance. A marked instance removes its material overrides from that object instead of applying them. |
+      | `0x0004` | PersistThruRevive | The same mark for the attached object respawning. |
+      | `0x0008` | SimulateOncePerFrame | One simulation step per update covering all the pending time, instead of fixed-rate steps. |
+      | `0x0010` | SoundsEndOnEmitterEnd | Stopping the system also stops its persistent sound and voice-over. |
+      | `0x0020` | SoundsPlayWhileOffScreen | Persistent audio keeps playing while the system is hidden, and can start before the system was ever visible. |
+      | `0x0040` | SimulateEveryFrame | When the fixed-rate stepping would run no step in an update, run one step covering the pending time. |
+      | `0x0080` | KeepOrientationAfterSpellCast | No reader of this bit was found. |
+      | `0x0100` | UseCalculusForPhysics | **Analytic drag** for the complex emitters: a particle is not integrated but eased in closed form toward the fixed offset `birthVelocity / birthDrag`, see [`birthDrag`](/classes/vfxemitterdefinitiondata#birthdrag). |
+      | `0x0200` | HudLayerSizeFromUiElement | HUD layer: take the canvas size from the pixel size supplied by the hosting UI element instead of `hudLayerDimension` and `HudLayerAspect`, when both supplied values are non-zero. |
+      | `0x0400` | AlphaFromAttachment | Every update, read the system's alpha multiplier from its attachment. The multiplier scales the final alpha of every complex emitter particle. A plain object attachment returns `1`. |
+      | `0x0800` | AggressiveImportanceCulling | Low-spec cull: on Low and Very Low `EffectsQuality`, and only while a server-controlled switch is on, complex and component emitters with `importance` `2` or lower are not instantiated. |
     notes:
-      - "Default `0xD4` = PersistThruRevive | 0x10 | SimulateEveryFrame | KeepOrientationAfterSpellCast."
-      - "Effects loaded from legacy `.troybin` rebuild this word from INI keys and can never carry bits `0x10`, `0x40`, or `0x100`-`0x800`."
+      - "The names of `0x1` to `0x100` are the client's own. `0x2` and `0x4` are `RenderThruDeath` and `RenderThruRevive` in the client's flag enum and `PersistThruDeath` and `PersistThruRevive` as legacy troybin keys. The names of `0x200`, `0x400` and `0x800` describe what the bit does; the client's names for them are not known."
+      - "The default sets `PersistThruRevive`, `SoundsEndOnEmitterEnd`, `SimulateEveryFrame` and `KeepOrientationAfterSpellCast`."
+      - "A legacy troybin has keys for `0x1` to `0x8`, `0x20`, `0x40` and `0x80` only, so it never carries `SoundsEndOnEmitterEnd` or `0x100` to `0x800`. Its defaults are `PersistThruRevive` and `KeepOrientationAfterSpellCast`."
+      - "For `PersistThruDeath` and `PersistThruRevive`, whether the mark also hides or ends the system is not established."
+      - "For `AlphaFromAttachment`, what a target attachment bases its value on is not established."
 
-  HudAnchorPositionFromWorldProjection:
-    description: "For HUD-layer systems: anchor the effect at the world position projected into screen space. Default `true`."
+  hudAnchorPositionFromWorldProjection:
+    description: |
+      Chooses how a HUD-layer system (`drawingLayer` `1`) is placed.
 
-  ScaleDynamicallyWithAttachedBone:
-    description: "Scale the system with the scale of the bone it is attached to."
+      - `true`: the system's world position is projected to the screen with the scene
+        camera and that screen point is its anchor on the HUD canvas. The system keeps
+        a world position, so it is frustum culled like a world system.
+      - `false`: the anchor is the centre of a screen rectangle supplied by the hosting
+        UI element, and the canvas is scaled by that element. The system is never
+        frustum culled.
+    notes:
+      - "The translation of `transform` offsets the anchor in both cases."
+
+  scaleDynamicallyWithAttachedBone:
+    description: |
+      Every update, while the system is attached to a bone of an object that has a
+      skeleton, the bone's current scale replaces the attachment's own scale as a
+      factor of the system scale. The scale is a single number, so it is uniform. Every
+      emitter multiplies its particle sizes by the system scale.
 
   mEyeCandy:
     description: |
-      Marks the system as non-gameplay **eye candy**. Eye-candy systems belong to the
-      `EyeCandy` visibility group and are hidden when the player enables
-      `[General] HideEyeCandy`.
+      Marks the system as **eye candy**. The game object that owns the instance joins
+      the `EyeCandy` visibility group, and the `HideEyeCandy` game option hides that
+      whole group.
 
   mIsPoseAfterimage:
-    description: "Marks the system as a pose afterimage effect (character snapshot/ghost visuals)."
+    description: |
+      Detaches the instance from its attachment right after it is created. The update
+      no longer takes position, velocity, orientation or scale from the attachment, so
+      the system stays where it was spawned instead of following its owner.
+    notes:
+      - "The death and respawn checks of `flags` bits `0x2` and `0x4`, `scaleDynamicallyWithAttachedBone` and the material overrides still apply."
+      - "Whether anything captures the owner's pose for the system is not established."
 
   "0x9836cd87":
-    description: "Unknown byte, default `5`. Purpose not yet identified."
-
-  BuildUpTime:
     description: |
-      When the system becomes visible, its simulation is **fast-forwarded** by this many
-      seconds so a long-running ambient effect appears fully built up instead of
-      restarting from empty.
+      Id of the **texture group** that is active while this system's textures and
+      meshes load. A texture remembers its group, and when the quality setting behind
+      a group changes, that group's loaded textures are reloaded.
 
-  SelfIllumination:
-    description: "Self-illumination factor applied to the system's rendering. `-1` (default) = unset."
+      | Id | Driven by |
+      |---|---|
+      | `1` | `CharacterQuality` |
+      | `2`, `5` | `EffectsQuality` |
+      | `3`, `4` | `EnvironmentQuality` |
+      | `0`, `6`, `7` | no setting |
+
+      The property's name is not yet known.
+    notes:
+      - "What a group does to its textures at each quality level, and how the two groups of one setting differ, is not established."
+
+  buildUpTime:
+    description: |
+      Seconds of simulation added to the system's clock when it becomes visible, so a
+      long-running effect appears already built up. The extra time is simulated on the
+      next update in a limited number of steps, so a long build-up is simulated
+      coarsely.
+
+      It is always applied the first time the system becomes visible. It is applied
+      again on later appearances only when the system does not simulate off screen
+      (`flags` bit `0x1` clear), which is the case where hiding reset its emitters.
+
+  selfIllumination:
+    description: |
+      A self-illumination value for the **object the system is attached to**, held for
+      as long as the system lives. It is not applied to the system's own particles. A
+      negative value pushes nothing.
+
+      If several systems push a value onto the same object, the most recent one is
+      used. When that system is removed the object falls back to the previous one, or
+      to no value when none is left.
+    notes:
+      - "What the object does with the value when it is drawn is not established."
 
   DistanceBasedTransparencyParams:
     description: |
-      Optional distance-keyed alpha ramp for the whole system - see
+      Optional distance-keyed alpha ramp for the whole system, see
       [VfxDistanceBasedTransparencyParams](/classes/vfxdistancebasedtransparencyparams).
-      Typically authored on large ground-plane ability indicators.
+      Authored mostly on large ground-plane ability indicators.
+    notes:
+      - "No code that reads the ramp was found, so whether the client applies it, and which distance it would measure, is not established."
 
   DynamicParameterData:
     description: |
-      Optional event-driven override table - see
-      [VfxDynamicParametersData](/classes/vfxdynamicparametersdata). When one of the
-      events it lists fires, named emitters have individual parameters (scale, UV
-      scale, emission rate, lifetime, birth velocity) swapped for a computed value,
-      either immediately or eased in over a duration.
+      Optional event-keyed override table, see
+      [VfxDynamicParametersData](/classes/vfxdynamicparametersdata). When one of its
+      events fires, named emitters of this instance have single parameters (scale, UV
+      scale, emission rate, particle lifetime, birth velocity) replaced by a computed
+      value, at once or eased in over a duration.
+    notes:
+      - "What fires an event is not established."
 
   EffectorDefinition:
     description: |
-      Optional **environment effector** carried by the system - see
-      [VfxEffectorDefinition](/classes/vfxeffectordefinition). A system linking one
-      contributes a shaped force to a map-wide environment field for as long as the
-      system lives, affecting the environment rather than the system's own particles.
+      Optional **environment effector**, see
+      [VfxEffectorDefinition](/classes/vfxeffectordefinition). The instance creates a
+      handle for it when it spawns and marks the handle when it stops, but nothing in
+      the client collects those handles, so the property has no effect.
 
   PointLight:
     description: |
       Optional **point light** that belongs to the system, described by a
-      [ParticlePointLightInfo](/classes/particlepointlightinfo). It is created together with
-      the emitters and updated on every simulation step from the system's age, at the
-      system's world position. It does not depend on any emitter or particle.
+      [ParticlePointLightInfo](/classes/particlepointlightinfo). It is created together
+      with the emitters and updated on every simulation step, after the emitters, from
+      the system's age and at the system's world position. It does not depend on any
+      emitter or particle.
 
       The light is drawn only on a map that has a
       [MapDynamicLighting](/classes/mapdynamiclighting) component.
 
-  AssetRemappingTable:
-    description: "List of asset remap entries that substitute assets referenced by the system's emitters."
-
-  Transform:
-    description: "Static transform applied to the whole system. Default identity."
-
-  HudLayerDimension:
+  assetRemappingTable:
     description: |
-      Size of the virtual canvas used to place HUD-layer systems (`DrawingLayer` = 1).
-      Default `1024`.
+      List of asset substitutions. Whenever one of the system's emitters names an asset
+      path (a texture, mesh, skeleton or animation), the list is walked in order. The
+      first entry whose `oldAsset` matches the path and whose condition holds wins, and
+      its `newAsset` is loaded instead.
+
+      | `type` | Entry applies |
+      |---|---|
+      | `0` | while team-relative colours are active |
+      | `1` | while the colourblind palette is active |
+      | other | always |
+
+      When one of those states changes, every system definition is prepared again, so
+      new instances pick up the change.
     notes:
-      - "Ignored when `Flags` bit `0x200` is set - the size then comes from the hosting UI element."
+      - "Which setting or game state turns team-relative colours on is not established."
+
+  transform:
+    description: |
+      A matrix applied to the whole system.
+
+      - **Complex emitters**: it is the last factor of every particle's matrix, after
+        the particle's own rotation, position and orbit. Its translation, rotation and
+        scale all take part.
+      - **Component emitters**: its rotation and scale are multiplied into the system
+        matrix they simulate in.
+      - **HUD layer** (`drawingLayer` `1`): it is not multiplied into particles. Only
+        its translation is used, as an offset of the anchor.
+    notes:
+      - "A use by simple emitters is not established."
+
+  hudLayerDimension:
+    description: |
+      Width of the HUD canvas, in particle units, for a system with `drawingLayer` `1`.
+      The canvas height is `hudLayerDimension / HudLayerAspect` and always spans the
+      full viewport height. The visible width follows the real screen aspect.
+    notes:
+      - "Replaced by the hosting UI element's pixel width when `flags` bit `0x200` is set and the element supplied a non-zero size."
 
   HudLayerAspect:
-    description: "Aspect ratio of the HUD-layer virtual canvas. Default `4/3` (≈1.333). See `HudLayerDimension`."
+    description: |
+      Width divided by height of the HUD canvas, see `hudLayerDimension`. Replaced
+      together with it under `flags` bit `0x200`.
 
-  MaterialOverrideDefinitions:
-    description: "Material overrides applied to this system's emitters (same entry type as the emitter-level `MaterialOverrideDefinitions`)."
+  materialOverrideDefinitions:
+    description: |
+      Material overrides for the **object the system is attached to**, not for the
+      system's own particles. When the instance spawns, one override is created per
+      entry: first the entries of this list, then those of each instantiated complex
+      emitter, then of each instantiated simple emitter. Every update, while the
+      system is running and attached, each override is applied to the attached object.
 
-  AssetCategory:
-    description: "Legacy asset-category string (default `fx`). Removed from current builds."
+      Entries of this list do not depend on any emitter surviving its spawn gates.
+    notes:
+      - "`flags` bits `0x2` and `0x4` decide whether the overrides stay on through the object's death and respawn."
+
+  assetCategory:
+    description: "Removed from current builds. A bin that still carries it has the value dropped."
