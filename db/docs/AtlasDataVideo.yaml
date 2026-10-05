@@ -1,0 +1,48 @@
+# AtlasDataVideo Documentation
+
+class:
+  description: |
+    A [texture provider](/classes/iuitexturedataprovider) that plays a **video** on an
+    icon element. Set through `UiElementIconData.TextureData`.
+
+    The video is a WebM file with a VP8 or VP9 video stream. The provider decodes it into
+    a texture of the video's own size and gives that texture to the icon, which draws the
+    whole frame over its rectangle. The icon's `FlipX` and `FlipY` mirror the frame.
+
+    **Playback**
+
+    - Playback starts by itself, on the first update after the file has loaded. Nothing in
+      data starts, pauses or seeks it.
+    - The clock is the game's frame time. It advances only in frames where the UI updates
+      the icon, which it skips while the icon or its scene is not active, so the video
+      holds its position in that time.
+    - Each update decodes frames until the decoded frame's timestamp reaches the clock.
+      After a long frame every frame in between is decoded; none is skipped.
+    - At the end of the stream the video stops on its last frame, unless `Loop` is set.
+    - Each icon element gets its own copy of the provider, with its own decoder and
+      texture. Two icons that name the same file play independently.
+
+    **Transparency.** A WebM file with an alpha channel plays with it: the alpha stream is
+    decoded next to the colour stream and becomes the alpha of each pixel.
+
+    **Audio.** A Vorbis audio track with one or two channels is decoded and sent to the
+    audio system together with the video. A track with more channels is ignored.
+  notes:
+    - "No shipped file uses this class. The behaviour here is read from the client and has not been observed in game."
+    - "The provider has no texture until the file has loaded and the first frame is ready. What the icon draws before that is not established."
+
+properties:
+  File:
+    description: |
+      The video to play. Empty, the provider does nothing.
+
+      | Value | Source |
+      |---|---|
+      | starts with `https:` | downloaded from that URL on a background thread |
+      | anything else | a game file path, loaded like any other asset |
+
+  Loop:
+    description: |
+      Restarts the video when it reaches the end of the stream. The stream is opened again
+      from the start and the clock returns to zero, so the loop is a full restart, not a
+      seek. Unset, the video plays once and holds its last frame.

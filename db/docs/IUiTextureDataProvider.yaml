@@ -1,0 +1,17 @@
+# IUiTextureDataProvider Documentation
+
+class:
+  description: |
+    The source of the picture an icon element draws, held by `UiElementIconData.TextureData`.
+
+    When the icon is drawn it asks its provider for two things: a **texture**, and the
+    **rectangle of that texture** to use. The provider decides both, so the same icon can
+    show a region of a shared atlas, a whole texture file, a flat colour or a video
+    without the icon's own data changing.
+
+    Two providers do not name a texture file:
+
+    | Provider | Texture | Rectangle |
+    |---|---|---|
+    | [SolidColorTextureData](/classes/solidcolortexturedata) | the renderer's built-in white texture | the whole texture |
+    | [AtlasDataVideo](/classes/atlasdatavideo) | a texture the provider fills with decoded video frames | the whole frame, mirrored by the icon's `FlipX` and `FlipY` |
