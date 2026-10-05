@@ -1,0 +1,7 @@
+# TargetingParameters Documentation
+
+properties:
+  UnitObjectTags:
+    description: |
+      An [ObjectTags](/classes/objecttags) set of unit tags for this targeting entry. No
+      client code that tests the set was found, so its effect is not established.

@@ -1,0 +1,32 @@
+# UnitObjectTagsSettings Documentation
+
+class:
+  description: |
+    The game-wide **list of unit tag names**. It gives each unit tag its bit in the 64-bit
+    masks that the engine builds for every [ObjectTags](/classes/objecttags) set and for
+    every unit's own tags.
+
+    The engine uses the object of this class that was created last. The game ships one, in
+    the global data.
+
+    The list becomes active in one step of the loading screen. Tag sets that loaded earlier
+    are resolved in that step, and tag sets that load later are resolved at once.
+
+properties:
+  UnitTags:
+    description: |
+      The unit tag names. The position of a name in the list is its bit in a resolved mask:
+      the first name is bit `0`.
+
+      When the object is loaded, the engine hashes each name in lowercase. A tag set or a
+      `CharacterRecord.unitTagsString` matches a name through that hash, so the match
+      ignores letter case.
+    notes:
+      - "A mask has 64 bits. A name at position 65 or later does not get a bit of its own."
+      - "A tag name that data uses but this list does not contain never matches anything. Shipped character records use the name `Special`, which the shipped list does not contain."
+
+  SpellTags:
+    description: |
+      Hashes of spell tag names. No client code that reads this list was found.
+    notes:
+      - "The client compares the spell tags of `SpellDataResource.mSpellTags` by name hash and does not use this list for them. A spell tag that is absent from the list still works."

@@ -1,0 +1,40 @@
+# ObjectTags Documentation
+
+class:
+  description: |
+    A set of **unit tags**, stored as a list of tag name hashes. Unit tags are short names
+    such as `Champion`, `Minion_Lane` or `Structure_Turret` that classify a unit. Conditions
+    in spell, skin, item and contextual action data test them.
+
+    How the engine resolves a set:
+
+    1. When the object is loaded, each hash in `mObjectTagList` is looked up in the name
+       list of [UnitObjectTagsSettings](/classes/unitobjecttagssettings). The set becomes a
+       64-bit mask with one bit for each tag that was found.
+    2. A hash that is not in that list is dropped without an error. It contributes nothing
+       to the mask.
+    3. Sets that load before the settings are ready wait in a queue. The queue is resolved
+       in one step of the loading screen.
+
+    After that, every test compares masks and never looks at the hashes again. Nothing
+    resolves a set a second time, so its content is fixed for the whole game.
+
+    The class that holds a set decides how it is compared with a unit: some pass when the
+    unit has one of the tags, some need all of them, and some need none.
+
+    A unit's own tags are not an `ObjectTags` in data. They come from
+    `CharacterRecord.unitTagsString` of the unit's character and are resolved through the
+    same name list. A unit reads the tags of its current character record, so its tags
+    change only when the unit changes to the data of another character.
+  notes:
+    - "An empty set resolves to an empty mask. Whether an empty set passes or fails depends on the class that holds it."
+    - "No client code that adds or removes one tag on a live unit was found."
+
+properties:
+  mObjectTagList:
+    description: |
+      Hashes of unit tag names. Each hash is the FNV-1a hash of the name in lowercase, the
+      same hash that bin files use for other names. The order of the list has no effect,
+      and a repeated tag counts once.
+    notes:
+      - "A name must be in `UnitObjectTagsSettings.UnitTags` to have an effect."
