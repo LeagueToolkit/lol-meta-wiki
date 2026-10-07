@@ -6,6 +6,7 @@ import path from "node:path";
 const repoRoot = fileURLToPath(new URL("../..", import.meta.url));
 const docsDir = path.join(repoRoot, "db", "docs");
 const metaDb = path.join(repoRoot, "db", "meta.db.json");
+const metaPbe = path.join(repoRoot, "db", "meta.pbe.json");
 const categories = path.join(repoRoot, "db", "categories.yaml");
 
 /**
@@ -19,7 +20,8 @@ const categories = path.join(repoRoot, "db", "categories.yaml");
  * script - one owner of generation beats two.
  *
  * On top of that, the dev server re-runs the generator whenever
- * db/docs/*.yaml, db/categories.yaml or db/meta.db.json changes. The
+ * db/docs/*.yaml, db/categories.yaml, db/meta.db.json or db/meta.pbe.json
+ * changes. The
  * generator only rewrites files whose content changed, so Astro's own watcher
  * picks up the resulting MDX/JSON updates without spurious reloads.
  *
@@ -96,7 +98,8 @@ export default function generateDb() {
       // Initial generation already happened in astro:config:setup; this only
       // wires up the re-run on source changes.
       "astro:server:setup": ({ server, logger }) => {
-        server.watcher.add([docsDir, metaDb, categories]);
+        const sources = [metaDb, metaPbe, categories];
+        server.watcher.add([docsDir, ...sources]);
 
         /** @type {ReturnType<typeof setTimeout> | undefined} */
         let debounce;
@@ -104,7 +107,7 @@ export default function generateDb() {
           const resolved = path.resolve(file);
           const isDocsYaml =
             resolved.startsWith(docsDir + path.sep) && resolved.endsWith(".yaml");
-          if (!isDocsYaml && resolved !== metaDb && resolved !== categories) return;
+          if (!isDocsYaml && !sources.includes(resolved)) return;
           clearTimeout(debounce);
           debounce = setTimeout(() => {
             logger.info(`${path.relative(repoRoot, file)} changed, regenerating db...`);

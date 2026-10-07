@@ -11,6 +11,9 @@ build script). For documentation-content rules (the `db/docs/*.yaml` files) see
   (`site/src/content/docs/…`). This is the **producer** of the site's data.
 - `site/` - Astro + Starlight wiki. Components are the **consumers**: they read
   the generated JSON at build time and render it.
+- `scripts/preview.ts` - pure: merges the PBE overlay (`db/meta.pbe.json`) with
+  the live db. `generate-db.ts` loads the merged db a second time and emits
+  what differs; live data stays the content of every page.
 - `scripts/categorize.ts` - pure: places every class in one domain from
   `db/categories.yaml`, inheritance and usage. `generate-db.ts` calls it and
   projects the result into the sidebar, the domain pages and each class.

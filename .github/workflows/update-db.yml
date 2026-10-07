@@ -1,10 +1,13 @@
 name: Update Meta DB
 
 on:
-  # Pushed by LeagueToolkit/lol-meta-classes as soon as db/meta.db.json moves,
-  # so a new patch reaches the site in minutes rather than waiting for the cron.
+  # Pushed by LeagueToolkit/lol-meta-classes as soon as its db/ moves, so a new
+  # build reaches the site in minutes rather than waiting for the cron.
+  # `meta-db-updated` is a push that changed db/meta.db.json (a new live
+  # build). `meta-pbe-updated` is a push that changed only the PBE overlay,
+  # db/meta.pbe.json, which happens on most days of a PBE cycle.
   repository_dispatch:
-    types: [meta-db-updated]
+    types: [meta-db-updated, meta-pbe-updated]
 
   # Fallback for a missed or unauthenticated dispatch (expired token, failed
   # upstream run). Weekly, shortly after lol-meta-classes' Sunday sync.
@@ -12,6 +15,12 @@ on:
     - cron: '0 6 * * 0'
 
   workflow_dispatch:
+
+# Serialize the runs: two dispatches that arrive close together must not race
+# their pushes. The second run then finds nothing left to commit.
+concurrency:
+  group: update-db
+  cancel-in-progress: false
 
 jobs:
   update:
@@ -30,14 +39,18 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Fetch latest meta.db.json
+      # Both files come from one upstream commit (see scripts/update-db.ts).
+      - name: Fetch latest meta.db.json and meta.pbe.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bun scripts/update-db.ts
 
       - name: Commit and push if changed
         id: commit
         run: |
           set -e
-          if git diff --quiet -- db/meta.db.json; then
+          # `git status`, not `git diff`: it also reports an untracked file.
+          if [ -z "$(git status --porcelain -- db/meta.db.json db/meta.pbe.json)" ]; then
             echo "Database is already up to date."
             echo "pushed=false" >> $GITHUB_OUTPUT
             exit 0
@@ -46,9 +59,16 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
 
-          PATCH=$(python3 -c "import json; db = json.load(open('db/meta.db.json')); print(db['versions'][-1]['patch'])")
-          git add db/meta.db.json
-          git commit -m "chore: update meta db to patch ${PATCH}"
+          if [ -n "$(git status --porcelain -- db/meta.db.json)" ]; then
+            PATCH=$(python3 -c "import json; db = json.load(open('db/meta.db.json')); print(db['versions'][-1]['patch'])")
+            MESSAGE="chore: update meta db to patch ${PATCH}"
+          else
+            # Only the overlay moved: a new PBE build, or PBE and live are on
+            # the same patch again.
+            MESSAGE=$(python3 -c "import json; p = json.load(open('db/meta.pbe.json')); print('chore: remove the PBE preview' if p['build'] is None else 'chore: update PBE preview to %s.%s' % (p['patch'], p['build']))")
+          fi
+          git add db/meta.db.json db/meta.pbe.json
+          git commit -m "${MESSAGE}"
           git push
           echo "pushed=true" >> $GITHUB_OUTPUT
 

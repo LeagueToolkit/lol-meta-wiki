@@ -1,8 +1,8 @@
 name: Categories
 
 # The site has no pull request build, so nothing would catch a broken
-# db/categories.yaml before it reached main. This runs the categoriser's tests
-# and the generator in --strict mode, where a root or pin naming a class the
+# db/categories.yaml before it reached main. This runs the script tests (the
+# categoriser and the PBE overlay merge) and the generator in --strict mode, where a root or pin naming a class the
 # db does not have is an error (the deploy build only warns, so a class renamed
 # upstream cannot take the site down).
 
@@ -13,6 +13,8 @@ on:
       - 'scripts/categorize.ts'
       - 'scripts/categorize.test.ts'
       - 'scripts/generate-db.ts'
+      - 'scripts/preview.ts'
+      - 'scripts/preview.test.ts'
       - '.github/workflows/categories.yml'
 
 jobs:
@@ -36,7 +38,7 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Categoriser tests
+      - name: Script tests
         run: bun test scripts
 
       - name: Generate with --strict

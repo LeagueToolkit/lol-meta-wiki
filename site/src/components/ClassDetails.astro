@@ -9,6 +9,8 @@ import PropertiesSection from "./PropertiesSection.astro";
 import ReferencedBySection from "./ReferencedBySection.astro";
 import ClassDocumentation from "./ClassDocumentation.astro";
 import CategoryNote from "./CategoryNote.astro";
+import ClassPreviewNote from "./preview/ClassPreviewNote.astro";
+import PreviewChanges from "./preview/PreviewChanges.astro";
 // import InheritanceDiagram from "./InheritanceDiagram.astro";
 // import MermaidLoader from "./MermaidLoader.astro";
 // import { generateInheritanceDiagram } from "../utils/mermaidGenerator";
@@ -36,6 +38,8 @@ const docExists = fs.existsSync(docsFileUrl);
 // const mermaidDiagram = generateInheritanceDiagram(data, classIndex);
 ---
 
+{data.preview && <ClassPreviewNote preview={data.preview} />}
+
 <CategoryNote category={data.category} />
 
 <InheritanceTree
@@ -48,6 +52,16 @@ const docExists = fs.existsSync(docsFileUrl);
 />
 
 <ClassDocumentation name={data.name} docs={data.docs} docExists={docExists} />
+
+{
+  data.preview?.kind === "changed" && data.preview.change && (
+    <PreviewChanges
+      patch={data.preview.patch}
+      change={data.preview.change}
+      classHref={classIndex[data.name]}
+    />
+  )
+}
 
 {
   data.properties.length > 0 && (

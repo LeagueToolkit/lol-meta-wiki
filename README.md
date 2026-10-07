@@ -122,8 +122,10 @@ it is CC BY-SA 4.0 with a developer tooling exception - see
 
 ```text
 db/meta.db.json    vendored dataset from lol-meta-classes; refreshed by CI, never edited by hand
+db/meta.pbe.json   the PBE overlay of the same repository: what the newest PBE build changes
 db/docs/           the community documentation, one YAML file per class
-scripts/           generate-db.ts (dataset -> site data + MDX), update-db.ts (pull upstream)
+scripts/           generate-db.ts (dataset -> site data + MDX), update-db.ts (pull upstream),
+                   preview.ts (overlay -> the database as of the PBE build)
 site/              the Astro + Starlight wiki, and the consumer of the generated data
 api/               Cloudflare Worker serving the generated data under /v1/*
 cli/               rito-meta, the command-line client for that API (published as @leaguetoolkit/meta-cli)
@@ -131,6 +133,13 @@ cli/               rito-meta, the command-line client for that API (published as
 
 Data flows one way: `db/meta.db.json` → `generate-db.ts` → JSON and MDX under `site/` → components.
 Nothing reads the raw database at request time.
+
+Live data is the content of every page and of every default API response. While PBE is on a patch
+that live has not reached, `db/meta.pbe.json` holds a preview and the generator adds it on top: a
+page for each PBE-only class, a "Changes on PBE" section on each class that the PBE build changes,
+the [PBE page](https://meta-wiki.leaguetoolkit.dev/changelog/pbe/) of the changelog, and the
+`?channel=pbe` responses of the API. The overlay applies to one live build (`base`); if that is not
+the latest build of `db/meta.db.json`, the generator leaves the preview out and warns.
 
 ## Development
 
@@ -148,12 +157,12 @@ pnpm dev           # http://localhost:4321
 
 Every Astro command generates the site's data before it reads the content collection - the class and
 changelog pages are generated, not tracked in git - and the dev server additionally re-runs the
-generator whenever `db/meta.db.json` or a `db/docs/*.yaml` changes, so editing a documentation file
-refreshes the page you are looking at.
+generator whenever `db/meta.db.json`, `db/meta.pbe.json` or a `db/docs/*.yaml` changes, so editing a
+documentation file refreshes the page you are looking at.
 
 ```bash
 pnpm generate-db   # run the generator on its own (the API build needs its output)
-pnpm update-db     # pull the newest meta.db.json from lol-meta-classes
+pnpm update-db     # pull the newest meta.db.json and meta.pbe.json from lol-meta-classes
 pnpm build         # production build into site/dist/
 pnpm api:dev       # run the Worker locally (wrangler)
 pnpm api:deploy    # deploy the Worker (needs a wrangler login)
@@ -173,10 +182,11 @@ typed props, design tokens - are in [CLAUDE.md](CLAUDE.md). They apply to humans
 
 Two workflows, no manual step between a new patch and a published page:
 
-- **Update Meta DB** (`update-db.yml`) - runs on a `meta-db-updated` repository dispatch from
-  `lol-meta-classes`, so a new patch lands within minutes of being dumped. It re-fetches
-  `db/meta.db.json`, commits it if it moved, and explicitly starts a deploy. A weekly Sunday cron
-  covers a missed or unauthenticated dispatch.
+- **Update Meta DB** (`update-db.yml`) - runs on a `meta-db-updated` or `meta-pbe-updated`
+  repository dispatch from `lol-meta-classes`, so a new live or PBE build lands within minutes of
+  being dumped. It re-fetches `db/meta.db.json` and `db/meta.pbe.json` from one upstream commit,
+  commits them if either moved, and explicitly starts a deploy. A weekly Sunday cron covers a
+  missed or unauthenticated dispatch.
 - **Deploy** (`deploy.yml`) - builds the Astro site to GitHub Pages and deploys the Worker in
   parallel, both from the same commit, so the site and the API never serve different data. Deploys
   are serialized so two quick merges cannot land an older dataset last.
