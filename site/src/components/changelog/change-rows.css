@@ -1,0 +1,45 @@
+/* The rows that describe one change: a base-list change (BaseChangeRow) and a
+   property change (PropChangeRow). Both render in the patch changelog and in
+   the PBE changes of a class page, so the rules live here and each page-entry
+   component imports the file. */
+
+:is(.patch-changelog, .preview-changes) .change-detail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+  font-size: 0.8125rem;
+}
+
+:is(.patch-changelog, .preview-changes) .arrow {
+  color: var(--sl-color-gray-3, #9ca3af);
+  font-weight: 600;
+}
+
+:is(.patch-changelog, .preview-changes) .type-code,
+:is(.patch-changelog, .preview-changes) .base-old,
+:is(.patch-changelog, .preview-changes) .base-new {
+  font-family: var(--sl-font-mono);
+  font-size: 0.75rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.3rem;
+  border: var(--cl-border);
+  background: var(--sl-color-bg-inline-code, #f3f4f6);
+}
+
+:is(.patch-changelog, .preview-changes) .base-old {
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+/* Type links produced by typeLinker (set:html, so they carry no scope) */
+:is(.patch-changelog, .preview-changes) .type-chip .type-link {
+  color: var(--sl-color-accent, #4f46e5);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+:is(.patch-changelog, .preview-changes) .type-chip .type-link:hover {
+  text-decoration: underline;
+}

@@ -46,8 +46,10 @@ site/db-data/changelog/*      ->  changelog/
 site/public/db/classIndex.json ->  index.json                            (absolute wiki URLs)
 site/public/db/categories.json ->  categories.json, classes-by-domain/   (one name list per domain)
 db/meta.db.json               ->  db.json, hashes.json, versions.json
+db/meta.pbe.json              ->  db-pbe.json
+site/db-data/preview/classes/* ->  pbe/classes/, pbe/classes-inherited/  (only the files that differ)
 openapi.json                  ->  openapi.json
-(derived)                     ->  meta.json, src/generated/hash-to-name.json
+(derived)                     ->  meta.json, src/generated/{hash-to-name,pbe-hash-to-name}.json
 ```
 
 It is idempotent - re-running produces the same tree - and it wipes the output directory first, so a
@@ -68,6 +70,14 @@ list as `{ count, domains }`, and groups the class names by `category.domain` in
 `classes-by-domain/{id}.json`. Every domain gets a list, empty or not, and a class whose domain is
 missing from `categories.json` stops the build as stale site data.
 
+**The PBE preview is a delta, not a second tree.** Every default response is live data. The
+generator writes the merged-view class of each class that differs as of the PBE build
+(`site/db-data/preview/classes/`), and the build writes a file under `pbe/` only if the API response
+differs from the live one. The delta is a few hundred files per PBE build, which keeps the asset
+count under the Workers limit of 20,000 files. Without a preview the
+`pbe/` tree is empty and `preview` is `null` in `/v1`, `/v1/versions`, `/v1/hashes` and
+`/v1/changelog`.
+
 **Facts and prose are split on purpose.** Class endpoints carry unrestricted factual data; the
 human-authored CC BY-SA prose is written only into the `docs/` tree, so a consumer that never calls
 `/v1/docs*` never ingests licensed content. Keep that split when you touch `transform.ts` - see
@@ -79,7 +89,7 @@ human-authored CC BY-SA prose is written only into the `docs/` tree, so a consum
 
 - **Exact routes** come from the `EXACT` map (`/v1`, `/v1/openapi`, `/v1/classes`,
   `/v1/categories`, `/v1/hashes`, `/v1/index`, `/v1/versions`, `/v1/changelog`, `/v1/db`,
-  `/v1/docs`). A trailing slash is tolerated on any route.
+  `/v1/db/pbe`, `/v1/docs`). A trailing slash is tolerated on any route.
 - **Parameterized routes** are `/v1/{classes,changelog,docs}/{segment}` and nothing else. The
   segment must match `[A-Za-z0-9._-]+`; rejecting anything else keeps traversal-shaped requests away
   from the asset binding.
@@ -93,6 +103,11 @@ human-authored CC BY-SA prose is written only into the `docs/` tree, so a consum
   instead of the full one. It is a filter in the URL only: the list is precomputed like every other
   response. The id must pass the same `[A-Za-z0-9._-]+` check as a path segment, and an id with no
   list is a 404 whose `hint` points at `/v1/categories`.
+- **`?channel=pbe`** on `/v1/classes` and `/v1/classes/{x}` serves the asset from the `pbe/` tree
+  and falls back to the live asset if the tree has none, which is the case for every class that
+  the PBE build leaves alone. It combines with `?inherited=1`. Hex segments are resolved through
+  `src/generated/pbe-hash-to-name.json` first. `channel=live` is the default; any other value is a
+  400. The parameter has no effect on the other routes.
 - `OPTIONS` gets a 204 preflight; anything other than `GET`/`HEAD`/`OPTIONS` gets a 405 with an
   `Allow` header. Unroutable paths get a JSON 404 pointing back at `/v1`.
 

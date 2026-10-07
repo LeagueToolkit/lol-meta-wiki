@@ -61,6 +61,8 @@ export interface ClassJson {
   usedBy: UsedByClass[];
   kind: ClassKind;
   category: ClassCategory;
+  /** Present only if the PBE preview adds, removes or changes the class. */
+  preview?: ClassPreview;
 }
 
 /** How the game registers a class: an interface, a value struct, or neither. */
@@ -209,6 +211,8 @@ export interface ChangelogPatch {
   builds: number[];
   counts: ChangelogCounts;
   buildGroups: ChangelogBuildGroup[];
+  /** Present only on the PBE preview page (slug "pbe"). */
+  preview?: PreviewInfo;
 }
 
 export interface ChangelogIndexEntry {
@@ -216,6 +220,50 @@ export interface ChangelogIndexEntry {
   slug: string;
   builds: number[];
   counts: ChangelogCounts;
+}
+
+/** The shape of db-data/changelog/index.json. */
+export interface ChangelogIndex {
+  generatedAt: string;
+  latestPatch: string;
+  patches: ChangelogIndexEntry[];
+  /** The PBE preview page, or null if the db has no preview. */
+  preview: ChangelogPreviewEntry | null;
+}
+
+export interface ChangelogPreviewEntry extends PreviewInfo {
+  slug: string;
+  counts: ChangelogCounts;
+}
+
+// --- PBE preview shapes ---
+// The preview is the newest PBE build, compared with the latest live build
+// (db/meta.pbe.json, see scripts/preview.ts). Live data stays the main content
+// of every page; these shapes carry what the PBE build adds on top of it.
+
+/** The PBE build of the preview and the live build that it is compared with. */
+export interface PreviewInfo {
+  channel: "pbe";
+  patch: string;
+  build: number;
+  /** The latest live build. */
+  base: number;
+  basePatch: string;
+}
+
+/**
+ * What the PBE build does to a class. "only" = the class is on PBE and in no
+ * live build. The other kinds are the ClassChange kinds of a class that has a
+ * live page; "added" is not one of them, because such a class is "only".
+ */
+export type ClassPreviewKind = "only" | Exclude<ClassChange["kind"], "added">;
+
+export interface ClassPreview {
+  patch: string;
+  build: number;
+  kind: ClassPreviewKind;
+  /** The changelog entry of the class for the PBE build. Absent for "only". */
+  change?: ClassChange;
 }
 
 // --- class graph index ---

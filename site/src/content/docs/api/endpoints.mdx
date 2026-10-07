@@ -16,7 +16,7 @@ case-sensitive; hashes are accepted in any spelling (see
 
 | Endpoint | Returns |
 |---|---|
-| `/v1` | API metadata: the dataset window (first and latest tracked patch/build), class and patch counts, hash format, and a map of every endpoint. Start here. |
+| `/v1` | API metadata: the dataset window (first and latest tracked patch/build), class and patch counts, hash format, the PBE `preview` if there is one, and a map of every endpoint. Start here. |
 | `/v1/openapi` | The OpenAPI 3.1 document describing every endpoint and schema - point a Swagger or Redoc viewer at it. |
 
 ## Classes
@@ -98,6 +98,37 @@ class no rule claims has the domain `uncategorized`. `kind` is the two flags
 as one value: `interface`, `value`, or `class`. Placement is derived at build
 time, so it can change between dataset generations without the class changing.
 
+## PBE preview
+
+Every response is live data unless the request says otherwise. While PBE is on
+a patch that live has not reached, the API also describes the newest PBE build,
+compared with the latest live build. `/v1` reports it as `preview`:
+
+```json
+{ "channel": "pbe", "patch": "16.21", "build": 8255794, "base": 8230722, "basePatch": "16.19", "classes": 236 }
+```
+
+`preview` is `null` if PBE and live are on the same patch. `base` is the live
+build that the PBE build is compared with, and `classes` counts the classes
+whose PBE response differs from the live one.
+
+| Endpoint | Returns |
+|---|---|
+| `/v1/classes/{name-or-hash}?channel=pbe` | The class as of the PBE build, in the same shape. A class that PBE adds has `since` set to the PBE patch; one that PBE removes has `removedIn` set to it. A class that PBE leaves alone returns the live response. Combines with `inherited=1`. |
+| `/v1/classes?channel=pbe` | The class list with the PBE-only classes included. |
+| `/v1/changelog/pbe` | What the PBE build changes against `base`, in the shape of a patch changelog, plus a `preview` object. A `404` if there is no preview. |
+| `/v1/db/pbe` | The raw PBE overlay: the entries of `/v1/db` that differ as of the PBE build. Always present; `build` is `null` if there is no preview. |
+
+`/v1/versions`, `/v1/hashes` and `/v1/changelog` carry the same `preview`
+object, or `null`. In `/v1/hashes` it also lists the hashes that exist on PBE
+only. The PBE build is never part of the `versions` array, and its number can
+be lower than the number of a live build: order builds by channel, not by number.
+
+A PBE build is replaced by the next one and is not promoted as is, so treat a
+PBE response as a preview of the next patch, not as a release. Without a
+preview, `channel=pbe` returns the live response. Any other `channel` value
+than `live` or `pbe` is a `400`.
+
 ## Lookup tables
 
 | Endpoint | Returns |
@@ -117,7 +148,7 @@ time, so it can change between dataset generations without the class changing.
 
 | Endpoint | Returns |
 |---|---|
-| `/v1/db` | The complete raw meta database in one download (~3.5 MB, ~700 KB compressed). Unpadded hashes, per-build revisions. Prefer the per-class endpoints unless you genuinely need everything. |
+| `/v1/db` | The complete raw meta database in one download (~3.5 MB, ~700 KB compressed). Unpadded hashes, per-build revisions. Live builds only. Prefer the per-class endpoints unless you genuinely need everything. |
 
 ## Documentation
 

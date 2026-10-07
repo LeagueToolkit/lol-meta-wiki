@@ -4,6 +4,7 @@
  *
  * Input:   db/meta.db.json  (versioned database from LeagueToolkit/lol-meta-classes;
  *          see its docs/meta-db-format.md - refresh with `pnpm update-db`)
+ *          db/meta.pbe.json (the PBE overlay of the same repository; optional)
  * Output:  classesOutDir/<ClassName>.<sha12>.json (build-time only, NOT in
  *          public/ - copying 5k+ files into dist every build was a major
  *          build-time cost)
@@ -17,6 +18,10 @@
  *          browse page per domain)
  *          outDir/classHashes.json (fetched client-side by the 404 resolver)
  *          mdxDir/<ClassName>.mdx (Starlight docs)
+ *          previewOutDir/classes/<ClassName>.json (build-time only: the classes
+ *          that differ in the database as of the PBE build, read by api/scripts)
+ *          changelogOutDir/pbe.<sha12>.json + changelogMdxDir/pbe.mdx (the PBE
+ *          preview page; the MDX exists with and without a preview)
  *
  * Usage:
  *   bun run scripts/generate-db.ts --in db/meta.db.json --out site/public/db --classes-out site/db-data/classes --mdx site/src/content/docs/classes
@@ -30,6 +35,12 @@
  * - Each class/property carries a revision history. The page shows the
  *   latest definition; older revisions surface as "type history", and
  *   entities absent from the latest game build are marked removed.
+ * - Live data is the content of every page. If the overlay holds a PBE build,
+ *   the generator loads the merged database a second time (scripts/preview.ts)
+ *   and adds what differs: a page per PBE-only class, a `preview` entry on
+ *   each class that the PBE build changes or removes, and the PBE page of the
+ *   changelog. Without a preview the live output is the same as without the
+ *   overlay file.
  */
 
 import { mkdir, readFile, readdir, writeFile, unlink } from "node:fs/promises";
@@ -48,13 +59,16 @@ import {
   type PropChange,
   type ClassChange,
   type ChangelogCounts,
+  type ChangelogIndex,
   type ChangelogPatch,
+  type ChangelogPreviewEntry,
   type ClassDocumentation,
   type ClassCategory,
   type ClassGraph,
   type ClassHashIndex,
   type ClassJson,
   type ClassKind,
+  type ClassPreview,
   type ClassSidebar,
   type ClassSidebarDomain,
   type ClassSidebarEntry,
@@ -64,6 +78,7 @@ import {
   type DomainFamily,
   type DomainInfo,
   type DomainPageData,
+  type PreviewInfo,
   type Property,
   type PropertyDocumentation,
   type SymbolClassEntry,
@@ -74,6 +89,7 @@ import {
 } from "../site/src/types";
 // Raw meta.db.json shapes, shared with api/scripts.
 import type { MetaDb, PropRevision } from "./meta-db";
+import { mergePreview, type MetaOverlay } from "./preview";
 import {
   categorize,
   parseCategoryConfig,
@@ -108,6 +124,7 @@ for (let i = 2; i < process.argv.length; i++) {
   }
 }
 const inFile = args.get("in") ?? "db/meta.db.json";
+const previewFile = args.get("preview") ?? "db/meta.pbe.json";
 const outDir = args.get("out") ?? "site/public/db";
 const classesOutDir = args.get("classes-out") ?? "site/db-data/classes";
 const graphOutFile = args.get("graph-out") ?? "site/db-data/classGraph.json";
@@ -118,6 +135,7 @@ const changelogMdxDir =
   args.get("changelog-mdx") ?? "site/src/content/docs/changelog";
 const domainsOutDir = args.get("domains-out") ?? "site/db-data/domains";
 const domainsMdxDir = args.get("domains-mdx") ?? "site/src/content/docs/domains";
+const previewOutDir = args.get("preview-out") ?? "site/db-data/preview";
 const docsDir = args.get("docs") ?? "db/docs";
 const categoriesFile = args.get("categories") ?? "db/categories.yaml";
 const strict = args.get("strict") === "true" || args.get("strict") === "1";
@@ -213,7 +231,9 @@ function loadMetaDb(db: MetaDb): ClassDoc[] {
     );
   }
 
-  // versions are ordered by build number; builds are the unit of time
+  // Builds are the unit of time, ordered by their position in `versions`. Do
+  // not compare build numbers: the PBE build of a merged db comes last and can
+  // be lower than a live build (see scripts/preview.ts).
   const builds = db.versions.map((v) => v.build);
   const patchByBuild = new Map(db.versions.map((v) => [v.build, v.patch]));
   const firstBuild = builds[0];
@@ -245,7 +265,7 @@ function loadMetaDb(db: MetaDb): ClassDoc[] {
       kind: currentClass.interface ? "interface" : currentClass.value ? "value" : "class",
       properties: [],
     };
-    if (classFrom > firstBuild) doc.since = patchOf(classFrom);
+    if (classFrom !== firstBuild) doc.since = patchOf(classFrom);
     if (classRemoved) doc.removedIn = patchAfter(currentClass.to!);
 
     for (const [fhash, metaProp] of Object.entries(klass.properties)) {
@@ -263,7 +283,7 @@ function loadMetaDb(db: MetaDb): ClassDoc[] {
       // "Added in" only when the property appeared after the class did
       // (and after tracking started, where the real origin is unknown)
       const propFrom = revs[0].from;
-      if (propFrom > firstBuild && propFrom !== classFrom) {
+      if (propFrom !== firstBuild && propFrom !== classFrom) {
         prop.since = patchOf(propFrom);
       }
       // Removed property in a living class; a removed class covers its
@@ -404,7 +424,7 @@ function buildChangelog(
   db: MetaDb,
   domainOf: (className: string) => string | undefined
 ): ChangelogPatch[] {
-  const builds = db.versions.map((v) => v.build); // sorted by build
+  const builds = db.versions.map((v) => v.build); // in timeline order
   const patchByBuild = new Map(db.versions.map((v) => [v.build, v.patch]));
   const buildIndex = new Map(builds.map((b, i) => [b, i]));
   const firstBuild = builds[0];
@@ -424,11 +444,16 @@ function buildChangelog(
     kh: nameOf(t[3]),
   });
 
-  // A class's revision covering a given build, if it existed then.
-  const revAt = (khash: string, build: number) =>
-    db.classes[khash]?.revisions.find(
-      (r) => r.from <= build && (r.to === undefined || build <= r.to)
+  // A class's revision covering a given build, if it existed then. Compared
+  // by position in `versions`, not by build number (see loadMetaDb).
+  const revAt = (khash: string, build: number) => {
+    const at = buildIndex.get(build)!;
+    return db.classes[khash]?.revisions.find(
+      (r) =>
+        buildIndex.get(r.from)! <= at &&
+        (r.to === undefined || at <= buildIndex.get(r.to)!)
     );
+  };
 
   /**
    * Family = the topmost ancestor of a class's primary (first) base chain, the
@@ -668,7 +693,12 @@ function buildChangelog(
 /**
  * Generate MDX content for a class documentation page
  */
-function generateMDX(c: ClassDoc, fileName: string, category: ClassCategory): string {
+function generateMDX(
+  c: ClassDoc,
+  fileName: string,
+  category: ClassCategory,
+  preview?: ClassPreview
+): string {
   const displayName = c.name.startsWith("0x") ? `Class ${c.name}` : c.name;
 
   // Generate invisible heading anchors for TOC
@@ -679,14 +709,17 @@ function generateMDX(c: ClassDoc, fileName: string, category: ClassCategory): st
     .join("\n\n");
 
   const headerFrontmatter =
-    (c.since ? `\nsince: "${c.since}"` : "") +
+    // The `since` of a PBE-only class is the PBE patch, which has no changelog
+    // page of its own. The preview pill shows it instead.
+    (c.since && preview?.kind !== "only" ? `\nsince: "${c.since}"` : "") +
     (c.removedIn ? `\nremovedIn: "${c.removedIn}"` : "") +
     `\nhash: "${c.hash}"` +
     `\nkind: ${c.kind}` +
     `\ndomain: ${category.domain}` +
     `\nvia: ${category.via}` +
     // The root of a family is its own family; the breadcrumb has nothing to add
-    (category.family !== c.name ? `\nfamily: "${category.family}"` : "");
+    (category.family !== c.name ? `\nfamily: "${category.family}"` : "") +
+    (preview ? `\npreview: "${preview.patch}"\npreviewKind: ${preview.kind}` : "");
 
   // Hash-named classes stay searchable (by hash and by property name), but
   // their property headings are heavily down-weighted in Pagefind so classes
@@ -732,6 +765,43 @@ import PatchChangelog from '../../../components/PatchChangelog.astro';
 `;
 }
 
+/**
+ * Generates the MDX stub for the PBE page of the changelog. The page exists
+ * with and without a preview, so its URL is stable between PBE cycles. It
+ * sits between the overview (order 0) and the newest patch (order 1).
+ */
+function generatePreviewChangelogMDX(info: PreviewInfo | null, fileName: string | null): string {
+  if (!info || !fileName) {
+    return `---
+title: PBE preview
+description: Meta schema changes on the PBE build, compared with the latest live build.
+sidebar:
+  order: 0.5
+  label: PBE
+---
+
+PBE and live are on the same patch, so there is no preview. If PBE moves to a
+patch that live has not reached, this page lists the classes that the newest PBE
+build adds, removes or changes.
+`;
+  }
+  return `---
+title: PBE ${info.patch}
+description: Meta schema changes on PBE ${info.patch}, compared with live patch ${info.basePatch} - new, removed, and changed classes.
+sidebar:
+  order: 0.5
+  label: PBE
+  badge:
+    text: "${info.patch}"
+    variant: caution
+---
+
+import PatchChangelog from '../../../components/PatchChangelog.astro';
+
+<PatchChangelog file="/db/changelog/${fileName}" />
+`;
+}
+
 /** MDX stub for a domain's browse page, same pattern as the changelog. */
 function generateDomainMDX(d: DomainInfo, fileName: string): string {
   return `---
@@ -746,19 +816,36 @@ import DomainPage from '../../../components/DomainPage.astro';
 `;
 }
 
-// --- main ---
-async function main() {
-  const source = await readFile(inFile, "utf8");
-  let metaDb: MetaDb;
-  try {
-    metaDb = JSON.parse(source);
-  } catch (err) {
-    throw new Error(`${basename(inFile)} is not valid JSON: ${err}`);
-  }
+// --- class view ---
+/**
+ * The graph facts derived from one class list: inheritance, reverse
+ * references and categories. The live classes get one view; the merged
+ * database of a PBE preview gets a second one.
+ */
+type ClassView = {
+  classes: ClassDoc[];
+  classMap: Map<string, ClassDoc>;
+  /** Reverse lookup: class -> the classes that inherit from it. */
+  children: Map<string, Set<string>>;
+  /** Reverse references: class -> user class -> the properties that use it. */
+  usedByMap: Map<string, Map<string, UsedByProp[]>>;
+  categories: Map<string, ClassCategory>;
+  usedByOf(name: string): UsedByClass[];
+  ancestorLevels(name: string): string[][];
+  descendantTree(name: string): DescendantNode[];
+};
 
-  const classes = loadMetaDb(metaDb);
-  const latestPatch = metaDb.versions[metaDb.versions.length - 1].patch;
-
+/**
+ * Builds the view of `classes`, which `loadMetaDb` read from `db`. A class in
+ * `pinned` keeps the category that it has there: the merged view passes the
+ * live categories, so a class is in the same domain on both channels.
+ */
+function buildClassView(
+  db: MetaDb,
+  classes: ClassDoc[],
+  categoryConfig: CategoryConfig,
+  pinned?: Map<string, ClassCategory>
+): ClassView {
   // Build inheritance graph
   const classMap = new Map<string, ClassDoc>();
   const children = new Map<string, Set<string>>(); // reverse lookup: class -> classes that inherit from it
@@ -815,22 +902,23 @@ async function main() {
   // Categories: every class gets one domain (see categorize.ts). The primary
   // base is the first base that is itself a class - a base naming an external
   // type ends the chain there.
-  const categoryConfig = await loadCategoryConfig(classes);
   const categories = categorize(
     classes.map((c) => ({
       name: c.name,
       base: c.bases.find((b) => classMap.has(b)),
       removed: c.removedIn !== undefined,
     })),
-    usageEdges(metaDb),
+    usageEdges(db),
     categoryConfig
   );
-  const categoryOf = (name: string) => categories.get(name)!;
+  for (const [name, category] of pinned ?? []) {
+    if (categories.has(name)) categories.set(name, category);
+  }
 
   // Ancestors as BFS levels going up: [direct bases, their bases, ...].
   // Multiple inheritance puts several classes on one level; each class
   // appears only once, at its shallowest depth.
-  function getAncestorLevels(className: string): string[][] {
+  function ancestorLevels(className: string): string[][] {
     const levels: string[][] = [];
     const seen = new Set<string>([className]);
     let frontier = classMap.get(className)?.bases ?? [];
@@ -847,7 +935,7 @@ async function main() {
   // Full descendant tree. With multiple inheritance a class could appear
   // under several parents; the visited set keeps each subtree rendered once
   // (under the first parent encountered).
-  function getDescendantTree(
+  function descendantsFrom(
     className: string,
     visited: Set<string>
   ): DescendantNode[] {
@@ -856,10 +944,167 @@ async function main() {
     for (const child of childs) {
       if (visited.has(child)) continue;
       visited.add(child);
-      nodes.push({ name: child, children: getDescendantTree(child, visited) });
+      nodes.push({ name: child, children: descendantsFrom(child, visited) });
     }
     return nodes;
   }
+
+  return {
+    classes,
+    classMap,
+    children,
+    usedByMap,
+    categories,
+    usedByOf,
+    ancestorLevels,
+    descendantTree: (name) => descendantsFrom(name, new Set([name])),
+  };
+}
+
+type LoadedDocs = Awaited<ReturnType<typeof loadDocs>>;
+
+/** Builds the class JSON of `c` in `view`, without the `preview` entry. */
+function classJsonOf(c: ClassDoc, view: ClassView, docs: LoadedDocs): ClassJson {
+  return {
+    name: c.name,
+    bases: c.bases,
+    since: c.since ?? null,
+    removedIn: c.removedIn ?? null,
+    // Merge property documentation
+    properties: c.properties.map((prop) => ({
+      ...prop,
+      docs: docs.propertyDocs[prop.name.toLowerCase()] || null,
+    })),
+    ancestorLevels: view.ancestorLevels(c.name),
+    descendantTree: view.descendantTree(c.name),
+    docs: docs.classDocs || null,
+    usedBy: view.usedByOf(c.name),
+    kind: c.kind,
+    category: view.categories.get(c.name)!,
+  };
+}
+
+// --- PBE preview ---
+// Slug of the PBE page of the changelog. A patch slug is "<major>-<minor>",
+// so the two cannot collide.
+const PREVIEW_SLUG = "pbe";
+
+/** The merged database of the preview and everything derived from it. */
+type Preview = {
+  info: PreviewInfo;
+  db: MetaDb;
+  view: ClassView;
+  /** The changelog of the PBE build: what it changes against the live build. */
+  changes: ChangelogPatch;
+  /** Class name -> its entry in `changes`. */
+  changeOf: Map<string, ClassChange>;
+};
+
+/**
+ * Reads the overlay and merges it with the live database. Returns null if
+ * the file is missing or holds no preview. An overlay that was built on
+ * another live build than the db is treated as no preview, with a warning:
+ * the two files come from different commits. Under --strict that is an error.
+ */
+async function readPreview(metaDb: MetaDb): Promise<{ info: PreviewInfo; db: MetaDb } | null> {
+  let source: string;
+  try {
+    source = await readFile(previewFile, "utf8");
+  } catch {
+    return null;
+  }
+  let overlay: MetaOverlay;
+  try {
+    overlay = JSON.parse(source);
+  } catch (err) {
+    throw new Error(`${basename(previewFile)} is not valid JSON: ${err}`);
+  }
+
+  const merged = mergePreview(metaDb, overlay);
+  if (merged.status === "none") return null;
+  if (merged.status === "mismatch") {
+    const message =
+      `${basename(previewFile)} was built on live build ${merged.base}, but ` +
+      `${basename(inFile)} is at build ${merged.latest}. The PBE preview is left out. ` +
+      "Fetch both files again with `pnpm update-db`.";
+    if (strict) throw new Error(message);
+    console.warn(`[warn] ${message}`);
+    return null;
+  }
+  return { info: merged.info, db: merged.db };
+}
+
+/**
+ * Derives the merged view and the changelog of the PBE build. `classes` is
+ * the result of `loadMetaDb` on the merged database.
+ */
+function buildPreview(
+  { info, db }: { info: PreviewInfo; db: MetaDb },
+  classes: ClassDoc[],
+  live: ClassView,
+  categoryConfig: CategoryConfig
+): Preview {
+  const view = buildClassView(db, classes, categoryConfig, live.categories);
+  // The PBE patch has no live build, so its changelog entry holds the PBE
+  // build alone. A PBE build that changes defaults only has no entry at all.
+  const entry = buildChangelog(db, (name) => view.categories.get(name)?.domain).find(
+    (cp) => cp.builds.includes(info.build)
+  );
+  const changes: ChangelogPatch = {
+    patch: info.patch,
+    slug: PREVIEW_SLUG,
+    builds: [info.build],
+    counts: entry?.counts ?? { added: 0, readded: 0, removed: 0, changed: 0 },
+    buildGroups: entry?.buildGroups ?? [],
+    preview: info,
+  };
+  const changeOf = new Map(
+    changes.buildGroups.flatMap((g) => g.entries).map((e) => [e.name, e])
+  );
+  return { info, db, view, changes, changeOf };
+}
+
+// --- main ---
+async function main() {
+  const source = await readFile(inFile, "utf8");
+  let metaDb: MetaDb;
+  try {
+    metaDb = JSON.parse(source);
+  } catch (err) {
+    throw new Error(`${basename(inFile)} is not valid JSON: ${err}`);
+  }
+
+  const classes = loadMetaDb(metaDb);
+  const latestPatch = metaDb.versions[metaDb.versions.length - 1].patch;
+
+  // The merged database of the PBE preview, if the overlay holds one. It is
+  // loaded before the category config, which is resolved against the classes
+  // of both channels: a root or pin can name a class that exists on PBE only.
+  const merged = await readPreview(metaDb);
+  const mergedClasses = merged ? loadMetaDb(merged.db) : [];
+  const categoryConfig = await loadCategoryConfig(merged ? mergedClasses : classes);
+  const live = buildClassView(metaDb, classes, categoryConfig);
+  const { classMap, children, usedByMap, categories } = live;
+  const categoryOf = (name: string) => categories.get(name)!;
+  const preview = merged && buildPreview(merged, mergedClasses, live, categoryConfig);
+
+  // Classes that exist on PBE and in no live build. Each gets a page built
+  // from the merged view; the live indexes, sidebar and domain pages do not
+  // list them.
+  const previewOnly = mergedClasses.filter((c) => !classMap.has(c.name));
+  // One page per entry: the live classes plus the PBE-only ones, A→Z.
+  const pages = [...classes, ...previewOnly].sort((a, b) =>
+    a.name < b.name ? -1 : a.name > b.name ? 1 : 0
+  );
+  const previewOf = (c: ClassDoc): ClassPreview | undefined => {
+    if (!preview) return undefined;
+    const { patch, build } = preview.info;
+    if (!classMap.has(c.name)) return { patch, build, kind: "only" };
+    const change = preview.changeOf.get(c.name);
+    // "added" cannot occur here: a class that the PBE build adds is not live.
+    if (!change || change.kind === "added") return undefined;
+    return { patch, build, kind: change.kind, change };
+  };
 
   // Emit per-class JSON (read only at build time by ClassDetails.astro, so
   // they live outside public/ - the "/db/classes/..." paths in MDX and
@@ -872,6 +1117,8 @@ async function main() {
     propCount: number;
     since?: string;
     removed?: boolean;
+    /** The class exists on PBE only. */
+    preview?: boolean;
   }[] = [];
 
   let jsonChanged = 0;
@@ -881,33 +1128,22 @@ async function main() {
   // Classes with a db/docs YAML that says something
   const documented = new Set<string>();
 
-  for (const c of classes) {
-    const ancestorLevels = getAncestorLevels(c.name);
-    const descendantTree = getDescendantTree(c.name, new Set([c.name]));
+  // The class JSON of every class that differs in the merged view, for
+  // api/scripts (the `?channel=pbe` responses). File name -> contents.
+  const previewClassJson = new Map<string, string>();
+
+  for (const c of pages) {
+    const onlyOnPbe = !classMap.has(c.name);
 
     // Load documentation from unified YAML file
-    const { classDocs, propertyDocs } = await loadDocs(c.name, docsDir);
-    if (classDocs || Object.keys(propertyDocs).length > 0) documented.add(c.name);
+    const docs = await loadDocs(c.name, docsDir);
+    if (docs.classDocs || Object.keys(docs.propertyDocs).length > 0) documented.add(c.name);
 
-    // Merge property documentation
-    const propertiesWithDocs = c.properties.map(prop => ({
-      ...prop,
-      docs: propertyDocs[prop.name.toLowerCase()] || null,
-    }));
-
-    const classJson: ClassJson = {
-      name: c.name,
-      bases: c.bases,
-      since: c.since ?? null,
-      removedIn: c.removedIn ?? null,
-      properties: propertiesWithDocs,
-      ancestorLevels,
-      descendantTree,
-      docs: classDocs || null,
-      usedBy: usedByOf(c.name),
-      kind: c.kind,
-      category: categoryOf(c.name),
-    };
+    // A page shows live data. A PBE-only class has none, so its page shows
+    // the merged view.
+    const base = classJsonOf(c, onlyOnPbe ? preview!.view : live, docs);
+    const classPreview = previewOf(c);
+    const classJson: ClassJson = classPreview ? { ...base, preview: classPreview } : base;
     const json = JSON.stringify(classJson, null, pretty ? 2 : 0);
     const hash = contentHash(classJson);
     const fileName = `${safeName(c.name)}.${hash}.json`;
@@ -916,10 +1152,22 @@ async function main() {
     if (didJson) jsonChanged++;
     generatedJSON.add(fileName);
 
+    if (preview) {
+      const mergedJson = onlyOnPbe
+        ? base
+        : classJsonOf(preview.view.classMap.get(c.name)!, preview.view, docs);
+      if (onlyOnPbe || JSON.stringify(mergedJson) !== JSON.stringify(base)) {
+        previewClassJson.set(
+          `${safeName(c.name)}.json`,
+          JSON.stringify(mergedJson, null, pretty ? 2 : 0)
+        );
+      }
+    }
+
     // Generate MDX file (lowercase for Starlight URL compatibility)
     const mdxFileName = `${safeName(c.name).toLowerCase()}.mdx`;
     const mdxFilePath = join(mdxDir, mdxFileName);
-    const mdxContent = generateMDX(c, fileName, categoryOf(c.name));
+    const mdxContent = generateMDX(c, fileName, classJson.category, classPreview);
     const didMdx = await writeIfChanged(mdxFilePath, mdxContent);
     if (didMdx) mdxChanged++;
     generatedMDX.add(mdxFileName);
@@ -931,6 +1179,7 @@ async function main() {
       propCount: c.properties.length,
       ...(c.since ? { since: c.since } : {}),
       ...(c.removedIn ? { removed: true } : {}),
+      ...(onlyOnPbe ? { preview: true } : {}),
     });
   }
 
@@ -940,16 +1189,18 @@ async function main() {
   // in case both map to `<name>.mdx`) or a dropped class would just build a
   // smaller site. Assert before the cleanup passes below, which would happily
   // delete pages a partial run failed to claim.
-  const expectedClasses = Object.keys(metaDb.classes).length;
+  const expectedClasses = Object.keys((preview?.db ?? metaDb).classes).length;
   if (
-    classes.length !== expectedClasses ||
+    pages.length !== expectedClasses ||
     generatedMDX.size !== expectedClasses ||
     generatedJSON.size !== expectedClasses
   ) {
     throw new Error(
       `Emitted ${generatedMDX.size} MDX pages and ${generatedJSON.size} JSON files ` +
-      `for ${classes.length} loaded classes, but ${basename(inFile)} has ` +
-      `${expectedClasses} - a class was dropped or two share a file name.`
+      `for ${pages.length} loaded classes, but ${basename(inFile)} has ` +
+      `${expectedClasses}` +
+      (preview ? ` with the classes of ${basename(previewFile)}` : "") +
+      ` - a class was dropped or two share a file name.`
     );
   }
 
@@ -982,6 +1233,25 @@ async function main() {
     // Directory might not exist yet, that's fine
   }
 
+  // Emit the merged-view class JSON and drop the files of an earlier preview.
+  // Without a preview the directory ends up empty.
+  const previewClassDir = join(previewOutDir, "classes");
+  let previewChanged = 0;
+  let previewDeleted = 0;
+  for (const [fileName, json] of previewClassJson) {
+    if (await writeIfChanged(join(previewClassDir, fileName), json)) previewChanged++;
+  }
+  try {
+    for (const file of await readdir(previewClassDir)) {
+      if (file.endsWith(".json") && !previewClassJson.has(file)) {
+        await unlink(join(previewClassDir, file));
+        previewDeleted++;
+      }
+    }
+  } catch {
+    // Directory might not exist yet, that's fine
+  }
+
   // Emit a tiny index for navigation
   const indexPath = join(outDir, "index.json");
   await writeIfChanged(
@@ -990,7 +1260,10 @@ async function main() {
       {
         generatedAt: new Date().toISOString(),
         latestPatch,
+        // Every class page, the PBE-only ones included (deploy.yml compares
+        // this with the pages that were built).
         total: index.length,
+        preview: preview?.info ?? null,
         classes: index,
       },
       null,
@@ -998,9 +1271,10 @@ async function main() {
     )
   );
 
-  // Emit classIndex.json for type auto-linking
+  // Emit classIndex.json for type auto-linking. It covers every page, so a
+  // type that names a PBE-only class links to its page.
   const classIndex: Record<string, string> = {};
-  for (const c of classes) {
+  for (const c of pages) {
     classIndex[c.name] = `/classes/${classSlug(c.name)}`;
   }
   const classIndexPath = join(outDir, "classIndex.json");
@@ -1046,7 +1320,7 @@ async function main() {
   // stable when a name resolves. Always minified regardless of --pretty: it's
   // only ever fetched by the browser; /v1/hashes is the readable form.
   const classHashes: ClassHashIndex = {};
-  for (const c of [...classes].sort((a, b) => (a.hash < b.hash ? -1 : 1))) {
+  for (const c of [...pages].sort((a, b) => (a.hash < b.hash ? -1 : 1))) {
     classHashes[c.hash] = classSlug(c.name);
   }
   await writeIfChanged(
@@ -1299,13 +1573,31 @@ async function main() {
     });
   }
 
+  // The PBE page of the changelog. Its JSON exists only with a preview.
+  let previewEntry: ChangelogPreviewEntry | null = null;
+  let previewChangelogFile: string | null = null;
+  if (preview) {
+    const cp = preview.changes;
+    previewChangelogFile = `${cp.slug}.${contentHash(cp)}.json`;
+    const json = JSON.stringify(cp, null, pretty ? 2 : 0);
+    if (await writeIfChanged(join(changelogOutDir, previewChangelogFile), json)) clJsonChanged++;
+    generatedChangelogJSON.add(previewChangelogFile);
+    previewEntry = { ...preview.info, slug: cp.slug, counts: cp.counts };
+  }
+  const previewMdxFile = `${PREVIEW_SLUG}.mdx`;
+  const previewMdx = generatePreviewChangelogMDX(preview?.info ?? null, previewChangelogFile);
+  if (await writeIfChanged(join(changelogMdxDir, previewMdxFile), previewMdx)) clMdxChanged++;
+  generatedChangelogMDX.add(previewMdxFile);
+
+  const changelogIndexFile: ChangelogIndex = {
+    generatedAt: new Date().toISOString(),
+    latestPatch,
+    patches: changelogIndex,
+    preview: previewEntry,
+  };
   await writeIfChanged(
     join(changelogOutDir, "index.json"),
-    JSON.stringify(
-      { generatedAt: new Date().toISOString(), latestPatch, patches: changelogIndex },
-      null,
-      pretty ? 2 : 0
-    )
+    JSON.stringify(changelogIndexFile, null, pretty ? 2 : 0)
   );
 
   // Clean up stale changelog files (a patch's content hash renames its JSON;
@@ -1350,6 +1642,17 @@ async function main() {
   console.log(
     `     - Changelog: ${changelog.length} patches, JSON ${clJsonChanged} changed / ${clJsonDeleted} deleted, MDX ${clMdxChanged} changed / ${clMdxDeleted} deleted`
   );
+  if (preview) {
+    const { info, changes } = preview;
+    console.log(
+      `     - PBE preview: ${info.patch}.${info.build} on ${info.basePatch}.${info.base}, ` +
+        `${previewOnly.length} PBE-only pages, ${changes.counts.changed} changed, ` +
+        `${changes.counts.removed} removed, ${changes.counts.readded} re-added; ` +
+        `merged class JSON ${previewClassJson.size} files, ${previewChanged} changed / ${previewDeleted} deleted`
+    );
+  } else {
+    console.log(`     - PBE preview: none (${previewDeleted} merged class JSON deleted)`);
+  }
 
   // Category coverage: how each class was placed, and what is left to seed.
   // Printed on every run - this table is where a stale or missing seed shows.

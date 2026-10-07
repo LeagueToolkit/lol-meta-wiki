@@ -1,0 +1,39 @@
+---
+// The notice at the top of a class page that the PBE preview touches. It says
+// what the PBE build does to the class and links to the details: the PBE page
+// of the changelog, or the changes section further down the page.
+import type { ClassPreview, ClassPreviewKind } from "../../types";
+import { PREVIEW_ANCHOR, PREVIEW_CHANGELOG_HREF } from "../../utils/preview";
+import PreviewNote from "./PreviewNote.astro";
+
+interface Props {
+  preview: ClassPreview;
+}
+
+const { preview } = Astro.props;
+const pbe = `PBE ${preview.patch}`;
+
+const changelog = { href: PREVIEW_CHANGELOG_HREF, label: "All PBE changes" };
+// Keyed lookup instead of one branch per kind.
+const note: Record<ClassPreviewKind, { text: string; link: typeof changelog }> = {
+  only: {
+    text: `This class is in ${pbe} (build ${preview.build}) and in no live build. It can change or be removed before the patch is live.`,
+    link: changelog,
+  },
+  readded: {
+    text: `${pbe} adds this class again. This page shows the last live definition.`,
+    link: changelog,
+  },
+  removed: {
+    text: `${pbe} removes this class. This page shows the live definition.`,
+    link: changelog,
+  },
+  changed: {
+    text: `${pbe} changes this class. This page shows the live definition.`,
+    link: { href: `#${PREVIEW_ANCHOR}`, label: "PBE changes" },
+  },
+};
+const { text, link } = note[preview.kind];
+---
+
+<PreviewNote link={link}>{text}</PreviewNote>

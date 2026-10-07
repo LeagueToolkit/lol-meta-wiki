@@ -1,0 +1,27 @@
+---
+// A change of a class's base list: the old bases, struck through, and the new
+// ones. Layout rules come from change-rows.css.
+import type { ClassChange } from "../../types";
+
+interface Props {
+  change: NonNullable<ClassChange["baseChange"]>;
+}
+
+const { change } = Astro.props;
+---
+
+<div class="change-detail base-change">
+  <span class="detail-label">extends</span>
+  <code class="base-old">{change.old.join(", ") || "-"}</code>
+  <span class="arrow">→</span>
+  <code class="base-new">{change.new.join(", ") || "-"}</code>
+</div>
+
+<style>
+  .detail-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--sl-color-gray-3, #6b7280);
+  }
+</style>

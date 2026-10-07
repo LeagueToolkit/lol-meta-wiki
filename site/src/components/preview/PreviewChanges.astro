@@ -1,0 +1,60 @@
+---
+// The "PBE changes" section of a class page: the base-list change and the
+// property changes that the PBE build makes to the class. The rows are the
+// ones the changelog renders (changelog/BaseChangeRow, changelog/PropChangeRow).
+import "../changelog/change-rows.css";
+import BaseChangeRow from "../changelog/BaseChangeRow.astro";
+import PropChangeRow from "../changelog/PropChangeRow.astro";
+import type { ClassChange } from "../../types";
+import { PREVIEW_ANCHOR } from "../../utils/preview";
+
+interface Props {
+  patch: string;
+  change: ClassChange;
+  /** Href of the class page; a property row anchors to its heading there. */
+  classHref: string;
+}
+
+const { patch, change, classHref } = Astro.props;
+---
+
+<section class="preview-changes not-content" id={PREVIEW_ANCHOR} data-pagefind-ignore>
+  <h2 class="section-title">Changes on PBE {patch}</h2>
+  <div class="preview-rows">
+    {change.baseChange && <BaseChangeRow change={change.baseChange} />}
+    {change.propChanges.map((pc) => <PropChangeRow change={pc} classHref={classHref} />)}
+    {
+      !change.baseChange && change.propChanges.length === 0 && (
+        <p class="preview-flags">The interface or value-struct flag of the class changes.</p>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .preview-changes {
+    margin-bottom: 1.5rem;
+    /* Clear the fixed site header when the title pill jumps here */
+    scroll-margin-top: calc(var(--sl-nav-height, 3.75rem) + 1rem);
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.75rem 0;
+    color: var(--sl-color-white, #1f2937);
+  }
+
+  .preview-rows {
+    padding: 0.2rem 0.8rem 0.6rem;
+    border: 1px solid color-mix(in srgb, var(--cl-changed) 35%, transparent);
+    border-radius: 0.5rem;
+    background: var(--sl-color-bg-nav, transparent);
+  }
+
+  .preview-flags {
+    margin: 0.4rem 0 0;
+    font-size: 0.8125rem;
+    color: var(--sl-color-gray-2);
+  }
+</style>

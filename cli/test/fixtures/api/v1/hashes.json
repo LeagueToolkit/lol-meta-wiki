@@ -12,5 +12,6 @@
     "0x8b5022d2": "IVfxEmissionSource",
     "0xdbd91337": "VfxEmissionSkeleton"
   },
-  "externals": {}
+  "externals": {},
+  "preview": null
 }

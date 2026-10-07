@@ -1,19 +1,31 @@
 ---
 import fs from "node:fs";
 import { root } from "astro:config/server";
-import type { ChangelogIndexEntry } from "../types";
+import type { ChangelogCounts, ChangelogIndex } from "../types";
 
 // Read the changelog index at build time (server-side only). Lives in
 // site/db-data/changelog/ (outside public/), same as the per-patch JSON.
 const dataUrl = new URL("./db-data/changelog/index.json", root);
-const { patches } = JSON.parse(fs.readFileSync(dataUrl, "utf8")) as {
-  patches: ChangelogIndexEntry[];
-};
+const { patches, preview } = JSON.parse(fs.readFileSync(dataUrl, "utf8")) as ChangelogIndex;
+
+// One row per page: the PBE preview first, if the db has one, then the live
+// patches newest first.
+interface Row {
+  patch: string;
+  slug: string;
+  builds: number;
+  counts: ChangelogCounts;
+  pbe: boolean;
+}
+const rows: Row[] = [
+  ...(preview ? [{ ...preview, builds: 1, pbe: true }] : []),
+  ...patches.map((p) => ({ ...p, builds: p.builds.length, pbe: false })),
+];
 
 // A relative bar scale so churny patches stand out at a glance
 const maxTotal = Math.max(
   1,
-  ...patches.map((p) => p.counts.added + p.counts.changed + p.counts.removed)
+  ...rows.map((p) => p.counts.added + p.counts.changed + p.counts.removed)
 );
 ---
 
@@ -27,20 +39,21 @@ const maxTotal = Math.max(
       <span class="cl-bar-head">Churn</span>
     </div>
     {
-      patches.map((p) => {
+      rows.map((p) => {
         const total = p.counts.added + p.counts.changed + p.counts.removed;
         const pct = (n: number) => `${(n / maxTotal) * 100}%`;
         const label =
-          `Patch ${p.patch}` +
-          (p.builds.length > 1 ? `, ${p.builds.length} builds` : "") +
+          `${p.pbe ? "PBE" : "Patch"} ${p.patch}` +
+          (p.builds > 1 ? `, ${p.builds} builds` : "") +
           `: ${p.counts.added} new, ${p.counts.changed} changed, ` +
           `${p.counts.removed} removed`;
         return (
           <a class="cl-row" href={`/changelog/${p.slug}/`} aria-label={label}>
             <span class="cl-patch">
               {p.patch}
-              {p.builds.length > 1 && (
-                <span class="cl-builds">{p.builds.length} builds</span>
+              {p.pbe && <span class="cl-pbe">PBE</span>}
+              {p.builds > 1 && (
+                <span class="cl-builds">{p.builds} builds</span>
               )}
             </span>
             <span class="cl-num cl-added" aria-hidden="true">{p.counts.added || "-"}</span>
@@ -111,6 +124,15 @@ const maxTotal = Math.max(
   .cl-head .cl-patch {
     font-weight: 600;
     color: var(--sl-color-gray-3, #6b7280);
+  }
+  .cl-pbe {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    padding: 0.05rem 0.35rem;
+    border-radius: 0.25rem;
+    color: var(--cl-changed-text);
+    background: color-mix(in srgb, var(--cl-changed) 14%, transparent);
   }
   .cl-builds {
     font-size: 0.65rem;

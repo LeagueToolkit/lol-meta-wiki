@@ -2,11 +2,13 @@
 // Override of Starlight's PageTitle: renders a class's click-to-copy hash chip
 // and its "Added"/"Removed" patch pills (hash/since/removedIn frontmatter),
 // plus where the class sits - a domain / family breadcrumb above the title
-// (domain/family/via frontmatter) and a pill for its kind.
+// (domain/family/via frontmatter) and a pill for its kind. A class that the
+// PBE preview touches also gets a PBE pill (preview/previewKind frontmatter).
 import Pill from '../Pill.astro';
-import type { CategoryVia, ClassKind } from '../../types';
+import type { CategoryVia, ClassKind, ClassPreviewKind } from '../../types';
 import { classIndex } from '../../utils/classIndex';
 import { domainHref, domainOf, VIA_REASON } from '../../utils/domains';
+import { PREVIEW_ANCHOR, PREVIEW_CHANGELOG_HREF } from '../../utils/preview';
 import CirclePlusIcon from '../icons/CirclePlusIcon.astro';
 import HashIcon from '../icons/HashIcon.astro';
 import TrashIcon from '../icons/TrashIcon.astro';
@@ -15,8 +17,18 @@ import TrashIcon from '../icons/TrashIcon.astro';
 // export); the skip-link and TOC target the h1 through this id
 const PAGE_TITLE_ID = '_top';
 
-const { title, removedIn, since, hash, kind, domain: domainId, via, family } = Astro.locals
-	.starlightRoute.entry.data as {
+const {
+	title,
+	removedIn,
+	since,
+	hash,
+	kind,
+	domain: domainId,
+	via,
+	family,
+	preview,
+	previewKind,
+} = Astro.locals.starlightRoute.entry.data as {
 	title: string;
 	removedIn?: string;
 	since?: string;
@@ -25,6 +37,8 @@ const { title, removedIn, since, hash, kind, domain: domainId, via, family } = A
 	domain?: string;
 	via?: CategoryVia;
 	family?: string;
+	preview?: string;
+	previewKind?: ClassPreviewKind;
 };
 
 // A class page carries a hash; a domain's own page carries only `domain`, and
@@ -38,6 +52,34 @@ const kindLabel = { class: undefined, interface: 'Interface', value: 'Value stru
 
 // Each patch pill links to that patch's changelog page (slug = dots → dashes)
 const changelogHref = (patch: string) => `/changelog/${patch.replace(/\./g, "-")}/`;
+
+// The PBE pill: what the PBE build does to the class, and where the details
+// are. Only a changed class has a changes section on its own page.
+const previewPill =
+	preview && previewKind
+		? {
+				only: {
+					label: 'PBE only',
+					title: `This class is in PBE ${preview} and in no live build - see the PBE changes`,
+					href: PREVIEW_CHANGELOG_HREF,
+				},
+				readded: {
+					label: 'Back on PBE',
+					title: `PBE ${preview} adds this class again - see the PBE changes`,
+					href: PREVIEW_CHANGELOG_HREF,
+				},
+				removed: {
+					label: 'Removed on PBE',
+					title: `PBE ${preview} removes this class - see the PBE changes`,
+					href: PREVIEW_CHANGELOG_HREF,
+				},
+				changed: {
+					label: 'Changed on PBE',
+					title: `PBE ${preview} changes this class - see the changes on this page`,
+					href: `#${PREVIEW_ANCHOR}`,
+				},
+			}[previewKind]
+		: undefined;
 ---
 
 <div class="page-title">
@@ -64,7 +106,7 @@ const changelogHref = (patch: string) => `/changelog/${patch.replace(/\./g, "-")
 	}
 	<h1 id={PAGE_TITLE_ID}>{title}</h1>
 	{
-		(hash || removedIn || since || kindLabel || domain?.unreleased) && (
+		(hash || removedIn || since || kindLabel || domain?.unreleased || previewPill) && (
 			<div class="title-pills">
 				{hash && (
 					<button
@@ -95,6 +137,13 @@ const changelogHref = (patch: string) => `/changelog/${patch.replace(/\./g, "-")
 						<Pill variant="success" title={`Added in patch ${since} - see the changelog`}>
 							<CirclePlusIcon slot="icon" size={12} strokeWidth={2.5} />
 							{since}
+						</Pill>
+					</a>
+				)}
+				{previewPill && (
+					<a class="pill-link" href={previewPill.href}>
+						<Pill variant="warning" title={previewPill.title}>
+							{previewPill.label}{' '}<b>{preview}</b>
 						</Pill>
 					</a>
 				)}

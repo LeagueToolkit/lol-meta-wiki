@@ -20,6 +20,10 @@ export const collections = {
 				domain: z.string().optional(),
 				via: z.enum(['pin', 'seed', 'prefix', 'usage', 'shared', 'none']).optional(),
 				family: z.string().optional(),
+				// Class pages that the PBE preview touches: the PBE patch, and what
+				// the PBE build does to the class (ClassPreviewKind in types.ts)
+				preview: z.string().optional(),
+				previewKind: z.enum(['only', 'readded', 'removed', 'changed']).optional(),
 			}),
 		}),
 	}),

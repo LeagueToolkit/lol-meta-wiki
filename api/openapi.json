@@ -4,7 +4,7 @@
     "title": "LoL Meta Wiki API",
     "version": "1.0.0",
     "summary": "Read-only JSON API over the LoL Meta Wiki dataset: class metadata, patch changelogs, and human-authored documentation.",
-    "description": "All endpoints are GET, unauthenticated, and CORS-enabled.\n\nHashes are FNV-1a 32-bit and are always emitted in canonical form: `0x` + 8 lowercase, zero-padded hex digits (e.g. `0x0006516a`). Routes accept unpadded and mixed-case hashes and canonicalize them.\n\nThe dataset's observation window starts at the `dataset.firstPatch` reported by `/v1` (currently 13.15). A `since` of `null` means \"already present when tracking began\", not \"has always existed\".\n\nLicensing is structural: the `/v1/docs*` endpoints are the only surface serving human-authored CC BY-SA 4.0 prose; every other endpoint serves unrestricted factual data. See the repository's DOCUMENTATION_LICENSE.md.",
+    "description": "All endpoints are GET, unauthenticated, and CORS-enabled.\n\nHashes are FNV-1a 32-bit and are always emitted in canonical form: `0x` + 8 lowercase, zero-padded hex digits (e.g. `0x0006516a`). Routes accept unpadded and mixed-case hashes and canonicalize them.\n\nThe dataset's observation window starts at the `dataset.firstPatch` reported by `/v1` (currently 13.15). A `since` of `null` means \"already present when tracking began\", not \"has always existed\".\n\nEvery response describes the live builds unless the request passes `channel=pbe`. While PBE is on a patch that live has not reached, `/v1` reports the newest PBE build as `preview`, and the class routes answer for the database as of that build. A PBE build is replaced by the next one and is not promoted as is.\n\nLicensing is structural: the `/v1/docs*` endpoints are the only surface serving human-authored CC BY-SA 4.0 prose; every other endpoint serves unrestricted factual data. See the repository's DOCUMENTATION_LICENSE.md.",
     "license": {
       "name": "CC BY-SA 4.0 (docs endpoints only; facts endpoints unrestricted)",
       "url": "https://github.com/LeagueToolkit/lol-meta-wiki/blob/main/DOCUMENTATION_LICENSE.md"
@@ -38,8 +38,9 @@
       "get": {
         "operationId": "listClasses",
         "summary": "All class names, sorted; or one domain's, with `domain`.",
-        "description": "Unnamed classes appear as their canonical hash. Pass `domain` to narrow the list to the classes placed in that domain (see `/v1/categories`); every class sits in exactly one, so the per-domain lists partition the full one.",
+        "description": "Unnamed classes appear as their canonical hash. Pass `domain` to narrow the list to the classes placed in that domain (see `/v1/categories`); every class sits in exactly one, so the per-domain lists partition the full one. With `channel=pbe` the list also holds the classes that exist on PBE only; `channel` has no effect together with `domain`.",
         "parameters": [
+          { "$ref": "#/components/parameters/channel" },
           {
             "name": "domain",
             "in": "query",
@@ -54,6 +55,7 @@
             "description": "Class name list",
             "content": { "application/json": { "schema": { "$ref": "#/components/schemas/NameList" } } }
           },
+          "400": { "$ref": "#/components/responses/BadRequest" },
           "404": { "$ref": "#/components/responses/NotFound" }
         }
       }
@@ -62,9 +64,10 @@
       "get": {
         "operationId": "getClass",
         "summary": "One class: hash, flags, kind, category, bases, lifetime, and its properties with types, defaults, and history.",
-        "description": "Accepts a resolved class name (exact, case-sensitive) or a class hash (any hex length/case). By default `properties` contains only the class's own properties; pass `inherited=1` to get the precomputed flattened view, where properties from all ancestors are merged in (nearest ancestor wins on a name conflict) and each property carries `from`, the class that defines it.",
+        "description": "Accepts a resolved class name (exact, case-sensitive) or a class hash (any hex length/case). By default `properties` contains only the class's own properties; pass `inherited=1` to get the precomputed flattened view, where properties from all ancestors are merged in (nearest ancestor wins on a name conflict) and each property carries `from`, the class that defines it. With `channel=pbe` the response describes the class as of the PBE build: a class that PBE adds has `since` set to the PBE patch, a class that PBE removes has `removedIn` set to it, and a class that PBE leaves alone returns the live response.",
         "parameters": [
           { "$ref": "#/components/parameters/nameOrHash" },
+          { "$ref": "#/components/parameters/channel" },
           {
             "name": "inherited",
             "in": "query",
@@ -78,6 +81,7 @@
             "description": "Class detail",
             "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Class" } } }
           },
+          "400": { "$ref": "#/components/responses/BadRequest" },
           "404": { "$ref": "#/components/responses/NotFound" }
         }
       }
@@ -99,7 +103,7 @@
       "get": {
         "operationId": "getHashIndex",
         "summary": "Canonical hash → resolved name for every class and external type.",
-        "description": "`classes` maps every dumped class hash to its resolved name, or `null` when the name is unknown; every key is fetchable via `/v1/classes/{hash}`. `externals` maps engine/external type hashes that appear as type references but are not dumped classes.",
+        "description": "`classes` maps every dumped class hash to its resolved name, or `null` when the name is unknown; every key is fetchable via `/v1/classes/{hash}`. `externals` maps engine/external type hashes that appear as type references but are not dumped classes. `preview` lists the hashes that exist on PBE only; its `classes` keys are fetchable via `/v1/classes/{hash}?channel=pbe`.",
         "responses": {
           "200": {
             "description": "Hash index",
@@ -128,6 +132,7 @@
       "get": {
         "operationId": "getVersions",
         "summary": "The patch ↔ build-number map for the whole observation window.",
+        "description": "`versions` holds live builds only. The PBE build of `preview` is not part of it, and its number can be lower than the number of a live build.",
         "responses": {
           "200": {
             "description": "Version map",
@@ -151,14 +156,15 @@
     "/v1/changelog/{slug}": {
       "get": {
         "operationId": "getChangelogPatch",
-        "summary": "Full changelog for one patch.",
+        "summary": "Full changelog for one patch, or for the PBE preview.",
+        "description": "The slug `pbe` returns what the newest PBE build changes against the latest live build, with a `preview` object. It is a 404 if there is no preview.",
         "parameters": [
           {
             "name": "slug",
             "in": "path",
             "required": true,
-            "schema": { "type": "string", "pattern": "^\\d+-\\d+$" },
-            "description": "Patch slug: `16-13` for patch 16.13.",
+            "schema": { "type": "string", "pattern": "^(\\d+-\\d+|pbe)$" },
+            "description": "Patch slug: `16-13` for patch 16.13. `pbe` for the PBE preview.",
             "example": "16-13"
           }
         ],
@@ -175,8 +181,16 @@
       "get": {
         "operationId": "getRawDb",
         "summary": "The complete raw meta database in one download (~3.5 MB).",
-        "description": "The unprocessed source dataset, keyed by unpadded hash, with full per-build revision history. Prefer the per-class endpoints unless you genuinely need everything.",
+        "description": "The unprocessed source dataset, keyed by unpadded hash, with full per-build revision history. Live builds only. Prefer the per-class endpoints unless you genuinely need everything.",
         "responses": { "200": { "description": "Raw meta DB" } }
+      }
+    },
+    "/v1/db/pbe": {
+      "get": {
+        "operationId": "getRawPreview",
+        "summary": "The raw PBE overlay: the entries of `/v1/db` that differ as of the newest PBE build.",
+        "description": "`classes` holds complete class entries in the schema of `/v1/db`. `base` is the live build that the PBE build follows and equals `latest` of `/v1/db`. To build the database as of the PBE build, append `{patch, build}` to `versions`, set `latest` to `build`, and spread `classes` and `externalTypeNames` over those of `/v1/db`. `patch`, `build` and `base` are `null` and `classes` is empty if there is no preview.",
+        "responses": { "200": { "description": "Raw PBE overlay" } }
       }
     },
     "/v1/docs": {
@@ -224,6 +238,13 @@
   },
   "components": {
     "parameters": {
+      "channel": {
+        "name": "channel",
+        "in": "query",
+        "required": false,
+        "schema": { "type": "string", "enum": ["live", "pbe"], "default": "live" },
+        "description": "`pbe` answers for the database as of the newest PBE build (see `preview` in `/v1`). Without a preview it returns the live response."
+      },
       "nameOrHash": {
         "name": "nameOrHash",
         "in": "path",
@@ -234,12 +255,28 @@
       }
     },
     "responses": {
+      "BadRequest": {
+        "description": "Unknown `channel` value.",
+        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+      },
       "NotFound": {
-        "description": "Unknown name, hash, patch slug, or domain id.",
+        "description": "Unknown name, hash, patch slug, or domain id, or `/v1/changelog/pbe` without a preview.",
         "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
       }
     },
     "schemas": {
+      "Preview": {
+        "type": "object",
+        "description": "The newest PBE build and the live build that it is compared with. Present while PBE is on a patch that live has not reached.",
+        "properties": {
+          "channel": { "type": "string", "enum": ["pbe"] },
+          "patch": { "type": "string", "description": "The PBE patch." },
+          "build": { "type": "integer", "description": "The PBE build. Not part of `/v1/versions`." },
+          "base": { "type": "integer", "description": "The latest live build, which the PBE build is compared with." },
+          "basePatch": { "type": "string" }
+        },
+        "required": ["channel", "patch", "build", "base", "basePatch"]
+      },
       "Hash": {
         "type": "string",
         "pattern": "^0x[0-9a-f]{8}$",
@@ -405,9 +442,29 @@
           "format": { "type": "string" },
           "count": { "type": "integer" },
           "classes": { "type": "object", "additionalProperties": { "type": ["string", "null"] } },
-          "externals": { "type": "object", "additionalProperties": { "type": "string" } }
+          "externals": { "type": "object", "additionalProperties": { "type": "string" } },
+          "preview": {
+            "oneOf": [
+              {
+                "allOf": [
+                  { "$ref": "#/components/schemas/Preview" },
+                  {
+                    "type": "object",
+                    "description": "The hashes that exist on PBE only.",
+                    "properties": {
+                      "count": { "type": "integer" },
+                      "classes": { "type": "object", "additionalProperties": { "type": ["string", "null"] } },
+                      "externals": { "type": "object", "additionalProperties": { "type": "string" } }
+                    },
+                    "required": ["count", "classes", "externals"]
+                  }
+                ]
+              },
+              { "type": "null" }
+            ]
+          }
         },
-        "required": ["format", "count", "classes", "externals"]
+        "required": ["format", "count", "classes", "externals", "preview"]
       },
       "Versions": {
         "type": "object",
@@ -422,9 +479,10 @@
               "properties": { "patch": { "type": "string" }, "build": { "type": "integer" } },
               "required": ["patch", "build"]
             }
-          }
+          },
+          "preview": { "oneOf": [{ "$ref": "#/components/schemas/Preview" }, { "type": "null" }] }
         },
-        "required": ["latestPatch", "latestBuild", "count", "versions"]
+        "required": ["latestPatch", "latestBuild", "count", "versions", "preview"]
       },
       "ChangeTuple": {
         "allOf": [
@@ -495,7 +553,8 @@
               },
               "required": ["build", "entries"]
             }
-          }
+          },
+          "preview": { "$ref": "#/components/schemas/Preview", "description": "Only on `/v1/changelog/pbe`." }
         },
         "required": ["patch", "slug", "builds", "counts", "buildGroups"]
       },
@@ -516,9 +575,28 @@
               },
               "required": ["patch", "slug", "builds", "counts"]
             }
+          },
+          "preview": {
+            "oneOf": [
+              {
+                "allOf": [
+                  { "$ref": "#/components/schemas/Preview" },
+                  {
+                    "type": "object",
+                    "description": "The PBE page: `/v1/changelog/{slug}`.",
+                    "properties": {
+                      "slug": { "type": "string" },
+                      "counts": { "$ref": "#/components/schemas/ChangelogCounts" }
+                    },
+                    "required": ["slug", "counts"]
+                  }
+                ]
+              },
+              { "type": "null" }
+            ]
           }
         },
-        "required": ["generatedAt", "latestPatch", "patches"]
+        "required": ["generatedAt", "latestPatch", "patches", "preview"]
       },
       "Meta": {
         "type": "object",
@@ -540,6 +618,23 @@
             },
             "required": ["firstPatch", "firstBuild", "latestPatch", "latestBuild", "fetchedAt"]
           },
+          "preview": {
+            "oneOf": [
+              {
+                "allOf": [
+                  { "$ref": "#/components/schemas/Preview" },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "classes": { "type": "integer", "description": "Classes whose `channel=pbe` response differs from the live one." }
+                    },
+                    "required": ["classes"]
+                  }
+                ]
+              },
+              { "type": "null" }
+            ]
+          },
           "counts": {
             "type": "object",
             "properties": {
@@ -552,7 +647,7 @@
           },
           "endpoints": { "type": "object", "additionalProperties": { "type": "string" } }
         },
-        "required": ["name", "version", "site", "baseUrl", "generatedAt", "hashFormat", "dataset", "counts", "endpoints"]
+        "required": ["name", "version", "site", "baseUrl", "generatedAt", "hashFormat", "dataset", "preview", "counts", "endpoints"]
       },
       "Error": {
         "type": "object",
