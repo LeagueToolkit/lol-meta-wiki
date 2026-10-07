@@ -94,6 +94,8 @@ write("api/v1/hashes.json", {
   count: keep.size,
   classes: Object.fromEntries(Object.entries(hashes.classes).filter(([h]) => keep.has(h))),
   externals: hashes.externals,
+  // The fixtures describe live data; the PBE-only hashes are not part of the cast.
+  preview: null,
 } satisfies ApiHashIndex);
 
 const index = await get<ApiWikiIndex>("/v1/index");

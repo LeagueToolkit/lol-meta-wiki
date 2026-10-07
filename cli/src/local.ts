@@ -146,6 +146,8 @@ export class LocalSource implements Source {
       count: this.resolver.classByHash.size,
       classes: sortedRecord([...this.resolver.classByHash.entries()].map(([h, c]) => [h, c.name])),
       externals: sortedRecord([...this.resolver.externalNameByHash.entries()]),
+      // /v1/db holds live builds only, so a --db run has no PBE preview.
+      preview: null,
     };
   }
 
@@ -160,6 +162,7 @@ export class LocalSource implements Source {
       generatedAt: this.db.hashSource?.fetchedAt ?? "",
       latestPatch: this.db.versions[this.db.versions.length - 1]!.patch,
       patches: patches.map(({ patch, slug, builds, counts }) => ({ patch, slug, builds, counts })),
+      preview: null,
     };
   }
 
