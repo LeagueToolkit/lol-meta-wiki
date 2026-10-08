@@ -1,0 +1,19 @@
+# 0x57b38653 Documentation
+
+class:
+  description: |
+    A UI sound effect event with limits. When the UI element triggers the object, the
+    client checks the limits of the linked [0xa35db897](/classes/0xa35db897) object and
+    posts the audio event named `EventName` only if every limit allows it.
+    `0xa35db897` describes the checks.
+
+    The client posts nothing when `EventName` is empty.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+
+properties:
+  AudioBehavior:
+    description: |
+      The [0xa35db897](/classes/0xa35db897) object whose limits apply to this event. When
+      the link is unset, the event plays every time, as
+      [0xdf305970](/classes/0xdf305970) does.

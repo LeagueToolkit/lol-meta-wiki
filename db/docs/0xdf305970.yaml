@@ -1,0 +1,14 @@
+# 0xdf305970 Documentation
+
+class:
+  description: |
+    A UI sound effect event without limits. Every time the UI element triggers the
+    object, the client posts the audio event named `EventName`.
+
+    [0x57b38653](/classes/0x57b38653) is the same event with limits on how often it plays.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+
+properties:
+  EventName:
+    description: "Name of the audio event that the client posts. The client posts nothing when the name is empty."

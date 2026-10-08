@@ -1,0 +1,17 @@
+# UiComboBoxSoundEvents Documentation
+
+class:
+  description: |
+    The **sounds of a combo box**. The table has one interaction: the selection of an
+    option in the list. The client plays `OnSelectionEvent` when it is not empty.
+    Otherwise it plays the [IUiSfxEvent](/classes/iuisfxevent) object in `Select`, if one
+    is set.
+  notes:
+    - "No shipped bin sets `Select`. That path is read from the client and is not tested in game."
+
+properties:
+  OnSelectionEvent:
+    description: "Event name played when an option of the combo box is selected."
+
+  Select:
+    description: "Event object played for the same interaction when `OnSelectionEvent` is empty."

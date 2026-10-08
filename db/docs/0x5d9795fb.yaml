@@ -1,0 +1,27 @@
+# 0x5d9795fb Documentation
+
+class:
+  description: |
+    A UI voice-over event. The client replaces the token `{champion}` in `EventName` with
+    a character name, then posts the resulting event name under the limits of the linked
+    [0xa35db897](/classes/0xa35db897) object.
+
+    The event does not play in any of these cases:
+
+    - `EventName` is empty.
+    - `EventName` does not contain `{champion}`.
+    - The client finds no character for the caller.
+
+    The limits use the event name after the replacement, so each character has its own
+    play count and line cooldown.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+    - "No property of another class is typed for this class. No caller of it was found in the client."
+    - "Which character supplies the name is not identified."
+
+properties:
+  EventName:
+    description: "Event name template. It must contain the token `{champion}`, which the client replaces with a character name before it posts the event."
+
+  VoBehavior:
+    description: "The [0xa35db897](/classes/0xa35db897) object whose limits apply to this event. When the link is unset, the event plays every time."

@@ -1,0 +1,15 @@
+# IUiSfxEvent Documentation
+
+class:
+  description: |
+    A **UI sound effect event**: the kind of [IUiAudioEvent](/classes/iuiaudioevent) that
+    a UI sound table can hold. Three tables have such properties:
+    [UiElementGroupButtonSoundEvents](/classes/uielementgroupbuttonsoundevents),
+    [UiElementGroupSliderSoundEvents](/classes/uielementgroupslidersoundevents) and
+    [UiComboBoxSoundEvents](/classes/uicomboboxsoundevents).
+
+    Each table pairs an event object with an event-name string for the same interaction.
+    The client plays the string when it is not empty. It plays the event object only when
+    the string is empty.
+  notes:
+    - "No shipped bin contains an object of this family. The behaviour is read from the client and is not tested in game."
