@@ -1,0 +1,21 @@
+# AudioGlobalEventTargetCharacterRecords Documentation
+
+class:
+  description: |
+    A list of characters for one game event. It is the value type of the map `0x766af9fc`
+    of [AudioGlobalEventManager](/classes/audioglobaleventmanager), where the key is the id
+    of the game event.
+
+    The manager uses the list to drop audio events: an event whose unit has one of the
+    listed character records dispatches no announcer line and no music cue.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+
+properties:
+  CharacterRecords:
+    description: |
+      The characters, each as the path hash of a
+      [CharacterRecord](/classes/characterrecord) object, for example
+      `Characters/Annie/CharacterRecords/Root`. The client resolves each hash to the loaded
+      record and compares it with the character record of the event's unit. A hash that
+      resolves to no loaded record matches nothing.

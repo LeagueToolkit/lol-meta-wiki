@@ -1,0 +1,47 @@
+# MusicProfile Documentation
+
+class:
+  description: |
+    The **music event set of a game mode**: the champion music and theme music that the
+    [AudioGlobalEventManager](/classes/audioglobaleventmanager) plays for game events.
+
+    A profile is a game mode config. A mode names its profile in
+    `GameModeMapData.MusicProfile`. When the client initialises the profile, the profile
+    hands itself to the active manager, which keeps it as the one active profile and
+    subscribes its two event tables together with the manager's own announcer table.
+
+    A profile needs a manager. If no `AudioGlobalEventManager` object is loaded, the client
+    logs an error and the profile does nothing.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+
+properties:
+  ChampionMusicEvents:
+    description: |
+      The champion music event table: one [ChampionMusicEvent](/classes/championmusicevent)
+      link per game event.
+
+  ThemeMusicEvents:
+    description: |
+      The theme music event table: one [ThemeMusicEvent](/classes/thememusicevent) link per
+      game event. See [ThemeMusicEvents](/classes/thememusicevents).
+
+  MusicQueueConfigs:
+    description: |
+      The [AudioQueueConfig](/classes/audioqueueconfig) objects for music events, as an
+      [AudioQueueConfigList](/classes/audioqueueconfiglist).
+
+  "0x93c1d30":
+    description: "Unknown string. Purpose not yet identified."
+
+  "0xb01bdea6":
+    description: "Unknown float. Purpose not yet identified."
+
+  "0x4249f0a2":
+    description: "Unknown [AudioPriorityBehavior](/classes/audioprioritybehavior). Purpose not yet identified."
+
+  "0xdea83ccf":
+    description: "Unknown flag. Purpose not yet identified."
+
+  feature:
+    description: "Removed from current builds."

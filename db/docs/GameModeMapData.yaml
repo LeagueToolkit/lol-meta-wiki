@@ -11,3 +11,9 @@ properties:
     description: |
       The [IGameModeConfigClient](/classes/igamemodeconfigclient) objects this mode uses.
       They go into the same table as `Configs`.
+
+  MusicProfile:
+    description: |
+      The [MusicProfile](/classes/musicprofile) of this mode: the champion music and theme
+      music event tables that the
+      [AudioGlobalEventManager](/classes/audioglobaleventmanager) uses while the mode runs.
