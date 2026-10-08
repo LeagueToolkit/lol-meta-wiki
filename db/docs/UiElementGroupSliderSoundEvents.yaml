@@ -1,0 +1,37 @@
+# UiElementGroupSliderSoundEvents Documentation
+
+class:
+  description: |
+    The **sounds of a slider**. For each interaction the table has an event-name string
+    and an [IUiSfxEvent](/classes/iuisfxevent) object. The client plays the string when it
+    is not empty. Otherwise it plays the object, if one is set.
+
+    | Interaction | String | Event object |
+    |---|---|---|
+    | Drag starts | `OnDragStartEvent` | `DragStart` |
+    | Drag ends | `OnDragEndEvent` | `DragEnd` |
+    | Click on the bar | `OnBarClickedEvent` | `BarClicked` |
+
+    The client plays the bar click sound only when the click changes the value of the
+    slider.
+  notes:
+    - "No shipped bin sets one of the event object properties. That path is read from the client and is not tested in game."
+
+properties:
+  OnDragStartEvent:
+    description: "Event name played when a drag of the slider starts."
+
+  DragStart:
+    description: "Event object played for the same interaction when `OnDragStartEvent` is empty."
+
+  OnDragEndEvent:
+    description: "Event name played when a drag of the slider ends."
+
+  DragEnd:
+    description: "Event object played for the same interaction when `OnDragEndEvent` is empty."
+
+  OnBarClickedEvent:
+    description: "Event name played when a click on the bar changes the value of the slider."
+
+  BarClicked:
+    description: "Event object played for the same interaction when `OnBarClickedEvent` is empty."

@@ -1,0 +1,71 @@
+# UiElementGroupButtonSoundEvents Documentation
+
+class:
+  description: |
+    The **sounds of a button**. For each interaction the table has an event-name string
+    and an [IUiSfxEvent](/classes/iuisfxevent) object. The client plays the string when it
+    is not empty. Otherwise it plays the object, if one is set.
+
+    | Interaction | Button state | String | Event object |
+    |---|---|---|---|
+    | Cursor enters | active | `RollOverEvent` | `RollOver` |
+    | Cursor leaves | active | `RollOutEvent` | `RollOut` |
+    | Mouse button down | active, not selected | `MouseDownEvent` | `Press` |
+    | Mouse button down | active, selected | `MouseDownSelected` | `PressSelected` |
+    | Mouse button down | inactive | `MouseDownOnInactive` | `PressInactive` |
+    | Mouse button up | active, not selected | `MouseUpEvent` | `Release` |
+    | Mouse button up | active, selected | `MouseUpSelected` | `ReleaseSelected` |
+    | Mouse button up | inactive | `MouseUpOnInactive` | `ReleaseInactive` |
+
+    An inactive button plays no sound when the cursor enters or leaves it.
+  notes:
+    - "No shipped bin sets one of the event object properties. That path is read from the client and is not tested in game."
+
+properties:
+  RollOverEvent:
+    description: "Event name played when the cursor enters an active button."
+
+  RollOver:
+    description: "Event object played for the same interaction when `RollOverEvent` is empty."
+
+  RollOutEvent:
+    description: "Event name played when the cursor leaves an active button."
+
+  RollOut:
+    description: "Event object played for the same interaction when `RollOutEvent` is empty."
+
+  MouseDownEvent:
+    description: "Event name played on mouse button down over an active button that is not selected."
+
+  Press:
+    description: "Event object played for the same interaction when `MouseDownEvent` is empty."
+
+  MouseDownSelected:
+    description: "Event name played on mouse button down over an active, selected button."
+
+  PressSelected:
+    description: "Event object played for the same interaction when `MouseDownSelected` is empty."
+
+  MouseDownOnInactive:
+    description: "Event name played on mouse button down over an inactive button."
+
+  PressInactive:
+    description: "Event object played for the same interaction when `MouseDownOnInactive` is empty."
+
+  MouseUpEvent:
+    description: "Event name played on mouse button up over an active button that is not selected."
+
+  Release:
+    description: "Event object played for the same interaction when `MouseUpEvent` is empty."
+
+  MouseUpSelected:
+    description: "Event name played on mouse button up over an active, selected button."
+
+  ReleaseSelected:
+    description: "Event object played for the same interaction when `MouseUpSelected` is empty."
+
+  MouseUpOnInactive:
+    description: "Event name played on mouse button up over an inactive button."
+
+  ReleaseInactive:
+    description: "Event object played for the same interaction when `MouseUpOnInactive` is empty."

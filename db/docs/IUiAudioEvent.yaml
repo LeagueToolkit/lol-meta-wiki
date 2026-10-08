@@ -1,0 +1,17 @@
+# IUiAudioEvent Documentation
+
+class:
+  description: |
+    A **UI audio event**: a sound that a UI element plays, stored as an object and not as
+    an event name. The object decides how the client posts the event:
+
+    - [0xdf305970](/classes/0xdf305970) posts its event name every time.
+    - [0x57b38653](/classes/0x57b38653) posts its event name under the limits of a
+      [0xa35db897](/classes/0xa35db897) object.
+    - [0x5d9795fb](/classes/0x5d9795fb) fills a character name into its event name, then
+      posts it under the same kind of limits.
+
+    The sound tables of buttons, sliders and combo boxes hold the first two kinds through
+    [IUiSfxEvent](/classes/iuisfxevent).
+  notes:
+    - "No shipped bin contains an object of this family. The behaviour is read from the client and is not tested in game."

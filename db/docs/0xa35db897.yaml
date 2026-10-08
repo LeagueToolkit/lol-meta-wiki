@@ -1,0 +1,42 @@
+# 0xa35db897 Documentation
+
+class:
+  description: |
+    **Limits on how often a UI audio event plays.** A
+    [0x57b38653](/classes/0x57b38653) or [0x5d9795fb](/classes/0x5d9795fb) event links
+    one of these objects. Several events can link the same object.
+
+    When an event is triggered, the client runs these checks in order and skips the event
+    at the first one that fails:
+
+    1. At least `BehaviorCooldown` seconds have passed since an event last played through
+       this object.
+    2. At least `LineCooldown` seconds have passed since this event name last played.
+    3. `MaxPlays` is `0`, or this event name has played fewer than `MaxPlays` times.
+    4. A random integer from `0` to `99` is lower than `PercentChanceToPlay`.
+
+    Then the client posts the event. If the event was posted and at least one of
+    `BehaviorCooldown`, `LineCooldown` and `MaxPlays` is not `0`, the client records the
+    play: it stores the current time on this object, and it stores the current time and
+    adds 1 to the play count of the event name.
+
+    The play count and the last play time of an event name are stored per name, not per
+    object. Two objects that limit the same event name share them.
+
+    All times are seconds of real time, not game time.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+    - "When the client clears the play counts is not identified."
+
+properties:
+  BehaviorCooldown:
+    description: "Minimum time, in seconds, between two plays of any events that link this object. `0` disables the check."
+
+  LineCooldown:
+    description: "Minimum time, in seconds, between two plays of the same event name. `0` disables the check."
+
+  MaxPlays:
+    description: "Maximum number of plays of one event name. `0` is no limit."
+
+  PercentChanceToPlay:
+    description: "Chance, in percent, that an event which passed the other checks plays. `100` always plays and `0` never plays."
