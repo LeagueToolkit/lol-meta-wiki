@@ -1,0 +1,16 @@
+# MapAudioDataProperties Documentation
+
+properties:
+  ListenerConfiguration:
+    description: |
+      The [AudioListenerConfiguration](/classes/audiolistenerconfiguration) of the map, as
+      the path hash of the object. It sets the height, the offsets and the pitch of the
+      audio listener.
+
+      The client reads it from the audio object of the current map when it sets up the
+      map's audio. If the object sets none, or the hash resolves to no loaded object, the
+      client follows `BaseData` and takes the first configuration that resolves. If none
+      resolves, the listener uses built-in values that equal the defaults of
+      `AudioListenerConfiguration`.
+    notes:
+      - "No shipped map sets this property."

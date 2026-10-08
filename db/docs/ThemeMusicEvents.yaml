@@ -3,11 +3,26 @@
 class:
   description: |
     The **theme music event table** of a [MusicProfile](/classes/musicprofile): one
-    [ThemeMusicEvent](/classes/thememusicevent) link per game event. An unset slot plays
-    nothing for its event.
+    [ThemeMusicEvent](/classes/thememusicevent) link per game event. The client skips an
+    unset slot.
 
     The table has the same slots as `AnnouncerVoEvents` and `ChampionMusicEvents`. The
     [AudioGlobalEventManager](/classes/audioglobaleventmanager) subscribes the three tables
     together, so one game event reaches the slot of each table.
   notes:
     - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+
+properties:
+  "0xba9bae76":
+    description: |
+      Events that the manager triggers at a game time, not on a game event. Each item has
+      an `EventType`, a delay in `0xe7623bb7` and the audio event in `OnEvent`.
+
+      When a profile becomes active, the manager records one timed entry of `EventType`
+      `2` at game time `0`. On every frame it triggers each item of this list whose
+      `EventType` matches a recorded entry, once the game clock has passed the entry's time
+      plus the item's delay. Each item triggers once.
+    notes:
+      - "The manager records no other timed entry, so only items with `EventType` `2` trigger."
+      - "The delay is presumed to be in seconds. The unit is not confirmed."
+      - "The announcer and champion music tables have the same list and the manager treats them the same way."

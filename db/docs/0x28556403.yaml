@@ -1,0 +1,28 @@
+# 0x28556403 Documentation
+
+class:
+  description: |
+    A contextual action that **requests an audio mix state**. When the action runs, it
+    writes a request into the linked
+    [AudioDynamicMixState](/classes/audiodynamicmixstate): the current game time and a
+    duration. The mix state manager then decides, on its next update, whether that state
+    becomes the current one. `AudioDynamicMixState` describes the rules.
+
+    The action does nothing when `MixState` links no loaded object.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+
+properties:
+  MixState:
+    description: "The [AudioDynamicMixState](/classes/audiodynamicmixstate) to request."
+
+  OverrideLingerTime:
+    description: |
+      Duration of the request, in seconds of game time. When it is unset, the request uses
+      the `DefaultLingerTime` of the linked state.
+
+  ForceActivate:
+    description: |
+      Applies the state at once, without waiting for the manager's update. This skips the
+      priority order and the minimum hold of the current state. The client then clears the
+      requests of all states, so the state stays for its own minimum hold only.

@@ -2,8 +2,8 @@
 
 class:
   description: |
-    The client's **global audio event manager**: the object that turns game events, such as
-    a champion kill or a pentakill, into announcer lines and music cues.
+    The client's **global audio event manager**: the object that routes game events, such
+    as a champion kill or a pentakill, to announcer lines and music cues.
 
     The object is the manager. When the client loads a bin that contains one, the object
     registers itself as the active manager, and it unregisters when it is destroyed. The
@@ -11,7 +11,7 @@ class:
     has no manager, and everything described here is off.
 
     The manager works with three **event tables**. Each table has one slot per game event,
-    and each slot links the audio event to play for it:
+    and each slot links the audio event for it:
 
     | Table | Held by | Slot links |
     |---|---|---|
@@ -24,8 +24,14 @@ class:
     When a profile becomes active, the manager subscribes to the game events for the
     `ChampionKill`, `ChampionExecuted`, `ChampionShutdown`, `MultiKill` and `PentaKill` slots
     of all three tables.
+
+    When a subscribed game event arrives, the manager triggers the linked audio event of
+    each table. The audio event passes the trigger to its event type, which picks an event
+    name for the local player. **The client stops there**: no code queues the name or posts
+    it to the audio engine, so no sound plays.
   notes:
     - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+    - "The client has no code that reads [AudioPriorityBehavior](/classes/audioprioritybehavior) or [AudioQueueConfig](/classes/audioqueueconfig) objects, so priorities and queues have no effect."
     - "How the remaining slots of the event tables are driven is not yet identified."
 
 properties:
@@ -37,7 +43,7 @@ properties:
   AnnouncerQueueConfigs:
     description: |
       The [AudioQueueConfig](/classes/audioqueueconfig) objects for announcer lines, as an
-      [AudioQueueConfigList](/classes/audioqueueconfiglist).
+      [AudioQueueConfigList](/classes/audioqueueconfiglist). The client does not read them.
 
   GlobalContextualActionData:
     description: |
@@ -52,16 +58,15 @@ properties:
 
   "0x766af9fc":
     description: |
-      Units that produce no audio event, per game event. The key is the client's numeric id
-      of a game event. The value is an
+      Units whose death triggers no audio event, per game event. The key is the client's
+      numeric id of a game event. The value is an
       [AudioGlobalEventTargetCharacterRecords](/classes/audioglobaleventtargetcharacterrecords).
 
       When a champion kill or a champion execute arrives, the manager looks up the id of the
-      event in this map. If the entry lists the character record of the event's unit, the
-      manager dispatches no audio event for it.
+      event in this map. If the entry lists the character record of the killed unit, the
+      manager triggers no audio event for it.
     notes:
       - "The client reads the map for two event ids only, those of the champion kill and the champion execute."
-      - "Which of the units of the event is tested, the killer or the victim, is not yet identified. The class name calls it the target."
 
   MusicProfiles:
     description: "The music profiles of the manager. Removed from current builds: a game mode names its profile through `GameModeMapData.MusicProfile`."

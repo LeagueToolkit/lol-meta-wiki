@@ -1,0 +1,48 @@
+# AudioListenerConfiguration Documentation
+
+class:
+  description: |
+    Where the client puts the **audio listener**, the point that positional sounds are
+    heard from, and how it tilts the listener.
+
+    A map chooses a configuration in `MapAudioDataProperties.ListenerConfiguration`. When
+    no configuration resolves, the client uses built-in values that equal the defaults of
+    this class.
+
+    The client recomputes the listener on every audio update:
+
+    1. **Position.** It takes the X and Z of the camera's pan position, the point on the
+       map that the camera follows, and sets Y to `ListenerHeight`. Then it adds
+       `ListenerOffsetRight`, `ListenerOffsetUp` and `ListenerOffsetForward`, each along
+       the matching axis of the render camera.
+    2. **Front.** It rotates the render camera's forward vector about the world X axis by
+       `0x8e84528c` degrees and normalizes the result.
+    3. **Top.** It builds the top vector from the front vector and the world up axis.
+
+    The three offsets move the listener only. They do not change the front or top vector.
+  notes:
+    - "No shipped bin contains an object of this class, so every map uses the built-in values. The behaviour is read from the client and is not tested in game."
+
+properties:
+  ListenerHeight:
+    description: |
+      The Y position of the listener, in world units. It is an absolute height: it replaces
+      the Y of the camera's pan position and does not follow the terrain or the camera
+      height.
+
+  ListenerOffsetRight:
+    description: "Offset of the listener along the render camera's right axis, in world units."
+
+  ListenerOffsetUp:
+    description: "Offset of the listener along the render camera's up axis, in world units."
+
+  ListenerOffsetForward:
+    description: "Offset of the listener along the render camera's forward axis, in world units."
+
+  "0x8e84528c":
+    description: |
+      Pitch of the listener's front vector, in degrees. The client rotates the render
+      camera's forward vector about the world X axis by this angle. The angle has a
+      resolution of 0.1 degree.
+    notes:
+      - "The client caches the front vector and computes it again when the camera's forward vector or this value changes."

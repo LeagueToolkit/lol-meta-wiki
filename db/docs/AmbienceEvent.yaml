@@ -1,0 +1,18 @@
+# AmbienceEvent Documentation
+
+class:
+  description: |
+    A named audio event. The client registers the class and can load its objects, but no
+    client code looks them up or reads their properties: nothing posts `Event` to the
+    audio engine, and nothing searches by `NameHash`. An object of this class in a bin has
+    no effect.
+  notes:
+    - "No shipped bin contains an object of this class."
+    - "The class name is a hash match. No string in the client confirms it."
+
+properties:
+  Event:
+    description: "An audio event name. The client does not read it."
+
+  NameHash:
+    description: "A hash that identifies the object. The client does not read it."

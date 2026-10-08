@@ -1,0 +1,76 @@
+# AudioDynamicMixState Documentation
+
+class:
+  description: |
+    A **mix state**: one state of a state group of the audio engine, which the client can
+    switch to while the game runs. Every loaded object registers itself with the client's
+    mix state manager. Once per frame the manager picks one object and applies it: it sets
+    the state group named `MixGroup` to the state named `MixState`.
+
+    A contextual action, [0x28556403](/classes/0x28556403), **requests** a mix state. The
+    request records the game time and a duration in seconds.
+
+    The manager picks the state in this order:
+
+    1. While the current state has been applied for less than `0x2763e30e` seconds, the
+       manager changes nothing.
+    2. A state is a candidate when `isDefault` is set, or when it has a request whose time
+       is not over. A request is over `max(duration, 0x2763e30e)` seconds after it was made.
+    3. The candidate with the highest `priority` wins. If it is the current state, nothing
+       happens. Otherwise the manager applies it and clears the requests of all states,
+       the new state's own request included.
+
+    Two consequences follow from the last step:
+
+    - A state that is not the current state stays applied for only `0x2763e30e` seconds
+      after its request, because applying it clears the request. Then the manager goes back
+      to the best default state.
+    - A request for the state that is already current keeps it for the whole duration of
+      the request.
+
+    The manager keeps one current state for all state groups together, not one per group.
+    It never resets a state group. If no state has `isDefault`, the last applied state
+    stays set in the audio engine.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+    - "The order of two candidates with the same `priority` is not defined."
+
+properties:
+  MixGroup:
+    description: "The name of the state group in the audio engine."
+
+  MixState:
+    description: "The name of the state, inside `MixGroup`, that the client sets when it applies this object."
+
+  isDefault:
+    description: |
+      Makes the state a candidate at all times, without a request. The client applies the
+      default state with the highest `priority` when no request is live, starting with the
+      first update after load.
+
+  priority:
+    description: "Rank among the candidates. The highest value wins."
+
+  DefaultLingerTime:
+    description: "Duration of a request, in seconds of game time, when the requesting action sets no `OverrideLingerTime`."
+
+  "0x2763e30e":
+    description: |
+      Minimum hold, in seconds of game time. After the client applies this state, it does
+      not pick another state for this long. It is also the minimum duration of a request
+      for this state.
+
+  "0xea42217":
+    description: |
+      Read-only value that the client computes: the time left on the state's request, in
+      seconds. It is `0` when the state has no live request. A value written in a bin is
+      not stored.
+
+  LingerTime:
+    description: "Removed from current builds. `DefaultLingerTime` has its role."
+
+  RtpcValue:
+    description: "Removed from current builds."
+
+  "0x5cf98a21":
+    description: "Removed from current builds."
