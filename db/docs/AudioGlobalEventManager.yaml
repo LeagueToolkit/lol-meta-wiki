@@ -1,0 +1,82 @@
+# AudioGlobalEventManager Documentation
+
+class:
+  description: |
+    The client's **global audio event manager**: the object that turns game events, such as
+    a champion kill or a pentakill, into announcer lines and music cues.
+
+    The object is the manager. When the client loads a bin that contains one, the object
+    registers itself as the active manager, and it unregisters when it is destroyed. The
+    client updates the active manager once per frame. A client that loads no such object
+    has no manager, and everything described here is off.
+
+    The manager works with three **event tables**. Each table has one slot per game event,
+    and each slot links the audio event to play for it:
+
+    | Table | Held by | Slot links |
+    |---|---|---|
+    | `AnnouncerVoEvents` | the manager | [AnnouncerVoEvent](/classes/announcervoevent) |
+    | `ChampionMusicEvents` | the active [MusicProfile](/classes/musicprofile) | [ChampionMusicEvent](/classes/championmusicevent) |
+    | `ThemeMusicEvents` | the active [MusicProfile](/classes/musicprofile) | [ThemeMusicEvent](/classes/thememusicevent) |
+
+    The music tables are not part of the manager. A game mode supplies them through
+    `GameModeMapData.MusicProfile`, and the manager keeps one active profile at a time.
+    When a profile becomes active, the manager subscribes to the game events for the
+    `ChampionKill`, `ChampionExecuted`, `ChampionShutdown`, `MultiKill` and `PentaKill` slots
+    of all three tables.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+    - "How the remaining slots of the event tables are driven is not yet identified."
+
+properties:
+  AnnouncerVoEvents:
+    description: |
+      The announcer event table: one [AnnouncerVoEvent](/classes/announcervoevent) link per
+      game event.
+
+  AnnouncerQueueConfigs:
+    description: |
+      The [AudioQueueConfig](/classes/audioqueueconfig) objects for announcer lines, as an
+      [AudioQueueConfigList](/classes/audioqueueconfiglist).
+
+  GlobalContextualActionData:
+    description: |
+      Contextual action tables that apply to every unit. Each item is the path hash of a
+      [GlobalContextualActionData](/classes/globalcontextualactiondata) object.
+
+      When the client checks whether a situation is defined for a unit, it searches the
+      unit's own [ContextualActionData](/classes/contextualactiondata) objects first. If
+      none of them defines the situation, it searches each object of this list in order.
+    notes:
+      - "Without an active manager the list is empty, and only the unit's own tables are searched."
+
+  "0x766af9fc":
+    description: |
+      Units that produce no audio event, per game event. The key is the client's numeric id
+      of a game event. The value is an
+      [AudioGlobalEventTargetCharacterRecords](/classes/audioglobaleventtargetcharacterrecords).
+
+      When a champion kill or a champion execute arrives, the manager looks up the id of the
+      event in this map. If the entry lists the character record of the event's unit, the
+      manager dispatches no audio event for it.
+    notes:
+      - "The client reads the map for two event ids only, those of the champion kill and the champion execute."
+      - "Which of the units of the event is tested, the killer or the victim, is not yet identified. The class name calls it the target."
+
+  MusicProfiles:
+    description: "The music profiles of the manager. Removed from current builds: a game mode names its profile through `GameModeMapData.MusicProfile`."
+
+  ChampionMusicEvents:
+    description: "The champion music event table. Removed from current builds: it is a property of [MusicProfile](/classes/musicprofile)."
+
+  MusicQueueConfigs:
+    description: "The audio queues for music events. Removed from current builds: it is a property of [MusicProfile](/classes/musicprofile)."
+
+  "0x93c1d30":
+    description: "Removed from current builds: it is a property of [MusicProfile](/classes/musicprofile)."
+
+  "0xb01bdea6":
+    description: "Removed from current builds: it is a property of [MusicProfile](/classes/musicprofile)."
+
+  "0x4249f0a2":
+    description: "Removed from current builds: it is a property of [MusicProfile](/classes/musicprofile)."

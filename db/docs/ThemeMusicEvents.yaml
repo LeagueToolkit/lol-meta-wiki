@@ -1,0 +1,13 @@
+# ThemeMusicEvents Documentation
+
+class:
+  description: |
+    The **theme music event table** of a [MusicProfile](/classes/musicprofile): one
+    [ThemeMusicEvent](/classes/thememusicevent) link per game event. An unset slot plays
+    nothing for its event.
+
+    The table has the same slots as `AnnouncerVoEvents` and `ChampionMusicEvents`. The
+    [AudioGlobalEventManager](/classes/audioglobaleventmanager) subscribes the three tables
+    together, so one game event reaches the slot of each table.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
