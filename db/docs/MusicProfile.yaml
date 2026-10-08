@@ -2,8 +2,9 @@
 
 class:
   description: |
-    The **music event set of a game mode**: the champion music and theme music that the
-    [AudioGlobalEventManager](/classes/audioglobaleventmanager) plays for game events.
+    The **music event set of a game mode**: the champion music and theme music events that
+    the [AudioGlobalEventManager](/classes/audioglobaleventmanager) triggers for game
+    events.
 
     A profile is a game mode config. A mode names its profile in
     `GameModeMapData.MusicProfile`. When the client initialises the profile, the profile
@@ -12,6 +13,9 @@ class:
 
     A profile needs a manager. If no `AudioGlobalEventManager` object is loaded, the client
     logs an error and the profile does nothing.
+
+    The client triggers the events of an active profile but plays no sound for them.
+    `AudioGlobalEventManager` describes where the chain stops.
   notes:
     - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
 
@@ -29,19 +33,19 @@ properties:
   MusicQueueConfigs:
     description: |
       The [AudioQueueConfig](/classes/audioqueueconfig) objects for music events, as an
-      [AudioQueueConfigList](/classes/audioqueueconfiglist).
+      [AudioQueueConfigList](/classes/audioqueueconfiglist). The client does not read them.
 
   "0x93c1d30":
-    description: "Unknown string. Purpose not yet identified."
+    description: "Unknown string. No client code that reads it was found."
 
   "0xb01bdea6":
-    description: "Unknown float. Purpose not yet identified."
+    description: "Unknown float. No client code that reads it was found."
 
   "0x4249f0a2":
-    description: "Unknown [AudioPriorityBehavior](/classes/audioprioritybehavior). Purpose not yet identified."
+    description: "Unknown [AudioPriorityBehavior](/classes/audioprioritybehavior). No client code that reads it was found."
 
   "0xdea83ccf":
-    description: "Unknown flag. Purpose not yet identified."
+    description: "Unknown flag. No client code that reads it was found."
 
   feature:
     description: "Removed from current builds."
