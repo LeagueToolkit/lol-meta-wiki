@@ -1,0 +1,25 @@
+# LightRegionRenderData Documentation
+
+class:
+  description: |
+    The lighting and fog values of one **light region** of a map. The client sends the
+    values of every region to the shaders as one array, and a pixel blends the regions
+    that cover its position. See [MapLightRegions](/classes/maplightregions).
+
+    The layout of this class is the layout of the shader struct of the same name: each
+    property is one member, in the same order.
+  notes:
+    - "No shipped map has light regions."
+
+properties:
+  RimLightColor:
+    description: |
+      Color of the map rim light on characters that stand in this region. The shape and
+      the direction of the rim are set once for the map, in
+      [RimLightMapProperties](/classes/rimlightmapproperties).
+
+      A pixel blends this color over the regions that cover it. If the blended color is
+      black, the pixel gets no rim.
+    notes:
+      - "The rim is drawn only if the map has `Enabled` set in the `RimLightProperties` of its `MapLightRegions`."
+      - "Added in 16.20. From 16.16 to 16.19 a property of the same name was on `SkinMeshDataProperties`."

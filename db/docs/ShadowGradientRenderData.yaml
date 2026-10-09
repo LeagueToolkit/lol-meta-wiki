@@ -1,0 +1,52 @@
+# ShadowGradientRenderData Documentation
+
+class:
+  description: |
+    The **shadow gradient** of a skin: it makes the shadow of the sun weaker on the upper
+    part of a character. The client sends the three values to the character pixel
+    shaders as the constant `SHADOW_GRADIENT`.
+
+    ```
+    s      = shadow of the sun at the pixel, 0 (in shadow) to 1 (lit)
+    t      = smoothstep(GradientStart, GradientEnd, height)
+    shadow = s + t * (1 - s) * (1 - ShadowFactor)
+    ```
+
+    `height` is the height of the vertex in the bind pose, as a fraction of the
+    `ModelHeight` of the skin, limited to the range 0 to 1.
+
+    - Below `GradientStart` the shadow is unchanged.
+    - Above `GradientEnd` the darkness of the shadow is multiplied by `ShadowFactor`.
+      With the default 0.3, a fully shadowed pixel gets 70% of the sun light.
+    - Between the two heights the client blends smoothly.
+
+    The result is the shadow that the character sun light uses. The
+    [map rim light](/classes/rimlightmapproperties) uses the same result through its
+    `SunShadowBlendWeight`.
+
+    **Where the value comes from.** The class is a value inside the object that also
+    holds `RimOffset` and `ModelHeight`. A skin refers to that object from
+    [SkinMeshDataProperties](/classes/skinmeshdataproperties), and a material override
+    of the skin can refer to its own. For each submesh the client uses the object of the
+    submesh if there is one, and the object of the skin otherwise.
+
+    If neither exists, the client sends `ShadowFactor` 1, `GradientStart` 0 and
+    `GradientEnd` 1, and the shadow is unchanged at every height. The defaults of this
+    class (0.3, 0.65, 0.8) apply only to a skin that has the object.
+  notes:
+    - "No shipped skin has the object that holds this class."
+    - "Read from the 16.21 PBE client and its compiled shaders. Not tested in game."
+
+properties:
+  ShadowFactor:
+    description: |
+      Part of the shadow darkness that remains above `GradientEnd`. 1 leaves the shadow
+      unchanged at every height. 0 removes the shadow above `GradientEnd`.
+
+  GradientStart:
+    description: |
+      Height at which the shadow starts to weaken, as a fraction of `ModelHeight`.
+
+  GradientEnd:
+    description: |
+      Height at which the shadow is weakest, as a fraction of `ModelHeight`.

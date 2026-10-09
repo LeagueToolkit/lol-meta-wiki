@@ -1,0 +1,53 @@
+# MapLightRegions Documentation
+
+class:
+  description: |
+    The map feature of **light regions**. It is a component of the map's
+    [MapContainer](/classes/mapcontainer), in its `components` list.
+
+    A light region gives one part of the map its own lighting and fog values for
+    characters and for the environment: sun colors, the sun direction for characters,
+    reflection probes, fog and the color of the rim light. The values of one region are
+    a [LightRegionRenderData](/classes/lightregionrenderdata).
+
+    The feature keeps a top-down texture of the map. Each texel has up to four regions
+    with one weight each. A pixel of the scene looks up its texel from its world
+    position and blends the values of those regions by weight. The weight that is left
+    over goes to the first region of the region array.
+
+    The feature also holds the [rim light](/classes/rimlightmapproperties) of the map
+    in `RimLightProperties`.
+  notes:
+    - "No shipped map has this feature."
+    - "Read from the 16.21 PBE client and its compiled shaders. Not tested in game."
+
+properties:
+  DefaultRenderData:
+    description: |
+      Values of the default region, for the parts of the map that no other region
+      covers.
+    notes:
+      - "The shader gives the weight that no region covers to the first entry of the region array. That this entry is `DefaultRenderData` is expected from the name and was not read in the client."
+
+  TextureRenderDataList:
+    description: |
+      Authored region textures. Each entry is one texture and one region for each of
+      its color channels.
+
+  TextureWidth:
+    description: |
+      Width of the region texture, in texels.
+
+  TextureHeight:
+    description: |
+      Height of the region texture, in texels.
+
+  RimLightProperties:
+    description: |
+      The rim light of the map: one directional light that adds a colored highlight to
+      characters. This value sets its direction and its shape. The color is the
+      `RimLightColor` of each light region.
+
+      See [RimLightMapProperties](/classes/rimlightmapproperties).
+    notes:
+      - "The rim light is off unless `Enabled` of this value is true."
