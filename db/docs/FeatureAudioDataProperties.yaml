@@ -1,0 +1,64 @@
+# FeatureAudioDataProperties Documentation
+
+class:
+  description: |
+    One **audio variant** of a map: a set of sound banks and music that the client uses
+    for one kind of game on that map. A map lists its variants in `FeaturesList` of its
+    [MapAudioDataProperties](/classes/mapaudiodataproperties), and the client applies one
+    of them when it loads the map.
+
+    **How the client picks a variant:**
+
+    1. It takes a key from the level property `AudioFeature`. A game mutator sets that
+       property through an entry `AudioFeature(<key>)` in `GameMutatorExpansions`.
+    2. If the game has a current `TFTSetData` whose `AudioFeature` link is set, the key
+       is the `feature` of the linked object instead.
+    3. It searches the list from the last entry to the first for an entry whose
+       `feature` equals the key. The first match is used.
+    4. If no entry matches, it repeats the search with a second key that the map load
+       supplies, and then with `Default`.
+
+    **What applying a variant does:** the client applies its `music`, loads its
+    `bankUnits`, and takes its event-name prefix for announcer voice events
+    (`0x1ad40789`).
+
+    The base object of the map audio (`BaseData`) is handled by the same rule before
+    the map's own list, so a map can add to the variants of its base or replace them.
+  notes:
+    - "Read from the 16.21 PBE client. Not tested in game."
+  examples:
+    - "The mutator entry `MapID(11)?AudioFeature(DoomBots)` selects, on map 11, the variant whose `feature` is `DoomBots`."
+    - "A map with one variant for every game gives that variant the `feature` `Default`."
+
+properties:
+  feature:
+    description: |
+      Key of the variant: the hash of the name that `AudioFeature(<name>)` uses (FNV-1a
+      32 of the lowercased name). The client compares it with the key of the game.
+    notes:
+      - "`Default` is the key that the client falls back to when no other key matches."
+      - "If two entries of one list have the same key, the client uses the later one."
+
+  bankUnits:
+    description: |
+      The Wwise files to load for the variant, as a list of
+      [BankUnit](/classes/bankunit) entries. The client loads them in addition to the
+      `bankUnits` of the map audio object.
+
+  music:
+    description: |
+      The music of the variant, as a
+      [MusicAudioDataProperties](/classes/musicaudiodataproperties): the event names of
+      the theme music, the victory and defeat music, the banner sounds and the ambience.
+
+  "0x1ad40789":
+    description: |
+      Prefix of the Wwise event names that the client builds for announcer voice events.
+      For an event of the [AnnouncerVoEventType](/classes/announcervoeventtype) classes,
+      the event name is this string followed by the suffix that the event object
+      returns.
+
+      When the client applies a variant, it stores this string in the audio manager.
+      Every later announcer voice event uses the stored string.
+    notes:
+      - "No shipped variant sets this property, so every variant has the default value."

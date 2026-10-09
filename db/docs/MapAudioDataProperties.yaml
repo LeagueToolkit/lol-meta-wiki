@@ -1,6 +1,40 @@
 # MapAudioDataProperties Documentation
 
+class:
+  description: |
+    The audio of a map. The client reads the object `Maps/Shipping/Map<id>/Audio` when it
+    loads the map, and does three things with it:
+
+    1. It handles the object that `BaseData` links to first, by the same steps.
+    2. It loads the `bankUnits` of the object.
+    3. It picks one audio variant from `FeaturesList` and applies it. See
+       [FeatureAudioDataProperties](/classes/featureaudiodataproperties) for the rule.
+
+    It also reads `ListenerConfiguration`.
+
 properties:
+  BaseData:
+    description: |
+      Another map audio object whose banks and audio variants apply to this map too. The
+      client handles the base before this object. If both have a variant for the key
+      of the game, the variant of this object replaces the music and the announcer
+      prefix of the variant of the base.
+
+  bankUnits:
+    description: |
+      The Wwise files that the map always loads, as a list of
+      [BankUnit](/classes/bankunit) entries. The banks of the selected audio variant are
+      loaded in addition to these.
+
+  FeaturesList:
+    description: |
+      The audio variants of the map, as links to
+      [FeatureAudioDataProperties](/classes/featureaudiodataproperties) objects. The
+      client applies at most one entry of this list: the entry whose `feature` equals
+      the key of the game, or else the entry with the key `Default`.
+    notes:
+      - "The client searches the list from the last entry to the first."
+
   ListenerConfiguration:
     description: |
       The [AudioListenerConfiguration](/classes/audiolistenerconfiguration) of the map, as
