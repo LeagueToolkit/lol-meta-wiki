@@ -1,0 +1,53 @@
+# DynamicsJointPinningData Documentation
+
+class:
+  description: |
+    Selects the **pinned joints** of one
+    [joint tree](/classes/dynamicsjointtreedata) of a dynamics chain. A pinned joint is
+    not moved by the simulation. It keeps its animated position on every frame, and the
+    joints below it swing from that position.
+
+    A joint of the tree is pinned in two cases:
+
+    - It is the root of the tree and `PinRoot` is true.
+    - It is in `PinnedJointNames`.
+
+    With the default values only the root is pinned, which is what the client did for
+    every tree before this class existed.
+
+    **What a pinned joint does:**
+
+    - Its position is the animated position. Gravity and the pull of
+      `AnimPoseAttraction` do not apply to it, and the client does not write a simulated
+      position for it.
+    - Its rotation is still written. In a group without `UseRodPhysics`, a pinned joint
+      with exactly one simulated child is turned toward that child, so the bone between
+      them points at the simulated child.
+    - Its children are simulated as before: each one is pulled toward its animated place
+      relative to the pinned joint and keeps its length to it.
+
+    **A tree whose root is not pinned** (`PinRoot` false, and the root not in
+    `PinnedJointNames`): the root is a simulated joint. It falls under gravity and is
+    pulled toward its own animated position at the rate of `AnimPoseAttraction`. It has
+    no parent in the tree, so the limit cone (`LimitAngle`) and the length restore
+    (`Stretch`) do not apply to it. The client writes its position and its rotation.
+  notes:
+    - "No shipped skin has a dynamics chain."
+    - "Read from the 16.21 PBE client. Not tested in game."
+  examples:
+    - "To keep a joint in the middle of a tree on its animated position while the joints below it swing, put its name in `PinnedJointNames`."
+
+properties:
+  PinRoot:
+    description: |
+      True, which is the default: the root joint of the tree is pinned. False: the root
+      is pinned only if it is in `PinnedJointNames`.
+
+  PinnedJointNames:
+    description: |
+      Joints of the tree that are pinned, as hashes of their names (FNV-1a 32 of the
+      lowercased name), in the same form as `RootJointName`.
+    notes:
+      - "A name that is not a joint of the skeleton matches no joint."
+      - "A joint in `ExcludeJointNames`, or below one, is not simulated at all, so an entry for it here has no effect."
+      - "A [socket](/classes/socketdefinitionbase) name does not work here. Only joints of the skeleton are looked up."

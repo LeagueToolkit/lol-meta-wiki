@@ -6,10 +6,18 @@ class:
     [group](/classes/dynamicsjointtreegroupdata) of a dynamics chain: a root joint and all
     the joints below it in the skeleton. A tree can branch. Every branch is simulated.
 
-    **The root is not simulated.** It follows the animation and holds the tree in place.
-    Every joint below it is simulated, apart from the joints of `ExcludeJointNames`.
+    **By default the root is pinned.** It keeps its animated position and holds the tree
+    in place. Every joint below it is simulated, apart from the joints of
+    `ExcludeJointNames`. From 16.21, `PinningData` selects the pinned joints: it can pin
+    more joints of the tree and it can leave the root unpinned.
 
 properties:
+  PinningData:
+    description: |
+      The joints of the tree that the simulation does not move, see
+      [DynamicsJointPinningData](/classes/dynamicsjointpinningdata). With the default
+      values only the root is pinned.
+
   RootJointName:
     description: |
       The joint the tree starts at, as the hash of its name (FNV-1a 32 of the lowercased
