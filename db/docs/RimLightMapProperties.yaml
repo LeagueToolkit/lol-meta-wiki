@@ -57,7 +57,7 @@ properties:
       sends the direction and the three values below to them. False, which is the
       default: no shader has the rim light and the other properties are not read.
     notes:
-      - "The client applies this as a shader define (`USE_MAP_RIM_LIGHT`), so it selects a shader variant. It is not a per-frame switch."
+      - "The client applies this as a shader define (`USE_MAP_RIM_LIGHT`), which selects a shader variant."
 
   rotation:
     description: |
