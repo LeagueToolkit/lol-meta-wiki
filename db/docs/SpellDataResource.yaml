@@ -1,6 +1,14 @@
 # SpellDataResource Documentation
 
 properties:
+  Loadable:
+    description: |
+      A [PropertyLoadable](/classes/propertyloadable) with the extra bin file of the
+      spell, for example its particle systems. When the client preloads the spell, it
+      loads this file first, before the resource resolvers and the sounds of the spell.
+    notes:
+      - "Read from the 16.21 PBE client."
+
   mRequiredUnitTags:
     description: |
       Unit tags that a unit needs to be a valid target of the spell. The unit must have

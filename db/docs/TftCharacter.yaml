@@ -1,0 +1,16 @@
+# TftCharacter Documentation
+
+class:
+  description: |
+    A TFT unit. The object is a [BinFileContainer](/classes/binfilecontainer): it is a
+    short entry in the map bin, and the data of the unit is in the file that
+    `FilepathHash` names. That file holds the character record, the skin metadata and
+    the spells of the unit.
+
+properties:
+  name:
+    description: |
+      Name of the unit. In shipped data the object path is `Characters/<name>` and the
+      file path is the same path in lowercase.
+    examples:
+      - "`TFT16_XinZhao`, on the object `Characters/TFT16_XinZhao` with the file `characters/tft16_xinzhao`."

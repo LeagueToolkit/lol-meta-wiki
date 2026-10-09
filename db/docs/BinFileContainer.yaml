@@ -1,0 +1,26 @@
+# BinFileContainer Documentation
+
+class:
+  description: |
+    A [PropertyLoadable](/classes/propertyloadable) for an object that is the **entry of
+    its own bin file**. The object is small and sits in a bin that is always loaded. The
+    data that belongs to it is in the file that `FilepathHash` names, and the client
+    loads that file only when it needs the object.
+
+    The class adds no property and no behaviour. It loads and unloads as
+    `PropertyLoadable` does.
+
+    **Used directly**, for example as the `ResourceBin` of a
+    [NexusFinisher](/classes/nexusfinisher): the object
+    `Loadouts/NexusFinishers/JinxFinisher/ResourceBin` names the file with the resources
+    of that finisher.
+
+    **Child classes** add the identity of the thing that the file holds:
+
+    | Class | What its file holds |
+    |---|---|
+    | [Companion](/classes/companion) | The character record of a companion. |
+    | [TftCharacter](/classes/tftcharacter) | The character record and the spells of a TFT unit. |
+    | [LoadoutFeatureData](/classes/loadoutfeaturedata) | The data of one loadout feature. |
+  notes:
+    - "Read from the 16.21 PBE client."

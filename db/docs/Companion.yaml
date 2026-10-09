@@ -1,0 +1,16 @@
+# Companion Documentation
+
+class:
+  description: |
+    A companion character. The object is a [BinFileContainer](/classes/binfilecontainer):
+    it is a short entry in the map bin, and the data of the character is in the file
+    that `FilepathHash` names. That file holds the character record and the skin
+    metadata of the companion.
+
+properties:
+  name:
+    description: |
+      Name of the character. In shipped data the object path is `Characters/<name>` and
+      the file path is the same path in lowercase.
+    examples:
+      - "`PetPoro`, on the object `Characters/PetPoro` with the file `characters/petporo`."

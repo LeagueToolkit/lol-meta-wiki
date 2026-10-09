@@ -1,0 +1,9 @@
+# LoadoutFeatureData Documentation
+
+class:
+  description: |
+    One loadout feature, for example stat stones or summoner banners. The object is a
+    [BinFileContainer](/classes/binfilecontainer): the entries of all features are in
+    one bin, and the data of each feature is in the file that its `FilepathHash` names.
+  examples:
+    - "`Loadouts/StatStones` names the file `loadouts/statstones`, which holds the stat stone definitions, their categories and their effects."
