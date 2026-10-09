@@ -1,0 +1,26 @@
+# UiPropertyLoadable Documentation
+
+class:
+  description: |
+    A [PropertyLoadable](/classes/propertyloadable) for a **UI file**: a bin with the
+    scenes and elements of a piece of UI. View controllers link one in `BaseLoadable`,
+    and some link more in properties such as `Loadable`, `EsportsLoadable` and
+    `ClashLoadable`.
+
+    A UI loadable is not loaded at once. The UI manager loads it from a queue:
+
+    1. The view controller makes a load request for each of its loadables. The request
+       records the file and the UI context that made it.
+    2. In its next load pass the UI manager first registers the UI override files that
+       are active, then loads every requested file. An override therefore applies to
+       the files that are loaded in the same pass.
+    3. When a request is dropped, for example when the loadable is destroyed, the file
+       is queued for unloading.
+
+    The file itself goes through the same table of loaded files as any other loadable,
+    with the same use count.
+  notes:
+    - "The class adds no property. The request is runtime state of the object."
+    - "Read from the 16.21 PBE client."
+  examples:
+    - "`ClientStates/Common/UX/MessageBoxDialog` links `ClientStates/Common/UX/MessageBoxDialog/UIBase` in `BaseLoadable`. That file holds the scenes, texts, icons and buttons of the dialog."

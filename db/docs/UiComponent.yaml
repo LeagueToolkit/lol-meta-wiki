@@ -1,0 +1,20 @@
+# UiComponent Documentation
+
+class:
+  description: |
+    A reusable piece of UI that lives in its own file. The object is a
+    [UiPropertyLoadable](/classes/uipropertyloadable): `FilepathHash` names the file
+    with the scene and the elements of the component.
+
+properties:
+  name:
+    description: |
+      Path of the component. In shipped data it equals the path of the object, and the
+      file path is the same path in lowercase.
+
+  "0xac60f21e":
+    description: |
+      In shipped data, the path hash of the root element of the component, which is an
+      object in the file of the component.
+    notes:
+      - "How the client reads this property is not yet identified."

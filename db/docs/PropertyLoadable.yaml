@@ -1,0 +1,48 @@
+# PropertyLoadable Documentation
+
+class:
+  description: |
+    A reference from a bin object to **another bin file**. The object has no data of its
+    own. It names one file, and the client loads that file when the owner of the loadable
+    needs it and unloads it when the owner is done.
+
+    Classes use it to keep data out of the bin that is always loaded: a spell links one
+    for its effects, a view controller links one for its UI scenes, and the classes
+    under [BinFileContainer](/classes/binfilecontainer) are themselves the loadable of
+    their own file.
+
+    **Load and unload.** The client has one table of loaded bin files, keyed by the hash
+    of the file path. Each entry has a use count.
+
+    - **Load:** if the file is in the table, the client adds one use. Otherwise it opens
+      the file, reads it and adds it to the table with one use. The objects of the file
+      can then be found by their path hashes, so links to them resolve.
+    - **Unload:** the client removes one use. When no use is left, it removes the file
+      from the table and destroys its objects.
+    - A loadable holds at most one use. A second load of a loadable that is loaded does
+      nothing, and a loadable that is destroyed while loaded unloads first.
+    - Two loadables that name the same file share one copy of it.
+
+    **Child classes:**
+
+    | Class | Use |
+    |---|---|
+    | [UiPropertyLoadable](/classes/uipropertyloadable) | A UI file. The UI manager loads it from a request queue. |
+    | [BinFileContainer](/classes/binfilecontainer) | An object that is the entry of its own file. |
+  notes:
+    - "If the file cannot be opened, the loadable stays unloaded and the next load tries again."
+    - "Read from the 16.21 PBE client."
+  examples:
+    - "The spell `Maps/ModeSpecificData/RUBY/Ruby_Singed_Q` links the loadable `Maps/ModeSpecificData/RUBY/Ruby_Singed_Q/Loadable`. Its file holds the particle systems and the resource resolver of the spell."
+
+properties:
+  FilepathHash:
+    description: |
+      The file to load, as the 64-bit hash of its path in the game archives (XXH64 of
+      the lowercased path).
+
+      In shipped data the path of the file is the path of the loadable object itself,
+      in lowercase and with no extension: the object `Characters/PetPoro` loads the file
+      `characters/petporo`.
+    notes:
+      - "This is the hash of a file path, not the hash of an object path. A link to an object uses the 32-bit FNV-1a hash."
