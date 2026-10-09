@@ -8,9 +8,11 @@ class:
     starts from the animated pose on every frame and adds the swing.
 
     The joints are given as [groups of joint trees](/classes/dynamicsjointtreegroupdata).
-    Each tree is a root joint and everything below it in the skeleton. The root follows
-    the animation exactly. Every joint below it is a particle that moves under gravity,
-    is pulled back to its animated place, collides, and keeps its distance to its parent.
+    Each tree is a root joint and everything below it in the skeleton. By default the
+    root is pinned: it keeps its animated position. Every joint below it is a particle
+    that moves under gravity, is pulled back to its animated place, collides, and keeps
+    its distance to its parent. The
+    [pinning data](/classes/dynamicsjointpinningdata) of a tree can pin more joints.
 
     **What happens on each frame**, in order:
 
@@ -39,6 +41,7 @@ class:
     it while the event is active.
   notes:
     - "No shipped skin has a dynamics chain."
+    - "The client reads a physics manager object when it creates the simulation, and it does not test the object for null. No code in the 16.18 client or in the 16.21 PBE client creates that object. The retail 16.19 client crashed when a unit with a dynamics chain spawned."
     - "The simulation is not reset by a teleport, by a change of animation or when the weight reaches `0`. With a weight of `0` it stops stepping and keeps its last state."
     - "While the game time does not advance, or the animation of the unit is paused, the modifier does nothing at all: the joints show the plain animated pose."
     - "The step uses the frame time as it is. It has no fixed time step, so the motion changes with the frame rate."
