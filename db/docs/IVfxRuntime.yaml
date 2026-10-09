@@ -1,0 +1,16 @@
+# IVfxRuntime Documentation
+
+class:
+  description: |
+    The root of the **running parts of components**. When the client creates a
+    [shimmer emitter](/classes/vfxshimmeremitterdefinitiondata), each entry of the
+    `components` list of its [VfxComponents](/classes/vfxcomponents) graph builds one
+    object of a class under this root. The emitter then calls that object on three events:
+
+    - particles are spawned, with the count
+    - a particle is killed, with its index
+    - the emitter updates
+
+    The object is destroyed with the emitter.
+  notes:
+    - "The client creates these objects itself. The classes have no properties and a bin does not hold them."

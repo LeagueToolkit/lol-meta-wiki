@@ -1,0 +1,9 @@
+# VfxBeamEffectorComponentRuntime Documentation
+
+class:
+  description: |
+    The running part of an effector with the beam shape. A
+    [VfxBeamEffectorComponentData](/classes/vfxbeameffectorcomponentdata) object creates it. What it stores is on
+    [VfxEffectorComponentRuntime](/classes/vfxeffectorcomponentruntime).
+  notes:
+    - "The client creates this object itself. A bin does not hold it."

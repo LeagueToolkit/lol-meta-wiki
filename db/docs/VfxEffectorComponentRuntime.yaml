@@ -1,0 +1,21 @@
+# VfxEffectorComponentRuntime Documentation
+
+class:
+  description: |
+    The running part of a [VfxEffectorComponent](/classes/vfxeffectorcomponent). There is
+    one subclass for each shape, and the shape's
+    [data object](/classes/vfxeffectorcomponentdata) creates the matching one.
+
+    On each emitter update with at least one live particle, the object stores:
+
+    - the evaluated `Magnitude` and size values of the data object
+    - the position of the particle system and its target position
+    - the direction and the speed of the system's movement
+    - the distance that the system has moved since the first update
+
+    Positions and directions are stored on the two ground axes only. The direction comes
+    from the velocity of the object that the system is bound to. If that velocity is zero,
+    the client uses the velocity measured from the change of the system's position.
+  notes:
+    - "The client creates these objects itself. The classes have no properties and a bin does not hold them."
+    - "In the client build that was examined (16.21 PBE), nothing reads the stored values."

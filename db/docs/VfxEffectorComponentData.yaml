@@ -1,0 +1,47 @@
+# VfxEffectorComponentData Documentation
+
+class:
+  description: |
+    The base of the **effector shapes** that a
+    [VfxEffectorComponent](/classes/vfxeffectorcomponent) holds. It has the values that
+    every shape shares. Each subclass adds the size values of one shape:
+
+    | Class | Size values |
+    |---|---|
+    | [VfxMovementEffectorComponentData](/classes/vfxmovementeffectorcomponentdata) | `radius` |
+    | [VfxBurstEffectorComponentData](/classes/vfxbursteffectorcomponentdata) | `radius`, `SpinFactor` |
+    | [VfxBeamEffectorComponentData](/classes/vfxbeameffectorcomponentdata) | `Width` |
+    | [VfxTrapezoidEffectorComponentData](/classes/vfxtrapezoideffectorcomponentdata) | `OriginWidth`, `TargetWidth` |
+
+    `Magnitude` and the size values are driver-graph values. The client evaluates them on
+    each emitter update for the emitter's **first particle**, so a driver that follows
+    particle age follows that one particle.
+
+    The four shapes have the names and the size values of the `EnvironmentEffector` classes
+    that they replace. There the values were plain numbers.
+  notes:
+    - "In the client build that was examined (16.21 PBE), nothing reads the evaluated values, `DecayDuration` or `UpdateMode`."
+    - "No shipped data uses this class or a subclass."
+
+properties:
+  Magnitude:
+    description: |
+      Strength of the effector, as a driver-graph value. The client stores the result as it
+      is, with no lower or upper limit. Left unset, it is 0.
+    examples:
+      - "A constant strength is a `VfxFloatConstantDriver` in the property's `Float` slot."
+
+  DecayDuration:
+    description: |
+      A duration in seconds. By its name and its use on the replaced classes, it is the
+      time over which the effector fades after it ends. The examined client does not read it.
+
+  UpdateMode:
+    description: |
+      A mode number. The examined client does not read it, so its values are not known.
+
+  UseFirstParticlePosition:
+    description: |
+      Added in a later 16.21 PBE build than the one that was examined. On
+      [VfxLightComponent](/classes/vfxlightcomponent) the property of the same name moves
+      the light from the particle system's position to the emitter's first particle.

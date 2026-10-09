@@ -1,0 +1,25 @@
+# VfxTrapezoidEffectorComponentData Documentation
+
+class:
+  description: |
+    The **trapezoid shape** of a [VfxEffectorComponent](/classes/vfxeffectorcomponent): a
+    band with one width at the particle system's position and another width at its target
+    position. On each update the client records both positions.
+
+    The shared values are on
+    [VfxEffectorComponentData](/classes/vfxeffectorcomponentdata). For a band of one
+    width, see [VfxBeamEffectorComponentData](/classes/vfxbeameffectorcomponentdata).
+  notes:
+    - "No shipped data uses this class."
+    - "The shape is described from its name and its values. In the client build that was examined (16.21 PBE), nothing reads the evaluated values."
+
+properties:
+  OriginWidth:
+    description: |
+      Width at the origin end, in world units, as a driver-graph value. A result below 0 is
+      stored as 0.
+
+  TargetWidth:
+    description: |
+      Width at the target end, in world units, as a driver-graph value. A result below 0 is
+      stored as 0.

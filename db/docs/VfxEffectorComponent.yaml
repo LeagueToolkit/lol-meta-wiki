@@ -1,0 +1,34 @@
+# VfxEffectorComponent Documentation
+
+class:
+  description: |
+    An **environment effector carried by a
+    [shimmer emitter](/classes/vfxshimmeremitterdefinitiondata)**. It is not one of the five
+    named slots: it goes in the `components` list of the emitter's
+    [VfxComponents](/classes/vfxcomponents) graph. The shape and the strength of the
+    effector are in the linked
+    [VfxEffectorComponentData](/classes/vfxeffectorcomponentdata) object.
+
+    There is one effector per emitter, never one per particle. The client creates its
+    running part with the emitter and removes it with the emitter. On each update with at
+    least one live particle, the client does two things:
+
+    - It evaluates `Magnitude` and the shape values of the data object for the emitter's
+      **first particle**.
+    - It records where the particle system is, where its target is, in which direction and
+      how fast it moves, and how far it has moved. Only the two ground axes are recorded.
+
+    On an update with no live particle the recorded values stay as they were.
+
+    This component replaces [VfxEffectorDefinition](/classes/vfxeffectordefinition), which
+    attached an effector to a whole particle system.
+  notes:
+    - "In the client build that was examined (16.21 PBE), nothing reads the recorded values, so the effector has no effect. This is read from the client and is not tested in game."
+    - "No shipped data uses this class."
+    - "The client does not check `EffectorData` for null when it creates the emitter."
+
+properties:
+  EffectorData:
+    description: |
+      The effector itself: one of the four shape classes under
+      [VfxEffectorComponentData](/classes/vfxeffectorcomponentdata). It is authored inline.

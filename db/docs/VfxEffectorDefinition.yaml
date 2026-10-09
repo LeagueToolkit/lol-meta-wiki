@@ -11,6 +11,7 @@ class:
     lifetime. The linked effector data describes its shape and physical properties,
     which are used for surface displacement.
   notes:
+    - "Patch 16.21 on PBE removes this class and the effector classes that it links. [VfxEffectorComponent](/classes/vfxeffectorcomponent), a component of one emitter, replaces it."
     - "A system creates a handle for its effector when it spawns, but nothing in the client collects those handles, so the effector has no effect."
 
 properties:
