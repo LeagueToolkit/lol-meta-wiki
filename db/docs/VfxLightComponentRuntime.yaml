@@ -1,0 +1,9 @@
+# VfxLightComponentRuntime Documentation
+
+class:
+  description: |
+    The running part of a [VfxLightComponent](/classes/vfxlightcomponent): it holds the
+    point light of one emitter and updates its colour, radius and position. The hooks that
+    every running part gets are on [IVfxRuntime](/classes/ivfxruntime).
+  notes:
+    - "The client creates this object itself. A bin does not hold it."

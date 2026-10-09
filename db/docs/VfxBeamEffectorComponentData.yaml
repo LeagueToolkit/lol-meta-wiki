@@ -1,0 +1,21 @@
+# VfxBeamEffectorComponentData Documentation
+
+class:
+  description: |
+    The **beam shape** of a [VfxEffectorComponent](/classes/vfxeffectorcomponent): a band of
+    one width. On each update the client records the particle system's position and its
+    target position, which are the two ends that a beam has.
+
+    The shared values are on
+    [VfxEffectorComponentData](/classes/vfxeffectorcomponentdata). For a band whose two
+    ends have different widths, see
+    [VfxTrapezoidEffectorComponentData](/classes/vfxtrapezoideffectorcomponentdata).
+  notes:
+    - "No shipped data uses this class."
+    - "The shape is described from its name and its values. In the client build that was examined (16.21 PBE), nothing reads the evaluated values."
+
+properties:
+  Width:
+    description: |
+      Width of the beam, in world units, as a driver-graph value. A result below 0 is stored
+      as 0.

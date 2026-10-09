@@ -1,0 +1,9 @@
+# VfxTrapezoidEffectorComponentRuntime Documentation
+
+class:
+  description: |
+    The running part of an effector with the trapezoid shape. A
+    [VfxTrapezoidEffectorComponentData](/classes/vfxtrapezoideffectorcomponentdata) object creates it. What it stores is on
+    [VfxEffectorComponentRuntime](/classes/vfxeffectorcomponentruntime).
+  notes:
+    - "The client creates this object itself. A bin does not hold it."

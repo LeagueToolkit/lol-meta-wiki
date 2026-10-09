@@ -1,0 +1,23 @@
+# VfxBurstEffectorComponentData Documentation
+
+class:
+  description: |
+    The **burst shape** of a [VfxEffectorComponent](/classes/vfxeffectorcomponent): a round
+    effector at the particle system's position, with an optional spin.
+
+    The shared values are on
+    [VfxEffectorComponentData](/classes/vfxeffectorcomponentdata).
+  notes:
+    - "No shipped data uses this class."
+    - "The shape is described from its name and its values. In the client build that was examined (16.21 PBE), nothing reads the evaluated values."
+
+properties:
+  radius:
+    description: |
+      Radius of the burst, in world units, as a driver-graph value. A result below 0 is
+      stored as 0.
+
+  SpinFactor:
+    description: |
+      Amount of spin, as a driver-graph value. The client stores the result as it is, so a
+      negative value is kept.

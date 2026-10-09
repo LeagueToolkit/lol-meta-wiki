@@ -74,7 +74,10 @@ properties:
       when the emitter is created, and from then on it is updated after the five slots on
       every update and told about each particle that dies.
 
+      Two component classes are made for this list:
       [VfxLightComponent](/classes/vfxlightcomponent), which gives the emitter a point light,
-      is the component made for this list.
+      and [VfxEffectorComponent](/classes/vfxeffectorcomponent), which gives it an
+      environment effector. The running part of an entry is an
+      [IVfxRuntime](/classes/ivfxruntime) object.
     notes:
       - "No shipped graph sets it."

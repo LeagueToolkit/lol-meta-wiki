@@ -1,0 +1,22 @@
+# VfxMovementEffectorComponentData Documentation
+
+class:
+  description: |
+    The **movement shape** of a [VfxEffectorComponent](/classes/vfxeffectorcomponent): an
+    effector that follows a moving particle system. For this shape the values that the
+    client records on each update matter most: the direction and the speed of the system's
+    movement and the distance that it has moved.
+
+    The shared values are on
+    [VfxEffectorComponentData](/classes/vfxeffectorcomponentdata).
+  notes:
+    - "No shipped data uses this class."
+    - "The shape is described from its name and its values. In the client build that was examined (16.21 PBE), nothing reads the evaluated values."
+
+properties:
+  radius:
+    description: |
+      Size of the effector, in world units, as a driver-graph value. A result below 0 is
+      stored as 0.
+    examples:
+      - "A constant radius is a `VfxFloatConstantDriver` in the property's `Float` slot."
