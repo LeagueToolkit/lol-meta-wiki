@@ -1,0 +1,106 @@
+# RimLightMapProperties Documentation
+
+class:
+  description: |
+    The **rim light of a map**: one directional light that adds a colored highlight to
+    characters. It is the `RimLightProperties` value of the map's
+    [MapLightRegions](/classes/maplightregions) feature.
+
+    This class sets the direction and the shape of the light. The color is not here. It
+    is the `RimLightColor` of each [light region](/classes/lightregionrenderdata), so
+    the rim can have one color in one part of the map and another color, or none, in
+    another part.
+
+    **What is lit.** Characters only, which means every skinned mesh. Environment
+    geometry and particles do not get the rim.
+
+    **How the client computes it**, per pixel of a character:
+
+    ```
+    rimColor = RimLightColor, blended over the light regions at the pixel
+    if rimColor is black: no rim
+
+    c     = min(Contrast, 0.99999)
+    ramp  = saturate((dot(normal, direction) - c / 2) / (1 - c))
+    ramp *= lerp(1, sunShadow, SunShadowBlendWeight)
+    ramp *= smoothstep(0.4, 0.6, height)
+
+    color  = lerp(rimColor, CharacterSunLightColor, SunLightBlendWeight)
+    color *= the texture color at full brightness
+    result = lighting + color * ramp
+    ```
+
+    - `direction` comes from `rotation`. The light does not depend on the camera: a
+      surface gets the rim when its normal points toward the light.
+    - `sunShadow` is the shadow of the character sun light at the pixel, from 0 (in
+      shadow) to 1 (lit), after the
+      [shadow gradient](/classes/shadowgradientrenderdata) of the skin.
+    - `height` is the height of the vertex in the bind pose, as a fraction of the
+      `ModelHeight` of the skin. The rim fades in between 40% and 60% of that height, so
+      the lower part of a character gets no rim.
+    - The texture color at full brightness is the color of the skin texture with its
+      HSV value set to 1. The rim takes the hue of the surface and ignores how dark the
+      texture is.
+    - The rim is added before the tone map.
+  notes:
+    - "No shipped map has a `MapLightRegions` feature, so no shipped map uses this class."
+    - "Read from the 16.21 PBE client and its compiled shaders. Not tested in game."
+    - "From 16.16 to 16.19 the rim color was a property of the skin (`RimLightColor` on `SkinMeshDataProperties`). In 16.20 the color is a property of the light region and this class was added."
+  examples:
+    - "A rim from straight above in the color of the region: `Enabled` true and the default values, with a `RimLightColor` on the default light region."
+    - "A rim that takes the color of the sun: `SunLightBlendWeight` 1. `RimLightColor` must still be above 0 in at least one channel, because a black `RimLightColor` turns the rim off."
+
+properties:
+  Enabled:
+    description: |
+      True: the map's character shaders are built with the rim light, and the client
+      sends the direction and the three values below to them. False, which is the
+      default: no shader has the rim light and the other properties are not read.
+    notes:
+      - "The client applies this as a shader define (`USE_MAP_RIM_LIGHT`), so it selects a shader variant. It is not a per-frame switch."
+
+  rotation:
+    description: |
+      Direction of the light, as Euler angles in degrees. The client rotates the vector
+      `(0, 0, -1)` by these angles and uses the result as the direction from a surface
+      toward the light:
+
+      ```
+      x = -(sin(ry) * cos(rx) * cos(rz) + sin(rz) * sin(rx))
+      y = -(sin(ry) * cos(rx) * sin(rz) - cos(rz) * sin(rx))
+      z = -(cos(ry) * cos(rx))
+      ```
+
+      | rotation | Direction toward the light |
+      |---|---|
+      | `(90, 0, 0)`, the default | `(0, 1, 0)`, straight up |
+      | `(0, 0, 0)` | `(0, 0, -1)` |
+      | `(45, 0, 0)` | `(0, 0.71, -0.71)` |
+      | `(0, 90, 0)` | `(-1, 0, 0)` |
+    notes:
+      - "The client takes sines from a table with steps of 0.1 degree, so an angle is cut to one decimal."
+
+  Contrast:
+    description: |
+      Sharpness of the edge of the rim, from 0 to 1. The rim follows the dot product of
+      the surface normal and the light direction, and this value narrows the range of
+      the dot product over which the rim goes from nothing to full.
+
+      | Contrast | Rim starts at | Rim is full at |
+      |---|---|---|
+      | 0 | 0 | 1 |
+      | 0.5, the default | 0.25 | 0.75 |
+      | 0.9 | 0.45 | 0.55 |
+      | 1 | 0.5 | 0.5 (a hard edge) |
+
+  SunLightBlendWeight:
+    description: |
+      How much of the rim color comes from the sun. 0, which is the default: the rim
+      has the `RimLightColor` of the light region. 1: the rim has the
+      `CharacterSunLightColor` of the light region. Values between blend the two.
+
+  SunShadowBlendWeight:
+    description: |
+      How much the shadow of the sun removes the rim. 1, which is the default: the rim
+      is multiplied by the sun shadow, so a character in full shadow has no rim. 0: the
+      shadow has no effect on the rim. Values between blend the two.
