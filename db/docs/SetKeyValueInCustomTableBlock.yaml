@@ -1,0 +1,20 @@
+# SetKeyValueInCustomTableBlock Documentation
+
+class:
+  description: |
+    A block that **writes one entry of a [custom table](/classes/createcustomtableblock)**. The
+    block evaluates `Key` and `value` and stores the value under the key in `DestTable`. An
+    entry that already has the key is replaced.
+
+    An int key, or a float key truncated to an int, is an int key. A string key is a string
+    key. Any other value is used as a key by itself.
+  notes:
+    - "`Key` must be set and must evaluate to a value: the client does not check the key for null."
+
+properties:
+  DestTable:
+    description: "The table to write."
+  Key:
+    description: "The key of the entry."
+  value:
+    description: "The value to store."

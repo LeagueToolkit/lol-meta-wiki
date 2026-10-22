@@ -1,0 +1,7 @@
+# IClientBlock Documentation
+
+class:
+  description: |
+    Base of the script blocks that change client-side state, such as UI elements
+    ([IUiBlock](/classes/iuiblock)). [IScriptBlock](/classes/iscriptblock) describes how a block
+    list runs.

@@ -1,0 +1,30 @@
+# SetConceptBlockBase Documentation
+
+class:
+  description: |
+    A script block that **writes the value of a [concept](/classes/conceptbase)** for one
+    object. The written value is the per-object value that
+    [RawFloatConceptLogicDriver](/classes/rawfloatconceptlogicdriver),
+    [EasedFloatConceptLogicDriver](/classes/easedfloatconceptlogicdriver) and their bool, int,
+    Vector3 and Vector4 variants return when they are evaluated for that object.
+
+    **Object.** `ConceptObject` returns the game object or game entity whose value the block
+    writes. That object is the [driver source](/classes/ilogicdriversource) that the drivers
+    are evaluated for. If `ConceptObject` returns no object, or an object that is not a driver
+    source, the block records a script error and does nothing.
+
+    **Concept.** `Concept` is the hash of the object path of a loaded concept of the value
+    type of the block. If no such concept is loaded, the block records a script error and does
+    nothing. The client does not fail.
+
+    **Write.** The block evaluates its new value each time it runs. If the getter fails, the
+    block writes nothing. If the new value equals the value that the concept holds for the
+    object (its `DefaultValue` if nothing has written it), the block writes nothing and does
+    not restart an ease. Otherwise the block stores the value and stamps the change with the
+    current game time. If the concept has [ConceptEasingData](/classes/concepteasingdata), the
+    `Eased*` drivers move to the new value from that time. Without easing data, they return
+    the new value at once.
+
+    [AddConceptBlockBase](/classes/addconceptblockbase) blocks add to the value, and
+    [ReadConceptBlockBase](/classes/readconceptblockbase) blocks read it back into a script
+    variable.

@@ -1,0 +1,29 @@
+# SetVector4ConceptBlock Documentation
+
+class:
+  description: |
+    A [concept block](/classes/setconceptblockbase) that writes a four-component value to a
+    [Vector4Concept](/classes/vector4concept) for the object that `ConceptObject` returns. The
+    value comes either from a color or from a vector and a fourth component:
+
+    1. If `NewValueColor` produces a color, the block writes its red, green, blue and alpha
+       channels, each divided by `255`, as the four components. The color takes precedence
+       over the other two properties.
+    2. Otherwise, if both `NewValueXyz` and `NewValueW` produce a value, the block writes
+       (`x`, `y`, `z`, `w`).
+    3. Otherwise the block records a script error and writes nothing.
+
+    The block evaluates the three getters without error reporting, so a failing getter does
+    not record a script error by itself. A broken `NewValueColor` falls through to step 2.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Concept:
+    description: "The hash of the object path of the [Vector4Concept](/classes/vector4concept) to write. If no `Vector4Concept` with this path is loaded, the block records a script error and does nothing."
+  NewValueColor:
+    description: "The color to write. Each channel becomes a component from `0` to `1`. If it produces a color, the block ignores `NewValueXyz` and `NewValueW`."
+  NewValueXyz:
+    description: "The first three components. Used only if `NewValueColor` produces no color, and only together with `NewValueW`."
+  NewValueW:
+    description: "The fourth component. Used only if `NewValueColor` produces no color, and only together with `NewValueXyz`."

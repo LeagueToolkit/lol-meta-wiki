@@ -1,0 +1,12 @@
+# SetBoolConceptBlock Documentation
+
+class:
+  description: "A [concept block](/classes/setconceptblockbase) that writes `NewValue` as the value of a [BoolConcept](/classes/boolconcept) for the object that `ConceptObject` returns."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Concept:
+    description: "The hash of the object path of the [BoolConcept](/classes/boolconcept) to write. If no `BoolConcept` with this path is loaded, the block records a script error and does nothing."
+  NewValue:
+    description: "The value to write. The block evaluates it each time it runs."

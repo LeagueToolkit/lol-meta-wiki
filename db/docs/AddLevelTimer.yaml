@@ -1,0 +1,6 @@
+# AddLevelTimer Documentation
+
+class:
+  description: |
+    The client does not run this block. Its fields name an initial delay and a repeat interval,
+    in seconds, and the level script function to call.

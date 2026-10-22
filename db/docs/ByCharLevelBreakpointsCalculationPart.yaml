@@ -1,0 +1,29 @@
+# ByCharLevelBreakpointsCalculationPart Documentation
+
+class:
+  description: |
+    A [character-level part](/classes/igamecalculationpartbycharlevel) that returns a
+    **level-1 value plus a bonus per level**, where [breakpoints](/classes/breakpoint)
+    change the bonus and add flat amounts.
+
+    The value starts at `mLevel1Value` and grows by `mInitialBonusPerLevel` for each level
+    above 1. At each breakpoint whose `mLevel` is at or below the caster's level `L`, the
+    client adds `mAdditionalBonusAtThisLevel` once, and the bonus per level becomes
+    `mBonusPerLevelAtAndAfter` from the breakpoint level itself.
+
+    For example, `mLevel1Value` `70`, `mInitialBonusPerLevel` `0` and one breakpoint at
+    level `9` with `mBonusPerLevelAtAndAfter` `6` give `70` up to level 8, `76` at level 9
+    and `130` at level 18.
+  notes:
+    - "The client stops at the first breakpoint above `L`, so `mBreakpoints` must be sorted by level. A breakpoint after a higher one is never applied."
+    - "Use breakpoint levels of `2` or higher. A breakpoint at level `1` removes one level of `mInitialBonusPerLevel` and starts its own bonus one level early."
+
+properties:
+  mLevel1Value:
+    description: "The value at level 1."
+
+  mInitialBonusPerLevel:
+    description: "The amount added per level until the first breakpoint."
+
+  mBreakpoints:
+    description: "The [breakpoints](/classes/breakpoint), sorted by `mLevel`."

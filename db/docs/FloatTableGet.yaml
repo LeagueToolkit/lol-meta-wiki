@@ -1,0 +1,17 @@
+# FloatTableGet Documentation
+
+class:
+  description: |
+    A getter that reads a script variable as a float. A Float variable is returned as it
+    is, and an Int variable is converted to float. For any other kind, or a missing
+    variable, the getter returns `Default` if it is set and fails with a script error if
+    it is not. Read as an int, the result is truncated toward zero. The same rule applies
+    when the getter is read as a plain value, which then returns a Float. See [ScriptTableGet](/classes/scripttableget) for `Table` and `Var`.
+
+properties:
+  Default:
+    description: |
+      The float the getter returns if the variable is missing or is neither a Float nor
+      an Int. Unset, the getter fails instead.
+    notes:
+      - "The client stores an unset `Default` as the largest finite float (`3.4028235e38`). A `Default` of exactly that value acts as unset."

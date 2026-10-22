@@ -1,0 +1,15 @@
+# SetGameEntityIconEnabled Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that turns the **entity icon** of `Target` on
+    or off. The icon is the one that the entity's `NewIconGeComponentDef` component shows.
+
+    The block raises a script error if the entity has no icon component, or if the component has
+    no icon.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Enabled:
+    description: "If true, the icon is shown. If false, it is hidden."

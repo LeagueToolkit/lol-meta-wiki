@@ -1,0 +1,18 @@
+# IsBitSetCondition Documentation
+
+class:
+  description: |
+    A [condition](/classes/iscriptcondition) that returns true if bit `Position` of the
+    integer `BitField` is set. Bit `0` is the lowest bit. The condition takes the position
+    modulo `32`, so `32` tests bit `0` again.
+
+    The condition does not check its getters for failure. A getter that fails gives `0`: a
+    failing `BitField` makes the condition return false, and a failing `Position` tests bit
+    `0`. [SetBit](/classes/setbit) and [ClearBit](/classes/clearbit) change single bits of an
+    integer variable.
+
+properties:
+  BitField:
+    description: "The integer to test."
+  Position:
+    description: "The index of the bit to test, from `0` (lowest) to `31`."

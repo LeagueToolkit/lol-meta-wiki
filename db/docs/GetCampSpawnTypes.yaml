@@ -1,0 +1,16 @@
+# GetCampSpawnTypes Documentation
+
+class:
+  description: |
+    A [level script block](/classes/levelscriptblock) that writes the **spawn type names of a
+    camp** to the `SpawnTypes` string list variable. The block reads a camp identifier
+    (`0x3f04641e`) from `0x5a4ef4e7` and writes the `TypeName` of each entry of the identifier's
+    `SpawnTypes` list, in list order.
+
+    If `0x5a4ef4e7` does not produce a camp identifier, the block writes nothing.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  "0x5a4ef4e7":
+    description: "The camp identifier to read. The getter must produce a data object of type `0x3f04641e`."

@@ -1,0 +1,13 @@
+# ReadConceptBlockBase Documentation
+
+class:
+  description: |
+    A script block that **reads the value of a [concept](/classes/conceptbase)** for one
+    object and stores it in a script variable. It returns the same value as the `Raw*`
+    concept drivers such as [RawFloatConceptLogicDriver](/classes/rawfloatconceptlogicdriver):
+    the value without easing, or the concept's `DefaultValue` if nothing has written the
+    concept for the object. Reading does not create a value for the object.
+
+    The block resolves `ConceptObject` and `Concept` in the same way as a
+    [Set block](/classes/setconceptblockbase). The output is a script variable, named by a
+    table and a key (see [IScriptValueGet](/classes/iscriptvalueget)).

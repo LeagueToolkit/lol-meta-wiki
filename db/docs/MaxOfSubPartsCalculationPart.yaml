@@ -1,0 +1,14 @@
+# MaxOfSubPartsCalculationPart Documentation
+
+class:
+  description: |
+    A [calculation part](/classes/igamecalculationpart) that returns the **largest** value
+    of `mSubparts`. Null entries are skipped.
+
+    The comparison starts at the smallest positive float, `1.18e-38`, not at the most
+    negative float. If every part is `0` or negative, or the list is empty, the part
+    returns `1.18e-38`, which prints as `0`.
+
+properties:
+  mSubparts:
+    description: "The parts to compare."

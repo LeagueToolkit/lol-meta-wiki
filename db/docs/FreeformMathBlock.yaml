@@ -1,0 +1,102 @@
+# FreeformMathBlock Documentation
+
+class:
+  description: |
+    A block that **evaluates a text formula** and writes the result to `Dest`. The client
+    parses and evaluates `Formula` each time the block runs. A formula computes a number, a
+    vector or a bool from literals, script variables and functions.
+
+    The result kind decides what the block writes: a bool writes a bool, a number writes a
+    float, and a vector writes a vector3. A formula never produces an int, so a formula that
+    reads only int variables still writes a float.
+
+    If the formula cannot be parsed or evaluated, the block reports an invalid expression error
+    and writes nothing. Typical causes are an unknown name, a wrong number of operands or
+    arguments, operand kinds that an operator does not accept, a division by zero, and a
+    negative base for `^`.
+  notes:
+    - "Formulas in shipped scripts use only `+`, `-`, `*`, `/`, `%`, parentheses, and a few functions such as `rand`, `min` and `max`."
+
+properties:
+  Formula:
+    description: |
+      The formula text. Whitespace is ignored.
+
+      **Values.** A formula works with three kinds of value: numbers, 3D vectors and bools.
+
+      - A number literal is written in decimal, and a leading dot is allowed (`.25`).
+      - `true` and `false` are bool literals.
+      - `[x, y, z]` is a vector literal.
+      - `prefix.Name` reads a script variable. An int or float variable gives a number, a bool
+        variable gives a bool, and a vector3 variable gives a vector. A variable of another
+        kind, a string for example, cannot be used and makes the formula fail.
+
+      The formula language has **no comparison operators** (`<`, `>`, `=`) and **no strings**.
+      Comparisons use [ComparisonScriptCondition](/classes/comparisonscriptcondition) in an
+      [IfConditionBlock](/classes/ifconditionblock).
+
+      **Variables.** The prefix selects the script table. The name after the first `.` is the
+      key in that table. Only these short prefixes are accepted; the full table names are not.
+
+      | Prefix | Table |
+      |--------|-------|
+      | `ptp` | `PassThroughParamsTable` |
+      | `iv` | `InstanceVars` |
+      | `cv` | `CharacterVars` |
+      | `wv` | `WorldVars` |
+      | `sv` | `SpellVars` |
+      | `av` | `AvatarVars` |
+      | `nbv` | `NextBuffVars` |
+      | `nsv` | `NextSpellVars` |
+      | `tt1`, `tt2`, `tt3` | `TempTable1`, `TempTable2`, `TempTable3` |
+      | `gsv` | `GameScreenVars` |
+
+      **Operators.** A higher rank binds tighter. The order is **not** the order of C or Lua:
+      the logical operators bind tighter than the arithmetic ones, and `||` binds tighter than
+      `&&`. For example, `a + b && c` is `a + (b && c)`, and `a || b && c` is `(a || b) && c`.
+      Use parentheses wherever a formula mixes kinds of operator.
+
+      | Rank | Operator | Meaning |
+      |------|----------|---------|
+      | 7 | `\|\|` | Logical or. Takes bools or numbers (a number other than `0` is true) and returns a bool. |
+      | 6 | `&&` | Logical and, with the same operands as `\|\|`. |
+      | 5 | `^` | Power, numbers only, right-associative. A negative base is an error. |
+      | 4 | `*` | Multiply: number by number, vector by number, number by vector. |
+      | 4 | `/` | Divide: number by number, vector by number. Division by zero is an error. |
+      | 4 | `//` | Integer divide: both operands are truncated to ints first. A vector divided by a number is divided per component. |
+      | 4 | `%` | Remainder of a float division, numbers only. |
+      | 3 | `+` `-` | Add and subtract: number with number, vector with vector. |
+      | 2 | `-` `!` (prefix) | Negate. |
+
+      Prefix `-` and `!` are one operator. It negates a number, negates all three components
+      of a vector, and inverts a bool. So `!5` is `-5`, and `-true` is `false`.
+
+      **Functions.** A function call is `name(argument, ...)`.
+
+      | Function | Arguments | Result |
+      |----------|-----------|--------|
+      | `sin`, `cos`, `tan` | number | Trigonometric functions. |
+      | `asin`, `acos`, `atan` | number | Inverse functions. The input is clamped to `-1`..`1` and the result is in degrees. |
+      | `floor`, `ceil` | number | Rounds down or up. |
+      | `round` | number | Rounds to the nearest integer, halves away from zero. |
+      | `abs`, `log`, `sqrt`, `factorial` | number | Absolute value, logarithm, square root, factorial. |
+      | `min`, `max` | two or more numbers | The smallest or largest argument. |
+      | `rand` | number, number | A random integer between the two arguments, both included. |
+      | `degtorad`, `radtodeg` | number | Converts degrees to radians, or radians to degrees. |
+      | `length3d`, `normalize3d` | vector | Length, or unit vector, in 3D. |
+      | `length`, `normalize` | vector | Length, or unit vector, on the ground plane: the Y component is set to `0` first. |
+      | `dot3d`, `cross3d`, `angle3d` | vector, vector | Dot product, cross product, and angle in degrees, in 3D. |
+      | `dot`, `cross`, `angle` | vector, vector | The same on the ground plane, with Y ignored. `cross` returns a number. |
+      | `rotate` | vector, number | Rotates the vector around the Y axis. |
+
+      A function needs exactly the declared kinds of argument, and `min` and `max` need at
+      least two.
+
+      Example: `iv.BaseDamage * (1 + ptp.Bonus)` multiplies a variable of the instance table
+      by one plus a parameter.
+    notes:
+      - "The angle unit of `sin`, `cos`, `tan` and `rotate` is not yet identified."
+      - "A `/` directly followed by `&` or `|` is read as a plain `/`, and the second character is dropped. A single `&` or `|` is an error."
+      - "A number divided by a vector gives a vector: each component is `(1 / number) * component`."
+  Dest:
+    description: "The variable that receives the result."

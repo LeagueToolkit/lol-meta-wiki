@@ -1,0 +1,8 @@
+# PreloadCharacters Documentation
+
+class:
+  description: |
+    A [level script block](/classes/levelscriptblock) that loads the **preload group** whose name
+    hash is `groupName`.
+  notes:
+    - "No shipped object uses it."

@@ -1,0 +1,11 @@
+# CustomTableGet Documentation
+
+class:
+  description: |
+    A getter that reads a script variable that holds a **custom table**: a key-value
+    table that scripts create and fill at run time (see
+    [CreateCustomTableBlock](/classes/createcustomtableblock)). The variable must hold a
+    CustomTable. Otherwise, or if the variable does not exist, the getter fails with a
+    script error. See [ScriptTableGet](/classes/scripttableget) for `Table` and `Var`.
+  notes:
+    - "Shipped scripts use it to name the table of every custom-table block, for example the destination of [InsertIntoCustomTableBlock](/classes/insertintocustomtableblock) and the table of [ForEachInCustomTableBlock](/classes/foreachincustomtableblock)."

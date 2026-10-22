@@ -1,0 +1,12 @@
+# ReadVector3ConceptBlock Documentation
+
+class:
+  description: "A [concept block](/classes/readconceptblockbase) that reads the value of a [Vector3Concept](/classes/vector3concept) for the object that `ConceptObject` returns and writes it to `Output` as a Vector3."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Concept:
+    description: "The hash of the object path of the [Vector3Concept](/classes/vector3concept) to read. If no `Vector3Concept` with this path is loaded, the block records a script error and does nothing."
+  Output:
+    description: "The script variable that receives the value."

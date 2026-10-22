@@ -1,0 +1,12 @@
+# 0x257477d2 Documentation
+
+class:
+  description: |
+    A getter that reads a script variable that holds a 64-bit integer. The variable must
+    hold an Int64 value. Otherwise, or if the variable does not exist, the getter fails
+    with a script error. See [ScriptTableGet](/classes/scripttableget) for `Table` and `Var`.
+
+    Read as a float, the getter uses only the low 32 bits of the value, as a signed
+    32-bit integer. Values outside the 32-bit range therefore read as a different number.
+  notes:
+    - "No shipped object uses it."

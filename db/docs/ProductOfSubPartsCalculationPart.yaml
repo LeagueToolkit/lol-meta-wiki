@@ -1,0 +1,11 @@
+# ProductOfSubPartsCalculationPart Documentation
+
+class:
+  description: "A [calculation part](/classes/igamecalculationpart) that returns `mPart1 * mPart2`. If either part is not set, it returns `0`."
+
+properties:
+  mPart1:
+    description: "The first factor."
+
+  mPart2:
+    description: "The second factor."

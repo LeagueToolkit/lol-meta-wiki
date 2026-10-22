@@ -1,0 +1,11 @@
+# BreakBlock Documentation
+
+class:
+  description: |
+    A block that **ends the nearest loop**. The block sets the break signal on the script
+    context. The current list stops, every list that encloses it stops, and the nearest
+    [loop](/classes/iloopscriptblock) ends without another iteration.
+
+    If no loop encloses the block, every enclosing list stops.
+  notes:
+    - "No shipped object uses it."

@@ -1,0 +1,9 @@
+# FunctionTableGet Documentation
+
+class:
+  description: |
+    A getter that reads a script variable that holds a script function. The variable must
+    hold a Function value. Otherwise, or if the variable does not exist, the getter fails
+    with a script error. See [ScriptTableGet](/classes/scripttableget) for `Table` and `Var`.
+  notes:
+    - "No shipped object uses it."

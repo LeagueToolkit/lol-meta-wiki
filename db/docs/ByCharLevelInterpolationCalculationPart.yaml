@@ -1,0 +1,29 @@
+# ByCharLevelInterpolationCalculationPart Documentation
+
+class:
+  description: |
+    A [character-level part](/classes/igamecalculationpartbycharlevel) that
+    **interpolates linearly** from `mStartValue` at level 1 to `mEndValue` at the default
+    maximum level `M` of the map:
+
+    ```
+    t = x / (M - 1)
+    value = (1 - t) * mStartValue + t * mEndValue
+    ```
+
+    `x` is `L - 1`, where `L` is the champion level of the caster. With
+    `mScaleByStatProgressionMultiplier`, `x` is the caster's stat progression value at
+    level `L` instead.
+
+properties:
+  mStartValue:
+    description: "The value at level 1."
+
+  mEndValue:
+    description: "The value at the default maximum level of the map."
+
+  mScaleByStatProgressionMultiplier:
+    description: "When set, the interpolation uses the caster's stat progression value at the current level instead of `L - 1`."
+
+  mScalePastDefaultMaxLevel:
+    description: "When set, levels above the default maximum level continue the line past `mEndValue`. When clear, the client clamps the level to the maximum level first, so the value stops at `mEndValue`."

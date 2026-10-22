@@ -1,0 +1,13 @@
+# EntityTableGet Documentation
+
+class:
+  description: |
+    A getter that reads a script variable that holds an entity id. The variable must hold
+    an Entity value. Otherwise, or if the variable does not exist, the getter fails with a
+    script error. See [ScriptTableGet](/classes/scripttableget) for `Table` and `Var`.
+
+    Read as an entity, the getter returns the live game entity with that id. Read as a
+    driver source (see [ILogicDriverSourceGet](/classes/ilogicdriversourceget)), it
+    returns the same entity, and fails if no live entity has the id.
+  notes:
+    - "Shipped map scripts use it as the target of [ExecuteFunctionEntityBlock](/classes/executefunctionentityblock) and [GetEntityPositionBlock](/classes/getentitypositionblock)."

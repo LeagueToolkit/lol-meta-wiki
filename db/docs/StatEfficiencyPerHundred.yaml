@@ -1,0 +1,40 @@
+# StatEfficiencyPerHundred Documentation
+
+class:
+  description: |
+    A [calculation part](/classes/igamecalculationpart) that turns a stat into a
+    **value with diminishing returns**. With `s = (stat + mBonusStatForEfficiency) / 100`
+    and `v` the named data value `mDataValue`, the part returns:
+
+    ```
+    s * v / ((1 - v) + s * v)
+    ```
+
+    The result is never below `0`. If the denominator is `1e-9` or less, the part returns
+    `0`. The unit and the stat are selected with the same fields as for a [stat
+    part](/classes/igamecalculationpartwithstats).
+
+properties:
+  mStat:
+    description: "The stat to read when `UseNewStats` is not set. See `mStat` on [IGameCalculationPartWithStats](/classes/igamecalculationpartwithstats) for the values."
+
+  mStatFormula:
+    description: "Which part of the stat to read: total, base or bonus. See [IGameCalculationPartWithStats](/classes/igamecalculationpartwithstats)."
+
+  statType:
+    description: "The stat to read when `UseNewStats` is set. See [IGameCalculationPartWithStats](/classes/igamecalculationpartwithstats)."
+
+  OutputType:
+    description: "Which output of `statType` to read when `UseNewStats` is set. See [IGameCalculationPartWithStats](/classes/igamecalculationpartwithstats)."
+
+  UseTargetStats:
+    description: "When set, the part reads the stat of the target instead of the caster. Without a target, it reads the caster."
+
+  UseNewStats:
+    description: "When set, the part reads `statType` with `OutputType` instead of `mStat` and `mStatFormula`."
+
+  mDataValue:
+    description: "Name of the data value of the owner that gives `v`."
+
+  mBonusStatForEfficiency:
+    description: "A flat amount that the client adds to the stat before the division by `100`."

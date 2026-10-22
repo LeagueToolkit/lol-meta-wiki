@@ -1,0 +1,8 @@
+# HideEntityTagBlock Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that **hides** every entity that carries
+    `tag`, over `duration` seconds. The entities stay active.
+  notes:
+    - "No shipped object uses it."

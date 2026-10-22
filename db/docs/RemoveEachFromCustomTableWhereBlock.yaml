@@ -1,0 +1,26 @@
+# RemoveEachFromCustomTableWhereBlock Documentation
+
+class:
+  description: |
+    A [loop](/classes/iloopscriptblock) that **removes the entries of a
+    [custom table](/classes/createcustomtableblock) that the body selects**. For each entry, the
+    loop writes the key to `IterKey` and the value to `IterValue` and runs the body. After the
+    body, the loop reads the bool variable `ShouldRemove`. If it holds `true`, the loop removes
+    the entry. A value of another kind does not remove the entry.
+
+    The loop does not reset `ShouldRemove` between entries. A `true` that the body writes for
+    one entry also removes the next entries, unless the body writes the variable for every
+    entry.
+  notes:
+    - "If the table of `ShouldRemove` cannot be found, the loop records a script error."
+    - "No shipped object uses it."
+
+properties:
+  Table:
+    description: "The table to walk."
+  IterKey:
+    description: "The variable that receives the key of the entry before each run of the body."
+  IterValue:
+    description: "The variable that receives the value of the entry before each run of the body."
+  ShouldRemove:
+    description: "The bool variable that the body sets to `true` to remove the current entry."

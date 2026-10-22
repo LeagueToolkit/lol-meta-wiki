@@ -1,0 +1,25 @@
+# ByItemEpicnessCountCalculationPart Documentation
+
+class:
+  description: "A [calculation part](/classes/igamecalculationpart) that returns the **number of items of the caster** with the epicness `epicness`, multiplied by `Coefficient`."
+  notes:
+    - "Shipped item data uses it for bonuses per legendary item."
+
+properties:
+  epicness:
+    description: |
+      The item epicness to count.
+
+      | Value | Name |
+      |---|---|
+      | `0` | `NONE` |
+      | `1` | `STARTER` |
+      | `2` | `BASIC` |
+      | `3` | `SUPERIOR` |
+      | `4` | `EPIC` |
+      | `5` | `LEGENDARY` |
+      | `6` | `MYTHIC` |
+      | `7` | `UNIQUE` |
+
+  Coefficient:
+    description: "The value per counted item."

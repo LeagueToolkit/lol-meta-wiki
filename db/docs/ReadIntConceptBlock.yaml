@@ -1,0 +1,12 @@
+# ReadIntConceptBlock Documentation
+
+class:
+  description: "A [concept block](/classes/readconceptblockbase) that reads the value of an [IntConcept](/classes/intconcept) for the object that `ConceptObject` returns and writes it to `Output` as an Int."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Concept:
+    description: "The hash of the object path of the [IntConcept](/classes/intconcept) to read. If no `IntConcept` with this path is loaded, the block records a script error and does nothing."
+  Output:
+    description: "The script variable that receives the value."

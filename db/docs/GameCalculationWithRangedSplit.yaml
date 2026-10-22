@@ -1,0 +1,17 @@
+# GameCalculationWithRangedSplit Documentation
+
+class:
+  description: |
+    A [GameCalculation](/classes/gamecalculation) with an **extra multiplier for ranged
+    casters**. The client applies `mMultiplier` first. Then, if the caster is a ranged
+    unit, it also multiplies every part by the value of `mRangedMultiplier`. The rest of
+    the evaluation is the same as for `GameCalculation`.
+
+    When the context has no caster unit, the client tests the selected champion instead.
+    The tooltip prefixes the value with the ranged or the melee icon.
+  notes:
+    - "Shipped item data uses it for effects that are weaker on ranged champions, with a [NumberCalculationPart](/classes/numbercalculationpart) such as `0.5` or `0.7` as `mRangedMultiplier`."
+
+properties:
+  mRangedMultiplier:
+    description: "The part whose value multiplies the calculation when the caster is ranged. When it is not set, ranged and melee casters get the same value."

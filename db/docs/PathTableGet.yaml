@@ -1,0 +1,10 @@
+# PathTableGet Documentation
+
+class:
+  description: |
+    A getter that reads a script variable that holds a path. The variable must hold a
+    Path value, and the getter resolves it to the loaded path object (`IPath`). If the
+    variable is missing, holds another kind, or the link does not resolve, the getter
+    fails with a script error. See [ScriptTableGet](/classes/scripttableget) for `Table` and `Var`.
+  notes:
+    - "No shipped object uses it."

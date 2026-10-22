@@ -1,0 +1,15 @@
+# CopyCustomTableBlock Documentation
+
+class:
+  description: |
+    A block that **copies a [custom table](/classes/createcustomtableblock)**. The block creates
+    a new table, copies every entry of `Table` into it, and writes the new table to `OutTable`.
+    Later changes to one table do not change the other.
+  notes:
+    - "Whether a table that is stored as a value inside `Table` is copied or shared is not yet identified."
+
+properties:
+  Table:
+    description: "The table to copy."
+  OutTable:
+    description: "The variable that receives the copy."

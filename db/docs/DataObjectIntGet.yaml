@@ -1,0 +1,17 @@
+# DataObjectIntGet Documentation
+
+class:
+  description: |
+    A getter that reads a numeric property of a loaded bin object and returns it as a
+    32-bit integer. An `f32` property is truncated toward zero. The object lookup, the
+    path rules and the integer conversions are those of
+    [DataObjectFloatGet](/classes/dataobjectfloatget).
+  notes:
+    - "If the object exists but the path does not lead to a numeric property, the getter raises a script error even if the reader turned error reporting off."
+    - "No shipped object uses it."
+
+properties:
+  PathHash:
+    description: "The entry path hash of the bin object. If no loaded object has that path, the getter fails with a script error."
+  PropPath:
+    description: "The path of the property to read, relative to the object. See [DataObjectFloatGet](/classes/dataobjectfloatget)."

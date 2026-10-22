@@ -1,0 +1,16 @@
+# DataObjectBoolGet Documentation
+
+class:
+  description: |
+    A getter that reads a bool property of a loaded bin object. The property must be a
+    bin `bool`; no other type is converted. The object lookup and the path rules are
+    those of [DataObjectFloatGet](/classes/dataobjectfloatget).
+  notes:
+    - "If the object exists but the path does not lead to a `bool` property, the getter raises a script error even if the reader turned error reporting off."
+    - "No shipped object uses it."
+
+properties:
+  PathHash:
+    description: "The entry path hash of the bin object. If no loaded object has that path, the getter fails with a script error."
+  PropPath:
+    description: "The path of the property to read, relative to the object. See [DataObjectFloatGet](/classes/dataobjectfloatget)."

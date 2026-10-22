@@ -1,0 +1,47 @@
+# IfConditionBlock Documentation
+
+class:
+  description: |
+    The **conditional block**. The block evaluates `Condition`, applies `Invert`, and runs
+    `Sequence` if the result is true. It stores the result on the script context, where the
+    next conditional block of the chain reads it. `type` selects how the block combines its own
+    condition with that previous result, so one class covers If, AndIf, OrIf, ElseIf and Else.
+    [IScriptBlock](/classes/iscriptblock) describes how a chain is laid out in a list.
+
+    A chain is written as sibling blocks, for example:
+
+    | Block | Runs its `Sequence` when |
+    |-------|--------------------------|
+    | If `A` | `A` is true |
+    | AndIf `B` | `A` and `B` are true |
+    | ElseIf `C` | `A` and `B` are not both true, and `C` is true |
+    | Else (null `Condition`) | `A` and `B` are not both true, and `C` is false |
+
+    If `Condition` cannot be evaluated, the condition returns false (see
+    [IScriptCondition](/classes/iscriptcondition)).
+  notes:
+    - "Shipped map and champion scripts use this block more than any other block."
+
+properties:
+  Condition:
+    description: |
+      The test of this block. If `Condition` is null, the block is an **Else** whatever its
+      `type`: if the previous result is true, it closes the chain; if the chain is still open,
+      it runs `Sequence`.
+  type:
+    description: |
+      How the block takes part in the if-chain. The previous result is the result of the
+      conditional block before this one.
+
+      | Value | Name | Behaviour |
+      |-------|------|-----------|
+      | `0` | If | Starts a new chain. Evaluates `Condition` and runs `Sequence` if the result is true. |
+      | `1` | AndIf | If the previous result is true and the chain is open, evaluates `Condition` and runs `Sequence` if the result is true. If the previous result is false, the result stays false and `Sequence` does not run. |
+      | `2` | OrIf | If the previous result is true, runs `Sequence` without evaluating `Condition`, and the result stays true. Otherwise evaluates `Condition` and runs `Sequence` if the result is true. |
+      | `3` | ElseIf | If the previous result is true, closes the chain: this block and the later ElseIf and Else blocks of the chain do not run `Sequence`. Otherwise evaluates `Condition` and runs `Sequence` if the result is true. |
+
+      A value above `3` makes the block do nothing.
+  Invert:
+    description: "If true, the block uses the opposite of the result of `Condition`."
+  Sequence:
+    description: "The blocks that run when the result of the block is true."

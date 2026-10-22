@@ -1,0 +1,8 @@
+# GetEntityRotationBlock Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that writes the **rotation** of `Target` to
+    the `Dest` vector variable, as Euler angles in degrees.
+  notes:
+    - "No shipped object uses it."

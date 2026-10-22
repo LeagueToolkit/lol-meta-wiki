@@ -1,0 +1,13 @@
+# DataObjectGet Documentation
+
+class:
+  description: |
+    A getter that returns a **data object**: a bin object that is loaded in the game,
+    found by its entry path. Script blocks that take a definition object, and the
+    `DataObject*TableGet` getters, read the result.
+  notes:
+    - "Shipped map scripts use it to insert camp definition objects into custom tables and to name the camp of a neutral camp block."
+
+properties:
+  PathHash:
+    description: "The entry path hash of the bin object. If no loaded object has that path, the getter fails with a script error."

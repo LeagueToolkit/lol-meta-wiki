@@ -1,0 +1,12 @@
+# SetEntityRotationBlock Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that sets the **rotation** of `Target`. The
+    entity keeps its position.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  rotation:
+    description: "The new rotation, as Euler angles in degrees. This is the form that [GetEntityRotationBlock](/classes/getentityrotationblock) writes."

@@ -1,0 +1,18 @@
+# CustomReductionMultiplierCalculationPart Documentation
+
+class:
+  description: |
+    A [calculation part](/classes/igamecalculationpart) that turns a reduction into a
+    multiplier: it returns `1 - r`, where `r` is the value of `mSubPartToReduceBy`
+    clamped to `0`-`mMaximumReductionPercent`. Both values are fractions: `0.3` is a 30%
+    reduction.
+  notes:
+    - "If `mSubPartToReduceBy` is not set, the part returns `0`, not `1`."
+    - "No shipped object uses it."
+
+properties:
+  mSubPartToReduceBy:
+    description: "The part that gives the reduction, as a fraction."
+
+  mMaximumReductionPercent:
+    description: "The largest reduction, as a fraction. The default `0` clamps every reduction to `0`, so the part returns `1`."

@@ -1,0 +1,16 @@
+# DataObjectBoolTableGet Documentation
+
+class:
+  description: |
+    A getter that reads a property of a data object stored in a script variable. The
+    variable must hold a DataObject value (see [DataObjectGet](/classes/dataobjectget)).
+    The getter then reads `PropPath` from that object with the same path rules and kind
+    rules as [DataObjectBoolGet](/classes/dataobjectboolget). The property must be a bin `bool`. If the variable is missing or
+    holds another kind, the getter fails with a script error. See
+    [ScriptTableGet](/classes/scripttableget) for `Table` and `Var`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  PropPath:
+    description: "The path of the property to read, relative to the object. See [DataObjectBoolGet](/classes/dataobjectboolget)."

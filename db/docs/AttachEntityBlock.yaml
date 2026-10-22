@@ -1,0 +1,6 @@
+# AttachEntityBlock Documentation
+
+class:
+  description: |
+    The client does not register this block, so it does not run. Its fields name a `Source`
+    entity, an `Attachment` entity, an `offset` vector and two bool operands.

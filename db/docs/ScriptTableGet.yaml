@@ -1,0 +1,32 @@
+# ScriptTableGet Documentation
+
+class:
+  description: |
+    A getter that reads a **script variable** and returns its value with whatever kind it
+    holds. It is also the base of the typed `*TableGet` getters, which read the same
+    variable but require one kind. See [IScriptValueGet](/classes/iscriptvalueget) for
+    variables and value kinds.
+
+    The getter resolves `Table` for the running script, then looks up `Var` in it. It
+    returns a copy of the stored value. If the variable does not exist, the getter fails
+    with a script error.
+
+    Shipped scripts use it mostly as the first operand of a
+    [ComparisonScriptCondition](/classes/comparisonscriptcondition) and as the source of a
+    [SetVarInTableBlock](/classes/setvarintableblock).
+
+properties:
+  Table:
+    description: |
+      The variable table to read, one of the `ScriptTable` classes such as `InstanceVars`
+      or `WorldVars`. The client resolves the table instance for the script context that
+      evaluates the getter.
+
+      If `Table` is left unset, the getter reads the **pass-through parameter table**
+      (`PassThroughParamsTable`) of the running script call. Most shipped table getters
+      read their variable this way. An explicit null table makes every read fail.
+  Var:
+    description: |
+      The variable to read: the hash of the variable name, FNV-1a of the lowercased name.
+      A `*TableSet` that writes the variable gives the same name as a string. `0` names
+      no variable, and every read fails.

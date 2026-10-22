@@ -1,0 +1,23 @@
+# InsertIntoCustomTableBlock Documentation
+
+class:
+  description: |
+    A block that **adds a value to a [custom table](/classes/createcustomtableblock) used as a
+    list**. The block evaluates `value`.
+
+    - If `DestIndex` is set and can be evaluated, the block inserts the value at that index.
+    - Otherwise the block appends the value after the last index.
+
+    The block writes the index of the new entry to `OutIndex` if `OutIndex` names a variable.
+  notes:
+    - "`value` must be set: the client does not check for a missing operand."
+
+properties:
+  DestTable:
+    description: "The table to add to."
+  value:
+    description: "The value to add."
+  DestIndex:
+    description: "The index at which to insert the value. If it is not set, the value is appended."
+  OutIndex:
+    description: "The int variable that receives the index of the new entry. If it names no variable, nothing is written."

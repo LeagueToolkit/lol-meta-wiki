@@ -1,0 +1,18 @@
+# ActivateEntityTagBlock Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that **activates an entity tag**: every
+    inactive entity that carries `tag` is activated. If the tag is already active, the block does
+    nothing.
+  notes:
+    - "The block evaluates `ShowDuration` even when `ActivateThenShow` is false, and then ignores it."
+    - "No shipped object uses it."
+
+properties:
+  ActivateThenShow:
+    description: "If true, each activated entity starts a show over `ShowDuration`. If false, the entities are activated without a show."
+  ShowDuration:
+    description: "Duration of the show, in seconds. Used only when `ActivateThenShow` is true."
+  tag:
+    description: "The entity tag to activate."

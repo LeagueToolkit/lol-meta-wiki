@@ -1,0 +1,8 @@
+# GetTemplateFromEntityBlock Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that writes the `GameEntityTemplate` of
+    `Entity` to the `template` data object variable.
+  notes:
+    - "No shipped object uses it."

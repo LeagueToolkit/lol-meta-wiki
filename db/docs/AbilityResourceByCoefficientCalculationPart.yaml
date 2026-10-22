@@ -1,0 +1,42 @@
+# AbilityResourceByCoefficientCalculationPart Documentation
+
+class:
+  description: |
+    A [calculation part](/classes/igamecalculationpart) that returns an **ability resource
+    amount of the caster**, multiplied by `mCoefficient`. The caster's stats return the
+    amount for `mAbilityResource` and `mStatFormula`.
+
+    In the tooltip, only `Mana` parts get an icon and a style tag, the mana icon and the
+    mana scaling tag of `GlobalStatsUIData`.
+  notes:
+    - "Whether the amount is the current or the maximum amount of the resource is not established."
+
+properties:
+  mCoefficient:
+    description: "The ratio of the resource amount."
+
+  mAbilityResource:
+    description: |
+      The ability resource to read.
+
+      | Value | Name |
+      |---|---|
+      | `0` | `Mana` |
+      | `1` | `Energy` |
+      | `2` | `None` |
+      | `3` | `Shield` |
+      | `4` | `BattleFury` |
+      | `5` | `DragonFury` |
+      | `6` | `Rage` |
+      | `7` | `Heat` |
+      | `8` | `PrimalFury` |
+      | `9` | `Ferocity` |
+      | `10` | `BloodWell` |
+      | `11` | `Wind` |
+      | `12` | `Ammo` |
+      | `13` | `Moonlight` |
+      | `14` | `Other` |
+      | `15` | `UseCharCurrent` |
+
+  mStatFormula:
+    description: "Which part of the amount to read: total, base or bonus. See `mStatFormula` on [IGameCalculationPartWithStats](/classes/igamecalculationpartwithstats)."

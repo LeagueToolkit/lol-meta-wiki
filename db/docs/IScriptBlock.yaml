@@ -1,0 +1,60 @@
+# IScriptBlock Documentation
+
+class:
+  description: |
+    A **script block**: one step of a script that is authored in bin data. A script is made of
+    block lists (`ScriptSequence.blocks`, `ScriptFunction.blocks`) that a script object such as
+    `CharScript`, `BuffScript`, `LolSpellScript` or `LevelControlScript` holds. The client runs
+    the blocks with its own interpreter; no Lua is involved. A block reads its operands through
+    value getters (see [IScriptValueGet](/classes/iscriptvalueget)), tests conditions (see
+    [IScriptCondition](/classes/iscriptcondition)) and writes its results to script variables.
+
+    **Running a list.** The client runs the blocks of a list in order, all in one script
+    context.
+
+    - A null entry is skipped.
+    - A block with `IsDisabled` set is skipped.
+    - The list stops after a block that sets a break or continue signal, and after a block that
+      ends the script ([EndEventBlock](/classes/endeventblock)).
+
+    **Script errors.** When a block cannot evaluate an operand, for example because a script
+    variable is missing or holds a value of the wrong kind, the client records a **script
+    error** on the context. A block that finds a script error after it evaluates its operands
+    does not write its result. A retail client does not show the error text.
+
+    **Break and continue.** [BreakBlock](/classes/breakblock) and
+    [ContinueBlock](/classes/continueblock) set a signal on the context. A list does not clear
+    the signal, so the current list stops and every list that encloses it stops too, for
+    example the body of an [IfConditionBlock](/classes/ifconditionblock) or a
+    [ScriptCommentBlock](/classes/scriptcommentblock) group. The nearest
+    [loop](/classes/iloopscriptblock) clears the signal: a break ends the loop and a continue
+    starts its next iteration.
+
+    **The if-chain.** [IfConditionBlock](/classes/ifconditionblock) is the conditional block.
+    Its `type` makes it an If, AndIf, OrIf or ElseIf, and a null `Condition` makes it an Else.
+    The blocks of one chain are siblings in a list: an If, then any number of AndIf, OrIf and
+    ElseIf blocks, then an optional Else. Each block of the chain reads the result of the
+    conditional block before it, which the client keeps on the script context, and stores its
+    own result there.
+
+    **Limits.**
+
+    - Blocks nest when a block runs another list: a conditional, a loop, a group or a function
+      call. The client allows 200 nested levels and reports a stack overflow error past that
+      depth.
+    - [WhileLoopBlock](/classes/whileloopblock) is the only loop with an iteration limit. A
+      [LoopBlock](/classes/loopblock) with a `step` of `0` can run forever.
+
+    **What the client package contains.** Shipped block lists contain mainly the blocks that
+    the client runs: variables, custom tables, formulas, conditions and loops. Blocks whose
+    logic runs on the server are removed from the client package, and their list entries are
+    null. Some block classes are stubs in the client: the client accepts them in data and does
+    nothing when it reaches them. The page of each such class says so.
+  notes:
+    - "Shipped lists also contain conditional blocks whose `Condition` is null. The client runs them as Else blocks (see `IfConditionBlock.type`)."
+
+properties:
+  IsDisabled:
+    description: |
+      If true, the client skips the block when it runs the list. A disabled conditional block
+      does not take part in the if-chain.

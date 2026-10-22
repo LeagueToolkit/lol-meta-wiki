@@ -1,0 +1,6 @@
+# DetachEntityBlock Documentation
+
+class:
+  description: |
+    The client does not register this block, so it does not run. Its fields name a `Source`
+    entity and an `Attachment` entity.

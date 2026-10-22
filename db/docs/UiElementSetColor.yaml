@@ -1,0 +1,8 @@
+# UiElementSetColor Documentation
+
+class:
+  description: |
+    A [UI block](/classes/iuiblock) that sets the **color** of the UI element `element` to
+    `Color`.
+  notes:
+    - "No shipped object uses it."

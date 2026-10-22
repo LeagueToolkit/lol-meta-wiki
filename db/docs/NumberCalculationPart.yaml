@@ -1,0 +1,10 @@
+# NumberCalculationPart Documentation
+
+class:
+  description: "A [calculation part](/classes/igamecalculationpart) that returns the constant `mNumber`."
+  notes:
+    - "Shipped data also uses it as `mMultiplier` of a calculation."
+
+properties:
+  mNumber:
+    description: "The value of the part."

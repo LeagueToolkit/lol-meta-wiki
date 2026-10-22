@@ -1,0 +1,21 @@
+# PercentageOfBuffNameElapsed Documentation
+
+class:
+  description: |
+    A [calculation part](/classes/igamecalculationpart) that returns **how much of a buff
+    has elapsed** on the caster: the elapsed time of the buff `buffName` divided by its
+    duration, multiplied by `Coefficient`. The fraction goes from `0` when the buff starts
+    to `1` when it ends. If the duration is `0`, the part returns `0`.
+
+properties:
+  buffName:
+    description: "Name of the buff on the caster."
+
+  Coefficient:
+    description: "The value of the part when the buff has fully elapsed."
+
+  IconKey:
+    description: "Icon key that the tooltip prints next to the part in the `CombinedWithScalingIcons` display mode."
+
+  ScalingTagKey:
+    description: "Tooltip style tag of the part. The part always uses this tag, also when its value is modified."

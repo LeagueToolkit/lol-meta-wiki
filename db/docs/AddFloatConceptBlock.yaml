@@ -1,0 +1,12 @@
+# AddFloatConceptBlock Documentation
+
+class:
+  description: "A [concept block](/classes/addconceptblockbase) that adds `AddValue` to the value of a [FloatConcept](/classes/floatconcept) for the object that `ConceptObject` returns."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Concept:
+    description: "The hash of the object path of the [FloatConcept](/classes/floatconcept) to change. If no `FloatConcept` with this path is loaded, the block records a script error and does nothing."
+  AddValue:
+    description: "The amount to add. The block evaluates it each time it runs."

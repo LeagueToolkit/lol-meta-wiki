@@ -1,0 +1,19 @@
+# ILogicDriverSourceGet Documentation
+
+class:
+  description: |
+    A getter that produces an object that a [logic driver](/classes/ilogicfloatdriver) can
+    be evaluated for (an [ILogicDriverSource](/classes/ilogicdriversource)).
+    [ConceptBlockBase](/classes/conceptblockbase) uses it in `ConceptObject` to pick the
+    object whose concept value the block writes or reads.
+
+    The entity getters ([EntityReferenceGet](/classes/entityreferenceget),
+    [EntityTableGet](/classes/entitytableget)) produce an entity id and return the game
+    entity that has that id. The unit getter ([UnitTableGet](/classes/unittableget))
+    produces a unit id and returns the unit with that id. If no live entity or unit has
+    the id, the getter fails. [NilEntityGet](/classes/nilentityget) and
+    [NilUnitGet](/classes/nilunitget) always fail here.
+
+    If the getter fails or returns an object that is not a driver source, the concept
+    block raises a script error and does nothing. See
+    [IScriptValueGet](/classes/iscriptvalueget) for script errors.

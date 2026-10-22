@@ -1,0 +1,21 @@
+# ExternalNamedDataValueCalculationPart Documentation
+
+class:
+  description: |
+    A [calculation part](/classes/igamecalculationpart) that returns a **named data value
+    of another object**, such as another spell of the same champion.
+
+    When `SourceObject` is a spell, the client reads the data value of that spell at the
+    caster's current rank in it. The client finds the spell in the caster's spellbook by
+    name. If the caster does not have the spell, the client reads the value at level `0`.
+    How the level is chosen for an item source is not documented.
+  notes:
+    - "The client reads the caster's spellbook without a check. If the context has no caster unit, the evaluation crashes."
+    - "Shipped champion data uses it in a second cast or a recast spell to read a value of the first spell."
+
+properties:
+  SourceObject:
+    description: "Link to the spell object or item that holds the data value."
+
+  DataValue:
+    description: "Name of the data value to read on `SourceObject`."

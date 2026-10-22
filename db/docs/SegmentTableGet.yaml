@@ -1,0 +1,9 @@
+# SegmentTableGet Documentation
+
+class:
+  description: |
+    A getter that reads a script variable as a Segment value (an unsigned 8-bit number).
+    The variable can hold a Segment, an Int, or a Float, which is truncated. Any other
+    kind, or a missing variable, fails with a script error. See [ScriptTableGet](/classes/scripttableget) for `Table` and `Var`.
+  notes:
+    - "No shipped object uses it."

@@ -1,0 +1,42 @@
+# ComparisonScriptCondition Documentation
+
+class:
+  description: |
+    A [condition](/classes/iscriptcondition) that **compares two script values** with the
+    operator in `Operation`. The condition evaluates `Value1` and `Value2` each time it is
+    tested.
+
+    Two values of the same kind compare directly. An Int and a Float compare as numbers. Any
+    other pair of different kinds is incompatible:
+
+    - If one of the two values is Nil, `Equal` returns false and `NotEqual` returns true.
+    - Any other incompatible pair records a script error and returns false.
+
+    If `Value1` or `Value2` is unset or produces no value, the condition returns false for
+    every `Operation`, including `NotEqual`. A [ScriptTableGet](/classes/scripttableget) for a
+    missing variable produces no value, so a comparison cannot test whether a variable exists.
+    [TableValueExistsScriptCondition](/classes/tablevalueexistsscriptcondition) and
+    [IsNilCondition](/classes/isnilcondition) test that.
+  notes:
+    - "Shipped scripts mostly compare a script variable in `Value1` with a literal value in `Value2`."
+    - "Which value kinds other than numbers support the ordering operators `2`-`5` is not confirmed."
+
+properties:
+  Value1:
+    description: "The left operand."
+  Value2:
+    description: "The right operand."
+  Operation:
+    description: |
+      The comparison operator.
+
+      | Value | Name | True if |
+      |-------|------|---------|
+      | `0` | Equal | `Value1 == Value2` |
+      | `1` | NotEqual | `Value1 != Value2` |
+      | `2` | Greater | `Value1 > Value2` |
+      | `3` | GreaterOrEqual | `Value1 >= Value2` |
+      | `4` | Less | `Value1 < Value2` |
+      | `5` | LessOrEqual | `Value1 <= Value2` |
+
+      A value above `5` makes the condition return false without a script error.

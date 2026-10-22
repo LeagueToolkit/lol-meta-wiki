@@ -1,0 +1,10 @@
+# MinOfSubPartsCalculationPart Documentation
+
+class:
+  description: "A [calculation part](/classes/igamecalculationpart) that returns the **smallest** value of `mSubparts`. Null entries are skipped."
+  notes:
+    - "An empty list, or a list of null entries only, gives the largest float value, `3.4028235e38`."
+
+properties:
+  mSubparts:
+    description: "The parts to compare."

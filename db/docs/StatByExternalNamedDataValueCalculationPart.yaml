@@ -1,0 +1,15 @@
+# StatByExternalNamedDataValueCalculationPart Documentation
+
+class:
+  description: |
+    A [stat part](/classes/igamecalculationpartwithstats) that returns the stat multiplied
+    by a named data value of another object. The data value is read the same way as in
+    [ExternalNamedDataValueCalculationPart](/classes/externalnameddatavaluecalculationpart):
+    for a spell, at the caster's current rank in that spell.
+
+properties:
+  DataValue:
+    description: "Name of the data value to read on `DataValueSourceObject`."
+
+  DataValueSourceObject:
+    description: "Link to the spell object or item that holds the data value."

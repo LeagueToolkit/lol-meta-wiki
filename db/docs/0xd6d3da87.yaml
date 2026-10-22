@@ -1,0 +1,16 @@
+# 0xd6d3da87 Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that **switches between groups of entity
+    tags**. The block first activates each tag in `TagsToActivate` and shows its entities at
+    once. Then it deactivates each tag in `TagsToDeactivate`.
+  notes:
+    - "A tag that is in both lists ends deactivated."
+    - "No shipped object uses it."
+
+properties:
+  TagsToActivate:
+    description: "The entity tags to activate. Each newly activated entity is shown with no transition."
+  TagsToDeactivate:
+    description: "The entity tags to deactivate. The block processes them after `TagsToActivate`."

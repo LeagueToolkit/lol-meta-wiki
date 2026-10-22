@@ -1,0 +1,53 @@
+# IGameCalculationPart Documentation
+
+class:
+  description: |
+    A **calculation part**: one term of a [game calculation](/classes/igamecalculation).
+    A part returns a float for the evaluation context of the calculation: the caster, an
+    optional target, the owner spell or item, the spell slot and the spell level. A
+    [GameCalculation](/classes/gamecalculation) adds the values of its top-level parts.
+    Parts such as [SumOfSubPartsCalculationPart](/classes/sumofsubpartscalculationpart) and
+    [ProductOfSubPartsCalculationPart](/classes/productofsubpartscalculationpart) hold other
+    parts, so a calculation is a tree.
+
+    ## What a part reports
+
+    | Output | Use |
+    |---|---|
+    | value | The number that the part adds to the calculation. |
+    | base value | The value without the changes that the caster's spell modifiers make. |
+    | coefficient | The ratio that the tooltip prints for the part. For a part that scales with something, it is the factor per unit, such as the ratio of a stat. For other parts, it is the value. |
+    | icon | The icon key that the tooltip prints next to the part in the `CombinedWithScalingIcons` display mode. Parts that do not scale with anything have no icon. |
+    | style tag | The tooltip style of the part. When the value differs from the base value, the part uses the modified style tag of `GlobalStatsUIData`. |
+
+    **Scaling parts** are the parts that scale with a stat, an ability resource, a buff
+    or the caster's items: the `Stat*`, `AbilityResource*`, `BuffCounter*`, `ByItem*`
+    parts, [PercentageOfBuffNameElapsed](/classes/percentageofbuffnameelapsed),
+    [SiblingStatCoefficientBySubPart](/classes/siblingstatcoefficientbysubpart) and
+    [SubPartScaledProportionalToStat](/classes/subpartscaledproportionaltostat). The
+    `ExpandedPartsWithCoefficientsAsPercent` display mode prints their coefficients as
+    percentages. Character-level parts are not scaling parts.
+
+    ## Missing parts
+
+    The client checks null sub-parts, but the result depends on the part:
+
+    | Part | Null sub-part gives |
+    |---|---|
+    | `SumOfSubPartsCalculationPart`, `ClampSubPartsCalculationPart`, `MinOfSubPartsCalculationPart`, `MaxOfSubPartsCalculationPart` | The entry is skipped. |
+    | `ProductOfSubPartsCalculationPart`, `ExponentSubPartsCalculationPart` | `0` |
+    | `StatBySubPartCalculationPart`, `SubPartScaledProportionalToStat`, `SiblingStatCoefficientBySubPart` | `0` |
+    | `CustomReductionMultiplierCalculationPart` | `0`, not `1` |
+
+    A null entry directly in `GameCalculation.mFormulaParts` is skipped.
+
+    ## Target stats
+
+    A part with `UseTargetStats` reads the stats of the target. When the context has no
+    target, it reads the caster without an error. Parts that evaluate another calculation
+    start a new context without a target:
+    [SpellCalculationCalculationPart](/classes/spellcalculationcalculationpart),
+    [ExternalCalculationCalculationPart](/classes/externalcalculationcalculationpart) and
+    [GameCalculationConditional](/classes/gamecalculationconditional). Inside them,
+    `UseTargetStats` parts read the caster.
+    [GameCalculationModified](/classes/gamecalculationmodified) keeps the target.

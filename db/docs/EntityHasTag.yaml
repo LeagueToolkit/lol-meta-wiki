@@ -1,0 +1,18 @@
+# EntityHasTag Documentation
+
+class:
+  description: |
+    A [condition](/classes/entityscriptcondition) that returns true if the game entity that
+    `Entity` gives **carries the entity tag** `tag`.
+    [AddTagToEntityBlock](/classes/addtagtoentityblock) and
+    [RemoveTagFromEntityBlock](/classes/removetagfromentityblock) change the tags of an
+    entity. If no game entity has the id, or a getter fails, the condition records a script
+    error and returns false.
+  notes:
+    - "One shipped map script uses it, to test whether the owner entity of the script carries a tag."
+
+properties:
+  tag:
+    description: "The entity tag to look for."
+  Entity:
+    description: "The entity to test."

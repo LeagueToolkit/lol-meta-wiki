@@ -1,0 +1,26 @@
+# SiblingStatCoefficientBySubPart Documentation
+
+class:
+  description: |
+    A [calculation part](/classes/igamecalculationpart) that reuses the **stat ratio of
+    another part** of the same calculation. The client searches the top-level
+    `mFormulaParts` of the calculation in order for the first [stat
+    part](/classes/igamecalculationpartwithstats) that reads `SourceStat` with
+    `SourceStatFormula`. The part returns the coefficient of that part multiplied by the
+    value of `SubPart`.
+
+    The part returns `0` if `SubPart` is not set, or if no top-level part matches.
+    Sub-parts nested in other parts are not searched.
+  notes:
+    - "A null entry in `mFormulaParts` crashes the search."
+    - "Shipped data uses it as the `mSubpart` of a [StatBySubPartCalculationPart](/classes/statbysubpartcalculationpart)."
+
+properties:
+  SubPart:
+    description: "The part whose value multiplies the found coefficient."
+
+  SourceStat:
+    description: "The stat of the part to find. See `mStat` on [IGameCalculationPartWithStats](/classes/igamecalculationpartwithstats) for the values."
+
+  SourceStatFormula:
+    description: "The stat formula of the part to find: total, base or bonus. See `mStatFormula` on [IGameCalculationPartWithStats](/classes/igamecalculationpartwithstats)."

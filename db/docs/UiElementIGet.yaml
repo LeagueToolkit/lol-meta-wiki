@@ -1,0 +1,12 @@
+# UiElementIGet Documentation
+
+class:
+  description: |
+    A getter that returns a UI element. The getter resolves `value` as a link to a UI
+    element object each time it is evaluated.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  value:
+    description: "The link to the UI element object."

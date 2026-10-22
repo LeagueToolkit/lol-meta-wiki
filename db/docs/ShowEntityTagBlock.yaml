@@ -1,0 +1,8 @@
+# ShowEntityTagBlock Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that **shows** every entity that carries
+    `tag`, over `duration` seconds.
+  notes:
+    - "No shipped object uses it."

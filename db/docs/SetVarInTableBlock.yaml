@@ -1,0 +1,21 @@
+# SetVarInTableBlock Documentation
+
+class:
+  description: |
+    A block that **writes a script variable**. The block evaluates `Src` and writes the value to
+    the variable that `Dest` names. It is the general assignment of the script system and works
+    with every kind of value.
+
+    As a [behaviour-tree block](/classes/ibehaviorscriptblock) it also sets a status:
+
+    - Success after a write.
+    - Failure if `Src` is not set. The block records a script error and writes nothing.
+    - Error if `Src` cannot be evaluated. The block writes nothing.
+  notes:
+    - "Shipped scripts use it more than any block other than `IfConditionBlock`."
+
+properties:
+  Src:
+    description: "The value to write."
+  Dest:
+    description: "The variable that receives the value, as a table and a key (see [IScriptValueGet](/classes/iscriptvalueget))."

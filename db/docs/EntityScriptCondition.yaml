@@ -1,0 +1,9 @@
+# EntityScriptCondition Documentation
+
+class:
+  description: |
+    A [condition](/classes/iscriptcondition) that **tests a game entity** or an entity tag.
+    A condition of this kind gets an entity id from its entity getter and looks the id up
+    among the game entities that exist. If no game entity has the id, the condition records a
+    script error and returns false. [EntityExistsCondition](/classes/entityexistscondition)
+    is the exception: it returns false without an error.

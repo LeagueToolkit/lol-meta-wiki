@@ -1,0 +1,11 @@
+# LevelScriptBlock Documentation
+
+class:
+  description: |
+    Base of the script blocks for **level scripts**: the scripts of a map that control the game
+    level (`LevelControlScript`). [IScriptBlock](/classes/iscriptblock) describes how a block list
+    runs. Output fields (`*TableSet`) name the script variable that receives a result, as
+    described on [IScriptValueGet](/classes/iscriptvalueget).
+
+    The client does not run several of these blocks, and others only evaluate their operands.
+    Each page states what the client does with the block.

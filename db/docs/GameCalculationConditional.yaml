@@ -1,0 +1,35 @@
+# GameCalculationConditional Documentation
+
+class:
+  description: |
+    A [game calculation](/classes/igamecalculation) that **selects one of two other
+    calculations** of the same owner with a cast requirement.
+
+    The client selects the calculation on every evaluation:
+
+    - If the caster is not a unit, or `mConditionalCalculationRequirements` is not set,
+      it selects `mDefaultGameCalculation`.
+    - Otherwise it evaluates the requirement, with its `mInvertResult` applied. If the
+      requirement passes, it selects `mConditionalGameCalculation`. If it fails, it
+      selects `mDefaultGameCalculation`.
+
+    The client then looks up the selected name in the calculations of the owner and
+    evaluates it with the same caster, owner, spell slot and spell level. The value is `0`
+    if the name does not resolve or if the selected calculation is not a
+    [GameCalculation](/classes/gamecalculation).
+  notes:
+    - "The selected calculation is evaluated without the target. Its `UseTargetStats` parts read the caster."
+    - "A selected calculation that is a `GameCalculationModified` or another `GameCalculationConditional` gives `0`."
+
+properties:
+  mDefaultGameCalculation:
+    description: "Name of the calculation that is used when the requirement fails or cannot be evaluated."
+
+  mConditionalGameCalculation:
+    description: "Name of the calculation that is used when the requirement passes."
+
+  mConditionalCalculationRequirements:
+    description: "The cast requirement that selects the calculation, for example a [HasUnitTagsCastRequirement](/classes/hasunittagscastrequirement). The client passes the owner, the spell slot, the caster and the tested unit."
+
+  UseTargetForRequirements:
+    description: "When set, the requirement tests the target of the context instead of the caster."

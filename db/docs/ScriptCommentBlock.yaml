@@ -1,0 +1,14 @@
+# ScriptCommentBlock Documentation
+
+class:
+  description: |
+    A **group block**. The block runs every block of `Sequence` in order, in the same script
+    context. It is not a comment: the blocks in the group run. Data uses it to put related
+    blocks under one entry, which `IsDisabled` can then switch off together.
+
+    The if-chain continues through the group: a conditional block inside the group and the
+    conditional blocks around it form one chain (see [IScriptBlock](/classes/iscriptblock)).
+
+properties:
+  Sequence:
+    description: "The blocks of the group."

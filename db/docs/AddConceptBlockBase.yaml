@@ -1,0 +1,14 @@
+# AddConceptBlockBase Documentation
+
+class:
+  description: |
+    A script block that **adds a number to the value of a [concept](/classes/conceptbase)**
+    for one object. The block reads the value that the concept holds for the object, or the
+    concept's `DefaultValue` if nothing has written it for that object, adds `AddValue` and
+    stores the sum as the value of the object.
+
+    The block resolves `ConceptObject` and `Concept` and stores the value in the same way as
+    a [Set block](/classes/setconceptblockbase): a failing getter writes nothing, a sum equal
+    to the old value writes nothing, and a change is stamped with the current game time and
+    starts the concept's ease ([ConceptEasingData](/classes/concepteasingdata)) for the
+    `Eased*` drivers.

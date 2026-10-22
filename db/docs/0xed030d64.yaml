@@ -1,0 +1,13 @@
+# 0xed030d64 Documentation
+
+class:
+  description: |
+    A getter that returns the FNV-1a hash of the lowercased `value` string as a 32-bit
+    integer. Read as a float, it returns the same number converted to float. It does not
+    read a script variable: to read a variable, use [IntTableGet](/classes/inttableget).
+  notes:
+    - "One shipped object uses it, as the `End` of a [LoopBlock](/classes/loopblock)."
+
+properties:
+  value:
+    description: "The string to hash."

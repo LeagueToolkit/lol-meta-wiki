@@ -1,0 +1,13 @@
+# EntityTagGet Documentation
+
+class:
+  description: |
+    A getter that returns a constant **entity tag**: the hash of a tag name that game
+    entities carry. Conditions such as [EntityHasTag](/classes/entityhastag) and
+    [IsEntityTagActive](/classes/isentitytagactive) take it.
+  notes:
+    - "Shipped scripts use it as a value inserted into custom tables and as the tag of an [EntityHasTag](/classes/entityhastag)."
+
+properties:
+  value:
+    description: "The tag hash the getter returns."

@@ -1,0 +1,10 @@
+# DestroyCustomTableBlock Documentation
+
+class:
+  description: |
+    A block that **removes the script variable** that `TableName` names from its table. After
+    the block runs, the variable is missing.
+
+properties:
+  TableName:
+    description: "The variable to remove, as a table and a key (see [IScriptValueGet](/classes/iscriptvalueget))."

@@ -1,0 +1,30 @@
+# ForEachEntityWithScriptBlock Documentation
+
+class:
+  description: |
+    An [entity loop](/classes/gameentityloopblock) over the **entities that run a script**. The
+    loop finds the running instances of the script that `Script` names and visits the entity
+    that owns each instance. It skips an entity that fails the map filter, and for every other
+    entity it writes the entity to `OutEntity` and runs the body.
+
+    The loop copies the list of entities before the first iteration, so changes that the body
+    makes to the script instances do not change which entities the loop visits.
+
+    `FilterByMapIndex` and `MapIndexOverride` work as on
+    [ForEachEntityWithTagBlock](/classes/foreachentitywithtagblock).
+  notes:
+    - "The loop skips some script instances by an internal state that is not yet identified."
+    - "No shipped object uses it."
+
+properties:
+  Script:
+    description: "The hash of the script whose instances the loop looks for."
+  FilterByMapIndex:
+    description: "If true, the loop visits only the entities whose map index is the map index of the running script."
+  MapIndexOverride:
+    description: |
+      A map index to filter by instead of the map index of the running script. If it evaluates
+      to a value other than `0`, the loop filters by that index, also when `FilterByMapIndex`
+      is false or not set.
+  OutEntity:
+    description: "The entity variable that receives the entity before each run of the body."

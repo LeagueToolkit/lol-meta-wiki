@@ -1,0 +1,20 @@
+# 0x6b73a615 Documentation
+
+class:
+  description: |
+    A block that **runs the caller's sequence from inside a function**. When a function block
+    such as [ExecuteFunctionBlock](/classes/executefunctionblock) calls a function, it can pass
+    a block list in its own `Sequence` (see [IRunFunctionBlock](/classes/irunfunctionblock)).
+    This block, placed in the body of the called function, runs that list in the script context
+    of the caller. This lets a function run blocks that its caller supplies.
+
+    - If the block does not run inside a function call, or the caller's `Sequence` is empty,
+      the block records a script error.
+    - If the number of outputs of the function does not match the number of outputs in the
+      caller's `FunctionDefinition`, the block records a script error.
+
+    Before it runs the caller's list, the block is meant to copy the outputs of the function to
+    the caller. This copy does not work: no output value reaches the caller, and an output that
+    the caller does not declare makes the client read invalid memory.
+  notes:
+    - "No shipped object uses it."

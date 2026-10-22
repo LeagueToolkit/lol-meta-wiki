@@ -1,0 +1,7 @@
+# GetTurretBlock Documentation
+
+class:
+  description: |
+    The client evaluates `Team`, `lane` and `TurretIndex` for this block and does nothing else.
+  notes:
+    - "No shipped object uses it."

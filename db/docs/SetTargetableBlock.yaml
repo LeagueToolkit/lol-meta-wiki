@@ -1,0 +1,8 @@
+# SetTargetableBlock Documentation
+
+class:
+  description: |
+    The client does not run this block. Its `value` field is the targetable state to set. The
+    purpose of the second bool operand is not known.
+  notes:
+    - "No shipped object uses it."

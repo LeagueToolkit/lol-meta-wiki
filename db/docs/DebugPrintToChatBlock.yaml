@@ -1,0 +1,8 @@
+# DebugPrintToChatBlock Documentation
+
+class:
+  description: |
+    A debug block for chat output. The client does not run this block: it does nothing when a
+    list reaches it, and it reads none of its properties.
+  notes:
+    - "No shipped object uses it."

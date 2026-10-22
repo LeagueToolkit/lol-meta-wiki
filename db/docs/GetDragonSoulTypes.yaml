@@ -1,0 +1,15 @@
+# GetDragonSoulTypes Documentation
+
+class:
+  description: |
+    A [level script block](/classes/levelscriptblock) that writes the **soul type names of a
+    dragon camp** to the `SoulTypes` string list variable. The names come from the `SoulTypes`
+    list of the camp's `DragonCampGeComponentDef`.
+
+    If the `DragonCamp` entity has no dragon camp component, the block raises a script error.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  DragonCamp:
+    description: "The entity of the dragon camp."

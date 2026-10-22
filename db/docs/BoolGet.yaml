@@ -1,0 +1,10 @@
+# BoolGet Documentation
+
+class:
+  description: "A getter that returns a constant bool."
+  notes:
+    - "Shipped scripts use it as the source of variable writes, as a comparison operand and for the `SortedByKeys` option of [ForEachInCustomTableBlock](/classes/foreachincustomtableblock)."
+
+properties:
+  value:
+    description: "The bool the getter returns."

@@ -1,0 +1,12 @@
+# StringCast Documentation
+
+class:
+  description: |
+    A getter that reads a script variable of any kind and returns it converted to a
+    string. Nil becomes `Nil`, a Bool becomes `true` or `false`, and a Float is printed
+    with up to 14 significant digits. If the variable is missing or the conversion fails, the getter fails with a script error. See [ScriptTableGet](/classes/scripttableget) for `Table` and `Var`.
+
+    Read as a string hash (`IStringHashGet`), the getter returns the FNV-1a hash of the
+    lowercased string.
+  notes:
+    - "No shipped object uses it."

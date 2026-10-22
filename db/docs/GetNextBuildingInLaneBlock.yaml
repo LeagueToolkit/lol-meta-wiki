@@ -1,0 +1,7 @@
+# GetNextBuildingInLaneBlock Documentation
+
+class:
+  description: |
+    The client evaluates `RelativeIndex` for this block and does nothing else.
+  notes:
+    - "No shipped object uses it."

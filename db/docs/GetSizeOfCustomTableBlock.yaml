@@ -1,0 +1,13 @@
+# GetSizeOfCustomTableBlock Documentation
+
+class:
+  description: |
+    A block that writes the **number of entries** of a
+    [custom table](/classes/createcustomtableblock) to `Size`. The count includes every entry,
+    whatever the kind of its key.
+
+properties:
+  Table:
+    description: "The table to count."
+  Size:
+    description: "The int variable that receives the number of entries."

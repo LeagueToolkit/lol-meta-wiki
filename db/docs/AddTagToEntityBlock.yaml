@@ -1,0 +1,8 @@
+# AddTagToEntityBlock Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that **adds** the entity tag `tag` to
+    `Entity`. If the entity is inactive, the block raises a script error.
+  notes:
+    - "No shipped object uses it."

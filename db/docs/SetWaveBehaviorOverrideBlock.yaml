@@ -1,0 +1,25 @@
+# SetWaveBehaviorOverrideBlock Documentation
+
+class:
+  description: |
+    The client does not run this block. Its fields name a minion type and the wave behavior that
+    overrides the normal wave of that type.
+  notes:
+    - "Shipped map scripts use it to give super minions a constant wave behavior."
+
+properties:
+  MinionType:
+    description: |
+      The minion type that the override applies to. The field uses the same values as the minion
+      type of `BarracksMinionConfig`.
+
+      | Value | Name |
+      | --- | --- |
+      | `0` | `kUnset` |
+      | `1` | `kPet` |
+      | `2` | `kJungleMonster` |
+      | `3` | `kTeamMinion` |
+      | `4` | `kMeleeLaneMinion` |
+      | `5` | `kRangedLaneMinion` |
+      | `6` | `kSiegeLaneMinion` |
+      | `7` | `kSuperLaneMinion` |

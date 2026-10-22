@@ -1,0 +1,12 @@
+# PlaceEntityBlock Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that **creates a placed entity**, activates
+    it, shows it at once and writes it to the `OutEntity` variable.
+
+    The block reads `Entity` for the placement definition of the entity, not for the id of a live
+    entity. If an entity for that definition already exists, or if the client does not allow the
+    entity to be created, the block raises a script error.
+  notes:
+    - "No shipped object uses it."

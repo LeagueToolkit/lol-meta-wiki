@@ -1,0 +1,12 @@
+# IntGet Documentation
+
+class:
+  description: |
+    A getter that returns a constant 32-bit integer. Read as a float, it returns the same
+    number.
+  notes:
+    - "It is the most common shipped literal getter: the source of variable writes, the second operand of comparisons and the bounds of loops."
+
+properties:
+  value:
+    description: "The integer the getter returns."

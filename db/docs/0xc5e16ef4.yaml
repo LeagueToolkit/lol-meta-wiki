@@ -1,0 +1,6 @@
+# 0xc5e16ef4 Documentation
+
+class:
+  description: |
+    A base for [script blocks](/classes/iscriptblock). No block class in the client builds on
+    it, so the client never runs it. Its purpose is not yet identified.

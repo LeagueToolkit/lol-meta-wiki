@@ -1,0 +1,8 @@
+# StatByCoefficientCalculationPart Documentation
+
+class:
+  description: "A [stat part](/classes/igamecalculationpartwithstats) that returns the stat multiplied by the constant `mCoefficient`."
+
+properties:
+  mCoefficient:
+    description: "The ratio of the stat."

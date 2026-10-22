@@ -1,0 +1,19 @@
+# SpawnAiTurret Documentation
+
+class:
+  description: |
+    A [level script block](/classes/levelscriptblock) that **creates a turret** for the team
+    `Team`, at the turret position `Position` in the lane `lane`. The client finds the character
+    of the turret from `0x29bec30a` and `0x96cbc77d`, and the map object from `MapObjectName`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Team:
+    description: "Team id of the turret: `100` and `200` are the two player teams."
+  "0x29bec30a":
+    description: "Hash of the turret character. It is the first key of the character lookup."
+  "0x96cbc77d":
+    description: "Second key of the character lookup, under the character of `0x29bec30a`. Its meaning is not known."
+  MapObjectName:
+    description: "Name of the map object that the turret uses."

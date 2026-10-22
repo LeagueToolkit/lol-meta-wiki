@@ -1,0 +1,27 @@
+# CustomTableHasKeyCondition Documentation
+
+class:
+  description: |
+    A [condition](/classes/iscriptcondition) that returns true if a **custom table contains a
+    key**. `CustomTable` reads the table from a script variable, and `Key` produces the key to
+    look for.
+
+    The kind of the key selects the lookup:
+
+    | Key kind | Lookup |
+    |----------|--------|
+    | Int, EntityTag | Integer key |
+    | Float | Integer key, after truncation toward zero |
+    | String, Int64 | Hashed key. A String key is hashed in lowercase, so the lookup ignores case. |
+    | Any other kind | Key of that kind |
+
+    If `Key` produces a value that cannot be a table key, the condition records a script
+    error and returns false.
+  notes:
+    - "Shipped scripts use it to test whether the value of a script variable is already a key of a custom table that the script keeps in its instance variables."
+
+properties:
+  CustomTable:
+    description: "The script variable that holds the custom table (see [CustomTableGet](/classes/customtableget))."
+  Key:
+    description: "The key to look for."

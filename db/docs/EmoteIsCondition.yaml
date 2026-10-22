@@ -1,0 +1,27 @@
+# EmoteIsCondition Documentation
+
+class:
+  description: |
+    A [condition](/classes/iscriptcondition) that returns true if the **emote in the `EmoteId`
+    variable of the running script** equals `Emote`. The condition reads `EmoteId` from the
+    variables of the script that runs it, not from a table that a property names. If the
+    variable is missing or does not hold an Int, the condition records a script error and
+    returns false. The condition compares only the low byte of the Int.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Emote:
+    description: |
+      The emote to match. The values follow the client's emote numbering. That the `EmoteId`
+      variable uses the same numbering is not confirmed.
+
+      | Value | Emote |
+      |-------|-------|
+      | `0` | Dance |
+      | `1` | Taunt |
+      | `2` | Laugh |
+      | `3` | Joke |
+      | `4` | Toggle |
+      | `5` | Custom |
+      | `6` | None |

@@ -1,0 +1,18 @@
+# ExecuteFunctionLevelBlock Documentation
+
+class:
+  description: |
+    A [level script block](/classes/levelscriptblock) that **calls a function of a level
+    script**. `Function.LevelScriptLink` links the level script and `Function.FunctionName` is
+    the hash of the function name. The block runs the function with `FunctionDefinition` and
+    `Sequence`, which have the same meaning as on
+    [IRunFunctionBlock](/classes/irunfunctionblock).
+
+    If `Function` links no level script, the block does nothing. If the level script has no
+    function with that name, the block raises a script error.
+  notes:
+    - "Shipped map scripts use it to call the functions of their level script."
+
+properties:
+  "0x4283375a":
+    description: "A declaration of the function: module, script and function names, and the names of its parameters. The client does not read it."

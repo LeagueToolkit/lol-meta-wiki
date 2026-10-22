@@ -1,0 +1,22 @@
+# ExternalCalculationCalculationPart Documentation
+
+class:
+  description: |
+    A [calculation part](/classes/igamecalculationpart) that returns the value of a
+    **calculation of another spell**.
+
+    The client finds the spell of `SourceObject` in the caster's spellbook by name. If the
+    caster does not have the spell, the part returns `0`. Otherwise the client evaluates
+    the calculation `CalculationKey` of that spell, with the slot of that spell and the
+    caster's current rank in it as the spell level.
+  notes:
+    - "If the caster has the spell but the spell has no calculation named `CalculationKey`, the evaluation crashes."
+    - "The client reads the caster's spellbook without a check. If the context has no caster unit, the evaluation crashes."
+    - "The calculation is evaluated without the target. Its `UseTargetStats` parts read the caster."
+
+properties:
+  SourceObject:
+    description: "Link to the object whose calculation is evaluated, normally a spell object. How an item source is evaluated is not documented."
+
+  CalculationKey:
+    description: "Name of the calculation of `SourceObject` to evaluate."

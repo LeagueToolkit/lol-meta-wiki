@@ -1,0 +1,15 @@
+# ILoopScriptBlock Documentation
+
+class:
+  description: |
+    A **loop block**: a block that runs its body, `Sequence`, once per iteration. Each loop
+    class decides how many iterations run and which loop variables it writes before each run
+    of the body.
+
+    The loop catches the break and continue signals of its body (see
+    [IScriptBlock](/classes/iscriptblock)). After a run of the body, the loop clears the
+    signal. A break ends the loop, and a continue goes on with the next iteration.
+
+properties:
+  Sequence:
+    description: "The loop body. The loop runs it once per iteration."

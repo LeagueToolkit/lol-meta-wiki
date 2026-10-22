@@ -1,0 +1,19 @@
+# SortCustomTableBlock Documentation
+
+class:
+  description: |
+    A block that **sorts the values** of a [custom table](/classes/createcustomtableblock) in
+    ascending order and makes the table a list. The kind of the first value in walk order
+    selects the sort: int, float, string and vector values can be sorted. The block collects all
+    values in ascending order, clears the table, and appends the values again, so the result has
+    the keys `1` to `n`. The old keys are lost.
+
+    If the first value is of another kind, the block records a script error and does not change
+    the table.
+  notes:
+    - "An empty table crashes the client. Check the size first, for example with [GetSizeOfCustomTableBlock](/classes/getsizeofcustomtableblock)."
+    - "The result for a table that mixes kinds of value is not yet identified."
+
+properties:
+  Table:
+    description: "The table to sort."

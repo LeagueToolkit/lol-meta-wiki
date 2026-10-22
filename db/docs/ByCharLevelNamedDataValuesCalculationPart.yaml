@@ -1,0 +1,15 @@
+# ByCharLevelNamedDataValuesCalculationPart Documentation
+
+class:
+  description: |
+    A [character-level part](/classes/igamecalculationpartbycharlevel) that returns
+    `Level1DataValue + (L - 1) * BonusPerLevelDataValue`, where `L` is the champion level
+    of the caster. Both values are named data values of the owner at the spell level of
+    the context.
+
+properties:
+  Level1DataValue:
+    description: "Name of the data value that gives the value at level 1."
+
+  BonusPerLevelDataValue:
+    description: "Name of the data value that gives the amount added per level above 1."

@@ -1,0 +1,8 @@
+# GetModePreloadFlags Documentation
+
+class:
+  description: |
+    A [level script block](/classes/levelscriptblock) that writes the game's **mode preload
+    flags** to the `ModePreloadFlags` int variable.
+    [SetModePreloadFlags](/classes/setmodepreloadflags) sets the value. The meaning of the bits
+    is not known.

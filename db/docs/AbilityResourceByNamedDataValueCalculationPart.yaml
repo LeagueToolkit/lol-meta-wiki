@@ -1,0 +1,18 @@
+# AbilityResourceByNamedDataValueCalculationPart Documentation
+
+class:
+  description: |
+    A [calculation part](/classes/igamecalculationpart) that returns an **ability resource
+    amount of the caster**, multiplied by the named data value `DataValue` of the owner.
+    It reads the resource the same way as
+    [AbilityResourceByCoefficientCalculationPart](/classes/abilityresourcebycoefficientcalculationpart).
+
+properties:
+  AbilityResource:
+    description: "The ability resource to read. See `mAbilityResource` on [AbilityResourceByCoefficientCalculationPart](/classes/abilityresourcebycoefficientcalculationpart) for the values."
+
+  DataValue:
+    description: "Name of the data value of the owner that gives the ratio."
+
+  StatFormula:
+    description: "Which part of the amount to read: total, base or bonus. See `mStatFormula` on [IGameCalculationPartWithStats](/classes/igamecalculationpartwithstats)."

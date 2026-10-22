@@ -1,0 +1,13 @@
+# PathReferenceGet Documentation
+
+class:
+  description: |
+    A getter that returns a path: the getter resolves `PathRef` to a loaded path object
+    (`IPath`) each time it is evaluated. As a plain value it returns a Path value.
+  notes:
+    - "If the link does not resolve, the getter fails. Evaluated as a plain value, it always raises the script error."
+    - "No shipped object uses it."
+
+properties:
+  PathRef:
+    description: "The link to the path object."

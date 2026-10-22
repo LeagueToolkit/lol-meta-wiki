@@ -1,0 +1,18 @@
+# SpawnEntityBlock Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that **creates an entity** from a
+    `GameEntityTemplate` at `Position`, activates it, shows it at once and writes it to the
+    `OutEntity` variable.
+
+    The block raises a script error if `EntityTemplateVar` does not produce a
+    `GameEntityTemplate`, or if the client fails to create the entity.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  EntityTemplateVar:
+    description: "The template to create the entity from. The getter must produce a data object of type `GameEntityTemplate`."
+  Position:
+    description: "Position of the new entity, in world coordinates."

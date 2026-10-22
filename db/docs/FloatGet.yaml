@@ -1,0 +1,12 @@
+# FloatGet Documentation
+
+class:
+  description: |
+    A getter that returns a constant float. Read as an int, it returns `value` truncated
+    toward zero.
+  notes:
+    - "Shipped scripts use it mostly as values inserted into custom tables, as sources of variable writes and as comparison operands."
+
+properties:
+  value:
+    description: "The float the getter returns."

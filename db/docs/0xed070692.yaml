@@ -1,0 +1,10 @@
+# 0xed070692 Documentation
+
+class:
+  description: |
+    A [level script block](/classes/levelscriptblock) that writes the **selected terrain** of
+    the game to the `SelectedTerrain` int variable. The value is `1`-`7`. The client stores the
+    selection as a set of bits, and the block writes the number of the lowest bit that is set,
+    from bit 1 to bit 7. If none of these bits is set, the block writes nothing.
+  notes:
+    - "A shipped level script uses the value to select the dragon type of the game."

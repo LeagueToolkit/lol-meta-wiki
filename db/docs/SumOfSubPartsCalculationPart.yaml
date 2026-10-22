@@ -1,0 +1,8 @@
+# SumOfSubPartsCalculationPart Documentation
+
+class:
+  description: "A [calculation part](/classes/igamecalculationpart) that returns the **sum** of the values of `mSubparts`. Null entries are skipped. An empty list gives `0`."
+
+properties:
+  mSubparts:
+    description: "The parts to add."

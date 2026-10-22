@@ -1,0 +1,10 @@
+# NilEntityGet Documentation
+
+class:
+  description: |
+    An entity getter that stands for no entity. Read as an entity id, it returns `0` and
+    succeeds. Read as an entity object, it returns none. Read as a driver source (see
+    [ILogicDriverSourceGet](/classes/ilogicdriversourceget)), it fails with a script
+    error. As a plain value it returns an Entity value with id `0`.
+  notes:
+    - "No shipped object uses it."

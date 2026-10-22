@@ -1,0 +1,23 @@
+# LoopBlock Documentation
+
+class:
+  description: |
+    A **counting loop** (see [ILoopScriptBlock](/classes/iloopscriptblock)). The loop counts an
+    index from `Start` to `End` in steps of `step`, and both ends are included.
+
+    Each iteration writes the index to `Dest` and then tests it. If `step` is positive, the test
+    is `index <= End`; otherwise it is `index >= End`. If the test passes, the loop runs the body
+    and adds `step` to the index. If it fails, the loop ends. After the loop, `Dest` holds the
+    first index that failed the test.
+  notes:
+    - "The loop has no iteration limit. A `step` of `0` can make it run forever, and the client then hangs."
+
+properties:
+  Start:
+    description: "The first index. It must be set: the client does not check for a missing operand."
+  End:
+    description: "The last index. It must be set: the client does not check for a missing operand."
+  step:
+    description: "The amount added to the index after each iteration. If `step` is not set, the step is `1`."
+  Dest:
+    description: "The int variable that receives the index before each test."

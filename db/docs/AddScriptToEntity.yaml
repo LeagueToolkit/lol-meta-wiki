@@ -1,0 +1,13 @@
+# AddScriptToEntity Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that **adds a script instance** to the
+    `Target` entity, from the inline `ScriptDef`.
+
+    If the entity is active, every script that runs on the entity then receives the
+    `GameEntityOnScriptAttached` event. The event variable `AttachedScriptHash` holds the hash of
+    the added script.
+  notes:
+    - "The block does not check that the entity supports scripting. On an entity without scripting, the client crashes. [AttachDynamicScript](/classes/attachdynamicscript) is the checked form."
+    - "No shipped object uses it."

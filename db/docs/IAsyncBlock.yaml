@@ -1,0 +1,11 @@
+# IAsyncBlock Documentation
+
+class:
+  description: |
+    A base for [script blocks](/classes/iscriptblock) that hold a block list in `Sequence`. No
+    block class in the client builds on it, so the client never runs it. How `Sequence` would
+    run is not yet identified.
+
+properties:
+  Sequence:
+    description: "A block list. The client does not read it."

@@ -1,0 +1,7 @@
+# GetBuildingLaneBlock Documentation
+
+class:
+  description: |
+    The client does not run this block. Its `Dest` field names the int variable for a lane.
+  notes:
+    - "No shipped object uses it."

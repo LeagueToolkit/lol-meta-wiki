@@ -1,0 +1,17 @@
+# SpellCalculationCalculationPart Documentation
+
+class:
+  description: |
+    A [calculation part](/classes/igamecalculationpart) that returns the value of
+    **another calculation of the same owner**. The client looks up
+    `mSpellCalculationKey` in the calculations of the owner and evaluates it with the same
+    caster, owner, spell slot and spell level. The other calculation applies its own
+    `mMultiplier` and `ResultModifier`. If no calculation has that name, the part returns
+    `0`.
+  notes:
+    - "The other calculation is evaluated without the target. Its `UseTargetStats` parts read the caster."
+    - "Shipped data uses it to reuse a calculation, for example as a term of a sum or a factor of a product."
+
+properties:
+  mSpellCalculationKey:
+    description: "Name of the calculation to evaluate."

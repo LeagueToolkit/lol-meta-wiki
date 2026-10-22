@@ -1,0 +1,13 @@
+# 0xbf65c0ce Documentation
+
+class:
+  description: |
+    A getter that returns the points of a path as a new custom table. The getter resolves
+    `PathRef` to a loaded path object (`IPath`) of the kind that lists its points in
+    `Segments`, and appends each point to the table in order as a Vector3 value.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  PathRef:
+    description: "The link to the path object. If the link does not resolve, the getter fails with a script error."

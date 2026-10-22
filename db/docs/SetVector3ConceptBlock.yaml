@@ -1,0 +1,12 @@
+# SetVector3ConceptBlock Documentation
+
+class:
+  description: "A [concept block](/classes/setconceptblockbase) that writes `NewValue` as the value of a [Vector3Concept](/classes/vector3concept) for the object that `ConceptObject` returns. The block writes only if at least one component differs from the old value."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Concept:
+    description: "The hash of the object path of the [Vector3Concept](/classes/vector3concept) to write. If no `Vector3Concept` with this path is loaded, the block records a script error and does nothing."
+  NewValue:
+    description: "The value to write. The block evaluates it each time it runs."
