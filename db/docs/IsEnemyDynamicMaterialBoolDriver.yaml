@@ -1,0 +1,15 @@
+# IsEnemyDynamicMaterialBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true when the source unit **is on the
+    other team than the local player's champion**.
+
+    The source must be a unit. The driver returns `false` without one, and when there is no
+    local champion, for example in spectator mode.
+
+    Only the two player teams (`100` and `200`) count. A neutral unit (team `300`) is not
+    an enemy.
+  notes:
+    - "Shipped data uses it to give allied and enemy units different colors, through a [ColorChooserMaterialDriver](/classes/colorchoosermaterialdriver), and inside a [NotMaterialDriver](/classes/notmaterialdriver)."
+    - "For Teamfight Tactics boards, see [TftIsEnemyMaterialBoolDriver](/classes/tftisenemymaterialbooldriver)."

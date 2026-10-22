@@ -1,0 +1,16 @@
+# HasMultiKillMaterialBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true when a **kill counter of the
+    source champion** equals `MultiKillSize`. The multikill display of the HUD reads the same
+    counter.
+
+    The source must be a champion. The driver returns `false` for every other source.
+  notes:
+    - "When the counter goes up and when it resets is not identified."
+    - "No shipped object uses it."
+
+properties:
+  MultiKillSize:
+    description: "The counter value to match. The test is exact, so the driver is true only while the counter has this value."

@@ -1,0 +1,10 @@
+# VfxColorRgbConstantDriver Documentation
+
+class:
+  description: "A [Vector3 driver](/classes/ivfxvector3driver) that returns the constant RGB color `Color` as `(r, g, b)`. It evaluates the same way as [VfxVector3ConstantDriver](/classes/vfxvector3constantdriver)."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Color:
+    description: "The returned color: red in x, green in y, blue in z."

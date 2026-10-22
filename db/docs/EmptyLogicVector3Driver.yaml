@@ -1,0 +1,6 @@
+# EmptyLogicVector3Driver Documentation
+
+class:
+  description: "A [vector3 driver](/classes/ilogicvector3driver) that always returns `(0, 0, 0)`. It is a placeholder for a driver slot that must hold something."
+  notes:
+    - "No shipped object uses it."

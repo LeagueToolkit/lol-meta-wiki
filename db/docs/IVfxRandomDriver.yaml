@@ -1,0 +1,10 @@
+# IVfxRandomDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ivfxfloatdriver) kind for random values. No driver class and no
+    property uses this kind: the ranged random drivers
+    ([VfxUniformRangedRandomDriver](/classes/vfxuniformrangedrandomdriver),
+    [VfxSquareRootRangedRandomDriver](/classes/vfxsquarerootrangedrandomdriver)) are plain
+    float drivers. The Random values section of [IVfxBaseDriver](/classes/ivfxbasedriver)
+    describes when a random number is drawn.

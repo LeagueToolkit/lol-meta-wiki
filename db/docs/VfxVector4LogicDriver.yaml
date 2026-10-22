@@ -1,0 +1,24 @@
+# VfxVector4LogicDriver Documentation
+
+class:
+  description: |
+    A [Vector4 driver](/classes/ivfxvector4driver) that returns the value of a game
+    [logic driver](/classes/ilogicdriver). It connects the logic driver system, which reads
+    units and game state, to the VFX driver graph.
+
+    The client evaluates `LogicDriver` once per frame for each emitter and keeps the result,
+    as [IVfxBaseDriver](/classes/ivfxbasedriver) describes. Every particle of the emitter
+    reads the same value in a frame.
+
+    `LogicDriver` takes any logic driver kind. A float driver gives its value in all four
+    lanes, as [ILogicFloatDriver](/classes/ilogicfloatdriver) describes.
+  notes:
+    - "If `LogicDriver` is not set, or the object that `Source` selects does not exist, the value is `(0, 0, 0, 0)`."
+    - "No shipped object uses it."
+
+properties:
+  LogicDriver:
+    description: "The logic driver whose value is returned."
+
+  Source:
+    description: "Selects the object that `LogicDriver` is evaluated for. `0` selects one object of the owning effect and any other value selects a second object. Which objects these are is not yet identified."

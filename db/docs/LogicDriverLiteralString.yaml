@@ -1,0 +1,8 @@
+# LogicDriverLiteralString Documentation
+
+class:
+  description: "A [constant text source](/classes/ilogicdrivervaluetostringsimple) whose text is the string in `value`."
+
+properties:
+  value:
+    description: "The text. The client does not localize it."

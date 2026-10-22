@@ -1,0 +1,47 @@
+# VfxFloatAnimatedWithRandomDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ivfxfloatdriver) that returns an **animated value with random
+    variation**: the embedded `ValueFloat` in `Float`, sampled at a time source. `ValueFloat`
+    is the `constantValue` plus optional `dynamics` curve that the complex emitters use, see
+    Animated values on [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata).
+
+    On every evaluation:
+
+    1. If `Float` has no `dynamics`, the driver returns `constantValue`.
+    2. The driver reads the time source `frequency`.
+    3. If `looping` is set and the time is past the end of the curve, the time wraps: the
+       driver takes the remainder of the time divided by the length of the curve.
+    4. The driver samples the curve at that time. If the curve has probability tables, the
+       tables scale the result as they do on a complex emitter.
+
+    The curve's `times` are positions on the time source: seconds for the sources `1`, `3`
+    and `7`, fractions for the others.
+
+    **Random numbers.** The probability tables read their random numbers from random slots.
+    So the numbers are per particle (drawn at spawn) or per emitter, as the property that
+    holds the value decides, see Random values on [IVfxBaseDriver](/classes/ivfxbasedriver).
+    The vector and colour variants
+    ([VfxVector2AnimatedWithRandomDriver](/classes/vfxvector2animatedwithrandomdriver),
+    [VfxVector3AnimatedWithRandomDriver](/classes/vfxvector3animatedwithrandomdriver),
+    [VfxColorRgbAnimatedWithRandomDriver](/classes/vfxcolorrgbanimatedwithrandomdriver),
+    [VfxColorAnimatedWithRandomDriver](/classes/vfxcoloranimatedwithrandomdriver)) also have
+    `ShareRandom`. When it is set, all components read one random number. When it is not
+    set, each component reads its own.
+
+    **Over a physics step**, the driver samples the curve at both ends of the step when it is
+    the top node of the value, see Interval evaluation on [IVfxBaseDriver](/classes/ivfxbasedriver).
+  notes:
+    - "[VfxFloatAnimatedWithRandomByFactorDriver](/classes/vfxfloatanimatedwithrandombyfactordriver) samples the same kind of curve at the value of another driver instead of a time source."
+    - "Shipped data uses it as the emission rate of [VfxShimmerEmitterDefinitionData](/classes/vfxshimmeremitterdefinitiondata) emitters."
+
+properties:
+  Float:
+    description: "The curve, a `ValueFloat`. If it has no `dynamics`, the driver returns its `constantValue`."
+
+  frequency:
+    description: "The time source. The Time sources table on [IVfxBaseDriver](/classes/ivfxbasedriver) lists the values."
+
+  looping:
+    description: "When `true`, a time past the end of the curve wraps back to its start, so the curve repeats. When `false`, the curve holds its last key."

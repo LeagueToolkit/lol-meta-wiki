@@ -1,0 +1,10 @@
+# VfxSplatFloatOntoVector2Driver Documentation
+
+class:
+  description: "A [Vector2 driver](/classes/ivfxvector2driver) that returns the value of the [float driver](/classes/ivfxfloatdriver) `Float` in both lanes, `(f, f)`. If `Float` is not set, the driver writes nothing."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Float:
+    description: "The value that fills every lane."

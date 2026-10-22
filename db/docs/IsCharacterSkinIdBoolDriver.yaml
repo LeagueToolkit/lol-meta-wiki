@@ -1,0 +1,35 @@
+# IsCharacterSkinIdBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true when the **skin of the source
+    unit** has the id `SkinID`.
+
+    The source must be a unit. The driver returns `false` without one.
+
+    The driver picks the skin data to read in this order:
+
+    1. If `0x267c4080` is `true`, a second skin record of the unit.
+    2. Else, if `RespectDisguise` is `true` and the unit currently shows another character's
+       data, the skin of that other data.
+    3. Else, the unit's current skin.
+  notes:
+    - "Shipped data uses it in a Karma buff, to apply an effect only for two of her skins."
+
+properties:
+  SkinID:
+    description: "The skin id to compare with. `0` is the base skin."
+
+  RespectDisguise:
+    description: "When `true`, a unit that shows another character's data is tested with the skin of that data. When `false`, the unit's own skin is tested."
+
+  UseValidParentForChroma:
+    description: |
+      When `true` and the skin is a chroma, the driver compares the id of the chroma's parent
+      skin, so one `SkinID` matches the skin and all its chromas. When `false`, it compares
+      the id of the chroma itself.
+
+  "0x267c4080":
+    description: "When `true`, the driver reads a second skin record that the unit keeps, and `RespectDisguise` is not used."
+    notes:
+      - "Which skin the second record holds is not determined."

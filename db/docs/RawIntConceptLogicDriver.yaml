@@ -1,0 +1,18 @@
+# RawIntConceptLogicDriver Documentation
+
+class:
+  description: |
+    An [int driver](/classes/ilogicintdriver) that returns the **current value of an
+    [IntConcept](/classes/intconcept)** for the source, without easing. While nothing has
+    written the concept for the source, the driver returns the concept's `DefaultValue`.
+
+    It works like [RawFloatConceptLogicDriver](/classes/rawfloatconceptlogicdriver).
+    [EasedIntConceptLogicDriver](/classes/easedintconceptlogicdriver) reads the same value
+    through the concept's easing, as a float.
+  notes:
+    - "`Concept` must link a loaded concept. The client does not check the link before it reads the concept."
+    - "No shipped object uses it."
+
+properties:
+  Concept:
+    description: "The [IntConcept](/classes/intconcept) to read."

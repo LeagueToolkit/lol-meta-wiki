@@ -1,0 +1,13 @@
+# AssistCountFilter Documentation
+
+class:
+  description: |
+    A [stat stone event filter](/classes/istatstonelogicdriver) that passes for the kind of
+    event that carries an **assist count**, when that count equals `assistCount`. Every
+    other kind of event fails. The filter does not set the amount.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  assistCount:
+    description: "The number of assists that passes. A larger or smaller count fails."

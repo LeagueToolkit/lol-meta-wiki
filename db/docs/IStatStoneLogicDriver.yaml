@@ -1,0 +1,22 @@
+# IStatStoneLogicDriver Documentation
+
+class:
+  description: |
+    A **stat stone event filter**: a condition on one game event that a stat stone
+    (Eternal) tracks. A [StatStoneEventToTrack](/classes/statstoneeventtotrack) names the
+    tracked event and lists its filters in `StatFilters`.
+
+    A filter receives one event and returns whether the event passes. A filter can also set
+    the **amount** that the event adds to the stat stone's counter, such as a duration or a
+    damage value. Most filters do not set it.
+
+    **Units of the event.** Filters read two units out of the event: the **source** and the
+    **target**. Each kind of event stores them in its own place, and some kinds of event
+    have no source or no target. A filter that needs a unit that the event does not carry
+    fails. The event kinds are internal ids and are not documented here.
+
+    **Unit type test.** Several filters test the type of a unit with three flags: champions,
+    minions and turrets. A unit passes when it is of a type whose flag is set. A unit of any
+    other type fails.
+  notes:
+    - "Which client code runs the filters of a tracked event is not yet identified. How the results and amounts of several filters on one event combine is not documented."

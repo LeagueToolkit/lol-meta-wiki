@@ -1,0 +1,22 @@
+# TrackedMissilePositionVector3Driver Documentation
+
+class:
+  description: |
+    A [vector3 driver](/classes/ilogicvector3driver) that returns the **position of a
+    missile of the source unit**, in world units. It goes through `MissileSpellObjects` in
+    list order and returns the position of the missile of the first spell that the unit has
+    a missile of in flight.
+
+    The driver keeps the last position **per source**. When no listed missile is in flight,
+    it returns the last position it returned for the source, and `(0, 0, 0)` if it has not
+    returned one yet. The stored position of a source is removed when the source is
+    destroyed.
+
+    The source must be a unit.
+  notes:
+    - "After the missile is gone, the driver keeps returning the last position of the missile until another listed missile is in flight."
+    - "All of Viktor's skins use it as the `OrientationSource` of a [JointOrientationRigPoseModifierData](/classes/jointorientationrigposemodifierdata) that turns his back arm toward his E missile."
+
+properties:
+  MissileSpellObjects:
+    description: "The spells whose missiles are tracked, as the hashes of their spell object paths, in priority order."

@@ -1,0 +1,21 @@
+# VfxVector2FromVector3Driver Documentation
+
+class:
+  description: "A [Vector2 driver](/classes/ivfxvector2driver) that returns two lanes of the [Vector3 driver](/classes/ivfxvector3driver) `Input`, picked by `Select`. If `Input` is not set, the driver returns `(0, 0)`."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Input:
+    description: "The vector that the lanes are read from."
+
+  Select:
+    description: |
+      The lanes that are returned.
+
+      | Value | Result |
+      |-------|--------|
+      | `0` | `(x, y)` |
+      | `1` | `(x, z)` |
+      | `2` | `(y, z)` |
+      | other | none: the driver writes nothing |

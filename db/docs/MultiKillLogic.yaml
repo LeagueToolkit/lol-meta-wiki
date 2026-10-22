@@ -1,0 +1,10 @@
+# MultiKillLogic Documentation
+
+class:
+  description: |
+    A [stat stone event filter](/classes/istatstonelogicdriver) that passes for the four
+    **multikill** events and sets the amount. For one of the four events the amount is `2`,
+    and for the other three it is `1`. Which multikill size each event stands for is not yet
+    identified. Every other kind of event fails.
+  notes:
+    - "No shipped object uses it."

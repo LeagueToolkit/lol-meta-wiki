@@ -1,0 +1,18 @@
+# VfxFloatDynamicProperty Documentation
+
+class:
+  description: |
+    A **float driver value**: the form in which a property of the component VFX system takes
+    a float from the driver graph. The holder evaluates the driver in `Float` each time it
+    needs the value. [IVfxBaseDriver](/classes/ivfxbasedriver) describes when that is and
+    whether the random values of the expression are per particle or per emitter.
+  notes:
+    - "Shipped data uses it only inside [VfxShimmerEmitterDefinitionData](/classes/vfxshimmeremitterdefinitiondata) emitters, for lifetime, spawn and physics values."
+
+properties:
+  Float:
+    description: |
+      The top node of the expression. If it is not set, the property keeps the value that its
+      holder starts from, which the holder's page states.
+    examples:
+      - "A constant is a [VfxFloatConstantDriver](/classes/vfxfloatconstantdriver) in `Float`."

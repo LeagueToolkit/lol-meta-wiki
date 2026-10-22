@@ -1,0 +1,28 @@
+# VfxSwitchVector4LogicDriver Documentation
+
+class:
+  description: |
+    A [Vector4 driver](/classes/ivfxvector4driver) that returns `True` or `False` depending
+    on a game [bool driver](/classes/ilogicbooldriver).
+
+    The client evaluates `Switch` once per frame for each emitter and keeps the result as a
+    number, like the value of a [VfxVector4LogicDriver](/classes/vfxvector4logicdriver). If
+    the number is `0`, the driver evaluates `False`. Any other number evaluates `True`. Only
+    the chosen operand is evaluated.
+  notes:
+    - "If `Switch` is not set, the driver always evaluates `True`."
+    - "If the chosen operand is not set, the driver writes no output, so the value that the caller passed in stays."
+    - "No shipped object uses it."
+
+properties:
+  Switch:
+    description: "The condition that picks the operand."
+
+  "True":
+    description: "The result while `Switch` is true, and always when `Switch` is not set."
+
+  "False":
+    description: "The result while `Switch` is false."
+
+  Source:
+    description: "Selects the object that `Switch` is evaluated for, as `VfxVector4LogicDriver.Source` describes."

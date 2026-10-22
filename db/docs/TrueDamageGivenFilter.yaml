@@ -1,0 +1,11 @@
+# TrueDamageGivenFilter Documentation
+
+class:
+  description: |
+    A [stat stone event filter](/classes/istatstonelogicdriver) that **always passes** and
+    sets the amount to a number that the event carries.
+
+    The filter does not check the kind of event. It reads the number from a fixed place in
+    the event, so on an event of another kind the amount is whatever value that place holds.
+  notes:
+    - "No shipped object uses it."

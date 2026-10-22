@@ -1,0 +1,21 @@
+# VfxBreakVector4ToFloatsDriver Documentation
+
+class:
+  description: |
+    A [Vector4 driver](/classes/ivfxvector4driver) that builds a vector from four float
+    drivers, one per lane.
+  notes:
+    - "If a lane's driver is not set, the driver writes nothing to that lane, so the lane keeps the value that the caller passed in. Inside the driver graph that is usually `0`."
+
+properties:
+  X:
+    description: "The float driver of the x lane."
+
+  Y:
+    description: "The float driver of the y lane."
+
+  Z:
+    description: "The float driver of the z lane."
+
+  W:
+    description: "The float driver of the w lane."

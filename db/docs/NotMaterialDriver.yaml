@@ -1,0 +1,14 @@
+# NotMaterialDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that returns the **opposite of `mDriver`**.
+    It is the only way to test that a condition is false, because the other bool drivers
+    test only that something is present or active.
+  notes:
+    - "If `mDriver` is not set, the driver returns `true`."
+    - "Shipped data uses it mostly as an entry of an [AllTrueMaterialDriver](/classes/alltruematerialdriver), for conditions such as not dead, not a clone or not attacking."
+
+properties:
+  mDriver:
+    description: "The condition to invert."

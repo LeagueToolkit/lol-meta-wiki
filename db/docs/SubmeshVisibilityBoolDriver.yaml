@@ -1,0 +1,31 @@
+# SubmeshVisibilityBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that tests **whether submeshes of the source's
+    mesh are shown or hidden**. It reads the current submesh visibility of the mesh, which
+    animation events such as [SubmeshVisibilityEventData](/classes/submeshvisibilityeventdata)
+    change.
+
+    | `VISIBLE` | `AnySubmesh` | Returns `true` when |
+    |---|---|---|
+    | `true` | `true` | at least one of `Submeshes` is shown |
+    | `true` | `false` | every one of `Submeshes` is shown |
+    | `false` | `true` | at least one of `Submeshes` is hidden |
+    | `false` | `false` | every one of `Submeshes` is hidden |
+
+    The source must be a game object with a skinned mesh. The driver returns `false`
+    without one.
+  notes:
+    - "If one name of `Submeshes` is not a submesh of the mesh, the driver returns `false`."
+    - "Shipped data uses it mostly inside an [AllTrueMaterialDriver](/classes/alltruematerialdriver), in [PersistentEffectConditionData](/classes/persistenteffectconditiondata) conditions and in animation graphs through a [LogicDriverBoolParametricUpdater](/classes/logicdriverboolparametricupdater)."
+
+properties:
+  Submeshes:
+    description: "The hashes of the submesh names to test."
+
+  VISIBLE:
+    description: "Selects the state to test for: `true` tests that the submeshes are shown, `false` that they are hidden."
+
+  AnySubmesh:
+    description: "Selects the combination: `true` passes when one submesh is in the state, `false` only when all of them are."

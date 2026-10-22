@@ -1,0 +1,76 @@
+# VfxFloatEasingDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ivfxfloatdriver) that returns an **easing curve** over a time
+    source. On every evaluation:
+
+    1. If `duration` is `0` or less, the driver writes nothing.
+    2. The driver reads the time source `frequency`.
+    3. If the time is greater than `duration`, the driver takes the remainder of the time
+       divided by `duration`. So the curve repeats every `duration`.
+    4. The driver divides the time by `duration`, clamps the result to `0`-`1` and applies
+       `EasingFunction` to it.
+
+    Most curves go from `0` at the start of a period to `1` at its end. A time exactly equal
+    to `duration` is not wrapped and returns `1`, and a negative time returns the value at
+    `0`.
+  notes:
+    - "`looping` is not read. The curve always repeats."
+    - "No shipped object uses it."
+
+properties:
+  duration:
+    description: "Length of one period of the curve, in the units of the time source: seconds for the sources `1`, `3` and `7`, a fraction for the others."
+
+  frequency:
+    description: "The time source. The Time sources table on [IVfxBaseDriver](/classes/ivfxbasedriver) lists the values."
+
+  looping:
+    description: "Not read. The curve repeats whatever the value is."
+
+  EasingFunction:
+    description: |
+      The curve shape. `t` is the time divided by `duration`, clamped to `0`-`1`. Every
+      listed shape returns `1` at `t = 1`. Each InOut shape runs its In shape over the first half
+      of the period and its Out shape over the second half.
+
+      | Value | Name | Result |
+      |---|---|---|
+      | `0` | kLinear | `t` |
+      | `1` | kSnap | `1` for every `t` |
+      | `2` | kSmoothStep | `t * t * (3 - 2 * t)` |
+      | `3` | kSmootherStep | `t * t * t * (t * (6 * t - 15) + 10)` |
+      | `4` | kQuadraticEaseIn | `t * t` |
+      | `5` | kQuadraticEaseOut | `t * (2 - t)` |
+      | `6` | kQuadraticEaseInOut | ease in to the middle, then ease out |
+      | `7` | kCubicEaseIn | `t * t * t` |
+      | `8` | kCubicEaseOut | `(t - 1)^3 + 1` |
+      | `9` | kCubicEaseInOut | ease in to the middle, then ease out |
+      | `10` | kQuarticEaseIn | `t^4` |
+      | `11` | kQuarticEaseOut | `1 - (t - 1)^4` |
+      | `12` | kQuarticEaseInOut | ease in to the middle, then ease out |
+      | `13` | kQuinticEaseIn | `t^5` |
+      | `14` | kQuinticEaseOut | `(t - 1)^5 + 1` |
+      | `15` | kQuinticEaseInOut | ease in to the middle, then ease out |
+      | `16` | kSineEaseIn | `1 - cos(pi * t / 2)` |
+      | `17` | kSineEaseOut | `sin(pi * t / 2)` |
+      | `18` | kSineEaseInOut | `(1 - cos(pi * t)) / 2` |
+      | `19` | kCircularEaseIn | `1 - sqrt(1 - t * t)` |
+      | `20` | kCircularEaseOut | `sqrt((2 - t) * t)` |
+      | `21` | kCircularEaseInOut | ease in to the middle, then ease out |
+      | `22` | kExponentialEaseIn | `2^(10 * (t - 1))`, and `0` at `t = 0` |
+      | `23` | kExponentialEaseOut | `1 - 2^(-10 * t)` |
+      | `24` | kExponentialEaseInOut | ease in to the middle, then ease out |
+      | `25` | kElasticEaseIn | an oscillation that grows toward the end |
+      | `26` | kElasticEaseOut | an oscillation that decays from the start |
+      | `27` | kElasticEaseInOut | ease in to the middle, then ease out |
+      | `28` | kBackEaseIn | `t^3 - t * sin(pi * t)`: drops below `0` before it rises |
+      | `29` | kBackEaseOut | the mirror of kBackEaseIn: rises above `1` before it settles |
+      | `30` | kBackEaseInOut | ease in to the middle, then ease out |
+      | `31` | kBounceEaseIn | the mirror of kBounceEaseOut |
+      | `32` | kBounceEaseOut | a series of bounces that settle at `1` |
+      | `33` | kBounceEaseInOut | ease in to the middle, then ease out |
+      | other | - | `0` |
+
+      The Elastic and Back shapes leave the range `0`-`1` between the ends.

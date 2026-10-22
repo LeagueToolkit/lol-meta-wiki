@@ -1,0 +1,12 @@
+# ILogicDriverValueToStringList Documentation
+
+class:
+  description: |
+    A [text source](/classes/ilogicdrivervaluetostring) that **joins several strings into
+    one**. To build its text, the source clears it and appends the item strings in order,
+    with the text of the separator between two items. An empty item is skipped and adds no
+    separator.
+
+properties:
+  "0xc011585":
+    description: "The separator: a [constant text source](/classes/ilogicdrivervaluetostringsimple) whose text goes between two items."

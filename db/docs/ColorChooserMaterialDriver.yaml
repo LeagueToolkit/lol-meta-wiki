@@ -1,0 +1,19 @@
+# ColorChooserMaterialDriver Documentation
+
+class:
+  description: |
+    A [vector driver](/classes/ilogicdriver) that picks one of **two colors** by a condition.
+    It returns `mColorOn` while `mBoolDriver` is true and `mColorOff` while it is false.
+
+    The change is immediate. [LerpVec4LogicDriver](/classes/lerpvec4logicdriver) fades
+    between two vectors instead.
+
+properties:
+  mBoolDriver:
+    description: "The condition that picks the color. It must be set: the client does not check for a missing operand."
+
+  mColorOn:
+    description: "The result while `mBoolDriver` is true."
+
+  mColorOff:
+    description: "The result while `mBoolDriver` is false."

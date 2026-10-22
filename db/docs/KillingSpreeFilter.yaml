@@ -1,0 +1,13 @@
+# KillingSpreeFilter Documentation
+
+class:
+  description: |
+    A [stat stone event filter](/classes/istatstonelogicdriver) that passes for the
+    **killing spree** event when the spree count of the event equals `KillingSpreeCount`.
+    Every other kind of event fails. The filter does not set the amount.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  KillingSpreeCount:
+    description: "The spree count that passes. A larger or smaller count fails."

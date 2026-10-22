@@ -1,0 +1,16 @@
+# VfxDivideByFactorFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ivfxfloatdriver) that returns `value` divided by `Divisor`. If the
+    absolute value of `Divisor` is `1e-6` or less, the driver skips the division and returns
+    `value`. If `value` is not set, it returns `1`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  value:
+    description: "The dividend."
+
+  Divisor:
+    description: "The divisor."

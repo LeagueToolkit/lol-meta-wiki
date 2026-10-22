@@ -1,0 +1,14 @@
+# LeaderFacingVector3Driver Documentation
+
+class:
+  description: |
+    A [vector3 driver](/classes/ilogicvector3driver) that returns the **facing direction of
+    the object that the source unit is attached to**. The client finds the object attacher
+    of the unit, then the object that the attacher attaches the unit to, and returns one axis
+    of that object's transform: the axis that the client also reads as the facing direction
+    of a unit.
+
+    The source must be a unit. When the unit is not attached to an object, or the object has
+    no transform, the driver returns `(0, 0, 0)`.
+  notes:
+    - "Shipped data uses it as the `OrientationSource` of a [JointOrientationRigPoseModifierData](/classes/jointorientationrigposemodifierdata) on the skin of a TFT unit."

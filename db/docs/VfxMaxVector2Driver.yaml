@@ -1,0 +1,16 @@
+# VfxMaxVector2Driver Documentation
+
+class:
+  description: |
+    A [Vector2 driver](/classes/ivfxvector2driver) that returns the lane-by-lane maximum of the
+    drivers in `params`. The Vector2 form of [VfxMaxFloatDriver](/classes/vfxmaxfloatdriver).
+
+    The result starts at `(-FLT_MAX, -FLT_MAX)`, so an empty list returns `(-FLT_MAX,
+    -FLT_MAX)`. `FLT_MAX` is `3.4028235e38`. The driver skips an entry that is not set. Each
+    entry is evaluated into a zero vector, so an entry that writes no value counts as `(0, 0)`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  params:
+    description: "The operands."

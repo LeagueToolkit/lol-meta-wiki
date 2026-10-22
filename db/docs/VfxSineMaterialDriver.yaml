@@ -1,0 +1,27 @@
+# VfxSineMaterialDriver Documentation
+
+class:
+  description: |
+    A [particle material driver](/classes/ivfxmaterialdriver) that returns a **sine wave of
+    the client time**, written into all four components:
+
+    `sin(time × mFrequency) × mScale + mBias`
+
+    The driver ignores t and has no `frequency`. It is always evaluated once per emitter
+    update, also in a material whose other drivers are per particle, so every particle of
+    the emitter gets the same value.
+
+    A global client mode selects the clock that supplies the time. Which clocks the modes
+    select is not yet identified.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  mFrequency:
+    description: "A factor on the time. The product is the angle in radians."
+
+  mScale:
+    description: "The amplitude. The value swings between `mBias - mScale` and `mBias + mScale`."
+
+  mBias:
+    description: "The value the wave swings around."

@@ -1,0 +1,67 @@
+# Float4FromLogicDrivers Documentation
+
+class:
+  description: |
+    A [vector driver](/classes/ilogicdriver) that **builds a four-component vector from
+    float drivers**. Each component, or lane, X, Y, Z and W has a **selector** that names the
+    driver that fills the lane, and a modifier that turns the value of the driver into the
+    value of the lane.
+
+    On every evaluation:
+
+    1. The result starts at `(0, 0, 0, 0)`.
+    2. Each driver that a selector names is evaluated once, for the source.
+    3. Each lane gets the value of the driver that its selector names. When the lane has a
+       modifier, the lane gets the result of the modifier instead.
+
+    | Selector value | Driver that fills the lane |
+    |----------------|----------------------------|
+    | `0` | None. The lane stays `0`. |
+    | `1` | `XDriver` |
+    | `2` | `YDriver` |
+    | `4` | `ZDriver` |
+    | `8` | `WDriver` |
+
+    One driver can fill several lanes, and each lane applies its own modifier. Every
+    modifier receives the value of the driver itself: the modifiers of the lanes do not
+    chain.
+  notes:
+    - "A selector that names a driver that is not set crashes the client."
+    - "Shipped skin overlays use it for a parameter of a UI material. The selectors of X and Y both name `XDriver`, and each of the two lanes applies its own modifier to the value."
+
+properties:
+  XDriver:
+    description: "The float driver that the selector value `1` names."
+
+  YDriver:
+    description: "The float driver that the selector value `2` names."
+
+  ZDriver:
+    description: "The float driver that the selector value `4` names."
+
+  WDriver:
+    description: "The float driver that the selector value `8` names."
+
+  "0x8f60db30":
+    description: "The selector of lane X: the driver that fills the X component. See the table in the class description."
+
+  "0x9060dcc3":
+    description: "The selector of lane Y: the driver that fills the Y component."
+
+  "0x9160de56":
+    description: "The selector of lane Z: the driver that fills the Z component."
+
+  "0x9e60f2cd":
+    description: "The selector of lane W: the driver that fills the W component."
+
+  XValueModifier:
+    description: "The modifier of lane X. It receives the value of the driver that lane X selects, and its result is the X component. Without it, the X component is the value of the driver."
+
+  YValueModifier:
+    description: "The modifier of lane Y, as `XValueModifier` is for lane X."
+
+  ZValueModifier:
+    description: "The modifier of lane Z, as `XValueModifier` is for lane X."
+
+  WValueModifier:
+    description: "The modifier of lane W, as `XValueModifier` is for lane X."

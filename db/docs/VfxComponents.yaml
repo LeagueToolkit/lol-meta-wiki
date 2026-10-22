@@ -35,10 +35,11 @@ class:
     The emitter's mesh animation loops on a clock that starts at the start time the lifetime
     component reports.
 
-    **Shipped data.** Only Summoner's Rift map data carries component graphs. Every shipped
-    graph fills the four required slots with the modern components and leaves
-    `ChildComponent` and `components` empty. Every shipped shimmer emitter also sets
-    `disabled`, and a disabled shimmer emitter is never built, so no shipped graph runs.
+    **Shipped data.** Summoner's Rift map data carries the component graphs, plus one test
+    system in `Global.wad.client` that no shipped bin references. Every Summoner's Rift graph
+    fills the four required slots with the modern components and leaves `ChildComponent` and
+    `components` empty. Every Summoner's Rift shimmer emitter also sets `disabled`, and a
+    disabled shimmer emitter is never built, so no Summoner's Rift graph runs.
   notes:
     - "Summoner's Rift map data also writes component graphs onto complex emitters, as a `VfxComponents` field on `VfxEmitterDefinitionData`. No tracked build registers that field there, and the client skips a property that its class does not register. Those complex emitters set no `rate`, `flexRate`, `isSingleParticle` or material override, so the client drops them when the system is prepared."
 

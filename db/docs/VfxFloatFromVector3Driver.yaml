@@ -1,0 +1,21 @@
+# VfxFloatFromVector3Driver Documentation
+
+class:
+  description: "A [float driver](/classes/ivfxfloatdriver) that returns one lane of the [Vector3 driver](/classes/ivfxvector3driver) `Input`. If `Input` is not set, the driver returns `0`."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Input:
+    description: "The vector that the lane is read from."
+
+  Select:
+    description: |
+      The lane that is returned.
+
+      | Value | Lane |
+      |-------|------|
+      | `0` | x |
+      | `1` | y |
+      | `2` | z |
+      | other | none: the driver writes nothing |

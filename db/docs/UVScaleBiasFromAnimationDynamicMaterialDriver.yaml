@@ -1,0 +1,20 @@
+# UVScaleBiasFromAnimationDynamicMaterialDriver Documentation
+
+class:
+  description: |
+    A [vector driver](/classes/ilogicdriver) that returns the **UV scale and bias of a UV
+    animation** of a submesh of the source's mesh. It finds the submesh `mSubMeshName` in
+    the mesh of the source and reads its UV animation `mUvAnimIndex`. The result is kept on
+    the mesh together with the time it was computed for.
+
+    When the submesh or the animation is not found, the driver returns `(1, 1, 0, 0)`: a
+    scale of `1` and a bias of `0`, which leave texture coordinates unchanged.
+  notes:
+    - "**It crashes without a source.** When the source is missing or is not a game object, the client reads through a null pointer."
+
+properties:
+  mSubMeshName:
+    description: "The name of the submesh whose UV animation is read."
+
+  mUvAnimIndex:
+    description: "The index of the UV animation of that submesh."

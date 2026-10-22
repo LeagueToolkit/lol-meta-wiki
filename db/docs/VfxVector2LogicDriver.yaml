@@ -1,0 +1,13 @@
+# VfxVector2LogicDriver Documentation
+
+class:
+  description: "A [Vector2 driver](/classes/ivfxvector2driver) that returns the value of the [logic driver](/classes/ilogicvector2driver) `LogicDriver`. The Vector2 form of [VfxFloatLogicDriver](/classes/vfxfloatlogicdriver), which describes when the logic driver is evaluated."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  LogicDriver:
+    description: "The logic driver that gives the value."
+
+  Source:
+    description: "Selects the object that the logic driver is evaluated for. [VfxFloatLogicDriver](/classes/vfxfloatlogicdriver) describes the values."

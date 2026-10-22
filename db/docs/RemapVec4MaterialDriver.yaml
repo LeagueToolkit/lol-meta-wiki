@@ -1,0 +1,35 @@
+# RemapVec4MaterialDriver Documentation
+
+class:
+  description: |
+    A [vector driver](/classes/ilogicdriver) that maps each component of a vector from one
+    **range** to another, as [RemapFloatMaterialDriver](/classes/remapfloatmaterialdriver)
+    does for a number. For each component:
+
+    1. It clamps the component of the value of `driver` to the same component of
+       `MinValue`..`MaxValue`.
+    2. It takes the position of the value in that range, from `0` to `1`.
+    3. It returns the point at that position between the same components of
+       `OutputMinValue` and `OutputMaxValue`.
+
+    A float driver in `driver` gives the same number in all four components, and each
+    component is then mapped with its own range.
+  notes:
+    - "A component whose input range has zero width (`MinValue` equal to `MaxValue` in that component) divides by zero, and the driver returns an invalid number in that component."
+    - "Shipped data uses it to map the ability resource of a champion to a vector material parameter."
+
+properties:
+  driver:
+    description: "The driver whose value is mapped."
+
+  MinValue:
+    description: "The low end of the input range, per component. Inputs below it count as this value."
+
+  MaxValue:
+    description: "The high end of the input range, per component. Inputs above it count as this value."
+
+  OutputMinValue:
+    description: "The result, per component, for an input at `MinValue`."
+
+  OutputMaxValue:
+    description: "The result, per component, for an input at `MaxValue`."

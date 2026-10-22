@@ -1,0 +1,15 @@
+# VfxNormalizeVector3Driver Documentation
+
+class:
+  description: |
+    A [Vector3 driver](/classes/ivfxvector3driver) that returns `Vector3Input` scaled to length
+    `1`, with an exact square root. If the squared length is not above `1e-9`, the driver
+    returns the vector unchanged.
+
+    If `Vector3Input` is not set, the driver writes nothing.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Vector3Input:
+    description: "The vector that is normalized."

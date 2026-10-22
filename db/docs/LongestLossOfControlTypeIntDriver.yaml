@@ -1,0 +1,39 @@
+# LongestLossOfControlTypeIntDriver Documentation
+
+class:
+  description: |
+    An [int driver](/classes/ilogicintdriver) that returns the **type of loss of control
+    with the longest remaining duration** on the source champion. Each type stands for a set
+    of buff types. The driver looks at the active buffs of the champion and returns the type
+    whose buffs have the longest remaining duration.
+
+    | Value | Type | Buff types |
+    |-------|------|------------|
+    | `2` | Suppression | Suppression |
+    | `3` | Knockup | Knockup |
+    | `4` | Knockback | Knockback |
+    | `20` | Asleep | Asleep |
+    | `10` | Fear | Fear, Flee |
+    | `11` | Berserk | Berserk |
+    | `12` | Taunt | Taunt |
+    | `13` | Charm | Charm |
+    | `5` | Stun | Stun |
+    | `9` | Root | Taunt, Berserk, Snare, Charm |
+    | `6` | Polymorph | Polymorph |
+    | `7` | Silence | Silence, Taunt, Berserk, Polymorph, Flee |
+    | `17` | Blind | Blind |
+    | `8` | Disarm | Polymorph, Flee, Disarm |
+    | `18` | Grounded | Grounded |
+    | `19` | NearSight | NearSight |
+    | `21` | Drowsy | Drowsy |
+    | `14` | Slow | Slow, Snare, Charm |
+
+    The table lists the types in the order in which the client tests them. A buff type can
+    count for several types: a taunt counts as Taunt, Root and Silence.
+
+    The source must be a champion. For any other source the driver returns `-1`.
+  notes:
+    - "The driver also returns `-1` for a champion that lacks a component and a flag of its character data that the client checks first. Which component and flag these are was not identified."
+    - "Values `15` and `16` are never returned. What the driver returns while the champion has no loss of control was not identified."
+    - "[HasLossOfControlTypeBoolDriver](/classes/haslossofcontroltypebooldriver) tests the same types as a condition."
+    - "No shipped object uses it."

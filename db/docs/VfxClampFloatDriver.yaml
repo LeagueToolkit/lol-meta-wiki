@@ -1,0 +1,22 @@
+# VfxClampFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ivfxfloatdriver) that returns `Param` limited to the range from
+    `Low` to `High`. If `Param` is not set, it returns `0`.
+
+    The driver tests `High` first: a value above `High` returns `High`, and any other value
+    returns the larger of the value and `Low`. The bounds are not swapped, so with `Low` above
+    `High` a value above `High` returns `High` and every other value returns at least `Low`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Param:
+    description: "The value that is clamped."
+
+  Low:
+    description: "The lower bound."
+
+  High:
+    description: "The upper bound. It takes precedence over `Low`."

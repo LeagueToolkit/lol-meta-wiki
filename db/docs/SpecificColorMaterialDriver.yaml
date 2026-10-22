@@ -1,0 +1,10 @@
+# SpecificColorMaterialDriver Documentation
+
+class:
+  description: "A [vector driver](/classes/ilogicdriver) that always returns `mColor`."
+  notes:
+    - "[Float4LiteralMaterialDriver](/classes/float4literalmaterialdriver) behaves the same."
+
+properties:
+  mColor:
+    description: "The color that the driver returns, as red, green, blue and alpha."

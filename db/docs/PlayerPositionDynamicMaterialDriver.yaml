@@ -1,0 +1,12 @@
+# PlayerPositionDynamicMaterialDriver Documentation
+
+class:
+  description: |
+    A [vector driver](/classes/ilogicdriver) that returns the **position of the source** in
+    the world, in world units, as `(x, y, z, 0)`.
+
+    The source can be any game object. Without one the driver returns `(1, 1, 1, 0)`.
+  notes:
+    - "The driver reads the source, not the local player. On the material of a unit it returns the position of that unit."
+    - "The failure value is `(1, 1, 1, 0)`, not zero."
+    - "Shipped data uses it in dynamic material parameters, most of them on companions."

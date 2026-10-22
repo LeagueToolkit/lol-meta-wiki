@@ -1,0 +1,10 @@
+# Float4LiteralMaterialDriver Documentation
+
+class:
+  description: "A [vector driver](/classes/ilogicdriver) that always returns `value`. It is the constant of the vector drivers, for example a color in an element of a [SwitchMaterialDriver](/classes/switchmaterialdriver)."
+  notes:
+    - "[SpecificColorMaterialDriver](/classes/specificcolormaterialdriver) behaves the same."
+
+properties:
+  value:
+    description: "The four components that the driver returns."

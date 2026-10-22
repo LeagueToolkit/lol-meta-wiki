@@ -1,0 +1,14 @@
+# MaxMaterialDriver Documentation
+
+class:
+  description: |
+    A [vector driver](/classes/ilogicdriver) that returns the **component-wise maximum** of
+    the values of `mDrivers`. Each component of the result is the largest value of that
+    component over all drivers in the list. A float driver in the list counts with its
+    number in all four components, so over float drivers the result is the largest number.
+  notes:
+    - "With an empty list, every component is the lowest float value, about `-3.4e38`."
+
+properties:
+  mDrivers:
+    description: "The drivers to compare. Each is evaluated for the source on every call."

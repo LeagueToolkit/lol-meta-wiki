@@ -1,0 +1,14 @@
+# IsAttackingBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true while the source unit **casts a
+    basic attack**. A basic attack is a spellbook cast, and the driver tests the cast that is
+    ongoing now, the same one that
+    [IsCastingBoolDriver](/classes/iscastingbooldriver) reads.
+
+    The source must be a unit. The driver returns `false` without one and while no cast is
+    ongoing.
+  notes:
+    - "The attack is ongoing only while it is the unit's active cast. A projectile in flight does not count."
+    - "Shipped data uses it mostly inside a [NotMaterialDriver](/classes/notmaterialdriver)."

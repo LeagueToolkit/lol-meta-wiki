@@ -1,0 +1,22 @@
+# HasValueChanged Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true when **the value of
+    `LogicDriver` has changed** since the previous evaluation.
+
+    On each evaluation the driver reads `LogicDriver` as a four-component vector and compares
+    it with the value it stored at the previous evaluation. It returns `true` when any
+    component differs by more than `0.00001`. It then stores the new value. The first
+    evaluation stores the value and returns `false`.
+
+    So the driver is true for one evaluation per change. To hold the result for a time, put
+    it in a [FixedDurationTriggeredBoolDriver](/classes/fixeddurationtriggeredbooldriver) or
+    a [DelayedBoolMaterialDriver](/classes/delayedboolmaterialdriver).
+  notes:
+    - "The stored value is kept on the driver object, not per source. If several sources evaluate one driver object, each evaluation compares with the value of the previous source."
+    - "Shipped data uses it once, in a skin's [LogicDriverViewController](/classes/logicdriverviewcontroller) UI, on the counter of a buff."
+
+properties:
+  LogicDriver:
+    description: "The value to watch. Any kind of driver works. It must be set: the client does not check for a missing operand."

@@ -1,0 +1,17 @@
+# StatStoneEventToTrack Documentation
+
+class:
+  description: |
+    One **tracked event of a stat stone** (Eternal): the game event that the stat stone
+    counts, and the [filters](/classes/istatstonelogicdriver) that the event is tested
+    against.
+  notes:
+    - "Shipped stat stones filter mostly by the target's unit tags, with [TargetHasUnitTagFilter](/classes/targethasunittagfilter), and by the target's unit type, with [TargetTypeFilter](/classes/targettypefilter)."
+    - "Which client code runs the filters is not yet identified."
+
+properties:
+  EventToTrack:
+    description: "The internal id of the tracked game event. The ids are not documented."
+
+  StatFilters:
+    description: "The filters. Each one is a condition on the event, and some of them set the amount that the event adds to the counter. See [IStatStoneLogicDriver](/classes/istatstonelogicdriver)."

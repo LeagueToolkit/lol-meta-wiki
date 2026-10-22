@@ -1,0 +1,17 @@
+# GetMapPropBoolDynamicMaterialBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that reads a **named value stored on a map
+    prop** as a bool. It reads the same table as
+    [GetMapPropFloatDynamicMaterialFloatDriver](/classes/getmappropfloatdynamicmaterialfloatdriver)
+    and is true when the value under `mKeyName` is not `0`.
+
+    The source must be a map prop. The driver returns `false` without one, and when the prop
+    has no value under that name.
+  notes:
+    - "Shipped data uses it on the props of one Teamfight Tactics arena map, mostly in a [LerpMaterialDriver](/classes/lerpmaterialdriver)."
+
+properties:
+  mKeyName:
+    description: "The name of the value."

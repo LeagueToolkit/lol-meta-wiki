@@ -1,0 +1,34 @@
+# VfxFloatSineDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ivfxfloatdriver) that returns a **wave** mapped onto the range
+    `Remap`:
+
+    `Remap.x + (Remap.y - Remap.x) * (0.5 * wave(2 * pi * Time / period) + 0.5)`
+
+    If `Time` is not set, the driver writes nothing. If `period` is not set, the period is
+    `1`. If the absolute value of the period is `1e-6` or less, the driver returns the middle
+    of `Remap`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Time:
+    description: "The input of the wave, for example a [VfxFloatTimeDriver](/classes/vfxfloattimedriver)."
+
+  period:
+    description: "Length of one wave cycle, in the units of `Time`."
+
+  Remap:
+    description: "`x` is the result at the bottom of the wave and `y` the result at the top."
+
+  "0xfecf7b3c":
+    description: |
+      The wave shape. The property's name is not yet known.
+
+      | Value | Name | `wave` |
+      |---|---|---|
+      | `0` | Sine | `sin` |
+      | `1` | Cosine | `cos` |
+      | other | None | no wave: the driver returns the middle of `Remap` |

@@ -1,0 +1,16 @@
+# VfxVector4FromVector3Driver Documentation
+
+class:
+  description: |
+    A [Vector4 driver](/classes/ivfxvector4driver) that widens a Vector3 driver. The result
+    is `(Input.x, Input.y, Input.z, Fill)`.
+  notes:
+    - "If `Input` is not set, the driver returns `(0, 0, 0, 0)` and does not use `Fill`."
+    - "When the material render component binds its drivers, it records which lanes each driver defines. This driver reports only the x, y and z lanes. The `Fill` lane is reported as not driven. What the component does with an unreported lane is not yet identified."
+
+properties:
+  Input:
+    description: "The Vector3 driver that gives the x, y and z lanes."
+
+  Fill:
+    description: "The constant w lane."

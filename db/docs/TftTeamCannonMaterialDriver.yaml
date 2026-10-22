@@ -1,0 +1,32 @@
+# TftTeamCannonMaterialDriver Documentation
+
+class:
+  description: |
+    A [vector driver](/classes/ilogicdriver) that returns one of **four values by the TFT
+    round state** of the source unit's team:
+
+    1. When the team of the source matches two team indices of the current TFT state, the
+       driver returns `success` if a round result flag of the state is set, and `Failure`
+       if it is not.
+    2. Otherwise it returns `INACTIVE` when a flag of the TFT state is off, and `Idle` when
+       that flag is on.
+
+    What the two team indices and the two flags of the TFT state stand for was not
+    identified.
+  notes:
+    - "The driver evaluates all four values on every call, also the ones that are not returned."
+    - "`Idle` must be set: the client does not check it for a missing operand."
+    - "Shipped data uses it in dynamic material parameters of the shared TFT data."
+
+properties:
+  success:
+    description: "The result when the source's team matches the current TFT state and the round result flag is set."
+
+  Failure:
+    description: "The result when the source's team matches the current TFT state and the round result flag is not set."
+
+  INACTIVE:
+    description: "The result when the source's team does not match and the flag of the TFT state is off."
+
+  Idle:
+    description: "The result in every other case."

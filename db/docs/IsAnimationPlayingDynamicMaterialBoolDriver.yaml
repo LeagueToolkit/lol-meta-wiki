@@ -1,0 +1,20 @@
+# IsAnimationPlayingDynamicMaterialBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true while **one of the animations in
+    `mAnimationNames` plays** on the source. It is the second most used bool driver in
+    shipped data: skins use it to change a material or show an effect during a dance, a
+    recall or a spell animation.
+
+    The source must be a game object. The driver returns `false` without one.
+
+    The driver first looks in the source's animation graph. When the graph has none of the
+    animations playing, or the source has no graph, the driver asks a second component of
+    the source with the same names. That component is not identified.
+  notes:
+    - "To read how far an animation has played, see [AnimationFractionDynamicMaterialFloatDriver](/classes/animationfractiondynamicmaterialfloatdriver)."
+
+properties:
+  mAnimationNames:
+    description: "The hashes of the animation names, as the clip names of the animation graph. The driver is true when any of them plays."

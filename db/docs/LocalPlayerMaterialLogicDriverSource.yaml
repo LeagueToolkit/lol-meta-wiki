@@ -1,0 +1,6 @@
+# LocalPlayerMaterialLogicDriverSource Documentation
+
+class:
+  description: "A [material driver source](/classes/imateriallogicdriversource) that supplies the **local player's champion** as the source."
+  notes:
+    - "No shipped object uses it."

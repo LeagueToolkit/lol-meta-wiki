@@ -1,0 +1,14 @@
+# IsEmoteMutedBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true when the **local player does not
+    see the emotes of the source unit's player**. That is the case when:
+
+    - the local player has muted the emotes of that player, or
+    - the unit is on the other team and the setting `HideEnemySummonerEmotes` is on.
+
+    The source must be a unit. The driver returns `false` without one, and when there is no
+    local champion, for example in spectator mode.
+  notes:
+    - "Shipped data uses it in the animation graphs of skins with interactive emotes, through a [LogicDriverBoolParametricUpdater](/classes/logicdriverboolparametricupdater)."

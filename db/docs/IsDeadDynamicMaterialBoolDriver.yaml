@@ -1,0 +1,11 @@
+# IsDeadDynamicMaterialBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true while the source unit **is
+    dead**.
+
+    The source must be a unit. The driver returns `false` without one.
+  notes:
+    - "Shipped data uses it mostly in a [LerpMaterialDriver](/classes/lerpmaterialdriver), to fade a material while the unit is dead, and inside a [NotMaterialDriver](/classes/notmaterialdriver) to hide UI and effects on death."
+    - "See also [IsAliveBoolDriver](/classes/isalivebooldriver)."

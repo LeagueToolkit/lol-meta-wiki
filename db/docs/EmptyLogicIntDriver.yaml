@@ -1,0 +1,6 @@
+# EmptyLogicIntDriver Documentation
+
+class:
+  description: "An [int driver](/classes/ilogicintdriver) that always returns `0`. It is a placeholder for a driver slot that must hold something."
+  notes:
+    - "No shipped object uses it."

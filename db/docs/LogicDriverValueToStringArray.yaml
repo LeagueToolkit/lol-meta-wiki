@@ -1,0 +1,21 @@
+# LogicDriverValueToStringArray Documentation
+
+class:
+  description: |
+    A [text source](/classes/ilogicdrivervaluetostring) that **picks one text source from a
+    list** by an index that a driver computes. The source evaluates `ArrayIndexDriver`, drops
+    the fraction, and uses the result as an index into `ValueArray`. It then evaluates the
+    text source at that index and copies its text.
+
+    If the index is outside the list, the text does not change. It keeps the text of the
+    last valid pick, or stays empty if there was none. An index below `0` is outside the
+    list.
+  notes:
+    - "Shipped UI data computes the index with a [GetGearIndexIntDriver](/classes/getgearindexintdriver), to show one text for each gear form of a champion."
+
+properties:
+  ArrayIndexDriver:
+    description: "The driver that computes the index into `ValueArray`. The first entry has index `0`."
+
+  ValueArray:
+    description: "The text sources to pick from. Only the picked source is evaluated."

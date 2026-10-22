@@ -1,0 +1,18 @@
+# VfxBreakVector2ToFloatsDriver Documentation
+
+class:
+  description: |
+    A [Vector2 driver](/classes/ivfxvector2driver) that builds a vector from two [float
+    driver](/classes/ivfxfloatdriver)s: `X` gives the x lane and `Y` gives the y lane.
+
+    If one of them is not set, the driver writes nothing to that lane, so the lane keeps the
+    value that the caller passed in.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  X:
+    description: "The x lane."
+
+  Y:
+    description: "The y lane."

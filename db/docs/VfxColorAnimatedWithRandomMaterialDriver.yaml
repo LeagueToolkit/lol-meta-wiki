@@ -1,0 +1,25 @@
+# VfxColorAnimatedWithRandomMaterialDriver Documentation
+
+class:
+  description: |
+    A [particle material driver](/classes/ivfxmaterialdriver) that returns an **animated
+    color value sampled at t**. It is the `ValueColor` form of
+    [VfxColorOverLifeMaterialDriver](/classes/vfxcoloroverlifematerialdriver): the value is
+    a `constantValue` plus optional `dynamics`, the same embed that
+    [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata) uses for its animated
+    values.
+
+    - When `colors` has no `dynamics`, the driver returns `constantValue`.
+    - When `colors` has `dynamics`, the driver samples the curve at t.
+
+    [VfxColorAnimatedWithRandomDriver](/classes/vfxcoloranimatedwithrandomdriver) is the same
+    value as a driver of the VFX driver graph.
+  examples:
+    - "Shipped companion particles use it with a bare `constantValue` to set a constant tint, such as `LayerTint01`."
+
+properties:
+  frequency:
+    description: "When the driver is evaluated: `0` once per emitter update, `1` once per particle. [IVfxMaterialDriver](/classes/ivfxmaterialdriver) describes both modes."
+
+  colors:
+    description: "The color value. Without `dynamics` it is constant; with `dynamics` the curve is sampled at t."

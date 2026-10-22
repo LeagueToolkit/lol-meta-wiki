@@ -1,0 +1,23 @@
+# LogicDriverFloatToString Documentation
+
+class:
+  description: |
+    A [text source](/classes/ilogicdrivervaluetostring) that **formats the value of a float
+    driver** as text. `ValueDriver` supplies the number, and `TextFormat` is the printf-style
+    format that turns it into text.
+
+    When the holder starts, the source evaluates `ValueDriver` and formats the value. On
+    each update it evaluates `ValueDriver` again. It formats a new text only when the value
+    differs from the last formatted value by more than `1e-9`.
+  examples:
+    - "Shipped skin overlays show a counter in element text with the format `%01.0f`, which prints the value with no decimals."
+
+properties:
+  ValueDriver:
+    description: "The [float driver](/classes/ilogicfloatdriver) that supplies the number. It is evaluated for the source of the holder."
+
+  TextFormat:
+    description: "A printf-style format that receives the value as a floating-point number. If `LocalizedTextFormat` is set, the localized format replaces it at load."
+
+  LocalizedTextFormat:
+    description: "The key of a localized format string. If it is set, the client looks the key up in the string table when the bin is loaded and uses the result in place of `TextFormat`."

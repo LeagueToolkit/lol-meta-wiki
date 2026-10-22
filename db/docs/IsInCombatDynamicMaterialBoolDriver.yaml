@@ -1,0 +1,28 @@
+# IsInCombatDynamicMaterialBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true while the source unit **has been
+    in combat recently**. The client keeps two times of last combat for each unit. The driver
+    is true while less than `0x3ef62dce` seconds have passed since the time that
+    `CombatGroup` selects.
+
+    The source must be a unit with combat tracking. The driver returns `false` without one.
+  notes:
+    - "Shipped data uses it on a few champion skins, mostly inside a [NotMaterialDriver](/classes/notmaterialdriver) or through a [LogicDriverBoolParametricUpdater](/classes/logicdriverboolparametricupdater)."
+
+properties:
+  CombatGroup:
+    description: |
+      Selects the time of last combat to test.
+
+      | Value | Time tested |
+      |---|---|
+      | `0` | the first time of last combat |
+      | `1` | the second time of last combat |
+      | `2` | either time: true if one of the two is recent |
+    notes:
+      - "Which kind of combat each of the two times records is not determined."
+
+  "0x3ef62dce":
+    description: "The combat window, in whole seconds. With `0`, the driver is never true."

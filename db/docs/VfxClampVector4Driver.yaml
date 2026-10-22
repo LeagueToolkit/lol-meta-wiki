@@ -1,0 +1,22 @@
+# VfxClampVector4Driver Documentation
+
+class:
+  description: |
+    The Vector4 form of [VfxClampFloatDriver](/classes/vfxclampfloatdriver). The driver
+    clamps each lane of `Param` to the range between the same lane of `Low` and `High`. A
+    lane above `High` returns `High`. Any other lane returns the larger of the lane and `Low`.
+
+    The driver does not swap reversed bounds. If a lane of `Low` is greater than the same lane
+    of `High`, a value above `High` returns `High` and any other value returns `Low`.
+  notes:
+    - "If `Param` is not set, the driver returns `(0, 0, 0, 0)`."
+
+properties:
+  Param:
+    description: "The vector that is clamped."
+
+  Low:
+    description: "The lower bound of each lane."
+
+  High:
+    description: "The upper bound of each lane. The driver tests it before `Low`."

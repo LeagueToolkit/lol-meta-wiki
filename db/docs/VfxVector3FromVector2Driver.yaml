@@ -1,0 +1,14 @@
+# VfxVector3FromVector2Driver Documentation
+
+class:
+  description: "A [Vector3 driver](/classes/ivfxvector3driver) that returns `(x, y, Fill)`: the two lanes of the [Vector2 driver](/classes/ivfxvector2driver) `Input` and the constant `Fill` as z. If `Input` is not set, the driver returns `(0, 0, 0)` and does not use `Fill`."
+  notes:
+    - "The driver does not report the z lane as driven in its component mask. The render component uses that mask to find the driven lanes of a material parameter, so it treats z as not driven."
+    - "No shipped object uses it."
+
+properties:
+  Input:
+    description: "The x and y lanes."
+
+  Fill:
+    description: "The z lane."

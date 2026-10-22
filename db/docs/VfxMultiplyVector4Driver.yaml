@@ -1,0 +1,13 @@
+# VfxMultiplyVector4Driver Documentation
+
+class:
+  description: |
+    The Vector4 form of [VfxMultiplyFloatDriver](/classes/vfxmultiplyfloatdriver). The
+    driver returns the lane-by-lane product of every driver in `params`. The product starts
+    at `(1, 1, 1, 1)`, so an empty list returns `(1, 1, 1, 1)`.
+  notes:
+    - "Unset entries are skipped. Each entry is evaluated into a vector that starts at `(0, 0, 0, 0)`. An entry that writes no output, such as a [VfxVector4LerpDriver](/classes/vfxvector4lerpdriver) with a missing operand, therefore sets every lane of the product to `0`."
+
+properties:
+  params:
+    description: "The vectors that are multiplied."

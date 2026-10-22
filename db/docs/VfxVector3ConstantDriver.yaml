@@ -1,0 +1,10 @@
+# VfxVector3ConstantDriver Documentation
+
+class:
+  description: "A [Vector3 driver](/classes/ivfxvector3driver) that returns the constant `Vector3`."
+  notes:
+    - "Shipped component emitters use it for a constant particle velocity and a constant particle scale."
+
+properties:
+  Vector3:
+    description: "The returned value."

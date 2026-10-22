@@ -1,0 +1,28 @@
+# VfxPropertyVector4Driver Documentation
+
+class:
+  description: |
+    The Vector4 form of [VfxPropertyFloatDriver](/classes/vfxpropertyfloatdriver). The driver
+    reads a per-particle Vector4 value of the emitter, which `Vector4Property` selects, for
+    the particle that is evaluated.
+
+    The fallback value is `(0, 0, 0, 1)`, not `(0, 0, 0, 0)`. The driver returns it in these
+    cases:
+
+    - The evaluation has no particle. This is the case for every evaluation by the lifetime
+      component, including the spawn count.
+    - `Vector4Property` is `0`, or the emitter has no such value.
+    - The particle index is past the live particle count.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Vector4Property:
+    description: |
+      The per-particle value that is read.
+
+      | Value | Name | Reads |
+      |-------|------|-------|
+      | `0` | None | Nothing. The driver always returns `(0, 0, 0, 1)`. |
+      | `1` | Vector4 channel 1 | The first per-particle Vector4 value. Its content is not yet identified. |
+      | `2` | Vector4 channel 2 | The second per-particle Vector4 value. Its content is not yet identified. |

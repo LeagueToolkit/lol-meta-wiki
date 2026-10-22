@@ -1,0 +1,20 @@
+# SequenceMaterialVectorDriver Documentation
+
+class:
+  description: |
+    A [vector driver](/classes/ilogicdriver) that returns a **sequence material value stored
+    on the source**: a four-component value, such as a color, kept under a key, which a
+    sequence can set so that it animates a material parameter. It reads the same store as
+    [SequenceMaterialFloatDriver](/classes/sequencematerialfloatdriver).
+
+    When no value is stored under the key for the source, the driver returns
+    `DefaultValue`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Key:
+    description: "The object that names the value. The sequence input that writes the value links the same object. It must be set."
+
+  DefaultValue:
+    description: "The result while no value is stored under `Key` for the source."

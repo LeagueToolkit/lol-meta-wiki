@@ -1,0 +1,10 @@
+# VfxAbsFloatDriver Documentation
+
+class:
+  description: "A [float driver](/classes/ivfxfloatdriver) that returns the absolute value of `Param`. If `Param` is not set, it returns `0`."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Param:
+    description: "The value whose absolute value is returned."

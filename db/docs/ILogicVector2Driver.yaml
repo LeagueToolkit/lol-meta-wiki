@@ -1,0 +1,12 @@
+# ILogicVector2Driver Documentation
+
+class:
+  description: |
+    A **logic driver that produces a two-component vector**.
+    [ILogicFloatDriver](/classes/ilogicfloatdriver) describes how drivers are evaluated and
+    what the source is.
+
+    Read as an [ILogicDriver](/classes/ilogicdriver), a vector2 driver gives
+    `(x, y, 0, 0)`. Its only holder is
+    [VfxVector2LogicDriver](/classes/vfxvector2logicdriver), which passes the value into the
+    [component VFX system](/classes/vfxcomponents).

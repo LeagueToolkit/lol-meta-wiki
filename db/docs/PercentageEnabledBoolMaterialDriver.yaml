@@ -1,0 +1,20 @@
+# PercentageEnabledBoolMaterialDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that passes `BoolDriver` through **only by
+    chance**. Each time the input turns true, the driver rolls once: with probability
+    `Percentage` the output is true for as long as the input stays true, otherwise it stays
+    false for that time.
+
+    The driver keeps one state **per source**, so each unit rolls on its own. While the input
+    is false the output is false, and the next change to true rolls again.
+  notes:
+    - "Shipped data uses it once, on a Vi skin, to swap a texture with a chance of `0.2` each time the dance animation starts."
+
+properties:
+  BoolDriver:
+    description: "The input condition. It must be set: the client does not check for a missing operand."
+
+  Percentage:
+    description: "The probability that the output follows the input, as a fraction from `0` to `1`. `0.5` is a one-in-two chance; `1` or more always passes, and `0` or less never does."

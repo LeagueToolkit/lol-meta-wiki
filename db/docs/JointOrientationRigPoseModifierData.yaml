@@ -52,8 +52,8 @@ properties:
       A vector driver that gives the direction or the place to face. It is evaluated on
       every frame for the unit that owns the skeleton.
     notes:
-      - "Shipped data uses three driver classes here, and none of them has a name yet."
-      - "`0x19da44b2`, the driver of Viktor's skins, follows a missile of the unit. It goes through its `MissileSpellObjects` in order and reads a vector from the first of them that the unit has a missile of in flight. When no missile is in flight it gives the last vector it read. Which vector of the missile it reads was not identified. Viktor's skins use it as a place."
+      - "Shipped data uses three driver classes here: [TrackedMissilePositionVector3Driver](/classes/trackedmissilepositionvector3driver), [InterestPointVector3Driver](/classes/interestpointvector3driver) and [LeaderFacingVector3Driver](/classes/leaderfacingvector3driver)."
+      - "[TrackedMissilePositionVector3Driver](/classes/trackedmissilepositionvector3driver), the driver of Viktor's skins, follows a missile of the unit. It goes through its `MissileSpellObjects` in order and returns the position of the first of them that the unit has a missile of in flight. When no missile is in flight it returns the last position it read. Viktor's skins use it as a place."
 
   orientationType:
     description: |

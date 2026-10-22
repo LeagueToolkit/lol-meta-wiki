@@ -1,0 +1,36 @@
+# FloatComparisonMaterialDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that **compares two numbers**. It evaluates
+    `mValueA` and `mValueB` as [float drivers](/classes/ilogicfloatdriver) and returns the
+    result of `mValueA <operator> mValueB`.
+
+    Shipped data uses it mostly to compare the counter of a buff with a constant.
+  notes:
+    - "If `mValueA` or `mValueB` is not set, the driver returns `false`."
+    - "Both operands are evaluated on every call."
+
+properties:
+  mValueA:
+    description: "The left operand."
+
+  mValueB:
+    description: "The right operand. Usually a [FloatLiteralMaterialDriver](/classes/floatliteralmaterialdriver)."
+
+  mOperator:
+    description: |
+      The comparison.
+
+      | Value | Test |
+      |---|---|
+      | `0` | `A == B` |
+      | `1` | `A > B` |
+      | `2` | `A >= B` |
+      | `3` | `A < B` |
+      | `4` | `A <= B` |
+
+      Any other value returns `false`.
+    notes:
+      - "There is no not-equal operator. To test `A != B`, wrap a comparison with `0` in a [NotMaterialDriver](/classes/notmaterialdriver)."
+      - "`0` compares the two floats exactly."

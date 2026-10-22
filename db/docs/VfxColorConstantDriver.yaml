@@ -1,0 +1,10 @@
+# VfxColorConstantDriver Documentation
+
+class:
+  description: |
+    A [Vector4 driver](/classes/ivfxvector4driver) that returns the constant color `Color`
+    for every particle and every evaluation.
+
+properties:
+  Color:
+    description: "The returned color, as red, green, blue and alpha."

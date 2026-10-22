@@ -1,0 +1,10 @@
+# IVfxVector3Driver Documentation
+
+class:
+  description: |
+    A [VFX driver](/classes/ivfxbasedriver) that returns a **three-component vector**. RGB
+    colours use the same kind, with red, green and blue in `x`, `y` and `z`. A vector3 value
+    of the component VFX system is a
+    [VfxVector3DynamicProperty](/classes/vfxvector3dynamicproperty) that holds the top node of
+    the expression. [IVfxBaseDriver](/classes/ivfxbasedriver) describes when values are
+    evaluated, how random values are assigned and the time source and comparator values.

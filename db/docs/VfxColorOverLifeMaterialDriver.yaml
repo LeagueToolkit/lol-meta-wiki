@@ -1,0 +1,14 @@
+# VfxColorOverLifeMaterialDriver Documentation
+
+class:
+  description: |
+    A [particle material driver](/classes/ivfxmaterialdriver) that returns a **color curve
+    sampled at t**. With `frequency` `1`, t is the particle's normalized age, so the
+    parameter follows the curve over the life of each particle.
+
+properties:
+  frequency:
+    description: "When the driver is evaluated: `0` once per emitter update, `1` once per particle. [IVfxMaterialDriver](/classes/ivfxmaterialdriver) describes both modes."
+
+  colors:
+    description: "The color curve. The driver samples it at t and returns the four channels of the color."

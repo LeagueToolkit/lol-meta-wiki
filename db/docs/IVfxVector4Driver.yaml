@@ -1,0 +1,10 @@
+# IVfxVector4Driver Documentation
+
+class:
+  description: |
+    A [VFX driver](/classes/ivfxbasedriver) that returns a **four-component vector**. RGBA
+    colours use the same kind, with red, green, blue and alpha in `x`, `y`, `z` and `w`. A
+    vector4 or colour value of the component VFX system is a
+    [VfxVector4DynamicProperty](/classes/vfxvector4dynamicproperty) that holds the top node of
+    the expression. [IVfxBaseDriver](/classes/ivfxbasedriver) describes when values are
+    evaluated, how random values are assigned and the time source and comparator values.

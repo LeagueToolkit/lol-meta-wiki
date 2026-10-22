@@ -1,0 +1,16 @@
+# VfxVector3AnimatedWithRandomByFactorDriver Documentation
+
+class:
+  description: "A [Vector3 driver](/classes/ivfxvector3driver) that samples the embedded curve `Vector3` at the value of the [float driver](/classes/ivfxfloatdriver) `Factor`. The Vector3 form of [VfxFloatAnimatedWithRandomByFactorDriver](/classes/vfxfloatanimatedwithrandombyfactordriver)."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Vector3:
+    description: "The curve, a `ValueVector3`. If it has no animation, the driver returns its constant value."
+
+  Factor:
+    description: "The position on the curve. If it is not set, the curve is sampled at `0`."
+
+  ShareRandom:
+    description: "When `true`, all three lanes read one random value. When `false`, each lane reads its own random value."

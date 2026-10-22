@@ -1,0 +1,23 @@
+# VfxColorAnimatedWithRandomByFactorDriver Documentation
+
+class:
+  description: |
+    The color form of
+    [VfxFloatAnimatedWithRandomByFactorDriver](/classes/vfxfloatanimatedwithrandombyfactordriver).
+    The driver samples the `ValueColor` curve in `colors` at the value of the float driver
+    `Factor` instead of at a time, and returns red, green, blue and alpha as a Vector4.
+
+    If `colors` has no curve, the driver returns `colors.constantValue`.
+  notes:
+    - "If `Factor` is not set, the curve is sampled at `0`."
+    - "No shipped object uses it."
+
+properties:
+  Factor:
+    description: "The float driver whose value is the sample position on the curve."
+
+  colors:
+    description: "The color curve and its random ranges."
+
+  ShareRandom:
+    description: "If `true`, all four lanes read one random value. If `false`, each lane that has a random range reads its own random value."

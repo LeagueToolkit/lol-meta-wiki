@@ -1,0 +1,21 @@
+# VfxConditionVector3Driver Documentation
+
+class:
+  description: |
+    A [Vector3 driver](/classes/ivfxvector3driver) that compares `Left` with `Right` lane by
+    lane. Each lane of the result is `1` where the comparison is true and `0` where it is false.
+    The Vector3 form of [VfxConditionFloatDriver](/classes/vfxconditionfloatdriver).
+
+    If `Left` or `Right` is not set, the driver returns `(0, 0, 0)`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Left:
+    description: "The left operand."
+
+  Right:
+    description: "The right operand."
+
+  Comparator:
+    description: "The comparison, applied to each lane. [IVfxBaseDriver](/classes/ivfxbasedriver) lists the values."
