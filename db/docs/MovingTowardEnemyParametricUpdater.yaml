@@ -10,5 +10,5 @@ class:
     The owner of the graph must be a unit. Otherwise the value does not change.
   notes:
     - "Despite its name it is not a true or false value."
-    - "The width of the cone was not determined."
+    - "The cone test is `dot(moveDirection, directionToEnemy) >= cos(45)` with `45` passed as radians, so the cone reaches about `58` degrees to each side, not `45`. Some units use a half-angle from their character data instead."
     - "No shipped graph uses it."

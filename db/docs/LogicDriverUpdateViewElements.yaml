@@ -1,0 +1,23 @@
+# LogicDriverUpdateViewElements Documentation
+
+class:
+  description: |
+    A [value binding](/classes/ilogicvaluedriverupdateviewelements) that shows the value of a
+    **four-component driver** in UI elements.
+    [ILogicValueDriverUpdateViewElements](/classes/ilogicvaluedriverupdateviewelements)
+    describes the update, the displayed value and the modifier chain.
+
+    The binding compares each component on its own. The update counts as changed if any
+    component of the target value differs from the displayed value by more than `1e-5`.
+  notes:
+    - "Shipped data uses it in skin HUD view controllers to drive material parameters of icon elements through [ValueUpdateIconElementMaterialParameters](/classes/valueupdateiconelementmaterialparameters)."
+
+properties:
+  ValueDriver:
+    description: "The [driver](/classes/ilogicdriver) that supplies the target value. It is evaluated on every update for the local player's champion. A float driver here gives the same number in all four components. It must be set: the client does not check for a missing driver."
+
+  ValueUpdateModifiers:
+    description: "The [Vector4UpdateModifier](/classes/vector4updatemodifier) modifiers that move the displayed value toward the target value, run one after the other. If the list is empty, the displayed value follows the target value at once."
+
+  ViewElementsToUpdate:
+    description: "The [elements](/classes/ivalueupdateelement) that receive the displayed value, in list order. A [float element](/classes/ifloatupdateelement) in this list receives the first component of the displayed and target values."

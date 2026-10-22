@@ -1,0 +1,17 @@
+# UiVariableObject Documentation
+
+class:
+  description: |
+    A [UI variable](/classes/iuivariable) that holds an **object of nested variables**. The
+    value is an item with an `itemID` and a `VariableValues` map of variables by hash. When
+    the client registers the object, it registers every nested variable under its map key.
+    A lookup by a path of hashes enters the object through `VariableValues`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  value:
+    description: "The object: an `itemID` and the `VariableValues` map of nested variables."
+
+  ObjectSchema:
+    description: "A hash that the client copies together with the variable. How the client uses it is not yet identified."

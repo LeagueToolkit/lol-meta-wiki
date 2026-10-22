@@ -1,0 +1,26 @@
+# Vector4UpdateModifier Documentation
+
+class:
+  description: |
+    A [modifier](/classes/ivalueupdatemodifier) for the four-component binding
+    [LogicDriverUpdateViewElements](/classes/logicdriverupdateviewelements). It runs one
+    [float modifier](/classes/ifloatupdatemodifier) per component.
+
+    Each component that has a modifier moves toward its target through that modifier. A
+    component without a modifier takes its target value at once. The modifier finishes when
+    every component that has a modifier has finished.
+  notes:
+    - "Shipped skin HUD view controllers use it with an [InterpolateDurationFloatUpdate](/classes/interpolatedurationfloatupdate) on `XUpdateModifier` and `YUpdateModifier`."
+
+properties:
+  XUpdateModifier:
+    description: "The modifier of the first component."
+
+  YUpdateModifier:
+    description: "The modifier of the second component."
+
+  ZUpdateModifier:
+    description: "The modifier of the third component."
+
+  WUpdateModifier:
+    description: "The modifier of the fourth component."

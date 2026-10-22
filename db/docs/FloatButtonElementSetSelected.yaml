@@ -1,0 +1,14 @@
+# FloatButtonElementSetSelected Documentation
+
+class:
+  description: |
+    A [float element](/classes/ifloatupdateelement) that sets whether a **button is
+    selected**. The button is selected when the displayed value is not `0`, and not selected
+    when it is `0`. The button then refreshes its state: a selected button shows its selected,
+    selected-hover or selected-clicked state.
+  notes:
+    - "Shipped skin HUD view controllers use it."
+
+properties:
+  ButtonElement:
+    description: "The hash of the button element."

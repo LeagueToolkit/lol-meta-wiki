@@ -1,0 +1,10 @@
+# UiVariableString Documentation
+
+class:
+  description: "A [UI variable](/classes/iuivariable) that holds a **string**."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  value:
+    description: "The value of the variable."

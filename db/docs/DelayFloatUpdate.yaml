@@ -1,0 +1,19 @@
+# DelayFloatUpdate Documentation
+
+class:
+  description: |
+    A [float modifier](/classes/ifloatupdatemodifier) that **holds the displayed value for a
+    time** before the rest of the chain runs. When the delay starts, the modifier evaluates
+    `DelayTimeDriver` once. The displayed value keeps its old value until that time has
+    passed. The modifier then finishes, and the next modifier of the chain starts toward the
+    current target value.
+
+    A new target value during the delay does not restart the delay. If the delay is the last
+    modifier of the chain, the displayed value jumps to the target value when the delay is
+    over.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  DelayTimeDriver:
+    description: "The [float driver](/classes/ilogicfloatdriver) that gives the delay, in seconds. It is evaluated when the delay starts. It must be set: the client does not check for a missing driver."

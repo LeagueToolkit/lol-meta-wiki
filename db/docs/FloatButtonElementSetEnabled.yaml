@@ -1,0 +1,13 @@
+# FloatButtonElementSetEnabled Documentation
+
+class:
+  description: |
+    A [float element](/classes/ifloatupdateelement) that sets whether a **button element is
+    enabled**. The element is enabled when the displayed value is not `0`, and disabled when
+    it is `0`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  ButtonElement:
+    description: "The hash of the button element."
