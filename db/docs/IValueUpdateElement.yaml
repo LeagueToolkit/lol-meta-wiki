@@ -1,0 +1,15 @@
+# IValueUpdateElement Documentation
+
+class:
+  description: |
+    An **element update**: an object that applies the value of a
+    [value binding](/classes/ilogicvaluedriverupdateviewelements) to one UI element. The
+    element names its UI element by the hash of the element object. In shipped data that is
+    the path `<controller path>/UIBase/<scene>/<element>`.
+
+    On every update of the binding, the element receives the displayed value, the target value
+    and whether the update changed. An element does nothing when the update did not change.
+    The client resolves the UI element the first time it needs it and keeps the result.
+
+    An element of this kind receives all four components of the value. A
+    [float element](/classes/ifloatupdateelement) receives one number.

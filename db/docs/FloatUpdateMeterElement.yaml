@@ -1,0 +1,13 @@
+# FloatUpdateMeterElement Documentation
+
+class:
+  description: |
+    A [float element](/classes/ifloatupdateelement) that sets the **fill of a meter element**
+    to the displayed value, clamped to `0`-`1`. `1` is a full meter.
+  notes:
+    - "The [color bands](/classes/0xab5db4f2) have no effect on a meter. The element sorts `colors` but never applies them, and the client does not read `ColorEasing`."
+    - "Shipped skin HUD view controllers use it for resource meters."
+
+properties:
+  MeterElement:
+    description: "The hash of the meter element that the value fills."

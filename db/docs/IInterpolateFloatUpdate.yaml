@@ -1,0 +1,65 @@
+# IInterpolateFloatUpdate Documentation
+
+class:
+  description: |
+    A [float modifier](/classes/ifloatupdatemodifier) that **eases the displayed value to the
+    target value** along a curve. The concrete class sets how fast the ease runs:
+    [InterpolateDurationFloatUpdate](/classes/interpolatedurationfloatupdate) takes a time and
+    [InterpolateDeltaFloatUpdate](/classes/interpolatedeltafloatupdate) takes a speed.
+
+    When the ease starts, the modifier stores the displayed value as the start value and
+    computes a **rate**, the fraction of the ease per second. On each update:
+
+    1. The elapsed time grows by the time of the last frame.
+    2. The progress `t` is the elapsed time times the rate, clamped to `0`-`1`.
+    3. The displayed value is `start + (target - start) * Ease(t)`, with the curve of `Easing`.
+    4. When the displayed value is within `1e-9` of the target value, the modifier sets it to
+       the target value and finishes.
+
+    When the target value moves during the ease, the current displayed value becomes the new
+    start value and the modifier computes the rate again for the new target.
+
+properties:
+  Easing:
+    description: |
+      The curve of the ease. `t` is the progress from `0` to `1`. At `t = 1` every curve
+      returns `1`.
+
+      | Value | Curve | Formula |
+      |-------|-------|---------|
+      | `0` | Linear | `t` |
+      | `1` | Instant | `1`: the target value at the first step |
+      | `2` | SmoothStep | `t^2 (3 - 2t)` |
+      | `3` | SmootherStep | `t^3 (t (6t - 15) + 10)` |
+      | `4` | QuadIn | `t^2` |
+      | `5` | QuadOut | `-t (t - 2)` |
+      | `6` | QuadInOut | |
+      | `7` | CubicIn | `t^3` |
+      | `8` | CubicOut | |
+      | `9` | CubicInOut | |
+      | `10` | QuartIn | `t^4` |
+      | `11` | QuartOut | `1 - (t - 1)^4` |
+      | `12` | QuartInOut | |
+      | `13` | QuintIn | `t^5` |
+      | `14` | QuintOut | |
+      | `15` | QuintInOut | |
+      | `16` | SineIn | `1 - cos(t pi / 2)` |
+      | `17` | SineOut | `sin(t pi / 2)` |
+      | `18` | SineInOut | |
+      | `19` | CircIn | `1 - sqrt(1 - t^2)` |
+      | `20` | CircOut | `sqrt((2 - t) t)` |
+      | `21` | CircInOut | |
+      | `22` | ExpoIn | `2^(10 (t - 1))` |
+      | `23` | ExpoOut | `1 - 2^(-10 t)` |
+      | `24` | ExpoInOut | |
+      | `25` | ElasticIn | |
+      | `26` | ElasticOut | |
+      | `27` | ElasticInOut | |
+      | `28` | BackIn | `t^3 - t sin(t pi)` |
+      | `29` | BackOut | |
+      | `30` | BackInOut | |
+      | `31` | BounceIn | |
+      | `32` | BounceOut | |
+      | `33` | BounceInOut | |
+    notes:
+      - "A value above `33` returns `0` until `t = 1`. The displayed value then stays at the start value for the whole ease and jumps to the target value at the end."

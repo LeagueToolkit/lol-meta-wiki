@@ -1,0 +1,10 @@
+# UiVariableImage Documentation
+
+class:
+  description: "A [UI variable](/classes/iuivariable) that holds an **image file**."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  value:
+    description: "The image file of the variable."

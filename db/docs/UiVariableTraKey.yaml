@@ -1,0 +1,10 @@
+# UiVariableTraKey Documentation
+
+class:
+  description: "A [UI variable](/classes/iuivariable) that holds a **string**. How the client uses the value is not yet identified."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  value:
+    description: "The value of the variable."

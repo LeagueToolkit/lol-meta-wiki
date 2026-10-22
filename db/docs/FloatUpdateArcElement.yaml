@@ -1,0 +1,43 @@
+# FloatUpdateArcElement Documentation
+
+class:
+  description: |
+    A [float element](/classes/ifloatupdateelement) that fills an **arc** from the displayed
+    value. The arc starts at `StartDegrees` and covers `(EndDegrees - StartDegrees)` times the
+    displayed value, with the value clamped to `0`-`1`. The element passes the angles to the
+    shader of the arc element in radians.
+
+    The element enables the arc element when the target value is greater than `0`, and
+    disables it otherwise.
+
+    If `colors` has entries, the element also sets the color of the arc element from the band
+    of the target value (see [0xab5db4f2](/classes/0xab5db4f2)).
+  notes:
+    - "An arc whose target value is `0` or less is disabled, even while the displayed value eases down."
+    - "Shipped skin HUD view controllers use it for curved meters."
+
+properties:
+  ArcElement:
+    description: "The hash of the arc element that the value fills."
+
+  StartDegrees:
+    description: "The angle, in degrees, at which the arc starts."
+
+  EndDegrees:
+    description: "The angle, in degrees, at which the full arc ends. A displayed value of `1` fills the arc to this angle."
+
+  StartPosition:
+    description: |
+      A rotation of the arc in quarter turns, passed to the shader of the arc element.
+
+      | Value | Rotation |
+      |-------|----------|
+      | `0` | 0 degrees |
+      | `1` | 90 degrees |
+      | `2` | 180 degrees |
+      | `3` | 270 degrees |
+
+      How the shader combines it with `StartDegrees` is not yet identified.
+
+  FillDirection:
+    description: "A value that the element passes to the shader of the arc element. The fill direction of each value is not yet identified."

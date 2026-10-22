@@ -1,0 +1,32 @@
+# IUiVariable Documentation
+
+class:
+  description: |
+    A **UI variable**: an observable value that UI data holds. Each concrete class holds one
+    `value` of its kind: a bool, an int, a float, a string, an image file, an object of nested
+    variables or a list of such objects.
+
+    Variables sit in maps keyed by hash, such as `UiComponent.VariableDefaults`, the
+    per-instance variable map of a `UiElementComponentInstanceData`, and the `VariableValues`
+    of an object or list item. They can also be standalone bin objects that a `Variables` list
+    links.
+
+    **Registration.** When the client registers a variable from a map, it writes the map key
+    into `SchemaFieldId`. For an object variable it then registers the nested variables of the
+    object, and for a list variable the nested variables of every item.
+
+    **Change notification.** Each variable keeps a list of listeners and a list of callbacks.
+    When the client copies a new value into a variable, it notifies every listener and runs
+    every callback.
+
+    **Lookup.** A lookup by a path of hashes walks the nested
+    [UiVariableObject](/classes/uivariableobject) values, one key per level. A list UI element
+    that is bound to a [UiVariableList](/classes/uivariablelist) receives the items of the
+    list.
+  notes:
+    - "Which UI elements and bindings register as listeners, and how a binding names the variable it reads, are not yet identified."
+    - "No shipped object uses a UI variable."
+
+properties:
+  SchemaFieldId:
+    description: "The key of the variable. For a variable in a map, the client writes the map key here when it registers the variable. Lookups of standalone variables compare against this value."

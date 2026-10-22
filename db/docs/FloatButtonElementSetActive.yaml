@@ -1,0 +1,14 @@
+# FloatButtonElementSetActive Documentation
+
+class:
+  description: |
+    A [float element](/classes/ifloatupdateelement) that sets whether a **button is active**.
+    The button is active when the displayed value is not `0`, and inactive when it is `0`.
+    The button then refreshes its state: an inactive button shows its inactive or
+    inactive-selected state.
+  notes:
+    - "Shipped skin HUD view controllers use it."
+
+properties:
+  ButtonElement:
+    description: "The hash of the button element."

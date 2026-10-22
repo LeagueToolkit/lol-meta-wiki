@@ -1,0 +1,25 @@
+# 0xab5db4f2 Documentation
+
+class:
+  description: |
+    The **color bands** shared by the meter, radial and arc
+    [float elements](/classes/ifloatupdateelement). When the view starts, the element sorts
+    `colors` by `StartingValue`, from low to high.
+
+    [FloatUpdateRadialElement](/classes/floatupdateradialelement) and
+    [FloatUpdateArcElement](/classes/floatupdatearcelement) apply a band on every changed
+    update. They pick the first band, in sorted order, whose `StartingValue` is greater than
+    or equal to the target value. If no band qualifies, they pick the last band. They then
+    evaluate the `Color` driver of that band for the source of the view controller and set
+    the result as the color of the UI element.
+  notes:
+    - "The band follows the target value, not the displayed value. While the fill eases toward a new value, the color has already changed to the band of the new value."
+    - "[FloatUpdateMeterElement](/classes/floatupdatemeterelement) sorts its `colors` but never applies them."
+    - "The client does not read `ColorEasing`."
+
+properties:
+  colors:
+    description: "The color bands. Each `ColorStartFloatData` pairs a `StartingValue` with a `Color` driver. The selection rule is in the class description."
+
+  ColorEasing:
+    description: "Not read by the client."

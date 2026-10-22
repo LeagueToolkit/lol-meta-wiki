@@ -1,0 +1,12 @@
+# IValueUpdateModifier Documentation
+
+class:
+  description: |
+    A **modifier** in the chain of a
+    [value binding](/classes/ilogicvaluedriverupdateviewelements): a step that delays or
+    smooths the move of the displayed value to a new target value.
+
+    The binding starts a modifier with the current displayed value and the target value. On
+    each later update the binding advances it by the time of the last frame, or passes it a
+    new target value if the target has moved. The modifier writes the displayed value and
+    reports when it has finished. The binding then starts the next modifier of the chain.

@@ -1,0 +1,23 @@
+# FloatUpdateTextElement Documentation
+
+class:
+  description: |
+    A [float element](/classes/ifloatupdateelement) that **writes the displayed value as the
+    text** of a text element. The element formats the value with the printf-style
+    `TextFormat` and replaces the whole text of the element. The formatted text is limited to
+    256 characters. If the new text equals the current text, the element is not changed.
+
+    To put a number inside a localized text instead, use a
+    [LogicDriverFloatToString](/classes/logicdriverfloattostring) text binding of the view.
+  notes:
+    - "Shipped skin HUD view controllers use it for a counter with no decimals."
+
+properties:
+  TextElement:
+    description: "The hash of the text element that shows the value."
+
+  TextFormat:
+    description: "A printf-style format that receives the displayed value as a floating-point number, such as `%03.0f`. If `LocalizedTextFormat` is set, the localized format replaces it when the view starts."
+
+  LocalizedTextFormat:
+    description: "The key of a localized format string. If it is set, the client looks the key up in the string table when the view starts and uses the result in place of `TextFormat`."

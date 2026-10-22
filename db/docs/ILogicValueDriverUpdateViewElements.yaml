@@ -1,0 +1,50 @@
+# ILogicValueDriverUpdateViewElements Documentation
+
+class:
+  description: |
+    A **value binding** of a [LogicDriverViewEntry](/classes/logicdriverviewentry): a driver
+    whose value is shown by one or more UI elements, optionally through a chain of modifiers
+    that delay or smooth each change. The bindings sit in
+    `LogicDriverViewEntry.LogicDriverElementUpdates`.
+
+    **Start.** When the view starts, the binding prepares each element in
+    `ViewElementsToUpdate`. For example, a text element localizes its format and an icon
+    element creates its own material.
+
+    **Update.** On every update of the [view controller](/classes/logicdriverviewcontroller),
+    the binding does the following:
+
+    1. It evaluates `ValueDriver` for the source of the controller, the local player's
+       champion. The result is the **target value**.
+    2. It compares the target value with its **displayed value**, which starts at `0`. The
+       update counts as changed if the two differ by more than `1e-9` (float binding) or if
+       any component differs by more than `1e-5` (vector binding).
+    3. If the update changed, the binding runs the modifier chain in `ValueUpdateModifiers`,
+       which moves the displayed value toward the target value.
+    4. It passes the displayed value, the target value and the changed state to every
+       element in `ViewElementsToUpdate`, in list order. An element does nothing when the
+       update did not change.
+
+    Most elements show the displayed value. The color bands of the radial and arc elements
+    and the enabled state of the arc element follow the target value.
+
+    **Modifier chain.** The modifiers run **one after the other**, not together:
+
+    - If `ValueUpdateModifiers` is empty, the displayed value becomes the target value at
+      once.
+    - If no modifier is running, the first modifier starts from the displayed value toward
+      the target value and takes its first step in the same update.
+    - While a modifier runs, each update advances it by the time of the last frame. If the
+      target value has moved by more than `1e-9`, the modifier gets the new target instead.
+    - When the running modifier finishes, the next modifier in the list starts from the
+      current displayed value toward the target value.
+    - When the last modifier finishes, the displayed value becomes the target value and the
+      chain is idle until the next change.
+
+    For example, a [DelayFloatUpdate](/classes/delayfloatupdate) followed by an
+    [InterpolateDurationFloatUpdate](/classes/interpolatedurationfloatupdate) holds the old
+    value for the delay and then eases to the new one.
+  notes:
+    - "The displayed value starts at `0`. If the first value of `ValueDriver` is also `0`, the update does not count as changed, and the elements keep their authored state until the value moves."
+    - "The binding does not check `ValueDriver`. A binding without a `ValueDriver` crashes the client on its first update."
+    - "Shipped data uses value bindings in skin HUD view controllers."

@@ -1,0 +1,20 @@
+# ValueUpdateIconElementMaterialParameters Documentation
+
+class:
+  description: |
+    An [element update](/classes/ivalueupdateelement) that writes the four-component
+    displayed value into **material parameters of an icon element**.
+
+    When the view starts, the element gives the icon element its own copy of its material. A
+    change of a parameter therefore affects only this icon, and not other elements that use the
+    same material. On every changed update, the element sets each parameter named in
+    `ParameterNames` to the displayed value.
+  notes:
+    - "Shipped skin HUD view controllers use it in a [LogicDriverUpdateViewElements](/classes/logicdriverupdateviewelements) to drive a shape-mask parameter of progress icons."
+
+properties:
+  IconElement:
+    description: "The hash of the icon element whose material receives the value."
+
+  ParameterNames:
+    description: "The names of the material parameters to set. Every listed parameter receives the same four-component value."

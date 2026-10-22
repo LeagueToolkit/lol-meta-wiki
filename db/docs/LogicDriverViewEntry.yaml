@@ -38,8 +38,8 @@ properties:
     description: |
       Value bindings. Each is a
       [LogicFloatDriverUpdateViewElements](/classes/logicfloatdriverupdateviewelements)
-      (or its vector sibling `LogicDriverUpdateViewElements`): a `ValueDriver`
-      (float driver), an optional modifier list (`0x7a721423`, e.g. an
+      (or its vector sibling [LogicDriverUpdateViewElements](/classes/logicdriverupdateviewelements)): a `ValueDriver`
+      (float driver), an optional modifier list (`ValueUpdateModifiers`, e.g. an
       `InterpolateDurationFloatUpdate` whose `DurationDriver` smooths the value
       over time), and the elements that display the value
       (`ViewElementsToUpdate`). This is how a float driver becomes a **meter

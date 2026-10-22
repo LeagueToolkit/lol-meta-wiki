@@ -1,0 +1,19 @@
+# UiVariableList Documentation
+
+class:
+  description: |
+    A [UI variable](/classes/iuivariable) that holds a **list of objects**. Each item has an
+    `itemID` and a `VariableValues` map of variables by hash, in the same form as the value of
+    a [UiVariableObject](/classes/uivariableobject). When the client registers the list, it
+    registers the nested variables of every item.
+
+    A list UI element that is bound to the variable receives the items.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  value:
+    description: "The list of items."
+
+  ObjectSchema:
+    description: "A hash that the client copies together with the variable. How the client uses it is not yet identified."

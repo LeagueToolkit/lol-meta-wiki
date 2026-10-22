@@ -1,0 +1,12 @@
+# InterpolateDurationFloatUpdate Documentation
+
+class:
+  description: |
+    An [ease](/classes/iinterpolatefloatupdate) that takes a **fixed time** from the start
+    value to the target value, whatever the distance between them.
+  notes:
+    - "Shipped skin HUD view controllers use it to smooth meter fills, directly in the chain of a [LogicFloatDriverUpdateViewElements](/classes/logicfloatdriverupdateviewelements) and per component in a [Vector4UpdateModifier](/classes/vector4updatemodifier)."
+
+properties:
+  DurationDriver:
+    description: "The [float driver](/classes/ilogicfloatdriver) that gives the length of the ease, in seconds. It is evaluated when the ease starts and when the target value moves. A value of `0` gives an ease of `1` second. It must be set: the client does not check for a missing driver."

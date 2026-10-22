@@ -1,0 +1,13 @@
+# InterpolateDeltaFloatUpdate Documentation
+
+class:
+  description: |
+    An [ease](/classes/iinterpolatefloatupdate) that moves at a **fixed speed**. The time of
+    the ease is the distance from the start value to the target value divided by the speed,
+    so a larger change takes longer.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  DeltaDriver:
+    description: "The [float driver](/classes/ilogicfloatdriver) that gives the speed, in value units per second. The sign is ignored. It is evaluated when the ease starts and when the target value moves. A value of `0` gives an ease of `1` second. It must be set: the client does not check for a missing driver."

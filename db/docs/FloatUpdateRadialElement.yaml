@@ -1,0 +1,16 @@
+# FloatUpdateRadialElement Documentation
+
+class:
+  description: |
+    A [float element](/classes/ifloatupdateelement) that sets the **angle of a radial fill**
+    from the displayed value. `1` is a full turn, so the angle is the displayed value times
+    360 degrees. The value is not clamped.
+
+    If `colors` has entries, the element also sets the color of the radial element from the
+    band of the target value (see [0xab5db4f2](/classes/0xab5db4f2)).
+  notes:
+    - "Shipped skin HUD view controllers use it for circular meters."
+
+properties:
+  RadialElement:
+    description: "The hash of the radial element that the value fills."

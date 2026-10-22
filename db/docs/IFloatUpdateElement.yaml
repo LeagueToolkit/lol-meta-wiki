@@ -1,0 +1,11 @@
+# IFloatUpdateElement Documentation
+
+class:
+  description: |
+    An [element update](/classes/ivalueupdateelement) that applies a **single number** to a UI
+    element. It is the element kind of
+    [LogicFloatDriverUpdateViewElements](/classes/logicfloatdriverupdateviewelements).
+
+    A float element can also sit in the element list of the vector binding
+    [LogicDriverUpdateViewElements](/classes/logicdriverupdateviewelements). It then receives
+    the first component of the displayed value and of the target value.

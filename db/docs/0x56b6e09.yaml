@@ -4,7 +4,7 @@ class:
   description: |
     The base of the [float updaters](/classes/ifloatparametricupdater) that follow one of
     the **unit's own missiles**. It holds the list of spells whose missiles count. The
-    updater that uses it is [0xe7b61183](/classes/0xe7b61183).
+    updater that uses it is [LookAtMissileAngleParametricUpdater](/classes/lookatmissileangleparametricupdater).
 
 properties:
   MissileSpellObjects:

@@ -1,0 +1,9 @@
+# IFloatUpdateModifier Documentation
+
+class:
+  description: |
+    A [modifier](/classes/ivalueupdatemodifier) that moves a **single number** toward its
+    target. The chain of
+    [LogicFloatDriverUpdateViewElements](/classes/logicfloatdriverupdateviewelements) holds
+    these modifiers, and [Vector4UpdateModifier](/classes/vector4updatemodifier) uses one per
+    component.
