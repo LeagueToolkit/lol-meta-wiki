@@ -1,0 +1,24 @@
+# SequencePhaseOverride Documentation
+
+class:
+  description: |
+    A change to one phase of a [SequenceCategory](/classes/sequencecategory), for one
+    [Sequence](/classes/sequence). The override at position `i` in
+    `Sequence.PhaseOverrides` changes phase `i` of the category. The client matches by
+    position only: it does not look for a phase by `type`.
+  notes:
+    - "More overrides than the category has phases write past the end of the phase table of the playback and corrupt client memory."
+    - "Shipped overrides change only durations, and only of the first two phases."
+
+properties:
+  duration:
+    description: "New duration of the phase, in seconds. Used only when `OverrideDuration` is set."
+
+  OverrideDuration:
+    description: "When `true`, the phase takes `duration` in place of `SequencePhase.DefaultDuration`."
+
+  OverrideType:
+    description: "When `true`, the phase takes `type` in place of `SequencePhase.type`."
+
+  type:
+    description: "New type of the phase, with the values of `SequencePhase.type`. Used only when `OverrideType` is set."

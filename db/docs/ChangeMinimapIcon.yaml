@@ -1,0 +1,25 @@
+# ChangeMinimapIcon Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **changes the minimap icon of an object**
+    for the duration of the action.
+
+    At the start step the action looks up the object bound to `TargetObject`, takes its minimap
+    icon and applies `modifier` to it. At the stop step it reverts the modifier. What applying
+    and reverting do depends on the modifier class (see
+    [IMinimapIconModifier](/classes/iminimapiconmodifier)): some modifiers revert their change,
+    others leave it in place.
+
+    If no object is bound to the selector, or the object has no minimap icon, the action logs
+    an error.
+  notes:
+    - "The action does not check `modifier`. An action without a modifier crashes the client at its start step."
+    - "No shipped object uses it."
+
+properties:
+  TargetObject:
+    description: "The [SequenceObjectSelector](/classes/sequenceobjectselector) of the object whose minimap icon changes."
+
+  modifier:
+    description: "The change to apply to the icon. It must be set."

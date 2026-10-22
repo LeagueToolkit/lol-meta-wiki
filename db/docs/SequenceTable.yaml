@@ -1,0 +1,16 @@
+# SequenceTable Documentation
+
+class:
+  description: |
+    A table of [sequences](/classes/sequence), each entry tagged with a
+    [SequenceType](/classes/sequencetype). When its bin loads, the client adds the table to a
+    list of registered tables. What reads the registered tables is not yet identified.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  ParentTables:
+    description: "Other tables that this table builds on. How the client combines them is not yet identified."
+
+  Entries:
+    description: "The entries of the table."

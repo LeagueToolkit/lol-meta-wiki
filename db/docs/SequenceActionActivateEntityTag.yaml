@@ -1,0 +1,15 @@
+# SequenceActionActivateEntityTag Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **activates the game entities with a
+    tag**. The action has only a start step. Its code was not traced.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  tag:
+    description: "The entity tag."
+
+  ActivateThenShow:
+    description: "When `true`, the entities are also shown after they are activated. Not traced."

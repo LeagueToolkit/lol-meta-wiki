@@ -1,0 +1,6 @@
+# SequencerEntityTemplate Documentation
+
+class:
+  description: "An entity template. What the client does with entities created from it is not yet identified."
+  notes:
+    - "No shipped object uses it."

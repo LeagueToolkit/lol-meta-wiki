@@ -1,0 +1,9 @@
+# SeqInputEnabled Documentation
+
+class:
+  description: |
+    A [bool input](/classes/seqinputbool) for the **enabled state** of an object or a UI element. A read
+    returns whether the target is enabled, and a write enables or disables it.
+    [SequenceActionEnabled](/classes/sequenceactionenabled) writes through it.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.

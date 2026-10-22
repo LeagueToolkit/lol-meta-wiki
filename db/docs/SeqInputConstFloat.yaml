@@ -1,0 +1,14 @@
+# SeqInputConstFloat Documentation
+
+class:
+  description: |
+    A [float input](/classes/seqinputfloat) that returns `value`. A write replaces `value`, so later reads
+    return the written value.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "Used by nexus finisher sequences. They use it as an operand of a combined input and for the strength of a camera shake."
+
+properties:
+  value:
+    description: "The value that the input returns."

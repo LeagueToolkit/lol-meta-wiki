@@ -1,0 +1,23 @@
+# SeqInputMaterialParamFloat Documentation
+
+class:
+  description: |
+    A [float input](/classes/seqinputfloat) for the **sequence material float stored under the key `Parameter`**.
+
+    - A read returns the value of the first object in `Objects` that has sequence material values.
+    - A write sets the value on every object in `Objects` that has sequence material values.
+
+    The read fails if no object in `Objects` has sequence material values. An unset `Objects` matches no object.
+
+    [SequenceMaterialFloatDriver](/classes/sequencematerialfloatdriver) reads sequence material floats and links the same kind of key object.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Parameter:
+    description: "The key of the value. It must be set: the client does not check for a missing key."
+
+  Objects:
+    description: "The objects whose value is read and written. Objects without sequence material values are skipped."

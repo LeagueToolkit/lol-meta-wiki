@@ -1,0 +1,15 @@
+# SequenceActionShow Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **shows objects of the sequence**. The
+    action has a start step and a stop step and no update step. Their code was not traced.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Objects:
+    description: "The objects to show."
+
+  EnableAtStart:
+    description: "When `true`, the objects are also enabled at the start. Not traced."

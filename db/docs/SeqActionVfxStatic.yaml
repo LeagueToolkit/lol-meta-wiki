@@ -1,0 +1,12 @@
+# SeqActionVfxStatic Documentation
+
+class:
+  description: |
+    A [SeqActionVfxBase](/classes/seqactionvfxbase) that **plays an effect at a location**. Its
+    code was not traced.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Location:
+    description: "The position of the effect."

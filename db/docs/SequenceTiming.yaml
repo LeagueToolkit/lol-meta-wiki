@@ -1,0 +1,36 @@
+# SequenceTiming Documentation
+
+class:
+  description: |
+    A **point in time** on the timeline of a [Sequence](/classes/sequence): `offset` seconds
+    after the start of phase `PhaseIndex`. Every action has one for `Start` and one for
+    `End`.
+
+    The client resolves both points once, when a playback starts:
+
+    1. If `ScaleTiming` is set, `offset` is multiplied by the duration of the phase in this
+       playback divided by its authored duration.
+    2. The time is clamped to the duration of the phase in this playback. An offset past
+       the end of the phase falls at the end of the phase.
+
+    The duration of the action is the time from the `Start` point to the `End` point,
+    summed over the phases between them. `End.offset` counts from the start of phase
+    `End.PhaseIndex`, not from `Start`. If a phase in that range is not a timed phase, the
+    duration is indefinite (see [SequencePhase](/classes/sequencephase)).
+  notes:
+    - "`PhaseIndex` is not range-checked. An index equal to the phase count reads an empty phase, so the time resolves to `0`. A larger or a negative index reads memory outside the phase table and can crash the client."
+
+properties:
+  offset:
+    description: "Time, in seconds, after the start of the phase."
+
+  PhaseIndex:
+    description: "Position of the phase in `SequenceCategory.Phases`, from `0`."
+
+  ScaleTiming:
+    description: |
+      Scales `offset` with the phase. The authored duration is the duration in
+      `Sequence.PhaseOverrides`, or else `SequencePhase.DefaultDuration`. The duration in
+      the playback also includes the overrides of the code that starts the playback. When
+      a starter lengthens or shortens the phase, the point keeps its relative place in the
+      phase.

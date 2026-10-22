@@ -1,0 +1,4 @@
+# ClearIconOverride Documentation
+
+class:
+  description: "A [minimap icon modifier](/classes/iminimapiconmodifier) that removes the icon override of the object, so the object shows its own minimap icon again. The client does not revert it when the action stops."

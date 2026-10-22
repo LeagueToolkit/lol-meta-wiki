@@ -1,0 +1,6 @@
+# SeqActionEquipGearInstance Documentation
+
+class:
+  description: |
+    Runtime state of [SeqActionEquipGear](/classes/seqactionequipgear) while a sequence
+    plays it.

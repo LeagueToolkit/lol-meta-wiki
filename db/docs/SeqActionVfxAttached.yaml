@@ -1,0 +1,16 @@
+# SeqActionVfxAttached Documentation
+
+class:
+  description: |
+    A [SeqActionVfxBase](/classes/seqactionvfxbase) that **plays an effect on an object**. The
+    action has code in every step, including pause and resume of the playback. That code was
+    not traced.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  AttachToObject:
+    description: "The object that carries the effect."
+
+  AttachTargetBone:
+    description: "The bone of the object to attach the effect to."

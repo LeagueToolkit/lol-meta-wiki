@@ -1,0 +1,22 @@
+# SeqActionSfxBeam Documentation
+
+class:
+  description: |
+    A [SeqActionSfxBase](/classes/seqactionsfxbase) that **plays sounds along a beam** between
+    two locations, with extra events at the midpoint and the endpoint. The action has a start
+    step, an update step and a stop step. Their code was not traced.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  SourceLocation:
+    description: "The start of the beam."
+
+  TargetLocation:
+    description: "The end of the beam."
+
+  MidpointEvent:
+    description: "The sound event for the midpoint of the beam."
+
+  EndpointEvent:
+    description: "The sound event for the endpoint of the beam."

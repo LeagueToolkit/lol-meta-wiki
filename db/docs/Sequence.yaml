@@ -1,0 +1,64 @@
+# Sequence Documentation
+
+class:
+  description: |
+    A **timeline** of [actions](/classes/isequenceaction): each action starts and ends at a
+    time inside one of the phases of the sequence. While the sequence plays, the client
+    runs the steps of every action at those times. One play of a sequence is a
+    **playback**, and each playback has its own
+    [action instances](/classes/isequenceactioninstance), so one sequence can play several
+    times at once.
+
+    **Phases.** The [category](/classes/sequencecategory) of the sequence supplies the list
+    of phases. A phase either ends when its duration elapses or holds until the code that
+    plays the sequence moves it on (see [SequencePhase](/classes/sequencephase)).
+    `PhaseOverrides` changes the duration or the type of single phases for this sequence.
+
+    **Objects.** Actions do not name objects in the world. They name
+    [object selectors](/classes/sequenceobjectselector), and the code that starts the
+    playback binds an object to each selector. The same sequence therefore plays on the
+    objects that each starter supplies.
+
+    **Playback.**
+
+    1. When the playback starts, the client copies the phases of the category, applies
+       `PhaseOverrides` and then the overrides of the starter, and creates one instance per
+       action.
+    2. Every frame, the playback time advances by the frame time multiplied by the speed of
+       the playback, in seconds. When the time in a timed phase reaches its duration, the
+       next phase starts.
+    3. The playback ends when it is in its last phase and no action is pending or running.
+
+    The code that plays a sequence can also move a playback to a phase by the phase `name`.
+    The move only goes forward. A name that the category does not have changes nothing.
+    Actions in the time that the move skips are marked as skipped and never run.
+
+    **Starters.** The client plays a sequence from these places:
+
+    | Starter | What it does |
+    |---------|--------------|
+    | Map entity states (`EntityState.InSequence`, `EntityState.OutSequence`) | When a map entity changes state, the client stops the playback of the previous state, binds selectors to map objects that it looks up by name, and plays the sequence of the new state. |
+    | Champion spawn-in ([SpawnInSequence](/classes/spawninsequence)) | Binds a camera object and the champion, and plays the sequence for the team of the champion. |
+    | Nexus finishers | Binds the game camera and the finisher unit, and plays each sequence of the finisher. |
+    | TFT interface screens | View controllers link sequences and play them. Some screens hold a playback in hold phases and move it on by phase name. |
+  notes:
+    - "Shipped sequences are used by nexus finisher sequences and by TFT interface sequences. No shipped map entity state or skin links a sequence."
+    - "`PhaseOverrides` with more entries than the category has phases write past the end of the phase table of the playback and corrupt client memory."
+    - "[TftGameStartSequence](/classes/tftgamestartsequence) and [SequencerClipData](/classes/sequencerclipdata) are separate systems. They do not play a `Sequence`."
+
+properties:
+  Actions:
+    description: "The actions of the sequence. The client starts them in order of start time, then of `priority`, not in list order."
+
+  category:
+    description: "The [category](/classes/sequencecategory) that supplies the phases. If it is not set, the sequence has one timed phase of `4` seconds."
+
+  PathHash:
+    description: "Key under which the client registers the sequence when its bin loads."
+
+  PhaseOverrides:
+    description: |
+      Changes to single phases of the category, for this sequence only. The entry at
+      position `i` changes phase `i`; see
+      [SequencePhaseOverride](/classes/sequencephaseoverride). The code that starts a
+      playback can apply its own overrides after these.

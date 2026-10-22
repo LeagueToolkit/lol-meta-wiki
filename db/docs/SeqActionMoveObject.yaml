@@ -1,0 +1,8 @@
+# SeqActionMoveObject Documentation
+
+class:
+  description: |
+    A [SeqActionSplineVector](/classes/seqactionsplinevector) that **moves an object along a
+    spline**. It shares the code of its base. Its default output was not traced.
+  notes:
+    - "No shipped object uses it."

@@ -1,0 +1,10 @@
+# GameScreenSequenceActionUiMoveElementInstance Documentation
+
+class:
+  description: |
+    Runtime state of
+    [GameScreenSequenceActionUiMoveElement](/classes/gamescreensequenceactionuimoveelement)
+    while a sequence plays it.
+
+    The action has no stop step, so the element keeps the position of the last update before
+    `End`. That position can fall short of `EndPosition`.

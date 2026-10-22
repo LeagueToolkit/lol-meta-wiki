@@ -1,0 +1,6 @@
+# SequenceActionCreateObjectInstance Documentation
+
+class:
+  description: |
+    Runtime state of [SequenceActionCreateObject](/classes/sequenceactioncreateobject) while
+    a sequence plays it.

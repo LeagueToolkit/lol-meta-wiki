@@ -1,0 +1,47 @@
+# TftSequenceActionPlaySpineAnimation Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **plays a Spine animation on a TFT UI
+    element**.
+
+    At the start step:
+
+    1. If `EnableOnStart` is set, the action enables the element.
+    2. If the element is enabled, the action adds the animation of `AnimationConfig` to the
+       element. If `0x457338e5` is set, it first clears the track.
+
+    The action never fails. If the element is disabled, or the skeleton has no animation of
+    that name, nothing plays. At the stop step the action disables the element if
+    `DisableOnEnd` is set.
+  notes:
+    - "Used by TFT interface sequences, mostly with `EnableOnStart` and `DisableOnEnd` turned off so that the element stays as it is."
+
+properties:
+  element:
+    description: "The UI element that plays the animation: either a constant element hash, or an element read from an object bound to a [SequenceObjectSelector](/classes/sequenceobjectselector)."
+
+  "0x76df2a8b":
+    description: |
+      Optional [SequenceObjectSelector](/classes/sequenceobjectselector). When it is set, the
+      action reads an integer parameter of the bound object and uses it as the instance index of
+      the element. This lets one sequence address one copy of a repeated element, such as one
+      slot of a row of cards. The code that plays the sequence writes the parameter.
+
+  AnimationConfig:
+    description: |
+      The animation to add: `AnimationName` on the track `TrackIndex`. `Loop` repeats it,
+      `DelayTime` is the delay in seconds before it starts, and `SpeedScale` multiplies its
+      playback speed.
+
+  "0x457338e5":
+    description: |
+      When `true`, the action clears the track and resets the skeleton to its setup pose before
+      it adds the animation, so the animation starts at once. When `false`, the animation is
+      queued after the entry that the track is playing.
+
+  EnableOnStart:
+    description: "When `true`, the action enables the element at the start step, before it adds the animation."
+
+  DisableOnEnd:
+    description: "When `true`, the action disables the element at the stop step."

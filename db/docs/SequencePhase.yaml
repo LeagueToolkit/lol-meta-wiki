@@ -1,0 +1,34 @@
+# SequencePhase Documentation
+
+class:
+  description: |
+    A **phase** of a [Sequence](/classes/sequence): one named span of the timeline. The
+    phases of a sequence play in the order of `SequenceCategory.Phases`, and action times
+    count from the start of a phase (see [SequenceTiming](/classes/sequencetiming)).
+  notes:
+    - "Shipped data sets `type` only to `1`. All other shipped phases are timed."
+
+properties:
+  type:
+    description: |
+      How the phase ends.
+
+      | Value | Name | Behaviour |
+      |-------|------|-----------|
+      | `0` | Timed | The phase ends when its duration elapses, and the next phase starts. |
+      | `1` | Hold | The phase never ends by itself. The code that plays the sequence moves the playback on by phase `name`. |
+      | `2` | Wait for actions | After its duration elapses, the phase ends only when every running action allows it to end. |
+      | Other | Hold | Same as `1`. |
+
+      If a phase from the `Start` phase to the `End` phase of an action is not of type `0`,
+      the duration of that action is indefinite.
+
+  name:
+    description: "Name by which the code that plays the sequence moves a playback to this phase. TFT interface screens use it to step through hold phases."
+
+  DefaultDuration:
+    description: |
+      Duration of the phase, in seconds, unless an override changes it for a sequence or a
+      playback. Action times in the phase are clamped to the duration of the phase. If the
+      sequence does not override the duration, `DefaultDuration` is also the authored
+      duration that `SequenceTiming.ScaleTiming` scales against.

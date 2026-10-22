@@ -1,0 +1,19 @@
+# TftSequenceActionContinue Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **sets a continue request** on the
+    playback that runs it. The sequence player itself does not read the request. The TFT
+    screen that plays the sequence checks it to decide when to go on.
+  notes:
+    - "Used by TFT interface sequences."
+
+properties:
+  ContinueAt:
+    description: |
+      The step at which the action sets the request.
+
+      | Value | Step |
+      |-------|------|
+      | `0` | Start step |
+      | `1` | Stop step |

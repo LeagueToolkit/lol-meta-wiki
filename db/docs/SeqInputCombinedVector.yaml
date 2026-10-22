@@ -1,0 +1,21 @@
+# SeqInputCombinedVector Documentation
+
+class:
+  description: |
+    A [vector input](/classes/seqinputvector) that **combines two vectors**. It reads `LeftSource` and `RightSource`
+    and applies `Operation` per component. Only add (`0`) and subtract (`1`) produce a value.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "An `Operation` other than `0` or `1` returns no value: the read succeeds and the action keeps the value it held before."
+    - "Used by nexus finisher sequences. They use it to combine an object position with a constant vector."
+
+properties:
+  Operation:
+    description: "The operation applied to the two operands. The values are listed on [SeqInputFloat](/classes/seqinputfloat)."
+
+  LeftSource:
+    description: "The left operand. It must be set: the client does not check for a missing operand."
+
+  RightSource:
+    description: "The right operand. It must be set: the client does not check for a missing operand."

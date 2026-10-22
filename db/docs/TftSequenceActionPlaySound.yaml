@@ -1,0 +1,12 @@
+# TftSequenceActionPlaySound Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **plays a sound event** in a TFT
+    interface sequence. The action has only a start step. Its code was not traced.
+  notes:
+    - "Used by TFT interface sequences."
+
+properties:
+  SoundEvent:
+    description: "The sound event to play."

@@ -1,0 +1,28 @@
+# TftGameStartSequenceSimple Documentation
+
+class:
+  description: |
+    A [game-start timeline](/classes/tftgamestartsequence) made of timed
+    [events](/classes/tftgamestartsequencesimpleevent). Each event turns one UI object on
+    for a window of time. Times are seconds of the game clock since the timeline started.
+
+    1. At the start, the timeline records the game time and turns every event object off.
+    2. On each update, the timeline shows `MainScene` if it is hidden, and prepares every
+       event object the first time it does so. Then it turns each event object on while
+       the time is in its window and off outside it.
+    3. The timeline is finished when `TotalDurationSecs` have passed since the start. At
+       the end it hides `MainScene`.
+
+    The timeline updates only in one state of the game. That state is not yet identified.
+  notes:
+    - "Used by the TFT game-start screen."
+
+properties:
+  events:
+    description: "The events of the timeline. Their windows can overlap."
+
+  MainScene:
+    description: "Hash of the UI scene that the timeline shows while it runs and hides at the end."
+
+  TotalDurationSecs:
+    description: "Length of the timeline, in seconds."

@@ -1,0 +1,10 @@
+# SeqInputVector Documentation
+
+class:
+  description: |
+    A sequence input that produces a vector with three components. Depending on the property that
+    holds the input, the vector is a position, a direction or an orientation.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "The orientation inputs do not agree on units: [SeqInputConstOrientation](/classes/seqinputconstorientation) returns radians and [0x7b768f17](/classes/0x7b768f17) returns degrees."

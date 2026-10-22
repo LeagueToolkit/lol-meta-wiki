@@ -1,0 +1,16 @@
+# SeqInputVarCameraNearClip Documentation
+
+class:
+  description: |
+    A [float input](/classes/seqinputfloat) for the **near clip distance of a camera**: the camera in the `Source` slot. A read
+    returns the value, and a write sets it on the camera.
+
+    The read fails if the slot is empty or the object in it has no camera.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "Used by nexus finisher sequences. They use it to give a created camera the near clip distance of the game camera."
+
+properties:
+  Source:
+    description: "The [slot](/classes/sequenceobjectselector) of the camera."

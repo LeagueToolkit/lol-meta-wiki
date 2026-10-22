@@ -1,0 +1,20 @@
+# SequenceActionAttachToObject Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **attaches an object to another object**
+    for the duration of the action. At the stop step the action detaches `ToBeAttached`, as
+    [SequenceActionAttachToMainCamera](/classes/sequenceactionattachtomaincamera) does. The
+    start step was not traced.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  ToBeAttached:
+    description: "The object to attach."
+
+  AttachTo:
+    description: "The object to attach to."
+
+  boneName:
+    description: "The bone of `AttachTo` to attach to. How an empty name is handled was not traced."

@@ -1,0 +1,16 @@
+# SeqInputVarPosition Documentation
+
+class:
+  description: |
+    A [vector input](/classes/seqinputvector) for the **position of an object**: the object that `Object`
+    returns. A read returns the position, and a write moves the object to the written position.
+
+    The read fails if `Object` returns no object or the object has no position.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "Used by nexus finisher sequences. They use it for the positions of created effects and as the target of vector lerps."
+
+properties:
+  Object:
+    description: "The object to read. It must be set: the client does not check for a missing object input."

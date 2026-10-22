@@ -1,0 +1,23 @@
+# SetLightChannels Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **sets the light channels of a light**
+    for the duration of the action.
+
+    At the start step the action takes the light of the object bound to `TargetObject`. If the
+    object has no light, the action fails. If `RestoreOnStop` is set, the action saves the
+    current channels of the light. It then writes `Channels`. At the stop step it writes the
+    saved channels back if `RestoreOnStop` is set.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  TargetObject:
+    description: "The [SequenceObjectSelector](/classes/sequenceobjectselector) of the light object."
+
+  Channels:
+    description: "The light channel bitmask to write. A light reaches an object only when the object's own light channels share a bit with it, as for `MapDynamicPointLight.LightChannels`."
+
+  RestoreOnStop:
+    description: "When `true`, the action restores the channels the light had before the start step. When `false`, the new channels stay."

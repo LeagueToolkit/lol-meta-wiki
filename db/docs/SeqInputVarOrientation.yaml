@@ -1,0 +1,16 @@
+# SeqInputVarOrientation Documentation
+
+class:
+  description: |
+    A [vector input](/classes/seqinputvector) for the **orientation of an object**: the object that
+    `Object` returns.
+
+    The read fails if `Object` returns no object or the object has no orientation.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "Used by nexus finisher sequences. They use it to give a created camera the orientation of the game camera."
+
+properties:
+  Object:
+    description: "The object to read. It must be set: the client does not check for a missing object input."

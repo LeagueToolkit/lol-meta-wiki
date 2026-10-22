@@ -1,0 +1,10 @@
+# TftGameStartSequenceUiElement Documentation
+
+class:
+  description: "A UI element that a [game-start event](/classes/tftgamestartsequencesimpleevent) turns on and off."
+  notes:
+    - "Used by the TFT game-start screen."
+
+properties:
+  UIElement:
+    description: "Hash of the element."

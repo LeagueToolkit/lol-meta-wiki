@@ -1,0 +1,18 @@
+# SeqInputObjectEnabled Documentation
+
+class:
+  description: |
+    An [enabled-state input](/classes/seqinputenabled) for the **enabled state of objects**.
+
+    - A read returns the value of the first object in `Objects` that has an enabled state.
+    - A write sets the value on every object in `Objects` that has an enabled state.
+
+    The read fails if no object in `Objects` has an enabled state. An unset `Objects` matches no object.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Objects:
+    description: "The objects whose value is read and written. Objects without an enabled state are skipped."

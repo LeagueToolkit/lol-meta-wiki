@@ -1,0 +1,4 @@
+# SeqInputBool Documentation
+
+class:
+  description: "A sequence input that produces a bool. See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written."

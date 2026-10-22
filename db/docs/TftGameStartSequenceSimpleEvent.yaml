@@ -1,0 +1,16 @@
+# TftGameStartSequenceSimpleEvent Documentation
+
+class:
+  description: "One event of a [TftGameStartSequenceSimple](/classes/tftgamestartsequencesimple): a UI object that is on from `StartTimeSecs` until `StartTimeSecs + DurationSecs`, and off at all other times."
+  notes:
+    - "Used by the TFT game-start screen."
+
+properties:
+  StartTimeSecs:
+    description: "Time, in seconds after the timeline starts, at which the object turns on."
+
+  UiObject:
+    description: "The [UI object](/classes/tftgamestartsequencesimpleobject) that the event turns on and off."
+
+  DurationSecs:
+    description: "Time, in seconds, for which the object stays on."

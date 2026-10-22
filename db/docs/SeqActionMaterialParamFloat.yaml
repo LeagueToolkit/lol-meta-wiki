@@ -1,0 +1,10 @@
+# SeqActionMaterialParamFloat Documentation
+
+class:
+  description: |
+    A [SequenceActionLerpFloat](/classes/sequenceactionlerpfloat) for a **float material
+    parameter**. It differs from its base only in the output object that it creates by default.
+    That default output was not traced. An authored `0xacddc1f1` replaces it.
+  notes:
+    - "[SeqInputMaterialParamFloat](/classes/seqinputmaterialparamfloat) is the input that reads and writes a sequence material value, which [SequenceMaterialFloatDriver](/classes/sequencematerialfloatdriver) reads in a material."
+    - "No shipped object uses it."

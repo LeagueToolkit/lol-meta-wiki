@@ -1,0 +1,19 @@
+# SeqActionCameraShakeConst Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **shakes the camera with constant
+    values** for the duration of the action. The values have the same roles as the inputs of
+    [SequenceActionShakeMainCamera](/classes/sequenceactionshakemaincamera).
+
+    The action has only a start step. It fails, and logs an error, if the duration of the
+    action is indefinite or if the falloff rate is `0`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  direction:
+    description: "The direction of the shake, as a vector."
+
+  "0xf92ca41e":
+    description: "The shake values: `Magnitude` (strength), `ShakesPerSecond` (frequency, in shakes per second) and `FalloffRate`. A `FalloffRate` of `0` makes the action fail."

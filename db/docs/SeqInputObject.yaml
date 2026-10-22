@@ -1,0 +1,8 @@
+# SeqInputObject Documentation
+
+class:
+  description: |
+    A sequence input that returns **one object**. When a property that takes a list holds it, the
+    input returns a list with that one object.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.

@@ -1,0 +1,6 @@
+# SequenceActionLerpVectorInstance Documentation
+
+class:
+  description: |
+    Runtime state of [SequenceActionLerpVector](/classes/sequenceactionlerpvector) while a
+    sequence plays it.

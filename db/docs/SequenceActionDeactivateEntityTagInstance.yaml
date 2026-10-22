@@ -1,0 +1,7 @@
+# SequenceActionDeactivateEntityTagInstance Documentation
+
+class:
+  description: |
+    Runtime state of
+    [SequenceActionDeactivateEntityTag](/classes/sequenceactiondeactivateentitytag) while a
+    sequence plays it.

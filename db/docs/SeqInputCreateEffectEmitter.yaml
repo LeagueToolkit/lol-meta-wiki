@@ -1,0 +1,35 @@
+# SeqInputCreateEffectEmitter Documentation
+
+class:
+  description: |
+    A [create input](/classes/seqinputcreateobject) that creates a **particle effect**. When
+    [SequenceActionCreateObject](/classes/sequenceactioncreateobject) runs it, the input:
+
+    1. Creates an instance of `system` at `Position`. If `system` is unset, no object is created.
+    2. If `AttachTo` is set, attaches the effect through it at the bone `AttachTargetBone`.
+    3. Sets the orientation from `orientation` and a uniform scale from `scale`.
+
+    Unset input properties use the defaults listed on [SeqInputFloat](/classes/seqinputfloat).
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "Used by nexus finisher sequences."
+
+properties:
+  system:
+    description: "The [particle system](/classes/vfxsystemdefinitiondata) to create."
+
+  Position:
+    description: "The position of the effect."
+
+  AttachTo:
+    description: "The object to attach the effect to. If it is unset, the effect is not attached."
+
+  AttachTargetBone:
+    description: "The name of the bone of the `AttachTo` object that the effect attaches to."
+
+  orientation:
+    description: "The orientation of the effect."
+
+  scale:
+    description: "A scale factor applied to all three axes of the effect."

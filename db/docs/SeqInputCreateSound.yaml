@@ -1,0 +1,22 @@
+# SeqInputCreateSound Documentation
+
+class:
+  description: |
+    A [create input](/classes/seqinputcreateobject) that creates a **sound object**. When
+    [SequenceActionCreateObject](/classes/sequenceactioncreateobject) runs it, the input creates a sound object at `Position` and posts
+    the audio event `StartAudioEvent` on it. When the sound object is destroyed, it posts
+    `EndAudioEvent`, if that is set.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "Used by nexus finisher sequences."
+
+properties:
+  StartAudioEvent:
+    description: "The name of the audio event posted when the sound object is created."
+
+  EndAudioEvent:
+    description: "The name of the audio event posted when the sound object is destroyed. If it is unset, no event is posted."
+
+  Position:
+    description: "The position of the sound object."

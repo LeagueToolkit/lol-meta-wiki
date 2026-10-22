@@ -1,0 +1,11 @@
+# SeqInputCreateObject Documentation
+
+class:
+  description: |
+    A sequence input that **creates an object**. [SequenceActionCreateObject](/classes/sequenceactioncreateobject) runs it, and the input
+    returns the new object. The input properties of a create input are read when the object is
+    created.
+
+    Unset input properties use the defaults listed on [SeqInputFloat](/classes/seqinputfloat).
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.

@@ -1,0 +1,31 @@
+# SequenceActionLerpVector Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **interpolates a vector** from
+    `StartValue` to `EndValue` over the duration of the action and writes it to the output
+    input `0xacddc1f1`, such as the position of an object. Its properties have the same roles
+    as on [SequenceActionLerpFloat](/classes/sequenceactionlerpfloat). Its start and update
+    steps were not traced in detail.
+  notes:
+    - "The action has no stop step, so the output can stop short of `EndValue`."
+    - "Used by nexus finisher sequences to move an object of the sequence to the position of another object."
+
+properties:
+  StartValue:
+    description: "The vector at progress `0`."
+
+  EndValue:
+    description: "The vector at progress `1`."
+
+  UseInitialStart:
+    description: "When `true`, `StartValue` is read once at the start, as on [SequenceActionLerpFloat](/classes/sequenceactionlerpfloat)."
+
+  UseInitialEnd:
+    description: "When `true`, `EndValue` is read once at the start, as on [SequenceActionLerpFloat](/classes/sequenceactionlerpfloat)."
+
+  "0xacddc1f1":
+    description: "The output: the input that receives the interpolated vector. It must support writing."
+
+  EasingType:
+    description: "The curve applied to the progress. See the `EasingType` table on [ISequenceAction](/classes/isequenceaction)."

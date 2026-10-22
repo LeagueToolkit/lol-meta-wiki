@@ -1,0 +1,30 @@
+# GameScreenSequenceActionUiChangeElementColor Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **changes the color of a UI element**
+    from `StartColor` to `EndColor` over the duration of the action.
+
+    The action has only an update step. On every update it eases the progress with
+    `EasingType` (see [ISequenceAction](/classes/isequenceaction)) and interpolates each of the
+    four channels separately, in the `0`-`255` range. It then writes the result to the element.
+  notes:
+    - "The action has no stop step. The last color applied is the one of the last update before `End`, so the element can stop short of `EndColor`."
+    - "The action does not check that the element hash resolves to an element. Point it at an existing element."
+    - "No shipped object uses it."
+
+properties:
+  "0xcfe79554":
+    description: "The UI element to color, by the hash of its object path."
+
+  StartColor:
+    description: "The color at progress `0`."
+
+  EndColor:
+    description: "The color at progress `1`."
+
+  AlphaOnly:
+    description: "When `true`, the action writes only the interpolated alpha to the element and leaves its red, green and blue unchanged."
+
+  EasingType:
+    description: "The curve applied to the progress. See the `EasingType` table on [ISequenceAction](/classes/isequenceaction)."

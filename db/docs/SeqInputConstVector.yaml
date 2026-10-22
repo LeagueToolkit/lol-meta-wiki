@@ -1,0 +1,10 @@
+# SeqInputConstVector Documentation
+
+class:
+  description: "A [vector input](/classes/seqinputvector) that returns `value`. See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written."
+  notes:
+    - "Used by nexus finisher sequences. They use it for the direction of a camera shake and as an operand of a combined input."
+
+properties:
+  value:
+    description: "The value that the input returns."

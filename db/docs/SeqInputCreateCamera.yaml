@@ -1,0 +1,33 @@
+# SeqInputCreateCamera Documentation
+
+class:
+  description: |
+    A [create input](/classes/seqinputcreateobject) that creates a **camera**. When
+    [SequenceActionCreateObject](/classes/sequenceactioncreateobject) runs it, the input creates a camera, reads `Position`,
+    `orientation`, `fov`, `nearClip` and `farClip` and sets them on the camera. If `EnableOnStart` reads
+    `true`, the new camera becomes the active camera.
+
+    Unset properties use the defaults listed on [SeqInputFloat](/classes/seqinputfloat).
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Position:
+    description: "The position of the camera."
+
+  orientation:
+    description: "The orientation of the camera."
+
+  fov:
+    description: "The field of view of the camera."
+
+  nearClip:
+    description: "The near clip distance of the camera."
+
+  farClip:
+    description: "The far clip distance of the camera."
+
+  EnableOnStart:
+    description: "If this reads `true`, the new camera becomes the active camera."

@@ -1,0 +1,16 @@
+# SequenceType Documentation
+
+class:
+  description: |
+    A type tag for the entries of a [SequenceTable](/classes/sequencetable). When its bin
+    loads, the client registers the type under `Hash`. What reads the registered types is
+    not yet identified.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  name:
+    description: "Name of the type."
+
+  Hash:
+    description: "Key under which the client registers the type."

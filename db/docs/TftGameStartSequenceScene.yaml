@@ -1,0 +1,10 @@
+# TftGameStartSequenceScene Documentation
+
+class:
+  description: "A UI scene that a [game-start event](/classes/tftgamestartsequencesimpleevent) turns on and off."
+  notes:
+    - "Used by the TFT game-start screen."
+
+properties:
+  UIScene:
+    description: "Hash of the scene."

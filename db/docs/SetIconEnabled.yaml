@@ -1,0 +1,8 @@
+# SetIconEnabled Documentation
+
+class:
+  description: "A [minimap icon modifier](/classes/iminimapiconmodifier) that shows or hides the minimap icon of the object. The client does not revert it when the action stops."
+
+properties:
+  IsEnabled:
+    description: "`true` shows the icon, `false` hides it."

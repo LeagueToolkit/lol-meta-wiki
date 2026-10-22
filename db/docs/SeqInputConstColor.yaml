@@ -1,0 +1,10 @@
+# SeqInputConstColor Documentation
+
+class:
+  description: "A [color input](/classes/seqinputcolor) that returns `value`. See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  value:
+    description: "The value that the input returns."

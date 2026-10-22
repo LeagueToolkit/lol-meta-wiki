@@ -1,0 +1,20 @@
+# SeqInputCreateZoomableCamera Documentation
+
+class:
+  description: |
+    A [camera create input](/classes/seqinputcreatecamera) that also sets a **camera zoom**. It creates the
+    camera as [SeqInputCreateCamera](/classes/seqinputcreatecamera) does, then reads `Zoom` and `0xcae95eff` and sets them on the
+    camera. The created camera can be read and written by [SeqInputVarCameraZoom](/classes/seqinputvarcamerazoom).
+
+    Unset properties use the defaults listed on [SeqInputFloat](/classes/seqinputfloat).
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "Used by nexus finisher sequences. Every input property in them reads the game camera, so the created camera starts with the position, orientation, field of view, clip distances and zoom of the game camera."
+
+properties:
+  Zoom:
+    description: "The zoom of the camera."
+
+  "0xcae95eff":
+    description: "A bool that the client stores on the camera. What it changes is not yet identified."

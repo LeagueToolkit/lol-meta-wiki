@@ -1,0 +1,6 @@
+# SequenceActionLerpColorInstance Documentation
+
+class:
+  description: |
+    Runtime state of [SeqActionLerpColor](/classes/seqactionlerpcolor), and of the actions
+    derived from it, while a sequence plays them.

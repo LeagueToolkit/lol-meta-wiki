@@ -1,0 +1,34 @@
+# SequenceObjectSelector Documentation
+
+class:
+  description: |
+    A named **object slot** of a [Sequence](/classes/sequence). Actions and sequence inputs
+    refer to the world through selectors, not through objects. The code that starts a
+    playback binds an object to each selector for that playback, and every action that
+    names the selector then acts on that object.
+
+    The binding key is `Hash`:
+
+    - Two selectors with the same `Hash` share one binding.
+    - A selector that the starter did not bind resolves to no object. An input that reads
+      it fails.
+
+    The starters bind these objects:
+
+    | Starter | Bound objects |
+    |---------|---------------|
+    | Champion spawn-in ([SpawnInSequence](/classes/spawninsequence)) | A camera object and the champion |
+    | Nexus finishers | The game camera and the finisher unit |
+    | Map entity states (`EntityState`) | Map objects that the client looks up by name |
+
+    The client also registers each selector under `Hash` when its bin loads.
+  notes:
+    - "A selector without `Hash` binds as `0`, so it shares its binding with every other selector without `Hash`."
+    - "Shipped selectors set `Hash` to the hash of their own object path. They are used by nexus finisher sequences and by TFT interface sequences."
+
+properties:
+  name:
+    description: "Name of the slot. Binding does not use it."
+
+  Hash:
+    description: "The binding key of the slot. The starter binds an object to this hash, and every selector with the same hash resolves to that object."

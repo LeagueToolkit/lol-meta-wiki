@@ -1,0 +1,9 @@
+# SeqInputAttachment Documentation
+
+class:
+  description: |
+    A sequence input for an object that takes part in an **attachment**: the object that an action
+    attaches to a parent, or the parent itself. Actions use it to attach an object at a named bone of
+    the parent and to detach it again.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.

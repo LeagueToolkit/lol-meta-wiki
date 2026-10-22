@@ -1,0 +1,18 @@
+# SeqActionEquipGear Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **equips a gear entry on an object**. The
+    action has only a start step. Its code was not traced.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  TargetObject:
+    description: "The [SequenceObjectSelector](/classes/sequenceobjectselector) of the object."
+
+  GearIndex:
+    description: "The index of the gear to equip."
+
+  PlayEquipAnimation:
+    description: "Whether the object plays its equip animation."

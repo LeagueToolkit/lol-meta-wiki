@@ -1,0 +1,22 @@
+# GameScreenSequenceActionUiEnableScene Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **enables or disables a UI scene** at its
+    start step and at its stop step. It works like
+    [GameScreenSequenceActionUiEnableElement](/classes/gamescreensequenceactionuienableelement),
+    on a scene instead of an element.
+
+    If no scene has the hash in `TargetScene`, the action does nothing.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  TargetScene:
+    description: "The UI scene to change, by the hash of its object path."
+
+  ActionOnStart:
+    description: "The change applied to the scene at the start step: `0` none, `1` enable, `2` disable."
+
+  ActionOnEnd:
+    description: "The change applied to the scene at the stop step: `0` none, `1` enable, `2` disable."

@@ -1,0 +1,12 @@
+# SeqActionSfxAttached Documentation
+
+class:
+  description: |
+    A [SeqActionSfxBase](/classes/seqactionsfxbase) that **plays a sound on an object**. The
+    action has a start step, an update step and a stop step. Their code was not traced.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  AttachToObject:
+    description: "The object that carries the sound."

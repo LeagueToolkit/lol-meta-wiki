@@ -1,0 +1,6 @@
+# SequenceActionHideInstance Documentation
+
+class:
+  description: |
+    Runtime state of [SequenceActionHide](/classes/sequenceactionhide) while a sequence
+    plays it.

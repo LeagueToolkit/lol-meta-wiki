@@ -1,0 +1,6 @@
+# SeqActionRotateObjectInstance Documentation
+
+class:
+  description: |
+    Runtime state of [SeqActionRotateObject](/classes/seqactionrotateobject) while a
+    sequence plays it.

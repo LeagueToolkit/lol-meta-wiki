@@ -1,0 +1,16 @@
+# SeqActionSfxMoving Documentation
+
+class:
+  description: |
+    A [SeqActionSfxBase](/classes/seqactionsfxbase) that **plays a sound that moves along a
+    spline**. The action has a start step, an update step and a stop step. Their code was not
+    traced.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  SplinePoints:
+    description: "The points of the spline."
+
+  SplineCurves:
+    description: "The curves between the spline points."

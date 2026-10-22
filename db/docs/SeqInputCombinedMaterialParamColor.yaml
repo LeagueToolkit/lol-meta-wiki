@@ -1,0 +1,10 @@
+# SeqInputCombinedMaterialParamColor Documentation
+
+class:
+  description: |
+    A combined input that behaves exactly as [SeqInputCombinedColor](/classes/seqinputcombinedcolor): it applies `Operation` to `LeftSource` and
+    `RightSource`. It does not read a material value itself.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "No shipped object uses it."

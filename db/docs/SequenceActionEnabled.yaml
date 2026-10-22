@@ -1,0 +1,21 @@
+# SequenceActionEnabled Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **sets the enabled state of an object**
+    at its start and at its end. `Object` names the object, for example a UI element through
+    [SeqInputUiEnabled](/classes/seqinputuienabled).
+
+    The action has a start step and a stop step and no update step. Their code was not traced.
+  notes:
+    - "Used by nexus finisher sequences to show and hide UI elements."
+
+properties:
+  Object:
+    description: "The object whose enabled state the action sets."
+
+  SetOnStart:
+    description: "The enabled state for the start step."
+
+  SetOnEnd:
+    description: "The enabled state for the stop step."

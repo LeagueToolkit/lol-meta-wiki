@@ -1,0 +1,12 @@
+# SequenceActionShowEntity Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **shows a game entity**, found by its
+    hash. The action has only a start step. Its code was not traced.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Entity:
+    description: "The entity to show, by hash."

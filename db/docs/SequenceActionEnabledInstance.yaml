@@ -1,0 +1,6 @@
+# SequenceActionEnabledInstance Documentation
+
+class:
+  description: |
+    Runtime state of [SequenceActionEnabled](/classes/sequenceactionenabled) while a
+    sequence plays it.

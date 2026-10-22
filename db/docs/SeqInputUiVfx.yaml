@@ -1,0 +1,12 @@
+# SeqInputUiVfx Documentation
+
+class:
+  description: |
+    A sequence input for the **particle effect of a UI element**. A read returns the particle system
+    that the element shows, and a write replaces it. [SequenceActionOverrideUiVfx](/classes/sequenceactionoverrideuivfx) writes through it.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+
+properties:
+  EnableOnStart:
+    description: "When `true`, a write through [SeqInputConstUiVfx](/classes/seqinputconstuivfx) disables and enables the element again, so the new effect starts from its beginning. Whether [SeqInputVarUiVfx](/classes/seqinputvaruivfx) reads it is not yet identified."

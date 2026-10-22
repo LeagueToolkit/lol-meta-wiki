@@ -1,0 +1,16 @@
+# SequenceActionActivateEntity Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **activates a game entity**, found by
+    its hash. Its code was not traced.
+  notes:
+    - "[SequenceActionActivateEntityTag](/classes/sequenceactionactivateentitytag) activates every entity with a tag."
+    - "No shipped object uses it."
+
+properties:
+  Entity:
+    description: "The entity to activate, by hash."
+
+  ActivateThenShow:
+    description: "When `true`, the entity is also shown after it is activated. Not traced."

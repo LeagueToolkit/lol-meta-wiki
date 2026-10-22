@@ -1,0 +1,12 @@
+# SeqActionSfxGlobal Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **plays a sound event without a
+    position**. The action has only a start step. Its code was not traced.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  EventName:
+    description: "The name of the sound event."

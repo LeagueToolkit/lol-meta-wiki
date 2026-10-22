@@ -1,0 +1,16 @@
+# SeqInputUiEnabled Documentation
+
+class:
+  description: |
+    An [enabled-state input](/classes/seqinputenabled) for the **UI element** with the hash `UIElement`.
+    The input looks up the element on its first use and keeps it. A read returns whether the element
+    is enabled, and a write enables or disables it.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "The read always reports success. The input does not check that an element with the hash `UIElement` exists before it uses the element."
+    - "Used by nexus finisher sequences. They use it as the target of [SequenceActionEnabled](/classes/sequenceactionenabled)."
+
+properties:
+  UIElement:
+    description: "The hash of the UI element."

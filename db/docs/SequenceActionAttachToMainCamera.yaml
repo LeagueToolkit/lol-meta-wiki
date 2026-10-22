@@ -1,0 +1,16 @@
+# SequenceActionAttachToMainCamera Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **attaches an object to a point in front
+    of the main camera** for the duration of the action.
+
+    At the start step the action attaches `ToBeAttached` to a point `300` world units in front
+    of the main camera. The orientation of that point is the camera orientation with every
+    axis negated. The action fails if the attachment fails. At the stop step it detaches the object.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  ToBeAttached:
+    description: "The object to attach, as an attachment input that names an object of the sequence."

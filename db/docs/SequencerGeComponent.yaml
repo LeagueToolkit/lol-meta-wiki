@@ -1,0 +1,8 @@
+# SequencerGeComponent Documentation
+
+class:
+  description: |
+    The entity component that a [SequencerGeComponentDef](/classes/sequencergecomponentdef)
+    adds. It exposes the material parameters of the entity to sequence inputs, which
+    [SeqInputMaterialParamFloat](/classes/seqinputmaterialparamfloat) and
+    [SeqInputMaterialParamColor](/classes/seqinputmaterialparamcolor) read and write.

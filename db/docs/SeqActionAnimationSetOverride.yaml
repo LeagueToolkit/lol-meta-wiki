@@ -1,0 +1,23 @@
+# SeqActionAnimationSetOverride Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **sets an animation override on an
+    object**. The action has a start step and a stop step and no update step. Their code was
+    not traced.
+  notes:
+    - "[SeqActionAnimationClearOverride](/classes/seqactionanimationclearoverride) removes an override."
+    - "No shipped object uses it."
+
+properties:
+  Object:
+    description: "The object whose animation is overridden."
+
+  "0x1e2f0036":
+    description: "Unknown string. One of the two names of the override; which one was not identified."
+
+  "0x8adb25f4":
+    description: "Unknown string. One of the two names of the override; which one was not identified."
+
+  ResetWhenDone:
+    description: "When `true`, the override is meant to be removed at the stop step. Not traced."
