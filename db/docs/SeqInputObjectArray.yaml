@@ -1,0 +1,11 @@
+# SeqInputObjectArray Documentation
+
+class:
+  description: |
+    A sequence input that returns a **list of objects**. The inputs that read a property over a list,
+    such as [SeqInputLightColor](/classes/seqinputlightcolor), take one in `Objects`.
+
+    Every input that returns a single object also fills a property of this type: a single object
+    counts as a list of one.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.

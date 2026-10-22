@@ -1,0 +1,20 @@
+# SequenceActionOverrideUiVfx Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **replaces the effect of a UI particle
+    element** with `SourceVfx`. The action has a start step and a stop step and no update
+    step. Their code was not traced.
+  notes:
+    - "Writing a constant UI effect input stores the new effect in the element. If the input's `EnableOnStart` is set, the element is disabled and enabled again, which restarts the effect."
+    - "No shipped object uses it."
+
+properties:
+  TargetUiVfx:
+    description: "The UI particle element, as a UI effect input."
+
+  SourceVfx:
+    description: "The effect to put on the element. See [VfxSystemDefinitionData](/classes/vfxsystemdefinitiondata)."
+
+  "0x75da2db6":
+    description: "Unknown bool. Purpose not yet identified."

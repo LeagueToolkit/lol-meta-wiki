@@ -1,0 +1,16 @@
+# SeqActionVfxBeam Documentation
+
+class:
+  description: |
+    A [SeqActionVfxBase](/classes/seqactionvfxbase) that **plays a beam effect between two
+    positions**. The action has code in every step, including pause and resume of the
+    playback. That code was not traced.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  SourcePosition:
+    description: "The start of the beam."
+
+  TargetPosition:
+    description: "The end of the beam."

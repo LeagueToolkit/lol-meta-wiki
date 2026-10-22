@@ -1,0 +1,11 @@
+# SeqActionLightHdrScale Documentation
+
+class:
+  description: |
+    A [SequenceActionLerpFloat](/classes/sequenceactionlerpfloat) whose default output is the
+    **HDR scale of a light**, through [SeqInputLightHdrScale](/classes/seqinputlighthdrscale):
+    the action interpolates the `HdrScale` of the lights that the input selects. An authored
+    `0xacddc1f1` replaces the default output.
+  notes:
+    - "`HdrScale` is used only by PBR-style shaders, as for `MapDynamicPointLight.HdrScale`."
+    - "No shipped object uses it."

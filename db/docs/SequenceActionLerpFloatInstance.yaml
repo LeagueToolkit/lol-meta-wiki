@@ -1,0 +1,10 @@
+# SequenceActionLerpFloatInstance Documentation
+
+class:
+  description: |
+    Runtime state of [SequenceActionLerpFloat](/classes/sequenceactionlerpfloat), and of the
+    actions derived from it, while a sequence plays them.
+
+    The instance keeps the values of `StartValue` and `EndValue` that it read at the start.
+    It reuses a kept value on every update when `UseInitialStart` or `UseInitialEnd` is set,
+    and reads the input again on every update otherwise.

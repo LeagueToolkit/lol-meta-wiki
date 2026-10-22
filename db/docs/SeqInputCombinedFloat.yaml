@@ -1,0 +1,23 @@
+# SeqInputCombinedFloat Documentation
+
+class:
+  description: |
+    A [float input](/classes/seqinputfloat) that **combines two floats**. It reads `LeftSource` and
+    `RightSource` and applies `Operation`: add, subtract, multiply or divide. The read fails if either
+    operand fails. Every write fails.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "A divisor of `0` is not checked."
+    - "An `Operation` above `3` returns no value: the read succeeds and the action keeps the value it held before."
+    - "Used by nexus finisher sequences. They use it as the end value of a float lerp: a camera zoom combined with a constant."
+
+properties:
+  Operation:
+    description: "The operation applied to the two operands. The values are listed on [SeqInputFloat](/classes/seqinputfloat)."
+
+  LeftSource:
+    description: "The left operand. It must be set: the client does not check for a missing operand."
+
+  RightSource:
+    description: "The right operand. It must be set: the client does not check for a missing operand."

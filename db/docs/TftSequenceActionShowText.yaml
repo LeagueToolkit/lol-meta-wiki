@@ -1,0 +1,25 @@
+# TftSequenceActionShowText Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **shows a text on a TFT UI element**. The
+    action has a start step and a stop step and no update step. Their code was not traced; the
+    properties follow the pattern of the other TFT element actions.
+  notes:
+    - "Used by TFT interface sequences."
+
+properties:
+  element:
+    description: "The UI text element."
+
+  Text:
+    description: "The text to show."
+
+  "0x76df2a8b":
+    description: "Optional [SequenceObjectSelector](/classes/sequenceobjectselector). On [TftSequenceActionPlaySpineAnimation](/classes/tftsequenceactionplayspineanimation) the same property selects the object whose integer parameter gives the instance index of a repeated element. Its use in this action was not traced."
+
+  EnableOnStart:
+    description: "Enables the element at the start step."
+
+  DisableOnEnd:
+    description: "Disables the element at the stop step."

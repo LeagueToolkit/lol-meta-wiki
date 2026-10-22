@@ -1,0 +1,12 @@
+# SeqActionVfxBase Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **plays a particle effect** at a place
+    that the subclass defines: on an object, at a location, along a beam or along a spline.
+  notes:
+    - "No shipped object uses any of the subclasses. Shipped sequences create their effects with [SequenceActionCreateObject](/classes/sequenceactioncreateobject) instead."
+
+properties:
+  ParticleSystem:
+    description: "The effect to play. See [VfxSystemDefinitionData](/classes/vfxsystemdefinitiondata)."

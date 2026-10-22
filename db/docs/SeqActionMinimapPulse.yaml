@@ -1,0 +1,18 @@
+# SeqActionMinimapPulse Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **shows a pulse on the minimap**. Its code
+    was not traced.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  EntityTag:
+    description: "The entity tag of the objects to pulse."
+
+  Color:
+    description: "The color of the pulse."
+
+  ChannelHint:
+    description: "Unknown channel index. Purpose not yet identified."

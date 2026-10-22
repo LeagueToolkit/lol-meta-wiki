@@ -1,0 +1,22 @@
+# GameScreenSequenceActionUiEnableElement Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **enables or disables a UI element** at
+    its start step and at its stop step. `ActionOnStart` and `ActionOnEnd` take the values of
+    the `ActionOnStart` / `ActionOnEnd` table on [ISequenceAction](/classes/isequenceaction).
+
+    The action looks up the element by its hash. If no element has that hash, the action does
+    nothing.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  "0xcfe79554":
+    description: "The UI element to change, by the hash of its object path."
+
+  ActionOnStart:
+    description: "The change applied to the element at the start step: `0` none, `1` enable, `2` disable."
+
+  ActionOnEnd:
+    description: "The change applied to the element at the stop step: `0` none, `1` enable, `2` disable."

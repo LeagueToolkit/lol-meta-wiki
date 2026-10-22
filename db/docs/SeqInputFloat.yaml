@@ -1,0 +1,72 @@
+# SeqInputFloat Documentation
+
+class:
+  description: |
+    A **sequence input** that produces a float. A sequence input is a small value object that a
+    [sequence action](/classes/isequenceaction) reads, and that some actions also write. Inputs nest: a
+    combined input takes two other inputs as operands, and an input that reads a property of an object
+    takes an object input that finds the object. There are inputs for a float, an int, a bool, a string,
+    a vector, a color, a single object, a list of objects, an attachment, the particle effect of a UI
+    element, and inputs that create an object.
+
+    **Reading.** A read either returns a value or fails. No input caches a result: every read
+    evaluates the whole chain of inputs again from its sources. An action that reads an input on every
+    update re-evaluates the chain on every update. Actions such as [SequenceActionLerpFloat](/classes/sequenceactionlerpfloat) fail
+    when a read of one of their inputs fails.
+
+    **Writing.** An action that changes a value, such as [SequenceActionLerpFloat](/classes/sequenceactionlerpfloat), writes each new
+    value through its output input. A write either succeeds or fails. An input that cannot be written
+    fails every write.
+
+    **Forms.**
+
+    | Form | Classes | Read | Write |
+    |------|---------|------|-------|
+    | Constant | `SeqInputConst*` | Returns the stored `value`. | [SeqInputConstFloat](/classes/seqinputconstfloat) replaces the stored `value`. |
+    | Object property by slot | [SeqInputVarCameraFov](/classes/seqinputvarcamerafov), [SeqInputVarCameraNearClip](/classes/seqinputvarcameranearclip), [SeqInputVarCameraFarClip](/classes/seqinputvarcamerafarclip), [SeqInputVarCameraZoom](/classes/seqinputvarcamerazoom), [SeqInputVarAttachment](/classes/seqinputvarattachment), [SeqInputVarUiVfx](/classes/seqinputvaruivfx) | Reads a property of the object in the `Source` slot. | Writes that property on the object. |
+    | Object property by object input | [SeqInputVarPosition](/classes/seqinputvarposition), [SeqInputVarOrientation](/classes/seqinputvarorientation) | Reads a property of the object that `Object` returns. | [SeqInputVarPosition](/classes/seqinputvarposition) writes the position. |
+    | Object property over a list | [SeqInputLightColor](/classes/seqinputlightcolor), [SeqInputLightIntensityScale](/classes/seqinputlightintensityscale), [SeqInputLightHdrScale](/classes/seqinputlighthdrscale), [SeqInputPointLightRadius](/classes/seqinputpointlightradius), [SeqInputMaterialParamFloat](/classes/seqinputmaterialparamfloat), [SeqInputMaterialParamColor](/classes/seqinputmaterialparamcolor), [SeqInputObjectEnabled](/classes/seqinputobjectenabled) | Reads the property from the first object in `Objects` that has it. Fails if no object has it. | Writes the property on every object in `Objects` that has it. |
+    | Combined | [SeqInputCombinedFloat](/classes/seqinputcombinedfloat), [SeqInputCombinedVector](/classes/seqinputcombinedvector), [SeqInputCombinedColor](/classes/seqinputcombinedcolor) and the classes based on them | Applies `Operation` to the reads of `LeftSource` and `RightSource`. | [SeqInputCombinedFloat](/classes/seqinputcombinedfloat) fails every write. |
+    | Object | [SeqInputSelectorObject](/classes/seqinputselectorobject), [SeqInputGameEntityObject](/classes/seqinputgameentityobject), [SeqInputMapPlaceableReferenceObject](/classes/seqinputmapplaceablereferenceobject), [SeqInputNearestGameEntityByTagObject](/classes/seqinputnearestgameentitybytagobject), [SeqInputGameEntityTagObjectArray](/classes/seqinputgameentitytagobjectarray) | Returns one object or a list of objects. | None. |
+    | Create | [SeqInputCreateCamera](/classes/seqinputcreatecamera), [SeqInputCreateZoomableCamera](/classes/seqinputcreatezoomablecamera), [SeqInputCreateEffectEmitter](/classes/seqinputcreateeffectemitter), [SeqInputCreateSound](/classes/seqinputcreatesound) | Creates a new object when [SequenceActionCreateObject](/classes/sequenceactioncreateobject) runs. | None. |
+
+    **Objects and slots.** A sequence refers to objects through slots. A
+    [SequenceObjectSelector](/classes/sequenceobjectselector) names a slot, and the code that starts the sequence puts objects
+    into the slots. [SeqInputSelectorObject](/classes/seqinputselectorobject) returns the object in its slot, and the inputs with a
+    `Source` property read their slot directly. An input fails when its slot is empty.
+
+    Objects provide features: a position and orientation, a camera, a camera zoom, a light, sequence
+    material values, an enabled state and attachment. An input that asks an object for a feature that
+    the object does not provide fails.
+
+    **Operation.** The combined inputs read `Operation` as follows.
+
+    | Value | Name | Float result | Vector and color result |
+    |-------|------|--------------|-------------------------|
+    | `0` | Add | `LeftSource + RightSource` | `LeftSource + RightSource`, per component |
+    | `1` | Subtract | `LeftSource - RightSource` | `LeftSource - RightSource`, per component |
+    | `2` | Multiply | `LeftSource * RightSource` | No value |
+    | `3` | Divide | `LeftSource / RightSource`. A divisor of `0` is not checked. | No value |
+    | other | None | No value | No value |
+
+    For "No value", the read reports success and writes no result, so the action keeps the value
+    that it held before the read.
+
+    **Defaults of the create inputs.** When one of these input properties is unset, the create
+    inputs fill it with a constant input:
+
+    | Property | Value |
+    |----------|-------|
+    | `Position`, `orientation` | `(0, 0, 0)` |
+    | `fov` | `50` |
+    | `nearClip` | `50` |
+    | `farClip` | `10000` |
+    | `Zoom` | `600` |
+    | `EnableOnStart`, `0xcae95eff` | `true` |
+    | `scale` | `1` |
+    | `StartAudioEvent` | an empty string |
+
+    `SeqInputCreateSound.EndAudioEvent` has no default. If it is unset, no end event is posted.
+  notes:
+    - "Most inputs do not check their operands. If one of these properties is unset, reading the input crashes the client: `LeftSource` and `RightSource` of the combined inputs, `Object` of `SeqInputVarPosition` and `SeqInputVarOrientation`, `Source` of `SeqInputVarCameraFov`, `SeqInputVarCameraZoom`, `SeqInputVarAttachment` and `SeqInputVarUiVfx`, `Parameter` of the material inputs, and `EntityTag` of `SeqInputNearestGameEntityByTagObject`. Set every operand."
+    - "The create inputs and the inputs that read over a list are safe when properties are unset: the create inputs use the defaults above, and an unset `Objects` matches no object, so the read fails."

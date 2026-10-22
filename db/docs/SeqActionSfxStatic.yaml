@@ -1,0 +1,12 @@
+# SeqActionSfxStatic Documentation
+
+class:
+  description: |
+    A [SeqActionSfxBase](/classes/seqactionsfxbase) that **plays a sound at a location**. The
+    action has a start step and a stop step and no update step. Their code was not traced.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Location:
+    description: "The position of the sound."

@@ -1,0 +1,92 @@
+# ISequenceAction Documentation
+
+class:
+  description: |
+    A **sequence action**: one timed step of a [Sequence](/classes/sequence), such as enabling
+    a UI element, moving the camera or playing a sound. A sequence lists its actions in
+    `Sequence.Actions`. Actions address objects in the world through
+    [SequenceObjectSelector](/classes/sequenceobjectselector) slots and read their values
+    through sequence inputs (see [SeqInputFloat](/classes/seqinputfloat)).
+
+    **Instances.** The action object is authored data and keeps no playback state. Each time a
+    sequence starts playing, every action creates a new
+    [ISequenceActionInstance](/classes/isequenceactioninstance), which holds the state of that
+    one playback. One action object can therefore play in several playbacks at once.
+
+    **Steps.** The sequence player advances every frame by the frame time multiplied by the
+    playback speed, in seconds. Each action goes through these steps:
+
+    1. The action waits until the playback reaches its `Start` time.
+    2. The **start step** runs once. It reports the action as running, finished or failed.
+    3. The **update step** runs every frame while the action is running and its `End` time is
+       not reached. It reports the same three results.
+    4. The **stop step** runs once when the playback reaches `End`. The action is then
+       finished.
+
+    Only a running action gets the update step and the stop step. An action that reports
+    finished or failed ends at once, and the rest of the sequence goes on. Actions that start
+    in the same frame start in order of their start time, then of `priority`. Actions that
+    stop in the same frame stop in order of their end time. Most actions have code in only
+    one or two of the steps; each action page says which.
+
+    **Duration and progress.** The duration of an action is the playback time from `Start`
+    to `End`, summed over the phases between them. If a phase from the start phase up to the
+    end phase is not a timed phase (see [SequencePhase](/classes/sequencephase)), the
+    duration is **indefinite**. Actions that interpolate a value compute the progress as the
+    elapsed time divided by the duration, clamped to `0`-`1`, and pass it through the curve
+    of their `EasingType`.
+
+    **`EasingType`.** The curve that maps the progress `t` to the interpolation weight. When
+    `t` is `1`, every curve returns `1`.
+
+    | Value | Curve |
+    |-------|-------|
+    | `0` | Linear |
+    | `1` | Instant: `1` at once |
+    | `2` | SmoothStep: `t^2 (3 - 2t)` |
+    | `3` | SmootherStep: `t^3 (6t^2 - 15t + 10)` |
+    | `4`, `5`, `6` | Quadratic: in, out, in and out |
+    | `7`, `8`, `9` | Cubic: in, out, in and out |
+    | `10`, `11`, `12` | Quartic: in, out, in and out |
+    | `13`, `14`, `15` | Quintic: in, out, in and out |
+    | `16`, `17`, `18` | Sine: in, out, in and out |
+    | `19`, `20`, `21` | Circular: in, out, in and out |
+    | `22`, `23`, `24` | Exponential: in, out, in and out |
+    | `25`, `26`, `27` | Elastic: in, out, in and out |
+    | `28`, `29`, `30` | Back: in, out, in and out (in is `t^3 - t sin(pi t)`) |
+    | `31`, `32`, `33` | Bounce: in, out, in and out |
+
+    A value above `33` returns `0` for every `t` below `1`, so the value stays at the start
+    value until the progress reaches `1`.
+
+    **`ActionOnStart` / `ActionOnEnd`.** The UI enable actions use one enum for the change at
+    the start step and the change at the stop step:
+
+    | Value | Change |
+    |-------|--------|
+    | `0` | None |
+    | `1` | Enable the target |
+    | `2` | Disable the target |
+  notes:
+    - "When the code that plays a sequence moves the playback to a later phase by name, the actions of the skipped time are marked as skipped and never run."
+    - "Shipped data uses only a few action classes: element, Spine animation, sound, text and continue actions in TFT interface sequences, and object creation, enabled, lerp and camera shake actions in nexus finisher sequences."
+
+properties:
+  Start:
+    description: |
+      When the action starts, as a [SequenceTiming](/classes/sequencetiming): a time in seconds
+      (`offset`) into the phase `PhaseIndex`. The time is clamped to the duration of that phase.
+      If `ScaleTiming` is set, the offset is first scaled by the played duration of the phase
+      divided by its authored duration, so the action keeps its relative place when the phase
+      is lengthened or shortened.
+
+  End:
+    description: |
+      When the action stops, as a [SequenceTiming](/classes/sequencetiming). `End.offset` counts
+      from the start of the phase `End.PhaseIndex`, not from `Start`.
+
+  priority:
+    description: "Orders actions that start at the same time. The action with the higher value starts first."
+
+  disabled:
+    description: "When `true`, the action is skipped as soon as the sequence starts playing. It runs no step."

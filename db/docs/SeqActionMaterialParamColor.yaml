@@ -1,0 +1,10 @@
+# SeqActionMaterialParamColor Documentation
+
+class:
+  description: |
+    A [SeqActionLerpColor](/classes/seqactionlerpcolor) for a **color material parameter**. It
+    differs from its base only in the output object that it creates by default. That default
+    output was not traced. An authored `0xacddc1f1` replaces it.
+  notes:
+    - "[SeqInputMaterialParamColor](/classes/seqinputmaterialparamcolor) is the input that reads and writes a sequence material color, which [SequenceMaterialVectorDriver](/classes/sequencematerialvectordriver) reads in a material."
+    - "No shipped object uses it."

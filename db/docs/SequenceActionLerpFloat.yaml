@@ -1,0 +1,39 @@
+# SequenceActionLerpFloat Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **interpolates a number** from
+    `StartValue` to `EndValue` over the duration of the action and writes it to an output
+    input, `0xacddc1f1`. The output decides what the number changes, such as a camera zoom, a
+    light value or a material parameter. See [SeqInputFloat](/classes/seqinputfloat) for the
+    inputs.
+
+    - At the start step the action reads `StartValue` and `EndValue` and writes the output.
+    - At every update it reads each input again unless `UseInitialStart` / `UseInitialEnd`
+      keep the value read at the start. It interpolates with the eased progress (see
+      `EasingType` on [ISequenceAction](/classes/isequenceaction)) and writes the output.
+
+    If an input fails to read or the output fails to write, the action fails.
+  notes:
+    - "The action has no stop step. The last value written is the one of the last update before `End`, so the output can stop short of `EndValue`."
+    - "Its subclasses differ from it only in the output object that they create by default. An authored `0xacddc1f1` replaces that default."
+    - "Used by nexus finisher sequences to change the camera zoom, starting from the zoom that the camera has."
+
+properties:
+  StartValue:
+    description: "The value at progress `0`."
+
+  EndValue:
+    description: "The value at progress `1`."
+
+  UseInitialStart:
+    description: "When `true`, the action reads `StartValue` once, at the start step. When `false`, it reads it again at every update, so the start of the interpolation follows a changing value."
+
+  UseInitialEnd:
+    description: "When `true`, the action reads `EndValue` once, at the start step. When `false`, it reads it again at every update, so the target follows a changing value."
+
+  "0xacddc1f1":
+    description: "The output: the input that the action writes the interpolated value to. It must support writing."
+
+  EasingType:
+    description: "The curve applied to the progress. See the `EasingType` table on [ISequenceAction](/classes/isequenceaction)."

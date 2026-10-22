@@ -1,0 +1,22 @@
+# SeqActionAnimationPlay Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **plays an animation on an object**. The
+    action has code in every step, including pause and resume of the playback. That code was
+    not traced.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Object:
+    description: "The object that plays the animation."
+
+  AnimationName:
+    description: "The animation to play, by hash."
+
+  PauseOnEnd:
+    description: "When `true`, the animation is meant to pause at the end of the action instead of stopping. Not traced."
+
+  "0xcd97640d":
+    description: "Unknown bool. Purpose not yet identified."

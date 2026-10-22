@@ -1,0 +1,10 @@
+# SeqInputConstString Documentation
+
+class:
+  description: "A [string input](/classes/seqinputstring) that returns `value`. See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written."
+  notes:
+    - "Used by nexus finisher sequences. They use it for the names of audio events."
+
+properties:
+  value:
+    description: "The value that the input returns."

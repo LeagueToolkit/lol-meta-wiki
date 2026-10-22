@@ -1,0 +1,15 @@
+# SequenceActionDeactivateEntityTag Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **deactivates the game entities with a
+    tag**. The action has only a start step. Its code was not traced.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  tag:
+    description: "The entity tag."
+
+  HideThenDeactivate:
+    description: "When `true`, the entities are hidden before they are deactivated. Not traced."

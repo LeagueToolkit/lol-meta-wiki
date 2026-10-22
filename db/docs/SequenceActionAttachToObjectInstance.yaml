@@ -1,0 +1,8 @@
+# SequenceActionAttachToObjectInstance Documentation
+
+class:
+  description: |
+    Runtime state of [SequenceActionAttachToObject](/classes/sequenceactionattachtoobject)
+    while a sequence plays it.
+
+    At `End` the instance removes the attachment that it made at the start.

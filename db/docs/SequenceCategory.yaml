@@ -1,0 +1,27 @@
+# SequenceCategory Documentation
+
+class:
+  description: |
+    A shared **list of phases** for [sequences](/classes/sequence). Every sequence that
+    links the category plays the same phases, and each sequence can change single phases
+    with `Sequence.PhaseOverrides`.
+
+    When its bin loads, the client registers the category under the FNV-1a hash of `name`.
+  notes:
+    - "Shipped categories are used by TFT interface sequences and by nexus finisher sequences."
+
+properties:
+  name:
+    description: "Name of the category. The client registers the category under the FNV-1a hash of this name, not under `Hash`."
+
+  Hash:
+    description: "A hash stored with the category. The client does not use it as the registration key. Shipped categories set it to the hash of their own object path."
+
+  "0xc199472a":
+    description: "Unknown hash. Purpose not yet identified. No shipped category sets it."
+
+  Phases:
+    description: |
+      The [phases](/classes/sequencephase), in play order. A playback starts in the first
+      phase. A sequence without a category uses a fallback list with one timed phase of
+      `4` seconds.

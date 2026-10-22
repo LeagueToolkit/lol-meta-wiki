@@ -1,0 +1,11 @@
+# SequenceLocationObject Documentation
+
+class:
+  description: |
+    A [location](/classes/isequencelocation) at the position of the object bound to
+    `Object`, combined with `transform`. If the selector has no bound object, the location
+    fails.
+
+properties:
+  Object:
+    description: "The [selector](/classes/sequenceobjectselector) of the object. It must be set: the client does not check for a missing selector."

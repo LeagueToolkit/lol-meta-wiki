@@ -1,0 +1,14 @@
+# SeqInputGameEntityObject Documentation
+
+class:
+  description: |
+    An [object input](/classes/seqinputobject) that returns the **game entity** with the hash `Entity`.
+    The read fails if no entity has that hash.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Entity:
+    description: "The hash of the game entity."

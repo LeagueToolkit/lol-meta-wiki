@@ -1,0 +1,20 @@
+# SeqInputNearestGameEntityByTagObject Documentation
+
+class:
+  description: |
+    An [object input](/classes/seqinputobject) that returns the **nearest game entity with a tag**. It
+    reads the position of the object in the `Selector` slot, then returns the entity with the tag
+    `EntityTag` that is nearest to that position.
+
+    The read fails if the slot object has no position, or if no entity has the tag.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Selector:
+    description: "The [slot](/classes/sequenceobjectselector) of the object that the distance is measured from."
+
+  EntityTag:
+    description: "The tag to search for. It must be set: the client does not check for a missing tag."

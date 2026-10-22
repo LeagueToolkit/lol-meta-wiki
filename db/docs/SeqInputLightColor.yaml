@@ -1,0 +1,18 @@
+# SeqInputLightColor Documentation
+
+class:
+  description: |
+    A [color input](/classes/seqinputcolor) for the **color of a light**.
+
+    - A read returns the value of the first object in `Objects` that has a light.
+    - A write sets the value on every object in `Objects` that has a light.
+
+    The read fails if no object in `Objects` has a light. An unset `Objects` matches no object.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Objects:
+    description: "The objects whose value is read and written. Objects without a light are skipped."

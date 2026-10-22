@@ -1,0 +1,7 @@
+# SequenceActionDeactivateEntityInstance Documentation
+
+class:
+  description: |
+    Runtime state of
+    [SequenceActionDeactivateEntity](/classes/sequenceactiondeactivateentity) while a
+    sequence plays it.

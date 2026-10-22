@@ -1,0 +1,15 @@
+# SeqActionLightRegionFade Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **fades light regions in or out**. The
+    action has only a start step. Its code was not traced.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Targets:
+    description: "The light region objects."
+
+  FadeOut:
+    description: "`true` fades the regions out, `false` fades them in."

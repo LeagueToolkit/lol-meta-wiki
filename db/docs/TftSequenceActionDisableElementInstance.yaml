@@ -1,0 +1,7 @@
+# TftSequenceActionDisableElementInstance Documentation
+
+class:
+  description: |
+    Runtime state of
+    [TftSequenceActionDisableElement](/classes/tftsequenceactiondisableelement) while a
+    sequence plays it.

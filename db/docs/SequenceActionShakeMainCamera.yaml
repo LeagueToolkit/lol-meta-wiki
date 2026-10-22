@@ -1,0 +1,27 @@
+# SequenceActionShakeMainCamera Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **shakes the main camera** for the
+    duration of the action. Its values come from sequence inputs, so they can be constants or
+    values read from objects of the sequence.
+
+    The action has only a start step. It reads `direction`, `Magnitude`, `ShakesPerSec` and
+    `FalloffRate` once and starts a camera shake that lasts the duration of the action. The
+    action fails if an input fails or if the duration is indefinite.
+  notes:
+    - "Unlike [SeqActionCameraShakeConst](/classes/seqactioncamerashakeconst), the action does not reject a `FalloffRate` of `0`."
+    - "Used by nexus finisher sequences."
+
+properties:
+  direction:
+    description: "The direction of the shake, as a vector."
+
+  Magnitude:
+    description: "The strength of the shake."
+
+  ShakesPerSec:
+    description: "The frequency of the shake, in shakes per second."
+
+  FalloffRate:
+    description: "The falloff rate of the shake. How the camera applies it was not traced."

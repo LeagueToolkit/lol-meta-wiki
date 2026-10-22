@@ -1,0 +1,4 @@
+# SeqInputColor Documentation
+
+class:
+  description: "A sequence input that produces a color with four components. See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written."

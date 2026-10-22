@@ -1,0 +1,15 @@
+# SeqInputConstOrientation Documentation
+
+class:
+  description: |
+    A [vector input](/classes/seqinputvector) that returns a **constant orientation**. It reads
+    `0x2b565a38` in degrees and returns it converted to radians.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "[0x7b768f17](/classes/0x7b768f17) returns its orientation in degrees, so the two inputs give different values for the same angle."
+    - "No shipped object uses it."
+
+properties:
+  "0x2b565a38":
+    description: "The orientation, as Euler angles in degrees."

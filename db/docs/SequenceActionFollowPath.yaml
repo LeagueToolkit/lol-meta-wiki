@@ -1,0 +1,24 @@
+# SequenceActionFollowPath Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **moves an object along a path** over the
+    duration of the action. Its code was not traced.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Object:
+    description: "The object to move."
+
+  path:
+    description: "The path to follow, by hash."
+
+  CurveData:
+    description: "Curve data for the movement along the path."
+
+  ForwardAxis:
+    description: "The axis of the object that points along the path. The value-to-axis mapping was not traced."
+
+  OrientationMode:
+    description: "How the object is oriented along the path. The values were not traced."

@@ -1,0 +1,6 @@
+# TftSequenceActionPlaySoundInstance Documentation
+
+class:
+  description: |
+    Runtime state of [TftSequenceActionPlaySound](/classes/tftsequenceactionplaysound) while
+    a sequence plays it.

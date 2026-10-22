@@ -1,0 +1,23 @@
+# TftSequenceActionEnableElement Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **enables a TFT UI element** for the time
+    of the action. The action has a start step and a stop step and no update step. Their code
+    was not traced.
+  notes:
+    - "Used by TFT interface sequences."
+    - "[TftSequenceActionDisableElement](/classes/tftsequenceactiondisableelement) is the inverse action."
+
+properties:
+  element:
+    description: "The UI element to enable."
+
+  "0x76df2a8b":
+    description: "Optional [SequenceObjectSelector](/classes/sequenceobjectselector). On [TftSequenceActionPlaySpineAnimation](/classes/tftsequenceactionplayspineanimation) the same property selects the object whose integer parameter gives the instance index of a repeated element. Its use in this action was not traced."
+
+  EnableOnStart:
+    description: "Enables the element at the start step."
+
+  DisableOnEnd:
+    description: "Disables the element at the stop step."

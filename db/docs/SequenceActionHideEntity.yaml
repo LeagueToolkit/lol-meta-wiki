@@ -1,0 +1,12 @@
+# SequenceActionHideEntity Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **hides a game entity**, found by its
+    hash. The action has only a start step. Its code was not traced.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Entity:
+    description: "The entity to hide, by hash."

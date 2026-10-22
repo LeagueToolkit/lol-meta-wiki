@@ -1,0 +1,6 @@
+# SequenceActionFollowPathInstance Documentation
+
+class:
+  description: |
+    Runtime state of [SequenceActionFollowPath](/classes/sequenceactionfollowpath) while a
+    sequence plays it.

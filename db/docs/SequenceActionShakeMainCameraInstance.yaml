@@ -1,0 +1,9 @@
+# SequenceActionShakeMainCameraInstance Documentation
+
+class:
+  description: |
+    Runtime state of [SequenceActionShakeMainCamera](/classes/sequenceactionshakemaincamera)
+    while a sequence plays it.
+
+    At the start the instance starts one camera shake that lasts for the duration of the
+    action. If the duration is indefinite, the instance fails.

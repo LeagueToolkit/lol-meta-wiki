@@ -1,0 +1,8 @@
+# SeqActionMaterialParamCurveFloat Documentation
+
+class:
+  description: |
+    A [SequenceActionCurveFloat](/classes/sequenceactioncurvefloat) for a **float material
+    parameter**. It shares the code of its base. Its default output was not traced.
+  notes:
+    - "No shipped object uses it."

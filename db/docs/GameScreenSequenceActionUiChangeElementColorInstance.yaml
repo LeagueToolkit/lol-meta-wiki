@@ -1,0 +1,10 @@
+# GameScreenSequenceActionUiChangeElementColorInstance Documentation
+
+class:
+  description: |
+    Runtime state of
+    [GameScreenSequenceActionUiChangeElementColor](/classes/gamescreensequenceactionuichangeelementcolor)
+    while a sequence plays it.
+
+    The action has no stop step, so the element keeps the color of the last update before
+    `End`. That color can fall short of `EndColor`.

@@ -1,0 +1,19 @@
+# SeqActionSplineColor Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **drives a color along a spline** over
+    the duration of the action and writes it to the output `0x7fd88075`. The action has a start
+    step and an update step and no stop step. Their code was not traced.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  SplinePoints:
+    description: "The color points of the spline."
+
+  SplineCurves:
+    description: "The curves between the spline points."
+
+  "0x7fd88075":
+    description: "The output: the input that receives the color."

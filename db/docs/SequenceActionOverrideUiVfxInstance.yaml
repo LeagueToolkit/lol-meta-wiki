@@ -1,0 +1,6 @@
+# SequenceActionOverrideUiVfxInstance Documentation
+
+class:
+  description: |
+    Runtime state of [SequenceActionOverrideUiVfx](/classes/sequenceactionoverrideuivfx)
+    while a sequence plays it.

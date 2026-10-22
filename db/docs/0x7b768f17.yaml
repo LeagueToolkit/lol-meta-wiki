@@ -1,0 +1,20 @@
+# 0x7b768f17 Documentation
+
+class:
+  description: |
+    A [vector input](/classes/seqinputvector) that returns the **orientation that looks from one position
+    to another**. It reads `SourcePosition` and `TargetPosition`, builds the rotation that points from
+    the source toward the target with the world up axis `(0, 1, 0)`, and returns that rotation as Euler
+    angles in degrees.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "[SeqInputConstOrientation](/classes/seqinputconstorientation) returns radians, so the two inputs give different values for the same angle."
+    - "Used by nexus finisher sequences. They use it to turn a created effect toward a target object."
+
+properties:
+  SourcePosition:
+    description: "The position that the orientation looks from."
+
+  TargetPosition:
+    description: "The position that the orientation looks toward."

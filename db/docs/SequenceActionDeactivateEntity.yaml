@@ -1,0 +1,15 @@
+# SequenceActionDeactivateEntity Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **deactivates a game entity**, found by
+    its hash. The action has only a start step. Its code was not traced.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Entity:
+    description: "The entity to deactivate, by hash."
+
+  HideThenDeactivate:
+    description: "When `true`, the entity is hidden before it is deactivated. Not traced."

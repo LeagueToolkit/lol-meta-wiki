@@ -1,0 +1,6 @@
+# CameraShakeFalloff Documentation
+
+class:
+  description: "Distance falloff settings of [SeqActionCameraShakeRelative](/classes/seqactioncamerashakerelative). How the client applies them is not yet identified."
+  notes:
+    - "No shipped object uses it."

@@ -1,0 +1,7 @@
+# TftGameStartSequenceSimpleObject Documentation
+
+class:
+  description: |
+    A UI object that a [game-start event](/classes/tftgamestartsequencesimpleevent) turns
+    on and off. The timeline prepares each object once, when it first shows its main
+    scene, and then sets each object on or off on every update.

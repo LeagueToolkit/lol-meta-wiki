@@ -1,0 +1,29 @@
+# GameScreenSequenceActionUiChangeElementScale Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **changes the scale of a UI element**
+    from `StartScale` to `EndScale` over the duration of the action.
+
+    The action has only an update step. On every update it eases the progress with
+    `EasingType` (see [ISequenceAction](/classes/isequenceaction)), interpolates the scale `s`
+    and passes `0.5 * s + 0.5` to the element in all four components. A scale of `1` therefore
+    passes `1`, and a scale of `0` passes `0.5`. How the element applies the value was not
+    traced.
+  notes:
+    - "The action has no stop step. The last scale applied is the one of the last update before `End`, so the element can stop short of `EndScale`."
+    - "The action does not check that the element hash resolves to an element. Point it at an existing element."
+    - "No shipped object uses it."
+
+properties:
+  "0xcfe79554":
+    description: "The UI element to scale, by the hash of its object path."
+
+  StartScale:
+    description: "The scale at progress `0`."
+
+  EndScale:
+    description: "The scale at progress `1`."
+
+  EasingType:
+    description: "The curve applied to the progress. See the `EasingType` table on [ISequenceAction](/classes/isequenceaction)."

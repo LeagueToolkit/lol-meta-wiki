@@ -1,0 +1,15 @@
+# SetIconOverride Documentation
+
+class:
+  description: |
+    A [minimap icon modifier](/classes/iminimapiconmodifier) that shows `MinimapIcon` in
+    place of the own icon of the object. When the action stops, the client clears the
+    override. Clearing removes any override, also one that was set before the action
+    started.
+
+properties:
+  MinimapIcon:
+    description: "The icon to show."
+
+  "0x8ef421e5":
+    description: "Neither applying nor reverting the modifier reads this value. Purpose not yet identified."

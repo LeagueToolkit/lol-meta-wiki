@@ -1,0 +1,14 @@
+# SeqInputMapPlaceableReferenceObject Documentation
+
+class:
+  description: |
+    An [object input](/classes/seqinputobject) that returns the **map placeable** whose name hash is
+    `MapPlaceable`.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  MapPlaceable:
+    description: "The name hash of the map placeable."

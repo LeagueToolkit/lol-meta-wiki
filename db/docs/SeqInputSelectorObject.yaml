@@ -1,0 +1,16 @@
+# SeqInputSelectorObject Documentation
+
+class:
+  description: |
+    An [object input](/classes/seqinputobject) that returns the **object in a slot**. The slot is the
+    [SequenceObjectSelector](/classes/sequenceobjectselector) in `Selector`, and the code that starts the sequence fills it.
+
+    The read fails if `Selector` is unset or the slot is empty.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "Used by nexus finisher sequences. They use it to find the objects whose position and orientation other inputs read."
+
+properties:
+  Selector:
+    description: "The slot to read."

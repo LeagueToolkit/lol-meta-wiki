@@ -1,0 +1,13 @@
+# ISequenceLocation Documentation
+
+class:
+  description: |
+    A **location** for a sequence action: a position taken from an object that is bound to
+    a [selector](/classes/sequenceobjectselector), combined with `transform`. The rotation
+    of the object is not used, so `transform` is in world axes.
+  notes:
+    - "No current property holds a location, so bin data cannot use one."
+
+properties:
+  transform:
+    description: "Matrix combined with the position of the object to give the location."

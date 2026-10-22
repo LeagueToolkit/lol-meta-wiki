@@ -1,0 +1,12 @@
+# IMinimapIconModifier Documentation
+
+class:
+  description: |
+    A change to the **minimap icon** of an object, applied by
+    [ChangeMinimapIcon](/classes/changeminimapicon). When the action starts, the client
+    applies the modifier to the minimap icon of the object bound to
+    `ChangeMinimapIcon.TargetObject`. When the action stops, the client reverts the
+    modifier. Each modifier defines what its revert does, and some revert nothing.
+  notes:
+    - "A `ChangeMinimapIcon` without a `modifier` crashes the client when the action starts."
+    - "No shipped object uses it."

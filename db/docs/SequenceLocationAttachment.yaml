@@ -1,0 +1,14 @@
+# SequenceLocationAttachment Documentation
+
+class:
+  description: |
+    A [location](/classes/isequencelocation) at a named **attachment point** of the object
+    bound to `Object`, such as a bone, combined with `transform`. The location is valid
+    only if the object has the attachment point `Attachment`.
+
+properties:
+  Attachment:
+    description: "Name of the attachment point on the object."
+
+  Object:
+    description: "The [selector](/classes/sequenceobjectselector) of the object. It must be set: the client does not check for a missing selector."

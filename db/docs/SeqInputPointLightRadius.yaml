@@ -1,0 +1,18 @@
+# SeqInputPointLightRadius Documentation
+
+class:
+  description: |
+    A [float input](/classes/seqinputfloat) for the **radius of a point light**.
+
+    - A read returns the value of the first object in `Objects` that has a point light.
+    - A write sets the value on every object in `Objects` that has a point light.
+
+    The read fails if no object in `Objects` has a point light. An unset `Objects` matches no object.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Objects:
+    description: "The objects whose value is read and written. Objects without a point light are skipped."

@@ -1,0 +1,6 @@
+# SequenceActionActivateEntityInstance Documentation
+
+class:
+  description: |
+    Runtime state of [SequenceActionActivateEntity](/classes/sequenceactionactivateentity)
+    while a sequence plays it.

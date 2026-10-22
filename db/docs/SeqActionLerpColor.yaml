@@ -1,0 +1,32 @@
+# SeqActionLerpColor Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **interpolates a color** from
+    `StartValue` to `EndValue` over the duration of the action and writes it to the output
+    input `0xacddc1f1`. Its properties have the same roles as on
+    [SequenceActionLerpFloat](/classes/sequenceactionlerpfloat). Its start and update steps
+    were not traced in detail.
+  notes:
+    - "The action has no stop step, so the output can stop short of `EndValue`."
+    - "Its subclasses differ from it only in the output object that they create by default."
+    - "No shipped object uses it."
+
+properties:
+  StartValue:
+    description: "The color at progress `0`."
+
+  EndValue:
+    description: "The color at progress `1`."
+
+  UseInitialStart:
+    description: "When `true`, `StartValue` is read once at the start, as on [SequenceActionLerpFloat](/classes/sequenceactionlerpfloat)."
+
+  UseInitialEnd:
+    description: "When `true`, `EndValue` is read once at the start, as on [SequenceActionLerpFloat](/classes/sequenceactionlerpfloat)."
+
+  "0xacddc1f1":
+    description: "The output: the input that receives the interpolated color. It must support writing."
+
+  EasingType:
+    description: "The curve applied to the progress. See the `EasingType` table on [ISequenceAction](/classes/isequenceaction)."

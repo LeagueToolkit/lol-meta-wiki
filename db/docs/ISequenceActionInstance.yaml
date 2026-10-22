@@ -1,0 +1,38 @@
+# ISequenceActionInstance Documentation
+
+class:
+  description: |
+    The **runtime state of one action** in one playback of a [Sequence](/classes/sequence).
+    When a sequence starts playing, every [action](/classes/isequenceaction) in
+    `Sequence.Actions` creates a new instance. The instance holds what the action needs
+    between its steps, such as the resolved start and end times, values read at the start
+    or a state to restore at the end. Two playbacks of one sequence never share an
+    instance.
+
+    The player keeps a state for each instance:
+
+    | State | Meaning |
+    |-------|---------|
+    | Pending | The playback has not reached the action `Start` yet. |
+    | Running | The start step reported the action as running, and the playback has not reached `End` yet. |
+    | Finished | The stop step ran, or the start or update step reported the action as finished. |
+    | Skipped | The action is `disabled`, or a move to a later phase passed over the action before it started. |
+    | Failed | The start or update step reported a failure. |
+
+    A playback ends when it is in its last phase and no instance is pending or running. The
+    player then frees all instances of the playback.
+
+    **Time.** The instance resolves `Start` and `End` (see
+    [SequenceTiming](/classes/sequencetiming)) once, when the playback starts, against the
+    phase durations of that playback. The time that the update step receives is the
+    playback time since the action started, in seconds. It already includes the speed of
+    the playback.
+
+    **Pause.** When a playback is paused, its running instances are paused too and get no
+    update step until the playback resumes.
+
+    **Phases that wait for actions.** A phase of type `2` (see
+    [SequencePhase](/classes/sequencephase)) ends only when every running instance allows
+    it to end. By default an instance allows it at once.
+  notes:
+    - "The client creates instances when a sequence plays. Bin data never contains them, and no property can hold one."

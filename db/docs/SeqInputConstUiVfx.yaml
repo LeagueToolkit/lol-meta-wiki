@@ -1,0 +1,19 @@
+# SeqInputConstUiVfx Documentation
+
+class:
+  description: |
+    A [UI particle effect input](/classes/seqinputuivfx) for one UI particle element, named by
+    `UiElementParticleSystem`.
+
+    - A read returns the particle system that the element shows.
+    - A write stores a new particle system in the element and marks the element to rebuild its
+      effect. If `EnableOnStart` is `true`, the write also disables and enables the element, which
+      starts the new effect from its beginning.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  UiElementParticleSystem:
+    description: "The hash of the UI particle element."

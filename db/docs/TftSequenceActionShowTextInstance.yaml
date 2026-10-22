@@ -1,0 +1,6 @@
+# TftSequenceActionShowTextInstance Documentation
+
+class:
+  description: |
+    Runtime state of [TftSequenceActionShowText](/classes/tftsequenceactionshowtext) while a
+    sequence plays it.

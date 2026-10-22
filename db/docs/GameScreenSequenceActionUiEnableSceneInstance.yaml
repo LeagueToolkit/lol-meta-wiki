@@ -1,0 +1,9 @@
+# GameScreenSequenceActionUiEnableSceneInstance Documentation
+
+class:
+  description: |
+    Runtime state of
+    [GameScreenSequenceActionUiEnableScene](/classes/gamescreensequenceactionuienablescene)
+    while a sequence plays it.
+
+    If the scene does not resolve, the instance changes nothing and does not fail.

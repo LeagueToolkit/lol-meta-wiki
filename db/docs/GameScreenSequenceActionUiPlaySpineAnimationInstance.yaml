@@ -1,0 +1,10 @@
+# GameScreenSequenceActionUiPlaySpineAnimationInstance Documentation
+
+class:
+  description: |
+    Runtime state of
+    [GameScreenSequenceActionUiPlaySpineAnimation](/classes/gamescreensequenceactionuiplayspineanimation)
+    while a sequence plays it.
+
+    The instance saves whether the element is enabled when the action starts, and restores
+    that state at `End`.

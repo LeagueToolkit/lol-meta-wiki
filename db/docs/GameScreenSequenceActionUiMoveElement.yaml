@@ -1,0 +1,37 @@
+# GameScreenSequenceActionUiMoveElement Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **moves a UI element** from
+    `StartPosition` to `EndPosition` over the duration of the action.
+
+    The action has only an update step. On every update it computes the progress of the
+    action, eases it with `EasingType` (see [ISequenceAction](/classes/isequenceaction)) and
+    interpolates between the two positions. It then moves the element by the offset from the
+    element's pivot point to that position, so the pivot point lands on the position. If the
+    duration is `0` or indefinite, the progress stays `0` and the element is placed at
+    `StartPosition`.
+  notes:
+    - "The action has no stop step. The last position applied is the one of the last update before `End`, so the element can stop short of `EndPosition`."
+    - "Unlike the enable actions, the action does not check that the element hash resolves to an element. Point it at an existing element."
+    - "No shipped object uses it."
+
+properties:
+  "0xcfe79554":
+    description: "The UI element to move, by the hash of its object path."
+
+  StartPosition:
+    description: |
+      The position at progress `0`, in the same units as the size of the element's scene. The
+      action divides the interpolated position by the scene size before it moves the element.
+
+  EndPosition:
+    description: "The position at progress `1`, in the same units as `StartPosition`."
+
+  Pivot:
+    description: |
+      The point of the element that is placed on the position, as a fraction of the element's
+      rectangle: `(0, 0)` is its minimum corner and `(1, 1)` the opposite corner.
+
+  EasingType:
+    description: "The curve applied to the progress. See the `EasingType` table on [ISequenceAction](/classes/isequenceaction)."

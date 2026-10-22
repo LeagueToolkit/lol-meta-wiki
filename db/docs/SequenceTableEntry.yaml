@@ -1,0 +1,13 @@
+# SequenceTableEntry Documentation
+
+class:
+  description: "One entry of a [SequenceTable](/classes/sequencetable): a sequence and its type. What reads the entries is not yet identified."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Sequence:
+    description: "The [sequence](/classes/sequence) of the entry."
+
+  type:
+    description: "The [type](/classes/sequencetype) of the entry."

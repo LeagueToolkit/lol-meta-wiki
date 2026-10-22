@@ -1,0 +1,18 @@
+# SeqActionCameraShakeRelative Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **shakes the camera from a location**,
+    with a falloff over distance. The action has only a start step. Its code was not traced.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  TargetLocation:
+    description: "The location of the shake."
+
+  "0x1695a8":
+    description: "The falloff of the shake: a radius and an easing type. See [CameraShakeFalloff](/classes/camerashakefalloff)."
+
+  "0xf92ca41e":
+    description: "The shake values: `Magnitude`, `ShakesPerSecond` and `FalloffRate`, as on [SeqActionCameraShakeConst](/classes/seqactioncamerashakeconst)."

@@ -1,0 +1,19 @@
+# TftGameStartSequence Documentation
+
+class:
+  description: |
+    A **game-start timeline** of TFT: the interface that plays when a match starts.
+    `TftGameStartViewController.GameStartTable` maps a key to each timeline.
+
+    The timeline does not use the sequencer and is not a [Sequence](/classes/sequence). It
+    runs its own events on the game clock; see
+    [TftGameStartSequenceSimple](/classes/tftgamestartsequencesimple).
+  notes:
+    - "Used by the TFT game-start screen."
+
+properties:
+  BaseLoadable:
+    description: "The [UI file](/classes/uipropertyloadable) with the scenes and elements of the timeline."
+
+  MobileOverrideLoadable:
+    description: "A UI override file for the timeline."

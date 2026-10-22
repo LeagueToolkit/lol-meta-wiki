@@ -1,0 +1,6 @@
+# SequenceActionShowInstance Documentation
+
+class:
+  description: |
+    Runtime state of [SequenceActionShow](/classes/sequenceactionshow) while a sequence
+    plays it.

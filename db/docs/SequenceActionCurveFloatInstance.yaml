@@ -1,0 +1,6 @@
+# SequenceActionCurveFloatInstance Documentation
+
+class:
+  description: |
+    Runtime state of [SequenceActionCurveFloat](/classes/sequenceactioncurvefloat) while a
+    sequence plays it.

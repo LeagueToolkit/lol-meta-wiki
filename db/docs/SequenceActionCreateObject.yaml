@@ -1,0 +1,21 @@
+# SequenceActionCreateObject Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **creates an object for the sequence**:
+    a particle effect, a sound or a camera, as `ObjectCreator` describes it. The create inputs
+    (see `SeqInputCreateEffectEmitter`, `SeqInputCreateSound`, `SeqInputCreateCamera`) define
+    what is created and where.
+
+    The action has a start step, an update step and a stop step. Their code was not traced, so
+    when the object is created and destroyed, and how the object is bound to `OutputSelector`,
+    is not documented.
+  notes:
+    - "Used by nexus finisher sequences, which create their effects, sounds and a camera that copies the player camera with this action."
+
+properties:
+  ObjectCreator:
+    description: "The description of the object to create."
+
+  OutputSelector:
+    description: "A [SequenceObjectSelector](/classes/sequenceobjectselector) slot for the created object, so that other actions can address it."

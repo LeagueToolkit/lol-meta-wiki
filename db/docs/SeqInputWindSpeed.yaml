@@ -1,0 +1,10 @@
+# SeqInputWindSpeed Documentation
+
+class:
+  description: |
+    A [float input](/classes/seqinputfloat) that the client does not implement. Every read and every write
+    fails.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "No shipped object uses it."

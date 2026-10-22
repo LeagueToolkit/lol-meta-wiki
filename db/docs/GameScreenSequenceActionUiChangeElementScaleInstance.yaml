@@ -1,0 +1,10 @@
+# GameScreenSequenceActionUiChangeElementScaleInstance Documentation
+
+class:
+  description: |
+    Runtime state of
+    [GameScreenSequenceActionUiChangeElementScale](/classes/gamescreensequenceactionuichangeelementscale)
+    while a sequence plays it.
+
+    The action has no stop step, so the element keeps the scale of the last update before
+    `End`. That scale can fall short of `EndScale`.

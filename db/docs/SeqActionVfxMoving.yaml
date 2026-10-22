@@ -1,0 +1,15 @@
+# SeqActionVfxMoving Documentation
+
+class:
+  description: |
+    A [SeqActionVfxBase](/classes/seqactionvfxbase) that **plays an effect that moves along a
+    spline**. Its code was not traced.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  SplinePoints:
+    description: "The points of the spline."
+
+  SplineCurves:
+    description: "The curves between the spline points."

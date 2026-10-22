@@ -1,0 +1,13 @@
+# SeqInputVarAttachment Documentation
+
+class:
+  description: |
+    An [attachment input](/classes/seqinputattachment) for the object in the `Source` slot.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Source:
+    description: "The [slot](/classes/sequenceobjectselector) of the object. It must be set: the client does not check for a missing selector."

@@ -1,0 +1,23 @@
+# GameScreenSequenceActionUiPlaySpineAnimation Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **plays a Spine animation on a UI Spine
+    element**.
+
+    At the start step the action saves whether the element is enabled, enables it, clears the
+    animation track and plays `Animation`. If the element's skeleton has no animation of that
+    name, the action fails. At the stop step it sets the element back to the enabled state it
+    saved.
+
+    If no Spine element has the hash in `TargetElement`, the action does nothing.
+  notes:
+    - "[TftSequenceActionPlaySpineAnimation](/classes/tftsequenceactionplayspineanimation) plays an animation on a TFT element instead. It does not fail for a missing animation name."
+    - "No shipped object uses it."
+
+properties:
+  TargetElement:
+    description: "The UI Spine element, by the hash of its object path."
+
+  Animation:
+    description: "The animation entry to play on the element."

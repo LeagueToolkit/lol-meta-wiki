@@ -1,0 +1,10 @@
+# SeqActionLightColor Documentation
+
+class:
+  description: |
+    A [SeqActionLerpColor](/classes/seqactionlerpcolor) for the **color of a light**. It differs
+    from its base only in the output object that it creates by default. That default output was
+    not traced. An authored `0xacddc1f1` replaces it.
+  notes:
+    - "[SeqInputLightColor](/classes/seqinputlightcolor) is the input that reads and writes the color of light objects."
+    - "No shipped object uses it."

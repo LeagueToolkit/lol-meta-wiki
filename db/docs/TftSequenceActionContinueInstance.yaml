@@ -1,0 +1,9 @@
+# TftSequenceActionContinueInstance Documentation
+
+class:
+  description: |
+    Runtime state of [TftSequenceActionContinue](/classes/tftsequenceactioncontinue) while a
+    sequence plays it.
+
+    The instance sets a continue request on its playback. The sequence player does not act
+    on the request: the interface screen that plays the sequence reads it.

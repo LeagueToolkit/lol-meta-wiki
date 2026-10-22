@@ -1,0 +1,10 @@
+# TftSequenceActionPlaySpineAnimationInstance Documentation
+
+class:
+  description: |
+    Runtime state of
+    [TftSequenceActionPlaySpineAnimation](/classes/tftsequenceactionplayspineanimation)
+    while a sequence plays it.
+
+    The instance never fails, also when the skeleton has no animation with the configured
+    name.

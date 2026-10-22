@@ -1,0 +1,15 @@
+# SeqInputGameEntityTagObjectArray Documentation
+
+class:
+  description: |
+    An [object list input](/classes/seqinputobjectarray) that returns **every game entity with a tag**.
+    The read fails only if `EntityTag` does not resolve to a tag. If no entity has the tag, the read
+    returns an empty list.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  EntityTag:
+    description: "The hash of the tag object."

@@ -1,0 +1,16 @@
+# SeqActionSfxBase Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **plays a sound event** at a place that
+    the subclass defines: on an object, at a location, along a beam or along a spline.
+    [SeqActionSfxGlobal](/classes/seqactionsfxglobal) plays a sound without a place.
+  notes:
+    - "No shipped object uses any of the subclasses."
+
+properties:
+  EventName:
+    description: "The name of the sound event."
+
+  "0x80c98e31":
+    description: "Unknown object input. Purpose not yet identified."

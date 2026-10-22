@@ -1,0 +1,10 @@
+# SeqInputCombinedLightHdrScale Documentation
+
+class:
+  description: |
+    A combined input that behaves exactly as [SeqInputCombinedFloat](/classes/seqinputcombinedfloat): it applies `Operation` to `LeftSource` and
+    `RightSource`. It does not read a light itself.
+
+    See [SeqInputFloat](/classes/seqinputfloat) for how sequence inputs are read and written.
+  notes:
+    - "No shipped object uses it."

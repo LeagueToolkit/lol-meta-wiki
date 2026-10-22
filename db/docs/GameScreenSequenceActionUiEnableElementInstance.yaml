@@ -1,0 +1,9 @@
+# GameScreenSequenceActionUiEnableElementInstance Documentation
+
+class:
+  description: |
+    Runtime state of
+    [GameScreenSequenceActionUiEnableElement](/classes/gamescreensequenceactionuienableelement)
+    while a sequence plays it.
+
+    If the element does not resolve, the instance changes nothing and does not fail.

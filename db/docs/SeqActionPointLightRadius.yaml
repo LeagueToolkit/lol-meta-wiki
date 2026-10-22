@@ -1,0 +1,10 @@
+# SeqActionPointLightRadius Documentation
+
+class:
+  description: |
+    A [SequenceActionLerpFloat](/classes/sequenceactionlerpfloat) for the **radius of a point
+    light**. It differs from its base only in the output object that it creates by default.
+    That default output was not traced. An authored `0xacddc1f1` replaces it.
+  notes:
+    - "[SeqInputPointLightRadius](/classes/seqinputpointlightradius) is the input that reads and writes the radius of point light objects."
+    - "No shipped object uses it."

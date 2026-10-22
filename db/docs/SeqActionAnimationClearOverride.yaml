@@ -1,0 +1,17 @@
+# SeqActionAnimationClearOverride Documentation
+
+class:
+  description: |
+    A [sequence action](/classes/isequenceaction) that **clears an animation override on an
+    object**, the counterpart of
+    [SeqActionAnimationSetOverride](/classes/seqactionanimationsetoverride). Its code was not
+    traced.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Object:
+    description: "The object whose override is cleared."
+
+  "0x83ac0981":
+    description: "Unknown string. Purpose not yet identified."
