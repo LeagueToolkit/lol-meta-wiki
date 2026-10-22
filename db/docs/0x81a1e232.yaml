@@ -1,0 +1,20 @@
+# 0x81a1e232 Documentation
+
+class:
+  description: |
+    An [entity loop](/classes/gameentityloopblock) over the **entities within a radius of a
+    point**. The loop evaluates `Center` and `radius`, copies the list of all game entities, and
+    visits every entity whose position is at most `radius` world units from `Center`. For each
+    such entity it writes the entity to `OutEntity` and runs the body.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Center:
+    description: "The centre point. It must be set."
+  radius:
+    description: "The radius, in world units. It must be set."
+  "0x90f1641f":
+    description: "Unknown float. The client does not read it."
+  OutEntity:
+    description: "The entity variable that receives the entity before each run of the body."

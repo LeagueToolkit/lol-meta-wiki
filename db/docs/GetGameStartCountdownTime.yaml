@@ -1,0 +1,6 @@
+# GetGameStartCountdownTime Documentation
+
+class:
+  description: |
+    A [level script block](/classes/levelscriptblock) that writes `0` to the `Dest` float
+    variable. The client writes no other value.

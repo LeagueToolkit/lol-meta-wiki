@@ -1,0 +1,44 @@
+# ForEachEntityWithTagBlock Documentation
+
+class:
+  description: |
+    An [entity loop](/classes/gameentityloopblock) over the **entities that carry an entity
+    tag**. The loop evaluates `tag` and walks the list of entities that carry that tag. It skips
+    an entity that fails the tag filter or the map filter, and for every other entity it writes
+    the entity to `OutEntity` and runs the body.
+
+    **Tag filter.** The three unnamed tag lists filter the entities by their other tags:
+
+    - every tag in `"0xa1162603"` must be on the entity,
+    - if `"0x9c60d5ba"` is not empty, at least one of its tags must be on the entity,
+    - no tag in `"0xbec77248"` may be on the entity.
+
+    The loop evaluates every entry of the three lists before the first iteration. If one entry
+    cannot be evaluated, the loop runs no iteration.
+
+    **Map filter.** `FilterByMapIndex` and `MapIndexOverride` limit the loop to the entities of
+    one map index. The client finds the map index of an entity by the same rule as
+    [GetEntityMapIndexBlock](/classes/getentitymapindexblock): from its template, or else from
+    the map regions around its position.
+  notes:
+    - "The loop walks the tag's entity list directly and does not copy it first."
+    - "No shipped object uses it."
+
+properties:
+  tag:
+    description: "The entity tag whose entities the loop visits. It must be set."
+  "0xa1162603":
+    description: "Entity tags that an entity must all carry to be visited."
+  "0x9c60d5ba":
+    description: "Entity tags of which an entity must carry at least one to be visited. An empty list does not filter."
+  "0xbec77248":
+    description: "Entity tags that exclude an entity: the loop skips an entity that carries any of them."
+  FilterByMapIndex:
+    description: "If true, the loop visits only the entities whose map index is the map index of the running script."
+  MapIndexOverride:
+    description: |
+      A map index to filter by instead of the map index of the running script. If it evaluates
+      to a value other than `0`, the loop filters by that index, also when `FilterByMapIndex`
+      is false or not set.
+  OutEntity:
+    description: "The entity variable that receives the entity before each run of the body."

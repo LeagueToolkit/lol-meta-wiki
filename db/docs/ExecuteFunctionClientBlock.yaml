@@ -1,0 +1,13 @@
+# ExecuteFunctionClientBlock Documentation
+
+class:
+  description: |
+    An [IRunFunctionBlock](/classes/irunfunctionblock) that calls the function `Function` of the
+    `ClientScript` that `Script` links. If `Script` is not set, or if the script has no function
+    `Function`, the block raises a script error.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Function:
+    description: "Hash of the function name in the client script."

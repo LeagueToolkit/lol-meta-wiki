@@ -1,0 +1,21 @@
+# SetGameEntityIconOverride Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that **replaces the entity icon** of `Target`
+    with `Icon`, then sets whether it is shown.
+
+    The client rebuilds the icon from the `GameEntityIconData`: its texture, the colorblind
+    texture when colorblind mode is on, its color and its size, scaled to the screen. If the icon
+    data has a team override for the team of the local player, that override applies.
+
+    The block raises a script error if `Icon` is not set, if the entity has no icon component, or
+    if the component has no icon.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Icon:
+    description: "The icon to show in place of the entity's own icon."
+  Enabled:
+    description: "If true, the icon is shown. If false, it is hidden."

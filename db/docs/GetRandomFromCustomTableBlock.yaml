@@ -1,0 +1,20 @@
+# GetRandomFromCustomTableBlock Documentation
+
+class:
+  description: |
+    A block that **picks a random entry** of a [custom table](/classes/createcustomtableblock).
+    Every entry has the same chance. The block writes the key of the entry to `KeyDest` and its
+    value to `Dest`. If `ShouldRemove` is true, the block then removes the entry from the
+    table. If the table is empty, the block writes nothing.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Table:
+    description: "The table to pick from."
+  ShouldRemove:
+    description: "If true, the block removes the picked entry from `Table`."
+  Dest:
+    description: "The variable that receives the value of the picked entry."
+  KeyDest:
+    description: "The variable that receives the key of the picked entry."

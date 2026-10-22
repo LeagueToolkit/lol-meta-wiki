@@ -1,0 +1,8 @@
+# GetEntityDirectionBlock Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that writes the **direction** vector of
+    `Target` to the `Dest` vector variable.
+  notes:
+    - "No shipped object uses it."

@@ -1,0 +1,8 @@
+# BuffCounterByNamedDataValueCalculationPart Documentation
+
+class:
+  description: "A [buff counter part](/classes/igamecalculationpartwithbuffcounter) that returns the count of the buff `mBuffName` on the caster multiplied by the named data value `mDataValue` of the owner."
+
+properties:
+  mDataValue:
+    description: "Name of the data value that gives the value per buff count."

@@ -1,0 +1,11 @@
+# ContinueBlock Documentation
+
+class:
+  description: |
+    A block that **starts the next iteration of the nearest loop**. The block sets the continue
+    signal on the script context. The current list stops, every list that encloses it stops,
+    and the nearest [loop](/classes/iloopscriptblock) goes on with its next iteration.
+
+    If no loop encloses the block, every enclosing list stops.
+  notes:
+    - "No shipped object uses it."

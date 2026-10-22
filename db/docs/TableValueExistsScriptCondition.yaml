@@ -1,0 +1,18 @@
+# TableValueExistsScriptCondition Documentation
+
+class:
+  description: |
+    A [condition](/classes/iscriptcondition) that returns true if the script variable that
+    `TableValue` names **exists**, whatever kind of value it holds. A variable that holds Nil
+    exists.
+
+    - If `TableValue` names no table, the condition returns false without a script error.
+    - If the table has no instance in the running script, the condition records a script
+      error and returns false.
+    - If the variable is missing, the condition returns false without a script error.
+
+    [IsNilCondition](/classes/isnilcondition) tests for a missing or Nil variable instead.
+
+properties:
+  TableValue:
+    description: "The script variable to look up, as a table and a key (see [IScriptValueGet](/classes/iscriptvalueget))."

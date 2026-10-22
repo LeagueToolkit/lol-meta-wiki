@@ -1,0 +1,19 @@
+# RemoveScriptFromEntity Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that **removes script instances** from the
+    `Target` entity by script hash.
+
+    If the entity is active, every script that runs on the entity then receives the
+    `GameEntityOnScriptDetached` event. The event variable `DetachedScriptHash` holds the hash of
+    the removed script.
+  notes:
+    - "The block does not check that the entity supports scripting. On an entity without scripting, the client crashes. [DetachDynamicScript](/classes/detachdynamicscript) is the checked form."
+    - "No shipped object uses it."
+
+properties:
+  Script:
+    description: "Hash of the script to remove. [GetCurrentScriptHashBlock](/classes/getcurrentscripthashblock) produces this hash for the script that is running."
+  RemoveAll:
+    description: "If true, the block removes every instance of the script. If false, or if the getter fails, it removes only the first instance."

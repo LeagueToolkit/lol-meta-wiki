@@ -1,0 +1,20 @@
+# ReadVector4ConceptBlock Documentation
+
+class:
+  description: |
+    A [concept block](/classes/readconceptblockbase) that reads the value of a
+    [Vector4Concept](/classes/vector4concept) for the object that `ConceptObject` returns and
+    writes it to up to three script variables. The block writes an output only if the output
+    names a table and a key, so a block can fill any subset of the three.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Concept:
+    description: "The hash of the object path of the [Vector4Concept](/classes/vector4concept) to read. If no `Vector4Concept` with this path is loaded, the block records a script error and does nothing."
+  OutputXyz:
+    description: "The script variable that receives the first three components, as a Vector3."
+  OutputW:
+    description: "The script variable that receives the fourth component, as a Float."
+  OutputColor:
+    description: "The script variable that receives the four components packed into a Color."

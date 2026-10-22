@@ -1,0 +1,19 @@
+# IGameCalculationPartWithBuffCounter Documentation
+
+class:
+  description: |
+    Base for [calculation parts](/classes/igamecalculationpart) that **scale with the
+    count of a buff** on the caster. The part returns the count of the buff `mBuffName`
+    on the caster multiplied by a coefficient that the subclass supplies.
+
+properties:
+  mBuffName:
+    description: "Name of the buff to count on the caster."
+
+  mIconKey:
+    description: "Icon key that the tooltip prints next to the part in the `CombinedWithScalingIcons` display mode."
+
+  mScalingTagKey:
+    description: "Tooltip style tag of the part when its value equals its base value. When the value is modified, the part uses the modified tag of `GlobalStatsUIData`."
+    notes:
+      - "Only [BuffCounterByCoefficientCalculationPart](/classes/buffcounterbycoefficientcalculationpart) reads it. [BuffCounterByNamedDataValueCalculationPart](/classes/buffcounterbynameddatavaluecalculationpart) has no style tag unless its value is modified."

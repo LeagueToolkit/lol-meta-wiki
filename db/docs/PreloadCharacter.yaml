@@ -1,0 +1,9 @@
+# PreloadCharacter Documentation
+
+class:
+  description: |
+    A [level script block](/classes/levelscriptblock) that **loads a character** before it is
+    needed. The block loads the character `CharacterName` with skin `0`. If that character and
+    skin are already loaded, the block does nothing.
+
+    [PreloadCharacterWithSkinID](/classes/preloadcharacterwithskinid) loads a specific skin.

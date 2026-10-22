@@ -1,0 +1,97 @@
+# IGameCalculation Documentation
+
+class:
+  description: |
+    A **game calculation**: a named formula that returns one float, built from
+    [calculation parts](/classes/igamecalculationpart). Calculations live in maps keyed by
+    name, such as `SpellDataResource.mSpellCalculations`, `ItemData.mItemCalculations` and
+    `PerkScriptData.mCalculations`. Tooltips reference a calculation by that name, and the
+    client evaluates it to print the number and its breakdown. Some classes hold a
+    calculation directly, such as `TargeterDefinitionAoe.DynamicGameCalcSizeScalar`.
+
+    ## Evaluation context
+
+    The client evaluates a calculation with a context that every part reads:
+
+    | Input | Meaning |
+    |---|---|
+    | caster | The unit whose stats, ability resources, buffs, items and champion level the parts read. |
+    | target | An optional second unit. Only parts with `UseTargetStats` read it. The tooltip does not pass a target, so those parts read the caster there. |
+    | owner | The object that holds the calculation: a spell or an item. Named data values, effect amounts and other calculations are looked up on it. |
+    | spell slot | The slot of the spell. Cooldown parts read it. |
+    | spell level | The index into the data values of the owner. |
+
+    ## Named data values
+
+    A part that names a data value, such as
+    [NamedDataValueCalculationPart](/classes/nameddatavaluecalculationpart), asks the owner
+    for the value with that name at the spell level. For a spell, the owner is its
+    [SpellDataResource](/classes/spelldataresource): the client first reads the override
+    that the current game mode defines for that name, then `mDataValues`, and returns the
+    entry at the spell level. A name that the owner does not have gives `0`. The spell
+    level is not checked against the length of the value list.
+
+    ## Value and base value
+
+    Every part has a **current value** and a **base value**. The base value leaves out
+    the changes that the caster's spell modifiers make. When the two differ for a part, or
+    its coefficient differs from its base coefficient, the tooltip marks the part as
+    modified with the `GlobalStatsUIData` style tag `0x745e38b2`.
+
+    ## Tooltip display modes
+
+    `mSimpleTooltipCalculationDisplay` and `mExpandedTooltipCalculationDisplay` select how
+    the tooltip prints the calculation. The client uses the expanded field when the tooltip
+    is in its expanded mode, and the simple field otherwise.
+
+    | Value | Name | Tooltip text |
+    |---|---|---|
+    | `0` | `ExpandedPartsWithFinalTotals` | The value of each part. |
+    | `1` | `ExpandedPartsWithCoefficients` | The coefficient of each part, as a percentage if `mDisplayAsPercent` is set. |
+    | `2` | `ExpandedPartsWithCoefficientsAsPercent` | The coefficient of each part, as a percentage for scaling parts and when `mDisplayAsPercent` is set. |
+    | `3` | `ExpandedPartsWithTotalsAndCoefficients` | The value and the coefficient of each part. |
+    | `4` | `ExpandedPartsWithPercentCoeffAndFinalTotal` | The parts as in mode `2`, then the total of the calculation. |
+    | `5` | `CombinedValue` | The total of the calculation only. |
+    | `6` | `CombinedWithScalingIcons` | The total of the calculation, with the icon of each part. |
+    | `7` | `MultiplierAsPercent` | The multiplier of a [GameCalculationModified](/classes/gamecalculationmodified) times 100, with no decimals. Any other calculation prints an error text. |
+    | `8` | `UseDefault` | The mode that `GlobalStatsUIData` sets: `mTooltipCalculationExpansion` for the simple field, `mExpandedTooltipCalculationExpansion` for the expanded field. |
+
+    The total in modes `4` to `6` uses the modified style tag when the value differs from
+    the base value.
+
+properties:
+  mMultiplier:
+    description: |
+      A part whose value multiplies every part of the calculation. The client evaluates it
+      first, with the same context, and multiplies each part value by it before the parts
+      are added. Unset, the multiplier is `1`.
+    notes:
+      - "[GameCalculationModified](/classes/gamecalculationmodified) applies its own multiplier and then the multiplier of the calculation that it modifies."
+
+  ResultModifier:
+    description: |
+      Rounding or transform that the client applies to the final value, after the parts
+      are added.
+
+      | Value | Name | Result |
+      |---|---|---|
+      | `0` | `kNone` | The value is not changed. |
+      | `1` | `kSquareRoot` | An approximate square root. Values of `0` or below are not changed. |
+      | `2` | `Floor` | Rounds down. |
+      | `3` | `Ceil` | Rounds up. |
+      | `4` | `Round` | Rounds to the nearest integer, halves away from zero. |
+    notes:
+      - "`kSquareRoot` uses a bit-level approximation, not an exact square root. The result can be off by several percent."
+      - "[GameCalculationModified](/classes/gamecalculationmodified) ignores its own `ResultModifier`. The `ResultModifier` of the calculation that it modifies applies."
+
+  mSimpleTooltipCalculationDisplay:
+    description: "Tooltip display mode of the calculation in the simple tooltip. See the display mode table in the class description."
+
+  mExpandedTooltipCalculationDisplay:
+    description: "Tooltip display mode of the calculation in the expanded tooltip. See the display mode table in the class description."
+
+  DamageType:
+    description: "Damage type of the calculation. Purpose not yet identified: calculation evaluation and the tooltip text do not read it."
+
+  tooltipOnly:
+    description: "Purpose not yet identified. Calculation evaluation and the tooltip text do not read it."

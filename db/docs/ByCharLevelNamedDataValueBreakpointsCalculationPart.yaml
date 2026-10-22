@@ -1,0 +1,18 @@
+# ByCharLevelNamedDataValueBreakpointsCalculationPart Documentation
+
+class:
+  description: |
+    A [character-level part](/classes/igamecalculationpartbycharlevel) that works like
+    [ByCharLevelBreakpointsCalculationPart](/classes/bycharlevelbreakpointscalculationpart),
+    but takes every amount from a named data value of the owner at the spell level of the
+    context. Only the breakpoint levels are constants.
+
+properties:
+  Level1DataValue:
+    description: "Name of the data value that gives the value at level 1."
+
+  InitialBonusPerLevelDataValue:
+    description: "Name of the data value that gives the amount added per level until the first breakpoint."
+
+  DataValueBreakpoints:
+    description: "The [breakpoints](/classes/nameddatavaluebreakpoint), sorted by `level`. The same ordering rule as for `ByCharLevelBreakpointsCalculationPart.mBreakpoints` applies."

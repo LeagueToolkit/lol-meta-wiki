@@ -1,0 +1,15 @@
+# BehaviorScriptCommentBlock Documentation
+
+class:
+  description: |
+    A [behaviour-tree block](/classes/ibehaviorscriptblock) that **runs the behaviour tree in
+    `Sequence`**. Each time the block runs, it passes the last status of this node to
+    `Sequence`, which starts as Invalid, and stores the status that `Sequence` returns as the
+    new status of the node. An Error status is reported as an error.
+  notes:
+    - "How a `ScriptBtSequence` combines the statuses of its blocks is not yet identified."
+    - "No shipped object uses it."
+
+properties:
+  Sequence:
+    description: "The behaviour tree that the block runs."

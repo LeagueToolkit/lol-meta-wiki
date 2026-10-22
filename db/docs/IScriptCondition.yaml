@@ -1,0 +1,17 @@
+# IScriptCondition Documentation
+
+class:
+  description: |
+    A **script condition**: a test that returns true or false each time a script block
+    evaluates it. [IfConditionBlock](/classes/ifconditionblock) runs its `Sequence` according
+    to the result of its `Condition`, and [WhileLoopBlock](/classes/whileloopblock) tests its
+    `Condition` before each run of its body. A condition does not write script variables.
+
+    A condition reads its operands through value getters (see
+    [IScriptValueGet](/classes/iscriptvalueget)) and evaluates them again on every test. If an
+    operand cannot be evaluated, for example because a script variable is missing or holds a
+    value of the wrong kind, the condition records a script error (see
+    [IScriptBlock](/classes/iscriptblock)) and returns false. The page of each condition states
+    where it differs from this rule.
+  notes:
+    - "Shipped scripts use conditions only in `IfConditionBlock.Condition`. Most of them are [ComparisonScriptCondition](/classes/comparisonscriptcondition)."

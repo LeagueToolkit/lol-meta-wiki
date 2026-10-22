@@ -1,0 +1,12 @@
+# ReadFloatConceptBlock Documentation
+
+class:
+  description: "A [concept block](/classes/readconceptblockbase) that reads the value of a [FloatConcept](/classes/floatconcept) for the object that `ConceptObject` returns and writes it to `Output` as a Float."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Concept:
+    description: "The hash of the object path of the [FloatConcept](/classes/floatconcept) to read. If no `FloatConcept` with this path is loaded, the block records a script error and does nothing."
+  Output:
+    description: "The script variable that receives the value."

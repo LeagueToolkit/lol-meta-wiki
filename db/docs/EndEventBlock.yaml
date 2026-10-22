@@ -1,0 +1,6 @@
+# EndEventBlock Documentation
+
+class:
+  description: |
+    A block that **ends the running script**. The current list and every list that encloses it
+    stop at once. Loops do not catch this signal, so it also leaves every enclosing loop.

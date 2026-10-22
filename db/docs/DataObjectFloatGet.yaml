@@ -1,0 +1,27 @@
+# DataObjectFloatGet Documentation
+
+class:
+  description: |
+    A getter that reads a numeric property of a loaded bin object and returns it as a
+    float. Read as an int, the result is truncated toward zero.
+
+    The getter finds the object by `PathHash`, then walks `PropPath` from it:
+
+    | Path part | Meaning |
+    |-----------|---------|
+    | `Name` | A property of the current object. The name is hashed and matched against the properties of the class and its base classes. |
+    | `.` | Continues into the property just read. A pointer continues on the class of the object it points to, and an embed continues inside the embed. |
+    | `[n]` | The list element at index `n`. |
+    | `{key}` | The map entry with key `key`. |
+
+    The property can have any integer type (`i8` to `u64`) or be an `f32`.
+  notes:
+    - "A `u32` value of `2^31` or more reads as a negative number, and an `i64` or `u64` is read from its low 32 bits."
+    - "If the object exists but the path does not lead to a numeric property, the getter raises a script error even if the reader turned error reporting off."
+    - "No shipped object uses it."
+
+properties:
+  PathHash:
+    description: "The entry path hash of the bin object. If no loaded object has that path, the getter fails with a script error."
+  PropPath:
+    description: "The path of the property to read, relative to the object."

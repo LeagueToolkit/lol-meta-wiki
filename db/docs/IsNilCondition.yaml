@@ -1,0 +1,16 @@
+# IsNilCondition Documentation
+
+class:
+  description: |
+    A [condition](/classes/iscriptcondition) that returns true if the script variable that
+    `value` names is **missing or holds Nil**. A missing variable does not record a script
+    error.
+
+    [TableValueExistsScriptCondition](/classes/tablevalueexistsscriptcondition) differs: it
+    returns true for a variable that exists and holds Nil.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  value:
+    description: "The script variable to test, as a table and a key (see [IScriptValueGet](/classes/iscriptvalueget))."

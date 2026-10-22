@@ -1,0 +1,17 @@
+# DetachDynamicScript Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that **removes script instances** from the
+    `Target` entity. It removes the instances of the script that `ScriptDef.Script` links.
+
+    The block raises a script error if the entity does not support scripting, or if the
+    definition links no script.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  ScriptDef:
+    description: "The script definition whose script is removed. If the getter does not produce a `GameEntityScriptDefinition`, the block does nothing and raises no error."
+  RemoveAll:
+    description: "If true, the block removes every instance of the script. If false, or if the getter fails, it removes only the first instance."

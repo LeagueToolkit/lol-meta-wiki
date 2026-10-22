@@ -1,0 +1,17 @@
+# FindInString Documentation
+
+class:
+  description: |
+    A block that **searches a string for another string**. The block writes the position of the
+    first occurrence of `TargetString` in `InputString` to `FoundIndex`. The position is a byte
+    offset that starts at `0`. If `TargetString` does not occur, the block writes `-1`.
+  notes:
+    - "Both strings must be set: the client does not check for a missing operand."
+
+properties:
+  InputString:
+    description: "The string to search in."
+  TargetString:
+    description: "The string to search for."
+  FoundIndex:
+    description: "The int variable that receives the position, or `-1`."

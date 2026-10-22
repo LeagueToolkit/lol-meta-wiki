@@ -1,0 +1,24 @@
+# ForEachInSortedCustomTableBlock Documentation
+
+class:
+  description: |
+    A [loop](/classes/iloopscriptblock) over the **entries of a
+    [custom table](/classes/createcustomtableblock), ordered by value**. For each entry, the loop
+    writes the key to `DestKey` and the value to `DestValue` and runs the body. The loop ends
+    after the last entry, on a break, or at the first entry whose value is null.
+
+    The sort applies to each kind of key on its own, not to the whole table. The loop visits the
+    string-keyed entries first, sorted by value, then the int-keyed entries, sorted by value,
+    then the entries with other keys, sorted by value.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Table:
+    description: "The table to walk."
+  Ascending:
+    description: "If true, each group of entries is sorted from the smallest value to the largest. If false, from the largest to the smallest."
+  DestKey:
+    description: "The variable that receives the key of the entry before each run of the body."
+  DestValue:
+    description: "The variable that receives the value of the entry before each run of the body."

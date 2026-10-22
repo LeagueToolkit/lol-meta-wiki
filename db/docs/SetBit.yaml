@@ -1,0 +1,18 @@
+# SetBit Documentation
+
+class:
+  description: |
+    A block that **sets one bit** of an int variable. The block reads the int in `BitField`,
+    sets bit `BitIndex` (value `1 << BitIndex`), and writes the result back to `BitField`.
+    [ClearBit](/classes/clearbit) clears a bit, and [IsBitSetCondition](/classes/isbitsetcondition) tests one.
+
+    `BitIndex` must be `0` to `31`. Another value, including a negative value, records a script
+    error, and the block writes nothing.
+  notes:
+    - "If `BitField` is missing or does not hold an int, the block records a script error but still writes `BitIndex | (1 << BitIndex)` to `BitField`."
+
+properties:
+  BitIndex:
+    description: "The index of the bit, `0` to `31`. It must be set."
+  BitField:
+    description: "The int variable that the block reads and writes."

@@ -1,0 +1,11 @@
+# RandomChanceScriptCondition Documentation
+
+class:
+  description: |
+    A [condition](/classes/iscriptcondition) that returns true if `Chance` is **greater than
+    or equal to a random number** that the client draws on each test. The range of the random
+    number is not confirmed.
+
+properties:
+  Chance:
+    description: "The threshold that the random number is compared against."

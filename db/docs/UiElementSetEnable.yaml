@@ -1,0 +1,8 @@
+# UiElementSetEnable Documentation
+
+class:
+  description: |
+    A [UI block](/classes/iuiblock) that sets whether the UI element `element` is **enabled**, to
+    the value of `Enable`.
+  notes:
+    - "No shipped object uses it."

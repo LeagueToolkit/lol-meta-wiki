@@ -1,0 +1,15 @@
+# NamedDataValueCalculationPart Documentation
+
+class:
+  description: |
+    A [calculation part](/classes/igamecalculationpart) that returns a **named data value
+    of the owner** at the spell level of the context. For a spell, the value comes from
+    the game mode override or from `SpellDataResource.mDataValues`, as described on
+    [IGameCalculation](/classes/igamecalculation). The part returns `0` if the owner has
+    no value with that name.
+  notes:
+    - "This is the most common part in shipped data. It is often the sub-part of a [SubPartScaledProportionalToStat](/classes/subpartscaledproportionaltostat)."
+
+properties:
+  mDataValue:
+    description: "Name of the data value to read."

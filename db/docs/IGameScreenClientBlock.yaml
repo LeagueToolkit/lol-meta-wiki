@@ -1,0 +1,6 @@
+# IGameScreenClientBlock Documentation
+
+class:
+  description: |
+    Base of a family of client script block interfaces. The client contains no block class that
+    implements any of them, and no shipped object uses them.

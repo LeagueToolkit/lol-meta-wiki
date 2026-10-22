@@ -1,0 +1,13 @@
+# 0xefe2309 Documentation
+
+class:
+  description: |
+    A getter that returns the position of a map locator, in world units. The getter
+    resolves `MapPlaceable` to a `MapLocator` each time it is evaluated.
+  notes:
+    - "The getter does not check the link. If `MapPlaceable` does not resolve to a `MapLocator`, the client crashes when it evaluates the getter."
+    - "No shipped object uses it."
+
+properties:
+  MapPlaceable:
+    description: "The link to the `MapLocator` whose position the getter returns."

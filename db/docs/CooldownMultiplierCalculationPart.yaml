@@ -1,0 +1,10 @@
+# CooldownMultiplierCalculationPart Documentation
+
+class:
+  description: |
+    A [calculation part](/classes/igamecalculationpart) that returns the **cooldown
+    multiplier of the caster** for the spell slot of the context: the factor that the
+    caster's stats apply to the cooldown of that slot. If the caster does not provide one,
+    the part returns `1`.
+  notes:
+    - "Shipped spell data uses it mostly as `mMultiplier` of a calculation."

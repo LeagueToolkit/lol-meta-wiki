@@ -1,0 +1,9 @@
+# GameEntityLoopBlock Documentation
+
+class:
+  description: |
+    A [loop](/classes/iloopscriptblock) over **game entities**. Each iteration writes one entity
+    to the `OutEntity` variable of the loop and runs the body. Each loop class decides which
+    entities it visits. A break in the body ends the loop.
+  notes:
+    - "No shipped object uses an entity loop."

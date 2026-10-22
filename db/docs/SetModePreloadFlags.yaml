@@ -1,0 +1,8 @@
+# SetModePreloadFlags Documentation
+
+class:
+  description: |
+    A [level script block](/classes/levelscriptblock) that sets the game's **mode preload
+    flags** to `ModePreloadFlags`. If the getter fails, the block writes `0`.
+    [GetModePreloadFlags](/classes/getmodepreloadflags) reads the value. The meaning of the bits
+    is not known.

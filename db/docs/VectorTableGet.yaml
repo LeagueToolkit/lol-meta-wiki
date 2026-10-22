@@ -1,0 +1,13 @@
+# VectorTableGet Documentation
+
+class:
+  description: |
+    A getter that reads a script variable as a three-component vector. The variable must
+    hold a Vector3. Otherwise, or if the variable does not exist, the getter fails with a
+    script error. See [ScriptTableGet](/classes/scripttableget) for `Table` and `Var`.
+  notes:
+    - "Shipped map scripts use it for variable copies and for the location and facing of a neutral camp."
+
+properties:
+  Default:
+    description: "Not read. A missing or mistyped variable fails even if `Default` is set."

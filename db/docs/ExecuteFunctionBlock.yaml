@@ -1,0 +1,19 @@
+# ExecuteFunctionBlock Documentation
+
+class:
+  description: |
+    An [IRunFunctionBlock](/classes/irunfunctionblock) that calls the function `Function` of the
+    `FunctionModule` that `Script` links. The called function receives the caller's
+    `InstanceVars`, `CharacterVars`, `NextBuffVars`, `NextSpellVars`, `AvatarVars`, `SpellVars`
+    and `WorldVars` tables.
+
+    If `Script` is not set, the block does nothing. If the module has no function `Function`,
+    the block raises a script error.
+  notes:
+    - "Shipped map scripts use it."
+
+properties:
+  Function:
+    description: "Hash of the function name in the module."
+  "0x4283375a":
+    description: "A declaration of the function: module, script and function names, and the names of its parameters. The client does not read it."

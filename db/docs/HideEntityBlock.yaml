@@ -1,0 +1,9 @@
+# HideEntityBlock Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that **hides** the `Target` entity over
+    `duration` seconds. The entity stays active. If the entity is inactive, the block raises a
+    script error.
+  notes:
+    - "No shipped object uses it."

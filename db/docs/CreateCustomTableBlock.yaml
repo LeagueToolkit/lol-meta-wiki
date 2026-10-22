@@ -1,0 +1,24 @@
+# CreateCustomTableBlock Documentation
+
+class:
+  description: |
+    A block that writes a **new empty custom table** to `Dest`.
+
+    A **custom table** is a script value that holds key-value pairs. A key is an int, a string
+    or another script value, and the table keeps the three kinds of key apart:
+
+    | Key kind | Order when a block walks the table |
+    |----------|-----------------------------------|
+    | String keys | First, in an internal order |
+    | Int keys | Next, in ascending order |
+    | Other keys | Last, in an internal order |
+
+    Int keys `1` to `n` without gaps make the table a **list**.
+    [InsertIntoCustomTableBlock](/classes/insertintocustomtableblock) appends to the list, and
+    [ShuffleCustomTableBlock](/classes/shufflecustomtableblock) and
+    [SortCustomTableBlock](/classes/sortcustomtableblock) reorder it. Blocks that take a key
+    accept an int, a float (truncated to an int), a string or another value.
+
+properties:
+  Dest:
+    description: "The variable that receives the new table."

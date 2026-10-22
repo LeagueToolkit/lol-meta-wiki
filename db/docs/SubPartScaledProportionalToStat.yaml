@@ -1,0 +1,51 @@
+# SubPartScaledProportionalToStat Documentation
+
+class:
+  description: |
+    A [calculation part](/classes/igamecalculationpart) that returns the value of
+    `mSubpart` **increased in proportion to a stat**:
+
+    ```
+    (1 + mRatio * stat) * mSubpart
+    ```
+
+    The unit and the stat are selected with the same fields as for a [stat
+    part](/classes/igamecalculationpartwithstats). If `mSubpart` is not set, the part
+    returns `0`.
+
+    The style tag of the part in the tooltip is chosen in this order: the modified tag of
+    `GlobalStatsUIData` when the value differs from the base value, then
+    `mStyleTagIfScaled` when `mRatio * stat` is not `0`, then `mStyleTag`.
+  notes:
+    - "Shipped data uses it often, mostly with a [NamedDataValueCalculationPart](/classes/nameddatavaluecalculationpart) as `mSubpart`."
+
+properties:
+  mSubpart:
+    description: "The part whose value is scaled."
+
+  mRatio:
+    description: "The fraction of the stat that is added to the scale factor. With `mRatio` `0.01`, every point of the stat adds 1% to the value."
+
+  mStat:
+    description: "The stat to read when `UseNewStats` is not set. See `mStat` on [IGameCalculationPartWithStats](/classes/igamecalculationpartwithstats) for the values."
+
+  mStatFormula:
+    description: "Which part of the stat to read: total, base or bonus. See [IGameCalculationPartWithStats](/classes/igamecalculationpartwithstats)."
+
+  statType:
+    description: "The stat to read when `UseNewStats` is set. See [IGameCalculationPartWithStats](/classes/igamecalculationpartwithstats)."
+
+  OutputType:
+    description: "Which output of `statType` to read when `UseNewStats` is set. See [IGameCalculationPartWithStats](/classes/igamecalculationpartwithstats)."
+
+  mStyleTag:
+    description: "Tooltip style tag of the part when the stat adds nothing."
+
+  mStyleTagIfScaled:
+    description: "Tooltip style tag of the part when `mRatio * stat` is not `0`."
+
+  UseTargetStats:
+    description: "When set, the part reads the stat of the target instead of the caster. Without a target, it reads the caster."
+
+  UseNewStats:
+    description: "When set, the part reads `statType` with `OutputType` instead of `mStat` and `mStatFormula`."

@@ -1,0 +1,7 @@
+# PreloadCharacterWithSkinID Documentation
+
+class:
+  description: |
+    A [level script block](/classes/levelscriptblock) that **loads a character** with the skin
+    `SkinID` before it is needed. If that character and skin are already loaded, the block does
+    nothing.

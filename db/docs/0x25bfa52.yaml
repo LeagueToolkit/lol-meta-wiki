@@ -1,0 +1,9 @@
+# 0x25bfa52 Documentation
+
+class:
+  description: |
+    The client does not run this block. Its fields name a barracks property and a float value
+    for it.
+  notes:
+    - "The values of `BarracksProperty` are not known."
+    - "No shipped object uses it."

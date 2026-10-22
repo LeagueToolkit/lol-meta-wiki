@@ -1,0 +1,19 @@
+# GetAverageValueInCustomTableBlock Documentation
+
+class:
+  description: |
+    A block that writes the **average of the numbers** in a
+    [custom table](/classes/createcustomtableblock) to `Average`. The block first writes `0` to
+    `Average`. It then adds up every int and float value of the table and counts them. If it
+    counted at least one value, it writes the sum divided by the count.
+
+    A value of another kind records a script error and is left out of the average. An empty
+    table leaves `Average` at `0`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Table:
+    description: "The table to read."
+  Average:
+    description: "The float variable that receives the average."

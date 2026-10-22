@@ -1,0 +1,14 @@
+# IsEntityActive Documentation
+
+class:
+  description: |
+    A [condition](/classes/entityscriptcondition) that returns true if the game entity that
+    `Target` gives is **active**. [ActivateEntityBlock](/classes/activateentityblock) and
+    [DeactivateEntityBlock](/classes/deactivateentityblock) change this state. If no game
+    entity has the id, the condition records a script error and returns false.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Target:
+    description: "The entity to test."

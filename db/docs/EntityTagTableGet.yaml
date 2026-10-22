@@ -1,0 +1,9 @@
+# EntityTagTableGet Documentation
+
+class:
+  description: |
+    A getter that reads a script variable as an entity tag. The variable can hold an
+    EntityTag or an Int; an Int is read as the tag hash. Any other kind, or a missing
+    variable, fails with a script error. See [ScriptTableGet](/classes/scripttableget) for `Table` and `Var`.
+  notes:
+    - "No shipped object uses it."

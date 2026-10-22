@@ -1,0 +1,37 @@
+# GameCalculation Documentation
+
+class:
+  description: |
+    The standard [game calculation](/classes/igamecalculation): the sum of its formula
+    parts. The client computes the value in this order:
+
+    1. The multiplier is `1`, times the value of `mMultiplier` if it is set.
+    2. Each part of `mFormulaParts` is evaluated, multiplied by the multiplier and added.
+       Null entries are skipped. An empty list gives `0`.
+    3. The parts that the caster's spell modifiers add to this calculation are evaluated
+       and added the same way. An added part with `RequiredStat` `42` always applies.
+       Any other added part applies only if a top-level part of `mFormulaParts` reads the
+       same stat and stat formula.
+    4. `ResultModifier` is applied to the total.
+  notes:
+    - "Most calculations in spell, item and perk data are of this class."
+
+properties:
+  mFormulaParts:
+    description: |
+      The [calculation parts](/classes/igamecalculationpart) whose values are added. The
+      tooltip display modes print these parts one by one.
+    notes:
+      - "[SiblingStatCoefficientBySubPart](/classes/siblingstatcoefficientbysubpart) and the stat check of spell-modifier parts search only this top-level list, not nested sub-parts."
+
+  mDisplayAsPercent:
+    description: "When set, the tooltip prints the values of the calculation multiplied by `100` as percentages."
+
+  mPrecision:
+    description: "Number of decimal places that the tooltip prints for the values of the calculation."
+
+  "0xacc210ca":
+    description: "A calculation part. Purpose not yet identified."
+
+  "0xbafc65c0":
+    description: "A calculation part. Purpose not yet identified."

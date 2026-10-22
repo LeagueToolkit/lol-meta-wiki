@@ -1,0 +1,11 @@
+# NilUnitGet Documentation
+
+class:
+  description: |
+    A unit getter that stands for no unit. Read as a unit id, it returns `0` and
+    succeeds. Read as a driver source (see
+    [ILogicDriverSourceGet](/classes/ilogicdriversourceget)), it fails with a script
+    error, because no unit has id `0`. As a plain value it returns a Unit value with id
+    `0`.
+  notes:
+    - "No shipped object uses it."

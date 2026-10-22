@@ -1,0 +1,23 @@
+# CustomTableContainsValueBlock Documentation
+
+class:
+  description: |
+    A block that **searches a [custom table](/classes/createcustomtableblock) for a value**. The
+    block evaluates `value` and compares it with each value of `SrcTable`, in walk order, until
+    it finds an equal value.
+
+    - If a value matches, the block writes its key to `MatchingKey` and `true` to `WasFound`.
+    - If no value matches, the block writes `false` to `WasFound` and does not write
+      `MatchingKey`.
+    - If `value` is not set, the block records a script error.
+    - If `value` evaluates to nothing, the block writes nothing.
+
+properties:
+  SrcTable:
+    description: "The table to search."
+  value:
+    description: "The value to look for."
+  MatchingKey:
+    description: "The variable that receives the key of the first matching entry."
+  WasFound:
+    description: "The bool variable that receives whether a matching entry was found."

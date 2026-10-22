@@ -1,0 +1,7 @@
+# SetInvulnerableBlock Documentation
+
+class:
+  description: |
+    The client does not run this block. Its `value` field is the invulnerable state to set.
+  notes:
+    - "No shipped object uses it."

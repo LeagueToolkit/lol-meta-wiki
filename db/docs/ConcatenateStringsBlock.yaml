@@ -1,0 +1,12 @@
+# ConcatenateStringsBlock Documentation
+
+class:
+  description: "A block that joins two strings. The block writes `String1` followed by `String2` to `Result`."
+
+properties:
+  String1:
+    description: "The first part of the result."
+  String2:
+    description: "The second part of the result, appended to `String1`."
+  Result:
+    description: "The string variable that receives the joined string."

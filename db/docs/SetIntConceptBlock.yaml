@@ -1,0 +1,12 @@
+# SetIntConceptBlock Documentation
+
+class:
+  description: "A [concept block](/classes/setconceptblockbase) that writes `NewValue` as the value of an [IntConcept](/classes/intconcept) for the object that `ConceptObject` returns."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Concept:
+    description: "The hash of the object path of the [IntConcept](/classes/intconcept) to write. If no `IntConcept` with this path is loaded, the block records a script error and does nothing."
+  NewValue:
+    description: "The value to write. The block evaluates it each time it runs."

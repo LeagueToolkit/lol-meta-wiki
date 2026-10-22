@@ -1,0 +1,16 @@
+# StringTableGet Documentation
+
+class:
+  description: |
+    A getter that reads a script variable as a string. If the variable holds a String,
+    the getter returns it. Otherwise, or if the variable does not exist, the getter
+    returns `Default` if it is set and fails with a script error if it is not. See [ScriptTableGet](/classes/scripttableget) for `Table` and `Var`.
+
+    Read as a string hash (`IStringHashGet`), the getter returns the FNV-1a hash of the
+    lowercased string.
+  notes:
+    - "Shipped map scripts use it to read character names and other strings that earlier blocks stored."
+
+properties:
+  Default:
+    description: "The string the getter returns if the variable is missing or is not a String. Unset, the getter fails instead."

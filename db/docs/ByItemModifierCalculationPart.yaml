@@ -1,0 +1,16 @@
+# ByItemModifierCalculationPart Documentation
+
+class:
+  description: |
+    A [calculation part](/classes/igamecalculationpart) that returns `Coefficient` when
+    the caster has the item modifier `ItemModifier` active on the owner of the calculation,
+    and `0` otherwise. It also returns `0` when `ItemModifier` does not resolve.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  ItemModifier:
+    description: "Link to the `ItemModifier` that the caster must have."
+
+  Coefficient:
+    description: "The value of the part when the item modifier is active."

@@ -1,0 +1,13 @@
+# ExponentSubPartsCalculationPart Documentation
+
+class:
+  description: "A [calculation part](/classes/igamecalculationpart) that returns `part1` raised to the power `part2`. If either part is not set, it returns `0`."
+  notes:
+    - "Shipped data uses it mostly as a factor of a [ProductOfSubPartsCalculationPart](/classes/productofsubpartscalculationpart)."
+
+properties:
+  part1:
+    description: "The base."
+
+  part2:
+    description: "The exponent."

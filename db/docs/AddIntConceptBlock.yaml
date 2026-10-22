@@ -1,0 +1,12 @@
+# AddIntConceptBlock Documentation
+
+class:
+  description: "A [concept block](/classes/addconceptblockbase) that adds `AddValue` to the value of an [IntConcept](/classes/intconcept) for the object that `ConceptObject` returns."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Concept:
+    description: "The hash of the object path of the [IntConcept](/classes/intconcept) to change. If no `IntConcept` with this path is loaded, the block records a script error and does nothing."
+  AddValue:
+    description: "The integer amount to add. The block evaluates it each time it runs."

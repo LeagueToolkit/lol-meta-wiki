@@ -1,0 +1,15 @@
+# EntityExistsCondition Documentation
+
+class:
+  description: |
+    A [condition](/classes/entityscriptcondition) that returns true if `Target` gives the id
+    of a **game entity that exists**. The condition evaluates `Target` without error
+    reporting and never records a script error: a failing getter or an id that matches no
+    game entity returns false. The condition does not test whether the entity is active (see
+    [IsEntityActive](/classes/isentityactive)).
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Target:
+    description: "The entity to look for."

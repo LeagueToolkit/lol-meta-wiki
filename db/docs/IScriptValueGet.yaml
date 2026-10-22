@@ -1,0 +1,75 @@
+# IScriptValueGet Documentation
+
+class:
+  description: |
+    A **value getter**: an object in a bin script that produces one script value when a
+    block or a condition evaluates it. Getters fill the inputs of script blocks (see
+    [IScriptBlock](/classes/iscriptblock)) and conditions (see
+    [IScriptCondition](/classes/iscriptcondition)). A getter holds a literal value
+    ([IntGet](/classes/intget), [StringGet](/classes/stringget)), reads a script
+    variable (the `*TableGet` classes, see [ScriptTableGet](/classes/scripttableget)),
+    reads a property of a loaded bin object (the `DataObject*Get` classes), or builds a
+    new value ([ListGet](/classes/listget), [MapGet](/classes/mapget)). The client
+    evaluates the getter every time the block or condition runs. Nothing caches the result.
+
+    **Value kinds.** Every script value has one of these kinds:
+
+    | Kind | Content | Literal getter |
+    |------|---------|----------------|
+    | Nil | No value | [NilGet](/classes/nilget) |
+    | Int | 32-bit signed integer | [IntGet](/classes/intget) |
+    | Bool | `true` or `false` | [BoolGet](/classes/boolget) |
+    | Float | 32-bit float | [FloatGet](/classes/floatget) |
+    | String | Text | [StringGet](/classes/stringget) |
+    | Vector3 | Three floats | [VectorGet](/classes/vectorget) |
+    | Function | A script function | none |
+    | CustomTable | A key-value table that scripts create and fill at run time | [CustomGet](/classes/customget), [ListGet](/classes/listget), [MapGet](/classes/mapget) |
+    | Entity | The id of a game entity | [EntityReferenceGet](/classes/entityreferenceget), [NilEntityGet](/classes/nilentityget) |
+    | EntityTag | An entity tag hash | [EntityTagGet](/classes/entitytagget) |
+    | Path | A link to a path object (`IPath`) | [PathReferenceGet](/classes/pathreferenceget) |
+    | Color | An RGBA color | [ColorGet](/classes/colorget) |
+    | Int64 | 64-bit signed integer | none |
+    | DataObject | A loaded bin object | [DataObjectGet](/classes/dataobjectget) |
+    | ResourceKey | A resource reference hash | [0x7908fe0e](/classes/0x7908fe0e) |
+    | UiElement | A UI element | [UiElementIGet](/classes/uielementiget) |
+    | Unit | The id of a unit | [NilUnitGet](/classes/nilunitget) |
+    | Segment | An 8-bit value | [SegmentGet](/classes/segmentget) |
+
+    **Generic and typed reads.** A property that takes an `IScriptValueGet` receives the
+    value together with its kind, and the reader decides what to do with the kind:
+    [ComparisonScriptCondition](/classes/comparisonscriptcondition) compares two values of
+    any kind, and [SetVarInTableBlock](/classes/setvarintableblock) stores any value. A
+    property that takes a typed getter interface, such as `IFloatGet`, `IIntGet`,
+    `IBoolGet`, `IStringGet`, `IVectorGet` or `IEntityGet`, asks for that one kind, and
+    any getter that implements the interface fits the property. Every float getter also
+    implements `IIntGet`, and every int getter also implements `IFloatGet`. Read as an int,
+    a float is truncated toward zero.
+
+    **Variables.** A script variable is addressed by a **table** and a **variable name**.
+    The table is one of the `ScriptTable` classes, such as `InstanceVars` or `WorldVars`.
+    The client resolves the table for the script that is running, so the same getter reads
+    a different instance of the table in each script context. A `*TableSet` (for example
+    the output of a block) writes a variable and names it by its name string. A
+    `*TableGet` reads a variable and names it by the hash of the name (FNV-1a of the
+    lowercased name), so both address the same variable. If a `*TableGet` leaves `Table`
+    unset, it reads the pass-through parameter table of the running script call. See
+    [ScriptTableGet](/classes/scripttableget).
+
+    **Failure.** A getter fails when its input does not resolve or does not hold the
+    expected kind. A failing getter raises a **script error**: the client discards the
+    message, marks the running script as failed, and the block that evaluated the getter
+    skips its effect (see [IScriptBlock](/classes/iscriptblock)). A reader can also
+    evaluate a getter with error reporting turned off, test the result and fall back to
+    another input. A failure then raises no error.
+
+    **Fallbacks.** Some table getters return a value of their own when the variable does
+    not give one:
+
+    | Getter | Missing variable | Variable of another kind |
+    |--------|------------------|-------------------------|
+    | [ScriptTableGet](/classes/scripttableget) | Fails | Returns the value with its kind |
+    | [FloatTableGet](/classes/floattableget), [IntTableGet](/classes/inttableget), [BoolTableGet](/classes/booltableget), [StringTableGet](/classes/stringtableget) | Returns `Default` if it is set, otherwise fails | Converts if it can, otherwise as for a missing variable |
+    | [FloatOffsetTableGet](/classes/floatoffsettableget), [IntOffsetTableGet](/classes/intoffsettableget) | Returns `offset` | Fails |
+    | Every other `*TableGet` | Fails | Fails, except for the conversions on its page |
+  notes:
+    - "Most shipped getters sit in map scripts: literal ints, bools, floats and strings, and variable reads, as the operands of comparisons and the sources of variable writes."

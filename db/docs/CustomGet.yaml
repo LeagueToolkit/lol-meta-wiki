@@ -1,0 +1,13 @@
+# CustomGet Documentation
+
+class:
+  description: |
+    A getter that creates a new custom table each time it is evaluated and copies the
+    `value` embed into it. The embedded table class has no properties, so the result is
+    always a new empty table.
+  notes:
+    - "One shipped object uses it, as the parameters of a designer event."
+
+properties:
+  value:
+    description: "The initial content of the new table."

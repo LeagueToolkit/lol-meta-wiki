@@ -1,0 +1,15 @@
+# AttachDynamicScript Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that **adds a script instance** to the
+    `Target` entity from a `GameEntityScriptDefinition` that a getter produces.
+
+    The block raises a script error if the entity does not support scripting, or if the
+    definition links no script.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  ScriptDef:
+    description: "The script definition to add. If the getter does not produce a `GameEntityScriptDefinition`, the block does nothing and raises no error."

@@ -1,0 +1,4 @@
+# IGameScreenAudioBlock Documentation
+
+class:
+  description: "No class in the client implements this interface, and no shipped object uses it. See [IGameScreenClientBlock](/classes/igamescreenclientblock)."

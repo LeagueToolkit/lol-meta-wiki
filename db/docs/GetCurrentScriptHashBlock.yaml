@@ -1,0 +1,9 @@
+# GetCurrentScriptHashBlock Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that writes the **hash of the entity script
+    that is running** to the `ScriptHash` int variable. If no entity script is running, the block
+    raises a script error.
+  notes:
+    - "No shipped object uses it."

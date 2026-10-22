@@ -1,0 +1,9 @@
+# CreateNeutralCamp Documentation
+
+class:
+  description: |
+    The client does not create a camp for this block. It reads only `0x5a4ef4e7`, a camp
+    identifier (`0x3f04641e`), and writes the hash of the identifier's `CampName` to the
+    `OutCampId` int variable. The client does not read the other fields.
+
+    If `0x5a4ef4e7` does not produce a camp identifier, the block raises a script error.

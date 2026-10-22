@@ -1,0 +1,7 @@
+# IUiBlock Documentation
+
+class:
+  description: |
+    Base of the script blocks that change a **UI element**. The element comes from an
+    `IUiElementIGet` operand, such as [UiElementIGet](/classes/uielementiget). If the element
+    getter fails, the block does nothing.

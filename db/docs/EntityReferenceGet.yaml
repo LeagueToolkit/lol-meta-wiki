@@ -1,0 +1,15 @@
+# EntityReferenceGet Documentation
+
+class:
+  description: |
+    A getter that returns the game entity created from an entity template. The getter
+    resolves `EntityRef` to a `GameEntityTemplate` and produces the entity id of that
+    template. Read as a driver source (see
+    [ILogicDriverSourceGet](/classes/ilogicdriversourceget)), it returns the live entity
+    with that id. As a plain value it returns an Entity value.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  EntityRef:
+    description: "The link to the `GameEntityTemplate`. If the link does not resolve, the getter fails with a script error."

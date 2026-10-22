@@ -1,0 +1,105 @@
+# IGameCalculationPartWithStats Documentation
+
+class:
+  description: |
+    Base for [calculation parts](/classes/igamecalculationpart) that **scale with a stat**
+    of a unit. The part returns the stat multiplied by a coefficient. Each subclass
+    supplies the coefficient: a constant, a named data value or another part.
+
+    The client reads the stat in this order:
+
+    1. The unit is the target of the context if `UseTargetStats` is set and the context
+       has a target. Otherwise it is the caster.
+    2. If `UseNewStats` is set, the client reads the stat `statType` with the output
+       `OutputType`.
+    3. Otherwise it reads `mStat` with `mStatFormula`. Before the read, the caster's spell
+       modifiers can convert the ratio to another stat: a ratio conversion replaces the
+       stat and formula and multiplies the coefficient by its ratio.
+
+    The tooltip icon and style tag of the part come from the entry of the stat in
+    `GlobalStatsUIData.mStatUIData`, or in `GlobalStatsUIData.NewStatUiData` with
+    `UseNewStats`. A ratio conversion also changes the icon.
+
+properties:
+  mStat:
+    description: |
+      The stat to read when `UseNewStats` is not set.
+
+      | Value | Stat |
+      |---|---|
+      | `0` | `AbilityPower` |
+      | `1` | `Armor` |
+      | `2` | `Attack` |
+      | `3` | `AttackDamagePercent` |
+      | `4` | `AttackSpeed` |
+      | `6` | `MagicResist` |
+      | `7` | `MovementSpeed` |
+      | `8` | `CriticalStrike` |
+      | `9` | `CriticalStrikeDamageMultiplier` |
+      | `10` | `CooldownReduction` |
+      | `11` | `AbilityHaste` |
+      | `12` | `Health` |
+      | `17` | `DodgeChance` |
+      | `18` | `LifeSteal` |
+      | `19` | `SpellVamp` |
+      | `20` | `Omnivamp` |
+      | `22` | `MagicPen` |
+      | `23` | `MagicPercentPen` |
+      | `24` | `MagicBonusPercentPen` |
+      | `25` | `MagicLethality` |
+      | `26` | `ArmorPen` |
+      | `27` | `ArmorPercentPen` |
+      | `28` | `ArmorBonusPercentPen` |
+      | `29` | `PhysicalLethality` |
+      | `30` | `Tenacity` |
+      | `31` | `AttackRange` |
+      | `32` | `HealthRegen` |
+      | `33` | `ParRegen` |
+      | `34` | `HealShieldPower` |
+      | `42` | `UseNewStat`: the tooltip looks up the icon in `NewStatUiData` |
+    notes:
+      - "Values `5`, `13`-`16` and `21` have no entry in `GlobalStatsUIData.mStatUIData`."
+
+  mStatFormula:
+    description: |
+      Which part of the stat to read.
+
+      | Value | Name |
+      |---|---|
+      | `0` | `Total` |
+      | `1` | `Base` |
+      | `2` | `Bonus` |
+
+  UseNewStats:
+    description: "When set, the part reads the stat `statType` with `OutputType` instead of `mStat` and `mStatFormula`. Spell-modifier ratio conversions do not apply to this read."
+    notes:
+      - "No shipped object sets it."
+
+  UseTargetStats:
+    description: "When set, the part reads the stats of the target instead of the caster. When the context has no target, the part reads the caster. See [IGameCalculationPart](/classes/igamecalculationpart) for the contexts that have a target."
+    notes:
+      - "Shipped data sets it for damage that scales with a stat of the target, such as a percentage of the target's maximum health."
+
+  statType:
+    description: |
+      The stat to read when `UseNewStats` is set: a key of `GlobalStatsUIData.NewStatUiData`.
+
+      | Value | Stat |
+      |---|---|
+      | `3` | `PercentDamageMod` |
+      | `5` | `AreaSize` |
+      | `6` | `PickupRadius` |
+      | `7` | `ProjectileCount` |
+      | `9` | `Duration` |
+      | `10` | `ExperienceMod` |
+      | `13` | none: no entry in `NewStatUiData` |
+
+  OutputType:
+    description: |
+      Which output of the stat `statType` to read when `UseNewStats` is set.
+
+      | Value | Name |
+      |---|---|
+      | `0` | `FinalTotal` |
+      | `1` | `BaseTotal` |
+      | `2` | `BonusTotal` |

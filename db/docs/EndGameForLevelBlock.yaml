@@ -1,0 +1,4 @@
+# EndGameForLevelBlock Documentation
+
+class:
+  description: "The client does not run this block. No shipped object uses it."

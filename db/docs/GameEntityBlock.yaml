@@ -1,0 +1,25 @@
+# GameEntityBlock Documentation
+
+class:
+  description: |
+    Base of the script blocks that act on **game entities**: the objects of the game entity
+    component system that a `GameEntityTemplate` creates. [IScriptBlock](/classes/iscriptblock)
+    describes how a block list runs. Output fields (`*TableSet`) name the script variable that
+    receives a result, as described on [IScriptValueGet](/classes/iscriptvalueget).
+
+    Most of these blocks read their entity from an `IEntityGet` operand (`Target` or `Entity`),
+    such as [EntityTableGet](/classes/entitytableget). The getter produces an entity id, and the
+    block looks the id up in the client's entity list. If no game entity has that id, the block
+    raises a script error and the sequence stops. If any operand raises a script error, the block
+    does nothing.
+
+    An entity has two states that these blocks change:
+
+    - **Active.** Activating an entity that is already active does nothing. Several blocks raise
+      a script error if their entity is inactive.
+    - **Visible.** An active entity is shown or hidden. A show or a hide runs over a duration, in
+      seconds. A hide can carry a flag that deactivates the entity when the hide ends.
+
+    An **entity tag** is a name that a group of entities carries. The tag blocks act on every
+    entity that carries the tag. Activating a tag activates each inactive entity with the tag.
+    Activating a tag that is already active does nothing.

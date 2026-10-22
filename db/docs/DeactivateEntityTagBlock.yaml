@@ -1,0 +1,17 @@
+# DeactivateEntityTagBlock Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that **deactivates an entity tag** and the
+    entities that carry it, either at once or at the end of a hide.
+  notes:
+    - "The block evaluates `HideDuration` even when `HideThenDeactivate` is false, and then ignores it."
+    - "No shipped object uses it."
+
+properties:
+  HideThenDeactivate:
+    description: "If true, the entities with the tag start a hide over `HideDuration` and are deactivated when the hide ends. If false, the tag is deactivated at once."
+  HideDuration:
+    description: "Duration of the hide, in seconds. Used only when `HideThenDeactivate` is true."
+  tag:
+    description: "The entity tag to deactivate."

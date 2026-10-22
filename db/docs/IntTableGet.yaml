@@ -1,0 +1,19 @@
+# IntTableGet Documentation
+
+class:
+  description: |
+    A getter that reads a script variable as a 32-bit integer. An Int variable is
+    returned as it is, and a Float variable is truncated toward zero. For any other kind,
+    or a missing variable, the getter returns `Default` if it is set and fails with a
+    script error if it is not. See [ScriptTableGet](/classes/scripttableget) for `Table` and `Var`.
+  notes:
+    - "Read as a float, the getter returns a Float variable unchanged, without truncation."
+    - "Shipped scripts use it as comparison operands and as loop bounds."
+
+properties:
+  Default:
+    description: |
+      The integer the getter returns if the variable is missing or is neither an Int nor
+      a Float. Unset, the getter fails instead.
+    notes:
+      - "The client stores an unset `Default` as `2147483647` (`0x7FFFFFFF`). A `Default` of exactly that value acts as unset."

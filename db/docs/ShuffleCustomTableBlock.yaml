@@ -1,0 +1,17 @@
+# ShuffleCustomTableBlock Documentation
+
+class:
+  description: |
+    A block that puts the entries of a [custom table](/classes/createcustomtableblock) used as a
+    list in a **random order**. The block swaps the values at list indexes `1` to `n` in place,
+    and every order has the same chance.
+
+    The table must have int keys `1` to `n` without gaps. If a swap fails because an index is
+    missing, the block reports an error and stops; the swaps that it made before the failure
+    stay.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  "0x9511ac73":
+    description: "The table to shuffle."

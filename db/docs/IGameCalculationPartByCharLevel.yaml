@@ -1,0 +1,21 @@
+# IGameCalculationPartByCharLevel Documentation
+
+class:
+  description: |
+    Base for [calculation parts](/classes/igamecalculationpart) that **scale with the
+    champion level of the caster**. The level `L` starts at `1`. Parts that interpolate
+    also use the **default maximum level** of the map, which is `18` unless the map
+    configuration sets another value.
+
+    In the tooltip, these parts use the character-level icon and style tag of
+    `GlobalStatsUIData`. They are not scaling parts for the
+    `ExpandedPartsWithCoefficientsAsPercent` display mode.
+
+    | Part | Value at level `L` |
+    |---|---|
+    | [ByCharLevelBreakpointsCalculationPart](/classes/bycharlevelbreakpointscalculationpart) | A level-1 value plus a bonus per level that changes at breakpoints. |
+    | [ByCharLevelNamedDataValueBreakpointsCalculationPart](/classes/bycharlevelnameddatavaluebreakpointscalculationpart) | The same, with named data values. |
+    | [ByCharLevelNamedDataValuesCalculationPart](/classes/bycharlevelnameddatavaluescalculationpart) | A level-1 value plus a constant bonus per level, from named data values. |
+    | [ByCharLevelInterpolationCalculationPart](/classes/bycharlevelinterpolationcalculationpart) | A linear interpolation from level 1 to the maximum level. |
+    | [ByCharLevelNamedDataValuesInterpolationCalculationPart](/classes/bycharlevelnameddatavaluesinterpolationcalculationpart) | The same, with named data values. |
+    | [ByCharLevelFormulaCalculationPart](/classes/bycharlevelformulacalculationpart) | An entry of a table indexed by level. |

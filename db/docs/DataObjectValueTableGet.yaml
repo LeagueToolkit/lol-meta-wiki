@@ -1,0 +1,10 @@
+# DataObjectValueTableGet Documentation
+
+class:
+  description: |
+    A getter that reads a script variable that holds a **data object**, a loaded bin
+    object (see [DataObjectGet](/classes/dataobjectget)), and returns the object. The
+    variable must hold a DataObject value. Otherwise, or if the variable does not exist,
+    the getter fails with a script error. See [ScriptTableGet](/classes/scripttableget) for `Table` and `Var`.
+  notes:
+    - "No shipped object uses it."

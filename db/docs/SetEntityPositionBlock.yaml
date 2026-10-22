@@ -1,0 +1,8 @@
+# SetEntityPositionBlock Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that moves `Target` to `Position`, in world
+    coordinates.
+  notes:
+    - "No shipped object uses it."

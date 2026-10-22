@@ -1,0 +1,8 @@
+# ShowEntityBlock Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that **shows** the `Target` entity over
+    `duration` seconds. If the entity is inactive, the block raises a script error.
+  notes:
+    - "No shipped object uses it."

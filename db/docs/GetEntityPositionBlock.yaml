@@ -1,0 +1,6 @@
+# GetEntityPositionBlock Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that writes the **position** of `Target`, in
+    world coordinates, to the `Dest` vector variable.

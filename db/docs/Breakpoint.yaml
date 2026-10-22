@@ -1,0 +1,14 @@
+# Breakpoint Documentation
+
+class:
+  description: "A level at which a [ByCharLevelBreakpointsCalculationPart](/classes/bycharlevelbreakpointscalculationpart) changes its bonus per level and adds a flat amount."
+
+properties:
+  mLevel:
+    description: "The champion level of the breakpoint. Both changes apply from this level."
+
+  mAdditionalBonusAtThisLevel:
+    description: "A flat amount that is added once from this level."
+
+  mBonusPerLevelAtAndAfter:
+    description: "The bonus per level from this level on, until the next breakpoint. It also counts for this level itself."

@@ -1,0 +1,20 @@
+# IRunFunctionBlock Documentation
+
+class:
+  description: |
+    Base of the script blocks that **call a script function**. Each subclass names the function
+    in its own way. When the block runs, it resolves the function. If the function exists, the
+    block builds a call frame from `FunctionDefinition` and `Sequence` and runs the function.
+    If the function does not exist, the block raises a script error.
+    [IScriptBlock](/classes/iscriptblock) describes how the function body runs.
+
+properties:
+  FunctionDefinition:
+    description: |
+      The arguments and results of the call, which the block passes to the call frame.
+      `FunctionInputs` pairs each input name of the function with the getter that supplies its
+      value. `FunctionOutputs` pairs each output name with the caller variable for it.
+  Sequence:
+    description: |
+      A block list of the caller that the called function can run. It runs in the caller's
+      context. See [0x6b73a615](/classes/0x6b73a615).

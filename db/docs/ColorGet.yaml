@@ -1,0 +1,10 @@
+# ColorGet Documentation
+
+class:
+  description: "A getter that returns a constant color."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  value:
+    description: "The color the getter returns, as RGBA bytes."

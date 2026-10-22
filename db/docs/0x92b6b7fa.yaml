@@ -1,0 +1,21 @@
+# 0x92b6b7fa Documentation
+
+class:
+  description: |
+    A block that creates a **shuffled list of ints**. The block collects every int from
+    `MinValue` to `MaxValue`, both included, leaves out the values in `ValuesToExclude`, and
+    puts the rest in a random order. It writes the result to `OutputTable` as a new
+    [custom table](/classes/createcustomtableblock) with the keys `1` to `n`. Each value occurs
+    once.
+
+    If `MaxValue` is less than `MinValue`, the block records a script error.
+
+properties:
+  MinValue:
+    description: "The smallest value of the range. It must be set."
+  MaxValue:
+    description: "The largest value of the range. It must be set."
+  ValuesToExclude:
+    description: "Values to leave out of the list."
+  OutputTable:
+    description: "The variable that receives the new table."

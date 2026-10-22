@@ -1,0 +1,10 @@
+# StringGet Documentation
+
+class:
+  description: "A getter that returns a constant string."
+  notes:
+    - "Shipped scripts use it mostly as the second operand of a [ComparisonScriptCondition](/classes/comparisonscriptcondition)."
+
+properties:
+  value:
+    description: "The string the getter returns. The getter returns a new copy each time it is evaluated."

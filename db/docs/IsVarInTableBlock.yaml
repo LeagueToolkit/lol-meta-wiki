@@ -1,0 +1,18 @@
+# IsVarInTableBlock Documentation
+
+class:
+  description: |
+    A [behaviour-tree block](/classes/ibehaviorscriptblock) that **tests whether a script
+    variable exists**. The block looks up the variable that `Var` names and evaluates
+    `"0x1f50a19e"`. The status is Failure if the variable is missing and `"0x1f50a19e"` is
+    false. Otherwise the status is Success.
+
+    The block writes nothing, so it has no effect outside a behaviour-tree context.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Var:
+    description: "The variable to look up, as a table and a key (see [IScriptValueGet](/classes/iscriptvalueget))."
+  "0x1f50a19e":
+    description: "If this evaluates to true, the status is Success also when the variable is missing."

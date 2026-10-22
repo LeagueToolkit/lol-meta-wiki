@@ -1,0 +1,14 @@
+# 0x7908fe0e Documentation
+
+class:
+  description: |
+    A getter that returns a constant **resource key**: a hash that refers to a resource.
+    As a plain value it returns a ResourceKey value, which
+    [ResourceKeyValueTableGet](/classes/resourcekeyvaluetableget) reads back from a
+    variable.
+  notes:
+    - "Shipped map scripts use it as the source of variable writes."
+
+properties:
+  ResourceKey:
+    description: "The key the getter returns. Its `Reference` field holds the hash."

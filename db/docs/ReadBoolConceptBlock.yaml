@@ -1,0 +1,12 @@
+# ReadBoolConceptBlock Documentation
+
+class:
+  description: "A [concept block](/classes/readconceptblockbase) that reads the value of a [BoolConcept](/classes/boolconcept) for the object that `ConceptObject` returns and writes it to `Output` as a Bool."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Concept:
+    description: "The hash of the object path of the [BoolConcept](/classes/boolconcept) to read. If no `BoolConcept` with this path is loaded, the block records a script error and does nothing."
+  Output:
+    description: "The script variable that receives the value."

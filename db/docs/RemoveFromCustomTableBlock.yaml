@@ -1,0 +1,21 @@
+# RemoveFromCustomTableBlock Documentation
+
+class:
+  description: |
+    A block that **removes one entry from a [custom table](/classes/createcustomtableblock)**,
+    by key or by list index.
+
+    - If `Key` is set, the block removes the entry with that key. An int key, or a float key
+      truncated to an int, removes an int key. A string removes a string key. Any other value
+      removes the entry that uses that value as a key.
+    - Else, if `Index` is set, the block removes the list entry at that index. An index below
+      `1` removes nothing and is not an error.
+    - If neither is set, the block records a script error.
+
+properties:
+  Table:
+    description: "The table to remove from."
+  Key:
+    description: "The key of the entry to remove. It takes precedence over `Index`."
+  Index:
+    description: "The list index of the entry to remove, starting at `1`."

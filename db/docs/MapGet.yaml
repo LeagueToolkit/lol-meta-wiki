@@ -1,0 +1,14 @@
+# MapGet Documentation
+
+class:
+  description: |
+    A getter that builds a new custom table from a map of getters, each time it is
+    evaluated. For each entry, the getter evaluates the entry's getter and stores the
+    result under the entry's string key.
+  notes:
+    - "A null getter, or a getter that returns no value, adds no entry."
+    - "No shipped object uses it."
+
+properties:
+  Elements:
+    description: "The table entries: string key to the getter that produces the value."

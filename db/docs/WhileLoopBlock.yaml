@@ -1,0 +1,16 @@
+# WhileLoopBlock Documentation
+
+class:
+  description: |
+    A [loop](/classes/iloopscriptblock) that runs its body **while a condition is true**. The
+    loop tests `Condition` before each run of the body. It ends when the condition returns
+    false or when the body sends a break.
+
+    The loop has an iteration limit. After 100,001 runs of the body, the loop reports an
+    iteration limit error and ends.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Condition:
+    description: "The test before each iteration. It must be set: the client does not check for a missing condition."

@@ -1,0 +1,8 @@
+# StatBySubPartCalculationPart Documentation
+
+class:
+  description: "A [stat part](/classes/igamecalculationpartwithstats) that returns the stat multiplied by the value of `mSubpart`. If `mSubpart` is not set, it returns `0`."
+
+properties:
+  mSubpart:
+    description: "The part that gives the ratio of the stat."

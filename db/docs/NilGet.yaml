@@ -1,0 +1,11 @@
+# NilGet Documentation
+
+class:
+  description: |
+    A getter that returns a Nil value (no value). See
+    [IScriptValueGet](/classes/iscriptvalueget) for value kinds.
+
+    Shipped scripts use it as the source of a
+    [SetVarInTableBlock](/classes/setvarintableblock) to set a variable to Nil, and as an
+    operand of a [ComparisonScriptCondition](/classes/comparisonscriptcondition) to test
+    a value against Nil.

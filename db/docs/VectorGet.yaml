@@ -1,0 +1,10 @@
+# VectorGet Documentation
+
+class:
+  description: "A getter that returns a constant three-component vector."
+  notes:
+    - "Shipped scripts use it as the source of variable writes and for a camp minimap icon offset."
+
+properties:
+  value:
+    description: "The vector the getter returns. Positions are in world units."

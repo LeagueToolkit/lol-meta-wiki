@@ -1,0 +1,9 @@
+# ResourceKeyValueTableGet Documentation
+
+class:
+  description: |
+    A getter that reads a script variable that holds a resource key. The variable must
+    hold a ResourceKey value (see [0x7908fe0e](/classes/0x7908fe0e)). Otherwise, or if
+    the variable does not exist, the getter fails with a script error. See [ScriptTableGet](/classes/scripttableget) for `Table` and `Var`.
+  notes:
+    - "No shipped object uses it."

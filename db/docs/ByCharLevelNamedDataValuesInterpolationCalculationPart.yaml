@@ -1,0 +1,21 @@
+# ByCharLevelNamedDataValuesInterpolationCalculationPart Documentation
+
+class:
+  description: |
+    A [character-level part](/classes/igamecalculationpartbycharlevel) that works like
+    [ByCharLevelInterpolationCalculationPart](/classes/bycharlevelinterpolationcalculationpart),
+    but takes the start and end values from named data values of the owner at the spell
+    level of the context.
+
+properties:
+  StartDataValue:
+    description: "Name of the data value that gives the value at level 1."
+
+  EndDataValue:
+    description: "Name of the data value that gives the value at the default maximum level of the map."
+
+  ScaleByStatProgressionMultiplier:
+    description: "When set, the interpolation uses the caster's stat progression value at the current level instead of `L - 1`."
+
+  ScalePastDefaultMaxLevel:
+    description: "When set, levels above the default maximum level continue the line past the end value. When clear, the value stops at the end value."

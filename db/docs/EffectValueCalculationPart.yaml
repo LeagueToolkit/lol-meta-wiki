@@ -1,0 +1,13 @@
+# EffectValueCalculationPart Documentation
+
+class:
+  description: |
+    A [calculation part](/classes/igamecalculationpart) that returns an **effect amount**
+    of the owner spell: the entry at the spell level of one row of
+    `SpellDataResource.mEffectAmount`.
+  notes:
+    - "Spell level `7` reads the first entry of the next row, because each row has 7 entries and the client accepts levels up to `7`."
+
+properties:
+  mEffectIndex:
+    description: "1-based index of the `mEffectAmount` row. Values `1` to `10` select rows `0` to `9`. Values above `10` give `0`."

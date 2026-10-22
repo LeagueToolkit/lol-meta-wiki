@@ -1,0 +1,14 @@
+# IntOffsetTableGet Documentation
+
+class:
+  description: |
+    A getter that returns a script variable plus a constant: `variable + offset`, as a
+    32-bit integer. A Float variable is truncated toward zero. If the variable does not
+    exist, the getter returns `offset` alone and raises no error. If the variable holds
+    another kind, the getter fails with a script error. See [ScriptTableGet](/classes/scripttableget) for `Table` and `Var`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  offset:
+    description: "The integer added to the variable, and the result when the variable is missing."

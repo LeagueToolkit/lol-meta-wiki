@@ -1,0 +1,18 @@
+# HasEntityScript Documentation
+
+class:
+  description: |
+    A [condition](/classes/entityscriptcondition) that returns true if the game entity that
+    `Target` gives **runs a script** with the hash `Script`. The condition searches the
+    scripts attached to the entity. Scripts that carry an internal flag are not counted.
+    [AddScriptToEntity](/classes/addscripttoentity) and
+    [RemoveScriptFromEntity](/classes/removescriptfromentity) attach and remove scripts. If no
+    game entity has the id, the condition records a script error and returns false.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Script:
+    description: "The hash of the script to look for. It is the same script hash that `RemoveScriptFromEntity.Script` takes."
+  Target:
+    description: "The entity to test."

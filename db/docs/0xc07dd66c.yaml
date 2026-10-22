@@ -1,0 +1,11 @@
+# 0xc07dd66c Documentation
+
+class:
+  description: |
+    A base for [behaviour-tree blocks](/classes/ibehaviorscriptblock) that hold a behaviour tree
+    in `Sequence`. No block class in the client builds on it, so the client never runs it. Its
+    purpose is not yet identified.
+
+properties:
+  Sequence:
+    description: "A behaviour tree. The client does not read it."

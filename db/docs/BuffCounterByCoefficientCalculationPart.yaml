@@ -1,0 +1,8 @@
+# BuffCounterByCoefficientCalculationPart Documentation
+
+class:
+  description: "A [buff counter part](/classes/igamecalculationpartwithbuffcounter) that returns the count of the buff `mBuffName` on the caster multiplied by `mCoefficient`."
+
+properties:
+  mCoefficient:
+    description: "The value per buff count."

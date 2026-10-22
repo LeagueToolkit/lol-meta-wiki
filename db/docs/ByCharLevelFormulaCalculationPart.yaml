@@ -1,0 +1,15 @@
+# ByCharLevelFormulaCalculationPart Documentation
+
+class:
+  description: |
+    A [character-level part](/classes/igamecalculationpartbycharlevel) that returns the
+    **entry of `values` at the caster's champion level**. Entry `1` is the value at level
+    1. Entry `0` is never read, because the level starts at `1`. Levels above `30` read
+    entry `30`.
+
+properties:
+  values:
+    description: "The value for each champion level, indexed by level."
+
+  mValues:
+    description: "The client does not read this list. Only `values` is used."

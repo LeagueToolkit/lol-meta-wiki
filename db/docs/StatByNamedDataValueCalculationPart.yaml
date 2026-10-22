@@ -1,0 +1,8 @@
+# StatByNamedDataValueCalculationPart Documentation
+
+class:
+  description: "A [stat part](/classes/igamecalculationpartwithstats) that returns the stat multiplied by the named data value `mDataValue` of the owner, at the spell level of the context."
+
+properties:
+  mDataValue:
+    description: "Name of the data value that gives the ratio of the stat."

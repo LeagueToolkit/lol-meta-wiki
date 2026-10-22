@@ -1,0 +1,29 @@
+# GameCalculationModified Documentation
+
+class:
+  description: |
+    A [game calculation](/classes/igamecalculation) that evaluates **another calculation
+    of the same owner** with an extra multiplier and an optional spell level.
+
+    The client looks up `mModifiedGameCalculation` in the calculations of the owner. If
+    no calculation has that name, the value is `0`. Otherwise the client evaluates it in a
+    new context that keeps the caster, the target and the spell slot, and uses
+    `mOverrideSpellLevel` as the spell level if it is set. It applies this calculation's
+    `mMultiplier`, then the `mMultiplier` of the modified calculation, then evaluates the
+    parts of the modified calculation.
+
+    The `ResultModifier` of the modified calculation applies. The `ResultModifier` of this
+    class is ignored.
+
+    The `MultiplierAsPercent` display mode is valid only for this class. It prints
+    `mMultiplier` times `100` with no decimals.
+  notes:
+    - "The tooltip expects the modified calculation to be a [GameCalculation](/classes/gamecalculation). If it is another `GameCalculationModified` or a [GameCalculationConditional](/classes/gamecalculationconditional), the tooltip prints an error text."
+    - "Shipped spell and item data use it to show a value of another calculation scaled by a factor. Shipped targeters also use it for `TargeterDefinitionAoe.DynamicGameCalcSizeScalar`."
+
+properties:
+  mModifiedGameCalculation:
+    description: "Name of the calculation of the same owner that this class evaluates."
+
+  mOverrideSpellLevel:
+    description: "Spell level at which the modified calculation reads its data values. When it is not set, the spell level of the context is used."

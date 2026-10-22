@@ -1,0 +1,19 @@
+# ClampSubPartsCalculationPart Documentation
+
+class:
+  description: |
+    A [calculation part](/classes/igamecalculationpart) that returns the **sum of
+    `mSubparts`, clamped** to `mFloor` and `mCeiling`. Null entries are skipped. The client
+    tests the ceiling first: if `mCeiling` is set and the sum is above it, the part returns
+    `mCeiling`. Otherwise, if `mFloor` is set and the sum is below it, the part returns
+    `mFloor`.
+
+properties:
+  mCeiling:
+    description: "Upper bound of the sum. When it is not set, the sum has no upper bound."
+
+  mSubparts:
+    description: "The parts to add before the clamp."
+
+  mFloor:
+    description: "Lower bound of the sum. When it is not set, the sum has no lower bound."

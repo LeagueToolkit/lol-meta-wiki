@@ -1,0 +1,18 @@
+# GetKeyValueInCustomTableBlock Documentation
+
+class:
+  description: |
+    A block that **reads one entry of a [custom table](/classes/createcustomtableblock)**. The
+    block evaluates `SrcKey` and looks it up in `SrcTable`. If the key is present, the block
+    writes its value to `Dest`. If the key is missing, the block records a script error. If
+    `SrcKey` evaluates to a kind of value that cannot be a key, the block writes nothing.
+  notes:
+    - "`SrcKey` must be set and must evaluate to a value: the client does not check the key for null."
+
+properties:
+  SrcTable:
+    description: "The table to read."
+  SrcKey:
+    description: "The key to look up."
+  Dest:
+    description: "The variable that receives the value."

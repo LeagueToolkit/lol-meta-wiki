@@ -1,0 +1,26 @@
+# 0x7c537128 Documentation
+
+class:
+  description: |
+    A block that **sends a script event**. `Event` links an event definition, which has an
+    event `name` and a map of parameters with a default value getter for each.
+
+    1. The block builds the parameters. For each parameter that the definition declares, it
+       uses the getter in `EventParameterOverrides` if that map has one for the key, and the
+       default getter of the definition otherwise. It evaluates the getter and leaves out a
+       parameter whose value is null.
+    2. The block finds every script that listens for the event `name`. For each of them, it
+       runs the sequence of that script whose key is the event name, in a new script context
+       that holds the parameters.
+
+    The listeners run at once, before the next block of the list.
+
+    If `Event` links nothing, the block records a script error.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Event:
+    description: "The event definition to send."
+  EventParameterOverrides:
+    description: "Getters that replace the defaults of the definition, keyed by parameter name. A key that the definition does not declare is ignored."

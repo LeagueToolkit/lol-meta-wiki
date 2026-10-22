@@ -1,0 +1,16 @@
+# IsEntityTagActive Documentation
+
+class:
+  description: |
+    A [condition](/classes/entityscriptcondition) that tests an **entity tag** without an
+    entity. It returns true if the client's entity manager keeps an entry for `tag`. Which
+    tags the entity manager keeps entries for is not confirmed.
+    [ActivateEntityTagBlock](/classes/activateentitytagblock) and
+    [DeactivateEntityTagBlock](/classes/deactivateentitytagblock) activate and deactivate the
+    entities that carry a tag.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  tag:
+    description: "The entity tag to test."

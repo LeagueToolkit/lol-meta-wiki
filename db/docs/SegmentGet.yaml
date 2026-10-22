@@ -1,0 +1,12 @@
+# SegmentGet Documentation
+
+class:
+  description: |
+    A getter that returns a constant Segment value: an unsigned 8-bit number. What a
+    segment identifies is not yet identified.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  value:
+    description: "The 8-bit value the getter returns."

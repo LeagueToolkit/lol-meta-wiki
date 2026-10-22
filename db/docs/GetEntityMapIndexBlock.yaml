@@ -1,0 +1,13 @@
+# GetEntityMapIndexBlock Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that writes the **map index** of `Entity` to
+    the `MapIndex` int variable.
+
+    If the entity's template stores a nonzero map index, the block writes that value. Otherwise
+    the block finds the map regions whose bounding box contains the entity position and writes
+    the index of the region whose center is nearest to the entity. If no region contains the
+    entity, the block writes `0`.
+  notes:
+    - "No shipped object uses it."

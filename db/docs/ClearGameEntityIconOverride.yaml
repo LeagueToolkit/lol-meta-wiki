@@ -1,0 +1,18 @@
+# ClearGameEntityIconOverride Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that **removes the icon** that `Target`
+    shows, then sets the `Enabled` state of the icon.
+
+    The block does not restore the icon of the entity's own definition. It removes whichever icon
+    is shown, including the one that the icon component builds from its definition.
+
+    The block raises a script error if the entity has no icon component, or if the component has
+    no icon.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Enabled:
+    description: "The icon enabled state that the block writes after it removes the icon."

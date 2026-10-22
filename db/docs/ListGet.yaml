@@ -1,0 +1,14 @@
+# ListGet Documentation
+
+class:
+  description: |
+    A getter that builds a new custom table from a list of getters, each time it is
+    evaluated. The getter evaluates the `Elements` in order and stores each result under
+    the next integer key, starting at `1`.
+  notes:
+    - "A null element, or an element whose getter returns no value, is skipped and does not use up a key. The elements after it move down by one key."
+    - "No shipped object uses it."
+
+properties:
+  Elements:
+    description: "The getters that produce the table entries, in key order."

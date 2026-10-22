@@ -1,0 +1,30 @@
+# ExecuteFunctionEntityBlock Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that **calls a function of a script** that
+    runs on the `Target` entity.
+
+    The block finds the script instance on the entity by its script hash, then the function in
+    that script by its name. It runs the function with `FunctionDefinition` and `Sequence`, which
+    have the same meaning as on [IRunFunctionBlock](/classes/irunfunctionblock).
+
+    The block raises a script error in these cases:
+
+    - The entity is inactive and `AllowInactive` is false.
+    - The entity does not support scripting.
+    - The entity has no instance of the script, or the script has no function with that name.
+  notes:
+    - "The block does not read `PassThroughParameters`."
+    - "Shipped map scripts use it to call functions of the scripts on map entities."
+
+properties:
+  callback:
+    description: |
+      The function to call: `Script` is the hash of the entity script and `FunctionName` the
+      hash of the function name. If `Script` is `0`, the block uses the entity script that is
+      running.
+  AllowInactive:
+    description: "If true, the block also calls the function on an inactive entity. If false, an inactive entity is a script error."
+  PassThroughParameters:
+    description: "Not read by the client."

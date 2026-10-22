@@ -1,0 +1,20 @@
+# DeactivateEntityBlock Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that **deactivates** the `Target` entity,
+    either at once or at the end of a hide.
+  notes:
+    - "The block evaluates `HideDuration` even when `HideThenDeactivate` is false, and then ignores it."
+    - "No shipped object uses it."
+
+properties:
+  HideThenDeactivate:
+    description: |
+      If true, the entity starts a hide over `HideDuration` and is deactivated when the hide
+      ends. If `HideDuration` is `0` or less, the entity is deactivated at once. If false, the
+      entity is deactivated at once.
+  HideDuration:
+    description: "Duration of the hide, in seconds. Used only when `HideThenDeactivate` is true."
+  Target:
+    description: "The entity to deactivate."

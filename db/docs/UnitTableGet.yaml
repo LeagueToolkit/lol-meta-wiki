@@ -1,0 +1,14 @@
+# UnitTableGet Documentation
+
+class:
+  description: |
+    A getter that reads a script variable that holds a unit id. A Unit value is returned
+    as it is. An Entity value is accepted if that entity has a unit, and the getter then
+    returns the id of that unit. Any other kind, or a missing variable, fails with a
+    script error. See [ScriptTableGet](/classes/scripttableget) for `Table` and `Var`.
+
+    Read as a driver source (see
+    [ILogicDriverSourceGet](/classes/ilogicdriversourceget)), the getter returns the unit
+    with that id, and fails if no unit has the id.
+  notes:
+    - "Shipped map scripts use it as custom-table keys and in [CustomTableHasKeyCondition](/classes/customtablehaskeycondition)."

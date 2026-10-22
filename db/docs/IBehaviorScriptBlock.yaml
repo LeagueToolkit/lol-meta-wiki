@@ -1,0 +1,18 @@
+# IBehaviorScriptBlock Documentation
+
+class:
+  description: |
+    A [script block](/classes/iscriptblock) that can also be a **node of a behaviour tree**
+    (the blocks of a `ScriptBtSequence`). Besides its effect, the block produces a status:
+
+    | Value | Status | Meaning |
+    |-------|--------|---------|
+    | `0` | Invalid | The node has no status yet. |
+    | `1` | Success | The node did its work. |
+    | `2` | Running | The node has not finished. |
+    | `3` | Failure | The node failed. |
+    | `4` | Error | The node could not run, for example because of a script error. |
+
+    The client keeps the status only when the block runs in a behaviour-tree context. In an
+    ordinary block list (`ScriptSequence`) the block has the same effect, and the status is
+    discarded.

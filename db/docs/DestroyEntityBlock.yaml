@@ -1,0 +1,8 @@
+# DestroyEntityBlock Documentation
+
+class:
+  description: |
+    A [game entity block](/classes/gameentityblock) that **destroys** `Entity`: it deactivates
+    the entity and removes it from the client's entity list.
+  notes:
+    - "No shipped object uses it."

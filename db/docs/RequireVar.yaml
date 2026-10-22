@@ -1,0 +1,15 @@
+# RequireVar Documentation
+
+class:
+  description: |
+    A [behaviour-tree block](/classes/ibehaviorscriptblock) that **tests that a script variable
+    exists**. The block looks up the variable that `Var` names. If the variable exists, the
+    status is Success. If it is missing and the block runs in a behaviour-tree context, the
+    status is Error and the client reports an error.
+
+    The block writes nothing. In an ordinary block list a missing variable has no effect, and
+    the list goes on.
+
+properties:
+  Var:
+    description: "The variable that must exist, as a table and a key (see [IScriptValueGet](/classes/iscriptvalueget))."
