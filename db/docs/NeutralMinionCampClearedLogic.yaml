@@ -1,0 +1,14 @@
+# NeutralMinionCampClearedLogic Documentation
+
+class:
+  description: |
+    A [stat stone event filter](/classes/istatstonelogicdriver) that passes for the event of
+    a **cleared neutral camp** when both tests pass:
+
+    - The team in the event is one of the two player teams, `100` or `200`.
+    - A list in the event holds exactly one entry. What the entries of this list are is not
+      yet identified.
+
+    Every other kind of event fails. The filter does not set the amount.
+  notes:
+    - "No shipped object uses it."

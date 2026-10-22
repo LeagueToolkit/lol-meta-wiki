@@ -1,0 +1,19 @@
+# VfxColorRgbAnimatedWithRandomDriver Documentation
+
+class:
+  description: "A [Vector3 driver](/classes/ivfxvector3driver) that samples the embedded RGB color curve `colors` at a time source and returns the color as `(r, g, b)`. It works like [VfxVector3AnimatedWithRandomDriver](/classes/vfxvector3animatedwithrandomdriver); [VfxFloatAnimatedWithRandomDriver](/classes/vfxfloatanimatedwithrandomdriver) describes the sampling and the random variation."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  colors:
+    description: "The curve, a `ValueColorRgb`. If it has no animation, the driver returns its constant value."
+
+  frequency:
+    description: "The time source that the curve is sampled at. [IVfxBaseDriver](/classes/ivfxbasedriver) lists the values."
+
+  looping:
+    description: "When `true`, a time past the end of the curve wraps back to its start."
+
+  ShareRandom:
+    description: "When `true`, all three lanes read one random value. When `false`, each lane reads its own random value."

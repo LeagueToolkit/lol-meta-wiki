@@ -1,0 +1,15 @@
+# OneTrueMaterialDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true when **at least one driver in
+    `mDrivers` is true**: a logical OR.
+
+    For the AND of a list, see [AllTrueMaterialDriver](/classes/alltruematerialdriver).
+  notes:
+    - "An entry that is not set is skipped."
+    - "With an empty list, or a list of only unset entries, the driver returns `false`."
+
+properties:
+  mDrivers:
+    description: "The conditions. The driver returns `true` when one or more of them return `true`."

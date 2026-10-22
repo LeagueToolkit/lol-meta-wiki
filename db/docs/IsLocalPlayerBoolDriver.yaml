@@ -1,0 +1,11 @@
+# IsLocalPlayerBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true when the source unit **belongs
+    to the local player**: the player of the client that draws the frame. It lets a skin show
+    an effect only to the player who plays it.
+
+    The source must be a unit. The driver returns `false` without one.
+  notes:
+    - "Shipped data uses it in [PersistentEffectConditionData](/classes/persistenteffectconditiondata) conditions and in the [LogicDriverViewController](/classes/logicdriverviewcontroller) UI, where the source is the local player's champion."

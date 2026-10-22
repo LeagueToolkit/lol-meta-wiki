@@ -1,0 +1,20 @@
+# SequenceMaterialBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that reads a **sequence material value stored
+    on the source** as a bool. It reads the same store as
+    [SequenceMaterialFloatDriver](/classes/sequencematerialfloatdriver), and is true when the
+    value under `Key` is not `0`.
+
+    When the source cannot hold such values, and when the lookup fails, the driver returns
+    `DefaultValue`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Key:
+    description: "The object that names the value. It must be set: when the source can hold sequence values, the client reads `Key` without checking it."
+
+  DefaultValue:
+    description: "The result when there is no value to read."

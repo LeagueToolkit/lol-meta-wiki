@@ -1,0 +1,137 @@
+# IVfxBaseDriver Documentation
+
+class:
+  description: |
+    A **VFX driver**: one node of the expression graph that computes the animated values of
+    the component VFX system ([VfxComponents](/classes/vfxcomponents)). A driver returns a
+    float ([IVfxFloatDriver](/classes/ivfxfloatdriver)), a two-component vector
+    ([IVfxVector2Driver](/classes/ivfxvector2driver)), a three-component vector or RGB colour
+    ([IVfxVector3Driver](/classes/ivfxvector3driver)), or a four-component vector or RGBA
+    colour ([IVfxVector4Driver](/classes/ivfxvector4driver)). Drivers nest: most take other
+    drivers as operands, so data builds an expression such as "a random value between `2` and
+    `5`, multiplied by a curve over the particle's age".
+
+    **Where drivers are used.** A component property that takes a driver value is a
+    **dynamic property**: [VfxFloatDynamicProperty](/classes/vfxfloatdynamicproperty),
+    [VfxVector2DynamicProperty](/classes/vfxvector2dynamicproperty),
+    [VfxVector3DynamicProperty](/classes/vfxvector3dynamicproperty) or
+    [VfxVector4DynamicProperty](/classes/vfxvector4dynamicproperty). It holds the top node of
+    the expression. The lifetime, spawn, physics, render, light and effector components use
+    dynamic properties for their numeric values. The graph is separate from the
+    [logic drivers](/classes/ilogicfloatdriver) of materials and from the legacy
+    [IVfxMaterialDriver](/classes/ivfxmaterialdriver). A `Vfx*LogicDriver` node, such as
+    [VfxFloatLogicDriver](/classes/vfxfloatlogicdriver), reads a logic driver into the graph.
+
+    ## Evaluation
+
+    The holder of a value evaluates it for one particle at a time, or once for the emitter.
+    Nothing caches a result: every evaluation walks the whole expression again.
+
+    | When | Evaluated for | Values |
+    |---|---|---|
+    | Particle spawn | each new particle, once | the start values of the physics modifiers |
+    | Every update | each live particle | the physics modifier values, the render and geometry values |
+    | Every update | the emitter's first particle | the light and effector values |
+    | Spawn and lifetime steps | the emitter | durations, delays, the emission rate |
+
+    An evaluation for the emitter has no particle. In it, the particle property drivers
+    (such as [VfxPropertyFloatDriver](/classes/vfxpropertyfloatdriver)) return their
+    default, and the particle time sources `2`, `3` and `4` read `0`.
+
+    **Unset operands.** Every driver checks its operands, and an operand that is not set
+    never crashes the client. Each driver page states the result for a missing operand:
+    either a fixed fallback, or no result. When a driver writes no result, the value is the
+    one that its holder starts from, which the holder's page states (for example `0` for an
+    effector strength, white for a light colour).
+
+    ## Setup
+
+    Once per emitter definition, when the system is prepared, the client walks every driver
+    value of the emitter:
+
+    1. Each random node takes one or more **random slots** (see Random values).
+    2. Each `Vfx*LogicDriver` node registers its logic driver for the logic pass (see
+       Logic drivers).
+    3. Each node reports which output components it defines. The material render component
+       reads this mask.
+
+    ## Random values
+
+    The ranged random drivers ([VfxUniformRangedRandomDriver](/classes/vfxuniformrangedrandomdriver),
+    [VfxSquareRootRangedRandomDriver](/classes/vfxsquarerootrangedrandomdriver)) and the
+    probability tables of the curve drivers
+    ([VfxFloatAnimatedWithRandomDriver](/classes/vfxfloatanimatedwithrandomdriver) and its
+    variants) read a random number between `0` and `1` from their slot. The property that
+    holds the value decides the scope of its slots:
+
+    - **Per particle**: the numbers are drawn when the particle spawns and stay fixed for
+      the particle's life.
+    - **Per emitter**: the numbers are drawn once, when the emitter instance is created, and
+      every particle reads the same numbers.
+
+    A random node that the setup pass does not reach has no slot. It draws a new number on
+    every evaluation, so its value changes on every update and differs between particles.
+    The `Factor` operand of the lerp drivers is such a place, see
+    [VfxFloatLerpDriver](/classes/vfxfloatlerpdriver).
+
+    ## Logic drivers
+
+    Once per frame, for each emitter, the client evaluates every registered logic driver and
+    stores the result. A `Vfx*LogicDriver` node returns the stored value, so every particle of
+    the emitter reads the same value in one frame. If the logic driver or the object that it
+    is evaluated for is missing, the stored value is `0` in every component.
+
+    The logic pass probably runs after the emitter updates of the same frame, so an emitter
+    update can read the value of the previous frame. The order of the two passes is not fully
+    established.
+
+    ## Interval evaluation
+
+    A physics modifier evaluates some of its values over the particle's last step, from the
+    particle's age at the start of the step to its age at the end. A curve driver that is the
+    top node of the value
+    ([VfxFloatAnimatedWithRandomDriver](/classes/vfxfloatanimatedwithrandomdriver) and its
+    vector and colour variants) samples its curve at both ends of the step. Any other top
+    node evaluates the whole expression once, at the middle of the step, so a curve inside
+    another node is sampled at the middle. How a curve driver combines its two samples is not
+    established.
+
+    ## Time sources
+
+    `frequency` on the curve and easing drivers and `Time` on
+    [VfxFloatTimeDriver](/classes/vfxfloattimedriver) pick one of these clocks:
+
+    | Value | Name | Returns |
+    |---|---|---|
+    | `0` | Emitter age fraction | The emitter's age divided by its duration, at most `1`. |
+    | `1` | Emitter age | Seconds since the emitter started. |
+    | `2` | Particle age fraction | The particle's age divided by its lifetime, at most `1`. A particle with a lifetime of `0` reads `0`, and a particle with a negative (unlimited) lifetime reads about `0`. |
+    | `3` | Particle age | Seconds since the particle spawned. |
+    | `4` | Particle birth fraction | The particle's spawn time, in seconds after the emitter start, divided by the emitter duration. The duration is not checked: `0` gives an infinite value and a negative duration a negative value. |
+    | `5` | Ramp progress | Progress, `0`-`1`, of an emitter ramp timer. What starts the ramp is not established. |
+    | `6` | Outro progress | Progress, `0`-`1`, through the emitter's ending phase. `0` before that phase, `1` once the emitter has finished. |
+    | `7` | Game time | The game clock, in seconds. |
+    | other | - | `0` |
+
+    ## Comparators
+
+    `Comparator` on the `VfxCondition*Driver` classes, such as
+    [VfxConditionFloatDriver](/classes/vfxconditionfloatdriver), picks the comparison. The
+    result is `1` when the comparison holds and `0` when it does not.
+
+    | Value | Name | Holds when |
+    |---|---|---|
+    | `0` | Equal | `abs(Left - Right) <= 1e-6` |
+    | `1` | NotEqual | Equal does not hold |
+    | `2` | Less | `Left < Right` |
+    | `3` | LessOrEqual | `Left <= Right` |
+    | `4` | Greater | `Left > Right` |
+    | `5` | GreaterOrEqual | `Left >= Right` |
+    | other | - | never |
+
+    The vector conditions compare each component on its own and return `1` or `0` per
+    component.
+  notes:
+    - "The comparator values differ from those of the logic driver [FloatComparisonMaterialDriver](/classes/floatcomparisonmaterialdriver)."
+    - "`VfxEmissionBox.Distribution` and `0x654153c3` on `VfxEmissionSphere` and `VfxEmissionCylinder` hold a curve driver directly instead of a dynamic property. How the emission shapes evaluate it is not established."
+    - "Shipped data uses the driver graph only inside [VfxShimmerEmitterDefinitionData](/classes/vfxshimmeremitterdefinitiondata) emitters. Most of those ship with `disabled` set, and the others belong to a test system that no shipped bin references."

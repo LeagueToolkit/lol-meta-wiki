@@ -1,0 +1,12 @@
+# EmoteIdIntDriver Documentation
+
+class:
+  description: |
+    An [int driver](/classes/ilogicintdriver) that returns an **emote id that the client
+    stores on the source champion**, from `0` to `255`.
+
+    The source must be a champion. For any other source, and without one, the driver
+    returns `0`.
+  notes:
+    - "Which emote the stored id refers to, and when the client writes it, were not identified."
+    - "No shipped object uses it."

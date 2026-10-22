@@ -1,0 +1,10 @@
+# IsInWaterBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true while the source unit **stands
+    on water**: the navigation grid cell at the unit's position has the water flag.
+
+    The source must be a unit. The driver returns `false` without one.
+  notes:
+    - "Shipped data uses it on Aatrox and Lee Sin skins, inside an [AllTrueMaterialDriver](/classes/alltruematerialdriver)."

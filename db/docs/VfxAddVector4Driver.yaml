@@ -1,0 +1,13 @@
+# VfxAddVector4Driver Documentation
+
+class:
+  description: |
+    The Vector4 form of [VfxAddFloatDriver](/classes/vfxaddfloatdriver). The driver returns
+    the lane-by-lane sum of every driver in `params`. The sum starts at `(0, 0, 0, 0)`, so an
+    empty list returns `(0, 0, 0, 0)`.
+  notes:
+    - "Unset entries are skipped. Each entry is evaluated into a vector that starts at `(0, 0, 0, 0)`, so an entry that writes no output adds nothing."
+
+properties:
+  params:
+    description: "The vectors that are added."

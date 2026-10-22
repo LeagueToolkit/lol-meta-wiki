@@ -1,0 +1,25 @@
+# VfxDriverContainer Documentation
+
+class:
+  description: |
+    The **material drivers** of a material render component of the component VFX system
+    (`VfxMaterialRenderComponent.Drivers`): material parameter values that the
+    [driver graph](/classes/ivfxbasedriver) computes. When the system is prepared, the render
+    component runs the driver setup over these values: it records which components each
+    driver defines, assigns the random slots and registers the logic drivers. How the results
+    reach the material is not established.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  materialDrivers:
+    description: |
+      Four-component [drivers](/classes/ivfxvector4driver), each under a string key. What the
+      client matches the key against is not established.
+
+  "0x8ed7a68f":
+    description: |
+      Entries under a `U8` key. Each entry has `EnableNode` and two four-component driver
+      values, `InitialParameters` and `KeyedParameters`. What the key selects, what
+      `EnableNode` does and how the two values are used is not established. The property's
+      name is not yet known.

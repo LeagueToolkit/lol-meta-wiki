@@ -1,0 +1,12 @@
+# VfxMultiplyFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ivfxfloatdriver) that returns the product of the values in `params`.
+    An entry that is not set is skipped. An empty list returns `1`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  params:
+    description: "The operands."

@@ -1,0 +1,12 @@
+# VfxSplatFloatOntoVector4Driver Documentation
+
+class:
+  description: |
+    A [Vector4 driver](/classes/ivfxvector4driver) that returns the value of the float driver
+    `Float` in all four lanes.
+  notes:
+    - "If `Float` is not set, the driver writes no output, so the value that the caller passed in stays."
+
+properties:
+  Float:
+    description: "The float driver whose value fills the four lanes."

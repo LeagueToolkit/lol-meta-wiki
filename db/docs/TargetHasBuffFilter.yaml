@@ -1,0 +1,14 @@
+# TargetHasBuffFilter Documentation
+
+class:
+  description: |
+    A [stat stone event filter](/classes/istatstonelogicdriver) that passes when the
+    **target unit** of the event has a buff of one of the types in `ValidBuffs`. The target
+    must be an [AiBaseClient](/classes/aibaseclient). A kind of event that has no target
+    fails. The filter does not set the amount.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  ValidBuffs:
+    description: "The buff type ids that pass. One active buff of any listed type is enough. An empty list never passes."

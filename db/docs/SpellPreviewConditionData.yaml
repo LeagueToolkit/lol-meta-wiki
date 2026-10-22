@@ -1,0 +1,20 @@
+# SpellPreviewConditionData Documentation
+
+class:
+  description: |
+    A **condition of a spell preview**: a [bool driver](/classes/ilogicbooldriver) that the
+    client evaluates for `SpellPreviewData.InputCondition` and
+    `SpellPreviewData.DisplayCondition`.
+
+    The source of a spell preview condition is the spell preview itself, which holds the
+    caster and an order type. A spell preview condition used in any other
+    place has no such source and returns `false`.
+
+    [SpellPreviewInputLockConditionData](/classes/spellpreviewinputlockconditiondata) tests
+    the input locks of the caster, and
+    [SpellPreviewOrderConditionData](/classes/spellprevieworderconditiondata) tests the order
+    type.
+
+properties:
+  IsExclusive:
+    description: "Inverts the test. When `true`, the condition is true when the test fails."

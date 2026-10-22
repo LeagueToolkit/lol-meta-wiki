@@ -1,0 +1,14 @@
+# VfxUniformRangedRandomDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ivfxfloatdriver) that returns a **random value** spread evenly over
+    `Range`: `Range.x + (Range.y - Range.x) * r`, where `r` is the driver's random number
+    between `0` and `1`. When `r` is drawn and whether it is shared between particles is
+    described under Random values on [IVfxBaseDriver](/classes/ivfxbasedriver).
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Range:
+    description: "`x` is the result at `r = 0` and `y` the result at `r = 1`. The two ends need not be in order."

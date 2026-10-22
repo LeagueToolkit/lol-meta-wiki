@@ -1,0 +1,52 @@
+# HasLossOfControlTypeBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that tests the **loss of control** on the
+    source: a stun, a root, a knockup and similar crowd control. The client sorts every
+    crowd-control buff of the champion into a loss-of-control type and reports the type of
+    the effect with the longest remaining duration. The driver is true when that type is
+    `LossOfControlType`.
+
+    The source must be a champion. The driver returns `false` for every other source.
+
+    [LongestLossOfControlTypeIntDriver](/classes/longestlossofcontroltypeintdriver) returns
+    the same type as a number.
+  notes:
+    - "The driver also returns `false` when the champion lacks a component or a flag in its character data that the test requires. Neither is identified."
+    - "No shipped object uses it."
+
+properties:
+  LossOfControlType:
+    description: |
+      The type to test for. `1` tests for any loss of control: the driver is true while any
+      crowd-control effect has time left.
+
+      The names are descriptive. They are derived from the buff types that the client tests
+      for each value, and are not read from the client. The table lists the values in the
+      order in which the client tests them.
+
+      | Value | Name | Buff types |
+      |---|---|---|
+      | `2` | Suppression | `Suppression` |
+      | `3` | Knockup | `Knockup` |
+      | `4` | Knockback | `Knockback` |
+      | `20` | Asleep | `Asleep` |
+      | `10` | Fear | `Fear`, `Flee` |
+      | `11` | Berserk | `Berserk` |
+      | `12` | Taunt | `Taunt` |
+      | `13` | Charm | `Charm` |
+      | `5` | Stun | `Stun` |
+      | `9` | Root | `Taunt`, `Berserk`, `Snare`, `Charm` |
+      | `6` | Polymorph | `Polymorph` |
+      | `7` | Silence | `Silence`, `Taunt`, `Berserk`, `Polymorph`, `Flee` |
+      | `17` | Blind | `Blind` |
+      | `8` | Disarm | `Polymorph`, `Flee`, `Disarm` |
+      | `18` | Grounded | `Grounded` |
+      | `19` | NearSight | `NearSight` |
+      | `21` | Drowsy | `Drowsy` |
+      | `14` | Slow | `Slow`, `Snare`, `Charm` |
+
+      `0` means no loss of control. The client never reports `15` or `16`, so those values
+      never match. The buff types are the ones in the table of
+      [HasBuffOfTypeBoolDriver](/classes/hasbuffoftypebooldriver).

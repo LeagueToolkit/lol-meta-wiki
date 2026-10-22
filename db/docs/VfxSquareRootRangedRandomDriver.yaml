@@ -1,0 +1,18 @@
+# VfxSquareRootRangedRandomDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ivfxfloatdriver) that returns a **random value** over `Range`
+    weighted toward `Range.y`: `Range.x + (Range.y - Range.x) * sqrt(r)`, where `r` is the
+    driver's random number between `0` and `1`. When `r` is drawn and whether it is shared
+    between particles is described under Random values on [IVfxBaseDriver](/classes/ivfxbasedriver).
+
+    The probability density grows linearly from `Range.x` to `Range.y`. With `Range.x` at `0`
+    and the result used as the radius of a disc, the points are spread evenly over the disc's
+    area.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Range:
+    description: "`x` is the result at `r = 0` and `y` the result at `r = 1`. The two ends need not be in order."

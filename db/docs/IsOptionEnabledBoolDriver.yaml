@@ -1,0 +1,50 @@
+# IsOptionEnabledBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that returns the current value of one of the
+    player's **game settings** that is a checkbox. It does not use the source, so inside a
+    per-unit material it acts as one switch for every unit.
+
+    For a setting that is a slider, see
+    [GetFloatOptionFloatDriver](/classes/getfloatoptionfloatdriver).
+  notes:
+    - "Shipped UI data uses it inside a [NotMaterialDriver](/classes/notmaterialdriver), always with the index `49`, which is not in the table below."
+
+properties:
+  option:
+    description: |
+      The index of the setting. `65535`, the default, means no setting, and the driver
+      returns `false`.
+
+      | Index | Setting | Index | Setting |
+      |---|---|---|---|
+      | `1` | `AlwaysShowExtendedTooltip` | `4` | `AutoDisplayTarget` |
+      | `6` | `ClampCastTargetLocationWithinMaxRange` | `22` | `EnableChampionSpellPreview` |
+      | `24` | `EnableChat` | `30` | `EnableGlobalSpellCastNotifications` |
+      | `32` | `EnableItemComponentPurchasing` | `39` | `EnableScoutAheadPopOut` |
+      | `40` | `EnableScreenShake` | `43` | `FlashScreenWhenDamaged` |
+      | `44` | `FlashScreenWhenStunned` | `46` | `HidePlayerNames` |
+      | `47` | `HideEnemySummonerEmotes` | `50` | `HideReciprocityFist` |
+      | `54` | `ScrollSmoothingEnabled` | `55` | `MiddleClickDragScrollEnabled` |
+      | `56` | `MinimapMoveSelf` | `57` | `MinimapEnableAllTimers` |
+      | `58` | `MinimizeCameraMotion` | `72` | `BootsPanelPinned` |
+      | `73` | `ConsumablesPanelPinned` | `74` | `InventoryPanelPinned` |
+      | `75` | `InvertDisplayOrder` | `76` | `ShowAllChannelChat` |
+      | `77` | `ShowAllChannelChatSpectator` | `78` | `ShowAlliedChat` |
+      | `81` | `ShowChampionIndicator` | `82` | `Damage_Enabled` |
+      | `83` | `Dodge_Enabled` | `84` | `EnemyDamage_Enabled` |
+      | `85` | `Experience_Enabled` | `87` | `Gold_Enabled` |
+      | `88` | `Heal_Enabled` | `89` | `ShowHealthBarShake` |
+      | `90` | `DrawHealthBars` | `91` | `ShowLastHitAssist` |
+      | `92` | `Invulnerable_Enabled` | `93` | `Level_Enabled` |
+      | `94` | `LossOfControlEnabled` | `95` | `ManaDamage_Enabled` |
+      | `96` | `ShowNeutralCamps` | `98` | `QuestReceived_Enabled` |
+      | `100` | `Score_Enabled` | `102` | `Special_Enabled` |
+      | `104` | `ShowSpellRecommendations` | `107` | `ShowTimestamps` |
+      | `122` | `CursorAimEnabled` | `126` | `ModesObjectivesPanelExpanded` |
+      | `132` | `ShowStatsPanel_StatStones` | | |
+
+      The names are the keys under which the client registers the settings. The client
+      registers 14 more checkbox settings whose indexes were not resolved, so an index that
+      is missing from the table can still name a setting.

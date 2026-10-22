@@ -1,0 +1,13 @@
+# IMaterialLogicDriverSource Documentation
+
+class:
+  description: |
+    An object that **supplies the source** for a set of
+    [logic drivers](/classes/ilogicfloatdriver). When asked, it returns one
+    [ILogicDriverSource](/classes/ilogicdriversource), and the drivers are evaluated for that
+    object.
+
+    The entries of `LogicDriverViewEntry.LogicDriverElementMaterialSource` hold one, see
+    [LogicDriverViewEntry](/classes/logicdriverviewentry).
+  notes:
+    - "No shipped object uses it."

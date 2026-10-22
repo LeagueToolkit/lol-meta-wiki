@@ -1,0 +1,25 @@
+# VfxFloatFromVector4Driver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ivfxfloatdriver) that returns one lane of the Vector4 driver
+    `Vector4Input`. `Select` picks the lane.
+  notes:
+    - "If `Vector4Input` is not set, the driver returns `0`."
+
+properties:
+  Vector4Input:
+    description: "The vector that the lane is read from."
+
+  Select:
+    description: |
+      The lane that is returned.
+
+      | Value | Lane |
+      |-------|------|
+      | `0` | x |
+      | `1` | y |
+      | `2` | z |
+      | `3` | w |
+
+      Any other value writes no output, so the value that the caller passed in stays.

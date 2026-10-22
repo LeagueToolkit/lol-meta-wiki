@@ -1,0 +1,10 @@
+# VfxLengthVector3Driver Documentation
+
+class:
+  description: "A [float driver](/classes/ivfxfloatdriver) that returns the length of the vector `Vector3Input`, `sqrt(x² + y² + z²)`. If `Vector3Input` is not set, the driver writes nothing."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Vector3Input:
+    description: "The vector that is measured."

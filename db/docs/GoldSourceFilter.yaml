@@ -1,0 +1,11 @@
+# GoldSourceFilter Documentation
+
+class:
+  description: |
+    A [stat stone event filter](/classes/istatstonelogicdriver) that passes for a **gold
+    event** when the gold source of the event equals `ValidGoldSource`. Every other kind of
+    event fails. The filter does not set the amount.
+
+properties:
+  ValidGoldSource:
+    description: "The gold source id that passes. The table of gold source ids is not yet identified."

@@ -1,0 +1,17 @@
+# EasedVector4ConceptLogicDriver Documentation
+
+class:
+  description: |
+    A [vector driver](/classes/ilogicdriver) that returns the **eased value of a
+    [Vector4Concept](/classes/vector4concept)** for the source. It reads the concept through
+    the concept's easing, as [EasedFloatConceptLogicDriver](/classes/easedfloatconceptlogicdriver)
+    does for a float concept.
+    [RawVector4ConceptLogicDriver](/classes/rawvector4conceptlogicdriver) reads the value
+    without easing.
+  notes:
+    - "While nothing has written the concept for the source, this driver does not return the concept's `DefaultValue`. The raw driver does."
+    - "No shipped object uses it."
+
+properties:
+  Concept:
+    description: "The [Vector4Concept](/classes/vector4concept) to read."

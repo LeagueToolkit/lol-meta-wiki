@@ -1,0 +1,18 @@
+# VfxVector3DynamicProperty Documentation
+
+class:
+  description: |
+    A **vector3 driver value**: the form in which a property of the component VFX system takes
+    a three-component vector or an RGB colour from the driver graph. The holder evaluates the driver in `Vector3` each time it
+    needs the value. [IVfxBaseDriver](/classes/ivfxbasedriver) describes when that is and
+    whether the random values of the expression are per particle or per emitter.
+  notes:
+    - "Shipped data uses it only inside [VfxShimmerEmitterDefinitionData](/classes/vfxshimmeremitterdefinitiondata) emitters, for physics values such as the start velocity and the scale."
+
+properties:
+  Vector3:
+    description: |
+      The top node of the expression. If it is not set, the property keeps the value that its
+      holder starts from, which the holder's page states.
+    examples:
+      - "A constant is a [VfxVector3ConstantDriver](/classes/vfxvector3constantdriver) in `Vector3`."

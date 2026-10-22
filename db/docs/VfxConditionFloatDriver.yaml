@@ -1,0 +1,19 @@
+# VfxConditionFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ivfxfloatdriver) that compares two values. It returns `1` when the
+    comparison `Comparator` of `Left` and `Right` holds, and `0` when it does not. If `Left`
+    or `Right` is not set, it returns `0`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Left:
+    description: "The left operand of the comparison."
+
+  Right:
+    description: "The right operand of the comparison."
+
+  Comparator:
+    description: "The comparison. The Comparators table on [IVfxBaseDriver](/classes/ivfxbasedriver) lists the values. A value outside `0`-`5` always returns `0`."

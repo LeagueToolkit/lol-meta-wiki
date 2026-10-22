@@ -1,0 +1,24 @@
+# BlendingSwitchMaterialDriver Documentation
+
+class:
+  description: |
+    A [SwitchMaterialDriver](/classes/switchmaterialdriver) that **fades to the new value**
+    when the choice changes, instead of jumping to it. The choice is made as in the plain
+    switch: the first element of `mElements` whose condition is true, or `mDefaultValue`
+    when no condition is true.
+
+    The driver keeps one blend **per source**. When the choice changes, the blend weight
+    restarts at `0`, and the result fades from the value before the change to the value of
+    the new choice. On each evaluation the weight grows by the time of the last frame divided
+    by the blend time, so a full fade takes the blend time in seconds. The blend of a source
+    is removed when the source is destroyed.
+  notes:
+    - "The weight advances once per evaluation, not once per frame, as in [LerpMaterialDriver](/classes/lerpmaterialdriver). A source that evaluates the driver twice in a frame fades twice as fast."
+    - "Every element value is evaluated on every call, as in the plain switch."
+
+properties:
+  mBlendTime:
+    description: "The fade time, in seconds, for a change to an element that has no entry in `mOverrideBlendTimes`."
+
+  mOverrideBlendTimes:
+    description: "Fade times, in seconds, by element index. Entry `i` is the fade time for a change to element `i` of `mElements`. An element past the end of this list uses `mBlendTime`."

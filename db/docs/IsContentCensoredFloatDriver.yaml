@@ -1,0 +1,6 @@
+# IsContentCensoredFloatDriver Documentation
+
+class:
+  description: "A [float driver](/classes/ilogicfloatdriver) that always returns `0` in the client. It reads nothing from the source."
+  notes:
+    - "No shipped object uses it."

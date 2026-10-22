@@ -1,0 +1,11 @@
+# LogicDriverLocalizedString Documentation
+
+class:
+  description: |
+    A [constant text source](/classes/ilogicdrivervaluetostringsimple) whose text is a
+    **localized string**. When the bin is loaded, the client looks up the key in `value` in
+    the string table and uses the result as the text.
+
+properties:
+  value:
+    description: "The key of the localized string. If the string table has no entry for the key, the text is empty."

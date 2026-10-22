@@ -1,0 +1,25 @@
+# VfxClampVector3Driver Documentation
+
+class:
+  description: |
+    A [Vector3 driver](/classes/ivfxvector3driver) that clamps each lane of `Param` between the
+    matching lanes of `Low` and `High`. The Vector3 form of
+    [VfxClampFloatDriver](/classes/vfxclampfloatdriver).
+
+    Per lane, a value above `High` returns `High`, and any other value returns the larger of the
+    value and `Low`. The driver does not swap the bounds: if `Low` is above `High`, a value
+    above `High` returns `High` and every other value returns `Low`.
+
+    If `Param` is not set, the driver returns `(0, 0, 0)`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Low:
+    description: "The lower bound of each lane."
+
+  High:
+    description: "The upper bound of each lane."
+
+  Param:
+    description: "The vector that is clamped."

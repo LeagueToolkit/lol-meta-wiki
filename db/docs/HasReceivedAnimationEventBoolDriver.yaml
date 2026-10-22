@@ -1,0 +1,17 @@
+# HasReceivedAnimationEventBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true when the **animation of the
+    source has received the event `EventName`**.
+
+    The source must be a game object with an animation. When the source has no animation
+    component of its own, the driver reads the animation of an object linked to it. It
+    returns `false` when neither exists.
+  notes:
+    - "Which linked object the fallback reads, and when a received event is cleared, is not identified."
+    - "No shipped object uses it."
+
+properties:
+  EventName:
+    description: "The hash of the event name to look for."

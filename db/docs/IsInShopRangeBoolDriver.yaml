@@ -1,0 +1,16 @@
+# IsInShopRangeBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true when the source unit **can use a
+    shop**. The test is the one the HUD uses for the shop:
+
+    1. A dead unit is always in range.
+    2. A unit with an internal flag set is in range. The meaning of the flag is not
+       determined.
+    3. Otherwise the unit is in range when it is inside the radius of an enabled shop of its
+       own team.
+
+    The source must be a unit. The driver returns `false` without one.
+  notes:
+    - "Shipped data uses it in a skin's [LogicDriverViewController](/classes/logicdriverviewcontroller) UI."

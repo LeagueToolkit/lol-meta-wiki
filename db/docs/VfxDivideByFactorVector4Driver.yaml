@@ -1,0 +1,17 @@
+# VfxDivideByFactorVector4Driver Documentation
+
+class:
+  description: |
+    The Vector4 form of [VfxDivideByFactorFloatDriver](/classes/vfxdividebyfactorfloatdriver).
+    The driver divides all four lanes of `Vector4` by the float `Divisor`.
+
+    - If `Vector4` is not set, the driver returns `(1, 1, 1, 1)`.
+    - If `Divisor` is not set, or its value is between `-0.000001` and `0.000001`, the driver
+      returns `Vector4` unchanged.
+
+properties:
+  Vector4:
+    description: "The dividend."
+
+  Divisor:
+    description: "The divisor of all four lanes."

@@ -1,0 +1,21 @@
+# SwitchMaterialDriver Documentation
+
+class:
+  description: |
+    A [vector driver](/classes/ilogicdriver) that returns the value of the **first element
+    whose condition is true**. Each element of `mElements` is a `SwitchMaterialDriverElement`
+    that pairs a [bool driver](/classes/ilogicbooldriver) `mCondition` with a driver
+    `mValue`. The driver returns the `mValue` of the first element in list order whose
+    `mCondition` is true. When no condition is true, it returns `mDefaultValue`.
+
+    A value can be a driver of any kind. A float value fills all four components, so a switch
+    over float values works as a float switch.
+  notes:
+    - "The driver evaluates `mDefaultValue`, every `mCondition` and every `mValue` on every call, also the values that are not chosen. A stateful driver in an element that is not chosen still advances, and every element of a long list is evaluated on every call."
+
+properties:
+  mElements:
+    description: "The elements, in priority order. The first element in list order whose `mCondition` is true is chosen."
+
+  mDefaultValue:
+    description: "The result when no element's `mCondition` is true. It is evaluated on every call, also when an element is chosen."

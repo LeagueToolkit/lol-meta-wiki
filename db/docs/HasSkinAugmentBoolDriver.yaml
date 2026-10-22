@@ -1,0 +1,15 @@
+# HasSkinAugmentBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true when the source **has the skin
+    augment `SkinAugment`**.
+
+    The source must be a unit. The driver returns `false` without one, when the unit has no
+    skin augments, and when `SkinAugment` does not link a loaded skin augment.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  SkinAugment:
+    description: "The skin augment object to test for."

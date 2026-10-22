@@ -1,0 +1,12 @@
+# VfxAbsVector4Driver Documentation
+
+class:
+  description: |
+    The Vector4 form of [VfxAbsFloatDriver](/classes/vfxabsfloatdriver). The driver returns
+    the absolute value of each of the four lanes of `Param`.
+  notes:
+    - "If `Param` is not set, the driver returns `(0, 0, 0, 0)`."
+
+properties:
+  Param:
+    description: "The vector whose lanes are made positive."

@@ -1,0 +1,14 @@
+# MoveVelocityVector3Driver Documentation
+
+class:
+  description: |
+    A [vector3 driver](/classes/ilogicvector3driver) that returns the **movement velocity of
+    the source unit**: the direction in which the unit moves, scaled to the unit's move
+    speed, in world units per second.
+
+    The source must be a unit. When the unit has no move direction, or the direction has no
+    length, the driver returns `(0, 0, 0)`.
+  notes:
+    - "The length is the move speed stat of the unit, not its measured speed. [VelocityDynamicMaterialFloatDriver](/classes/velocitydynamicmaterialfloatdriver) measures the speed from recent positions."
+    - "Whether a unit that stands still keeps its last move direction was not identified."
+    - "No shipped object uses it."

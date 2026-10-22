@@ -1,0 +1,10 @@
+# IsInGrassDynamicMaterialBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true while the source unit **is in a
+    brush**.
+
+    The source must be a unit. The driver returns `false` without one.
+  notes:
+    - "Shipped data uses it on a few champion skins, inside an [AllTrueMaterialDriver](/classes/alltruematerialdriver), a [NotMaterialDriver](/classes/notmaterialdriver) or a [PersistentEffectConditionData](/classes/persistenteffectconditiondata) condition."

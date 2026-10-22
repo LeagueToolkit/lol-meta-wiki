@@ -1,0 +1,19 @@
+# VfxNormalizeVector2Driver Documentation
+
+class:
+  description: |
+    A [Vector2 driver](/classes/ivfxvector2driver) that returns `Vector2Input` scaled to length
+    `1`.
+
+    The driver computes the inverse length with the fast inverse square root approximation and
+    one Newton step, not with an exact square root. The length of the result differs from `1` by
+    up to about `0.2%`. A zero vector stays `(0, 0)`.
+    [VfxNormalizeVector3Driver](/classes/vfxnormalizevector3driver) uses an exact square root.
+
+    If `Vector2Input` is not set, the driver writes nothing.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Vector2Input:
+    description: "The vector that is normalized."

@@ -1,0 +1,11 @@
+# BoundingBoxSizeVector3Driver Documentation
+
+class:
+  description: |
+    A [vector3 driver](/classes/ilogicvector3driver) that returns the **size of the bounding
+    box of the source** along the X, Y and Z axes, in world units.
+
+    The source can be any game object. Without one the driver returns `(0, 0, 0)`.
+  notes:
+    - "[BoundingBoxLengthFloatDriver](/classes/boundingboxlengthfloatdriver) returns the size of the same box as one number."
+    - "No shipped object uses it."

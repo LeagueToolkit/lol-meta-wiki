@@ -1,0 +1,14 @@
+# VfxMinVector4Driver Documentation
+
+class:
+  description: |
+    The Vector4 form of [VfxMinFloatDriver](/classes/vfxminfloatdriver). The driver returns,
+    for each lane, the smallest value of that lane over every driver in `params`. Each lane
+    starts at the highest float, `3.4028235e38`, so an empty list returns that value in all
+    four lanes.
+  notes:
+    - "Unset entries are skipped. Each entry is evaluated into a vector that starts at `(0, 0, 0, 0)`, so an entry that writes no output counts as `0` in every lane."
+
+properties:
+  params:
+    description: "The vectors that are compared."

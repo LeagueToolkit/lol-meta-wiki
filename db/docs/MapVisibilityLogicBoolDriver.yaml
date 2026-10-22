@@ -1,0 +1,16 @@
+# MapVisibilityLogicBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that returns **whether a map visibility
+    controller shows its objects**: the state the controller is in or fades toward. It does
+    not use the source.
+
+    With no controller linked, the driver returns `true`.
+  notes:
+    - "[0x7e173e2f](/classes/0x7e173e2f) gives the progress of the fade, and [MapVisibilityTransitionLengthDriver](/classes/mapvisibilitytransitionlengthdriver) gives its length."
+    - "No shipped object uses it."
+
+properties:
+  VisibilityController:
+    description: "The map visibility controller to read."

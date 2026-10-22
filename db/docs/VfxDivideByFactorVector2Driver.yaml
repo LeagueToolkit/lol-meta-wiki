@@ -1,0 +1,21 @@
+# VfxDivideByFactorVector2Driver Documentation
+
+class:
+  description: |
+    A [Vector2 driver](/classes/ivfxvector2driver) that divides both lanes of `Vector2` by the
+    [float driver](/classes/ivfxfloatdriver) `Divisor`. The Vector2 form of
+    [VfxDivideByFactorFloatDriver](/classes/vfxdividebyfactorfloatdriver).
+
+    - The result starts at `(1, 1)`. If `Vector2` is not set, the driver returns `(1, 1)` and
+      does not evaluate `Divisor`.
+    - If `Divisor` is not set, or it is within `1e-6` of zero, the driver returns `Vector2`
+      unchanged.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Vector2:
+    description: "The dividend."
+
+  Divisor:
+    description: "The divisor of every lane."

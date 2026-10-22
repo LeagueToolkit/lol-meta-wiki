@@ -1,0 +1,14 @@
+# HasReceivedAnimEmoteEventBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true when the **animation graph of the
+    source champion has received one fixed event**. The client defines the event hash; the
+    data cannot choose it. The name of the event is not identified.
+
+    The source must be a champion. The driver returns `false` for every other source.
+
+    For an event chosen by data, see
+    [HasReceivedAnimationEventBoolDriver](/classes/hasreceivedanimationeventbooldriver).
+  notes:
+    - "No shipped object uses it."

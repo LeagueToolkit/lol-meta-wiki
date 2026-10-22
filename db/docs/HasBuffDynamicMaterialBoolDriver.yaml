@@ -1,0 +1,36 @@
+# HasBuffDynamicMaterialBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true while the source **has an active
+    buff of a given script**. It is the most used bool driver in shipped data: skins use it
+    to switch materials, submeshes and effects while a spell's buff is on the unit.
+
+    The source must be a unit. The driver returns `false` without one.
+
+    On each evaluation the driver looks through the unit's active buffs. It returns `true`
+    when one of them has the buff's script and at least `mDeactivateEarlySeconds` of its
+    duration left.
+  notes:
+    - "The buff script is resolved once, on the first evaluation, and kept on the driver object."
+    - "[BuffCounterDynamicMaterialFloatDriver](/classes/buffcounterdynamicmaterialfloatdriver) reads the counter of a buff instead."
+
+properties:
+  Spell:
+    description: "The spell object of the buff. When it resolves, the buff is found by the script name of that spell. This is the form shipped data uses."
+
+  mScriptName:
+    description: "The script name of the buff. Used only when `Spell` does not resolve."
+
+  mDeactivateEarlySeconds:
+    description: |
+      The time, in seconds, by which the driver turns false before the buff ends. A buff
+      with less time left than this value does not count. `0` keeps the driver true for the
+      whole buff.
+
+  "0x149271dd":
+    description: |
+      When `true`, the driver also looks through a second list of buffs that the unit keeps.
+      When `false`, it reads only the active buffs.
+    notes:
+      - "What the second list holds is not identified."

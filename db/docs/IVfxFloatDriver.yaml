@@ -1,0 +1,9 @@
+# IVfxFloatDriver Documentation
+
+class:
+  description: |
+    A [VFX driver](/classes/ivfxbasedriver) that returns a **float**. A float value of the
+    component VFX system is a [VfxFloatDynamicProperty](/classes/vfxfloatdynamicproperty) that
+    holds the top node of the expression. [IVfxBaseDriver](/classes/ivfxbasedriver) describes
+    when values are evaluated, how random values are assigned and the time source and
+    comparator values.

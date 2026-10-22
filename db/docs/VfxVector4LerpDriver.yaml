@@ -1,0 +1,20 @@
+# VfxVector4LerpDriver Documentation
+
+class:
+  description: |
+    The Vector4 form of [VfxFloatLerpDriver](/classes/vfxfloatlerpdriver). The driver returns
+    `(1 - Factor) * From + Factor * To` for each lane, with one float `Factor` for all four
+    lanes. `Factor` is not clamped, so a value outside `0`..`1` extrapolates.
+  notes:
+    - "If `From`, `To` or `Factor` is not set, the driver writes no output, so the value that the caller passed in stays."
+    - "A random driver used as `Factor` draws a new value on every evaluation, as on [VfxFloatLerpDriver](/classes/vfxfloatlerpdriver)."
+
+properties:
+  From:
+    description: "The result when `Factor` is `0`."
+
+  To:
+    description: "The result when `Factor` is `1`."
+
+  Factor:
+    description: "The blend position between `From` and `To`."

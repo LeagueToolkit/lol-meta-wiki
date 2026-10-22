@@ -1,0 +1,17 @@
+# VfxMultiplyVector2Driver Documentation
+
+class:
+  description: |
+    A [Vector2 driver](/classes/ivfxvector2driver) that returns the lane-by-lane product of the
+    drivers in `params`. The Vector2 form of
+    [VfxMultiplyFloatDriver](/classes/vfxmultiplyfloatdriver).
+
+    The result starts at `(1, 1)`, so an empty list returns `(1, 1)`. The driver skips an entry
+    that is not set. Each entry is evaluated into a zero vector, so an entry that writes no
+    value counts as `(0, 0)`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  params:
+    description: "The operands."

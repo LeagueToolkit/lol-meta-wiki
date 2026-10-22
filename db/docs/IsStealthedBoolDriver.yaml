@@ -1,0 +1,10 @@
+# IsStealthedBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true while the source unit **is
+    stealthed**.
+
+    The source must be a unit. The driver returns `false` without one.
+  notes:
+    - "Shipped data uses it on Teemo skins, inside an [AllTrueMaterialDriver](/classes/alltruematerialdriver)."

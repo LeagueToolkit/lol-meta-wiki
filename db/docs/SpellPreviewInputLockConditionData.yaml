@@ -1,0 +1,18 @@
+# SpellPreviewInputLockConditionData Documentation
+
+class:
+  description: |
+    A [spell preview condition](/classes/spellpreviewconditiondata) that tests the **input
+    locks of the caster**. The test passes when the caster has any of the lock types in
+    `InputLockTypes` locked. `IsExclusive` inverts the result.
+
+    When the spell preview has no caster, the condition returns `true`, whatever
+    `IsExclusive` is.
+  notes:
+    - "Shipped data uses it on Ambessa's passive dash preview, as `DisplayCondition` with `IsExclusive` set and the lock types `2` and `4`."
+
+properties:
+  InputLockTypes:
+    description: "The input lock types to test. Any one of them that is locked passes the test."
+    notes:
+      - "The meaning of the lock type values is not resolved."

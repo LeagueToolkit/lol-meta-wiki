@@ -1,0 +1,48 @@
+# DamageShieldedLogic Documentation
+
+class:
+  description: |
+    A [stat stone event filter](/classes/istatstonelogicdriver) that passes for the event of
+    **damage blocked by a shield**. The event names three units: the caster of the shield,
+    the unit that carries the shield, and the source of the damage. Every other kind of
+    event fails.
+
+    The filter passes when all three tests pass:
+
+    1. **Shielded unit.** Either the shielded unit is the caster and
+       `ShieldTargetCanBeSelf` is set, or the shielded unit is another unit on the caster's
+       team and `ShieldTargetCanBeAlly` is set.
+    2. **Type of the shielded unit.** The shielded unit passes the unit type test of
+       `ShieldTargetCanBeChampion`, `ShieldTargetCanBeMinion` and `ShieldTargetCanBeTurret`.
+    3. **Type of the damage source.** The damage source passes the unit type test of
+       `DamageSourceCanBeChampion`, `DamageSourceCanBeMinion` and `DamageSourceCanBeTurret`.
+
+    [IStatStoneLogicDriver](/classes/istatstonelogicdriver) describes the unit type test.
+    The filter does not set the amount.
+  notes:
+    - "A shield that an enemy cast never passes: the shielded unit must be the caster or an ally."
+
+properties:
+  ShieldTargetCanBeSelf:
+    description: "A shield on the caster itself passes the first test."
+
+  ShieldTargetCanBeAlly:
+    description: "A shield on another unit of the caster's team passes the first test."
+
+  ShieldTargetCanBeChampion:
+    description: "A shielded champion passes the second test."
+
+  ShieldTargetCanBeMinion:
+    description: "A shielded minion passes the second test."
+
+  ShieldTargetCanBeTurret:
+    description: "A shielded turret passes the second test."
+
+  DamageSourceCanBeChampion:
+    description: "Damage from a champion passes the third test."
+
+  DamageSourceCanBeMinion:
+    description: "Damage from a minion passes the third test."
+
+  DamageSourceCanBeTurret:
+    description: "Damage from a turret passes the third test."

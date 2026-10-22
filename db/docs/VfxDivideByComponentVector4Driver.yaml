@@ -1,0 +1,21 @@
+# VfxDivideByComponentVector4Driver Documentation
+
+class:
+  description: |
+    A [Vector4 driver](/classes/ivfxvector4driver) that divides `Vector4` by `Divisor` lane by
+    lane. It works like [VfxDivideByFactorFloatDriver](/classes/vfxdividebyfactorfloatdriver),
+    but each lane has its own divisor.
+
+    - If `Vector4` is not set, the driver returns `(1, 1, 1, 1)`.
+    - If `Divisor` is not set, the driver returns `Vector4` unchanged.
+    - If a lane of the divisor is between `-0.000001` and `0.000001`, that lane is not divided
+      and keeps the value of `Vector4`.
+  notes:
+    - "Both operands are evaluated into vectors that start at `(1, 1, 1, 1)`. A lane that an operand does not write counts as `1`."
+
+properties:
+  Vector4:
+    description: "The dividend."
+
+  Divisor:
+    description: "The divisor of each lane."

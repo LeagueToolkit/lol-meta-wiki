@@ -1,0 +1,25 @@
+# VfxVector3FromVector4Driver Documentation
+
+class:
+  description: |
+    A [Vector3 driver](/classes/ivfxvector3driver) that returns three lanes of the Vector4
+    driver `Input`. `Select` picks the lane that is dropped.
+  notes:
+    - "If `Input` is not set, the driver returns `(0, 0, 0)`."
+
+properties:
+  Input:
+    description: "The vector that the lanes are read from."
+
+  Select:
+    description: |
+      The three lanes that are returned, in this order.
+
+      | Value | Lanes |
+      |-------|-------|
+      | `0` | xyz |
+      | `1` | xyw |
+      | `2` | xzw |
+      | `3` | yzw |
+
+      Any other value writes no output, so the value that the caller passed in stays.

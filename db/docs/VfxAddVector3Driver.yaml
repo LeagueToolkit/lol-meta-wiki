@@ -1,0 +1,15 @@
+# VfxAddVector3Driver Documentation
+
+class:
+  description: |
+    A [Vector3 driver](/classes/ivfxvector3driver) that returns the lane-by-lane sum of the
+    drivers in `params`. The Vector3 form of [VfxAddFloatDriver](/classes/vfxaddfloatdriver).
+
+    The sum starts at `(0, 0, 0)`, so an empty list returns `(0, 0, 0)`. The driver skips an
+    entry that is not set.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  params:
+    description: "The operands, added in list order."

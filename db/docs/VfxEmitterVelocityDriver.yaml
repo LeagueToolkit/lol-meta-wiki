@@ -1,0 +1,13 @@
+# VfxEmitterVelocityDriver Documentation
+
+class:
+  description: |
+    A [Vector3 driver](/classes/ivfxvector3driver) with no inputs that returns the velocity of
+    the particle system, in world units per second. The system update writes this value once per
+    frame, from the velocity of the object that the system is bound to or from the change of the
+    system position over the frame.
+
+    The driver reads no particle state, so every particle of the system gets the same value in
+    one frame.
+  notes:
+    - "No shipped object uses it."

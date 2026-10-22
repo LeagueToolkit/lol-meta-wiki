@@ -1,0 +1,15 @@
+# IsChampionNameBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true when the **character name of the
+    source unit** is `championName`. The character name is the internal name of the unit's
+    character, such as `Karma`, not the display name.
+
+    The source must be a unit. The driver returns `false` without one.
+  notes:
+    - "Shipped data uses it mostly inside an [AllTrueMaterialDriver](/classes/alltruematerialdriver) or a [NotMaterialDriver](/classes/notmaterialdriver)."
+
+properties:
+  championName:
+    description: "The character name to compare with."

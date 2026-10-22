@@ -1,0 +1,17 @@
+# RawVector4ConceptLogicDriver Documentation
+
+class:
+  description: |
+    A [vector driver](/classes/ilogicdriver) that returns the **current value of a
+    [Vector4Concept](/classes/vector4concept)** for the source, without easing. While nothing
+    has written the concept for the source, the driver returns the concept's `DefaultValue`.
+
+    It works like [RawFloatConceptLogicDriver](/classes/rawfloatconceptlogicdriver).
+    [EasedVector4ConceptLogicDriver](/classes/easedvector4conceptlogicdriver) reads the same
+    value through the concept's easing.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Concept:
+    description: "The [Vector4Concept](/classes/vector4concept) to read."

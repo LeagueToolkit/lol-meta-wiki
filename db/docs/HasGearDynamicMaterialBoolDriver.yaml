@@ -1,0 +1,19 @@
+# HasGearDynamicMaterialBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true when the **gear the source has
+    equipped** is `mGearIndex`. Skins with gear use it to switch textures, materials and
+    submeshes for each gear.
+
+    The source must be a game object with gear. The driver returns `false` without one.
+
+    [GetGearIndexIntDriver](/classes/getgearindexintdriver) returns the same gear index as a
+    number, and [EquippedGearParametricUpdater](/classes/equippedgearparametricupdater)
+    gives it to an animation graph.
+
+properties:
+  mGearIndex:
+    description: "The gear to compare with. Gears count from `0`."
+    notes:
+      - "A unit with no gear has the gear index `-1`. No value of `mGearIndex` matches it: `255` does not."

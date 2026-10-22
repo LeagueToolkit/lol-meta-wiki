@@ -1,0 +1,16 @@
+# VfxPropertyVector3Driver Documentation
+
+class:
+  description: |
+    A [Vector3 driver](/classes/ivfxvector3driver) that reads a per-particle vector channel of
+    the emitter. The Vector3 form of [VfxPropertyFloatDriver](/classes/vfxpropertyfloatdriver).
+
+    The driver returns `(0, 0, 0)` when it is evaluated for the emitter rather than for a
+    particle, when the particle index is not a live particle, or when the emitter has no such
+    channel.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Vector3Property:
+    description: "Selects the channel. `0` selects none and always returns `(0, 0, 0)`. `1`-`6` select six particle channels. What each channel holds is not yet identified."

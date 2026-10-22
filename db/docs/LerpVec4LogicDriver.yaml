@@ -1,0 +1,36 @@
+# LerpVec4LogicDriver Documentation
+
+class:
+  description: |
+    A [vector driver](/classes/ilogicdriver) that **fades between two vectors** when a
+    [bool driver](/classes/ilogicbooldriver) changes. While `BoolDriver` is true the value
+    moves toward `OnValue`, and while it is false toward `OffValue`. It is the four-component
+    form of [LerpMaterialDriver](/classes/lerpmaterialdriver), and each component fades as
+    the value of that driver does:
+
+    1. The driver keeps one current value **per source**. The value of a source is removed
+       when the source is destroyed.
+    2. The first evaluation for a source returns the target at once.
+    3. After that, each evaluation moves the current value toward the target by the time of
+       the last frame. A full swing from one value to the other takes `TurnOnTimeSec` or
+       `TurnOffTimeSec` seconds.
+    4. Each component stays between its `OffValue` and its `OnValue`.
+  notes:
+    - "The value advances once per evaluation, not once per frame. A source that evaluates the driver twice in a frame fades twice as fast."
+    - "All four components take the same time for a full swing, so components with a larger distance between `OffValue` and `OnValue` move faster."
+
+properties:
+  BoolDriver:
+    description: "The condition that picks the target."
+
+  OnValue:
+    description: "The target while `BoolDriver` is true."
+
+  OffValue:
+    description: "The target while `BoolDriver` is false."
+
+  TurnOnTimeSec:
+    description: "The time, in seconds, of a full fade from `OffValue` to `OnValue`. `0` switches at once."
+
+  TurnOffTimeSec:
+    description: "The time, in seconds, of a full fade from `OnValue` to `OffValue`. `0` switches at once."

@@ -1,0 +1,17 @@
+# VfxMinVector3Driver Documentation
+
+class:
+  description: |
+    A [Vector3 driver](/classes/ivfxvector3driver) that returns the lane-by-lane minimum of the
+    drivers in `params`. The Vector3 form of [VfxMinFloatDriver](/classes/vfxminfloatdriver).
+
+    The result starts at `(FLT_MAX, FLT_MAX, FLT_MAX)`, so an empty list returns `(FLT_MAX,
+    FLT_MAX, FLT_MAX)`. `FLT_MAX` is `3.4028235e38`. The driver skips an entry that is not set.
+    Each entry is evaluated into a zero vector, so an entry that writes no value counts as `(0,
+    0, 0)`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  params:
+    description: "The operands."

@@ -1,0 +1,13 @@
+# VfxFloatTimeDriver Documentation
+
+class:
+  description: "A [float driver](/classes/ivfxfloatdriver) that returns the time source `Time` plus `offset`."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Time:
+    description: "The time source. The Time sources table on [IVfxBaseDriver](/classes/ivfxbasedriver) lists the values."
+
+  offset:
+    description: "A value added to the time. If it is not set, the offset is `0`."

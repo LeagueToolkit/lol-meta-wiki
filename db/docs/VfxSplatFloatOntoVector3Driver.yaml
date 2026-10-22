@@ -1,0 +1,10 @@
+# VfxSplatFloatOntoVector3Driver Documentation
+
+class:
+  description: "A [Vector3 driver](/classes/ivfxvector3driver) that returns the value of the [float driver](/classes/ivfxfloatdriver) `Float` in all three lanes, `(f, f, f)`. If `Float` is not set, the driver writes nothing."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Float:
+    description: "The value that fills every lane."

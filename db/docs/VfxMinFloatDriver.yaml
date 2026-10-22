@@ -1,0 +1,12 @@
+# VfxMinFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ivfxfloatdriver) that returns the smallest of the values in `params`.
+    An entry that is not set is skipped. An empty list returns `3.4028235e38`, the highest float.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  params:
+    description: "The operands."

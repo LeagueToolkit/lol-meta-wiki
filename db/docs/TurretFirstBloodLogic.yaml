@@ -1,0 +1,10 @@
+# TurretFirstBloodLogic Documentation
+
+class:
+  description: |
+    A [stat stone event filter](/classes/istatstonelogicdriver) that passes for the **first
+    turret of the game**. The event must be a turret kill whose target is a turret, and
+    neither team may have lost a turret before. Every other kind of event fails. The filter
+    does not set the amount.
+  notes:
+    - "No shipped object uses it."

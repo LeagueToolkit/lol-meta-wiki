@@ -1,0 +1,6 @@
+# VfxFloatConstantDriver Documentation
+
+class:
+  description: "A [float driver](/classes/ivfxfloatdriver) that returns `Float`."
+  notes:
+    - "Shipped data uses it for the constant values of [VfxShimmerEmitterDefinitionData](/classes/vfxshimmeremitterdefinitiondata) emitters."

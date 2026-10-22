@@ -1,0 +1,14 @@
+# ColorGraphMaterialDriver Documentation
+
+class:
+  description: |
+    A [vector driver](/classes/ilogicdriver) that maps a number to a **color on a color
+    curve**. It evaluates `driver` and samples `colors` at that value: the value of the
+    driver takes the place of the time of the curve.
+
+properties:
+  driver:
+    description: "The float driver whose value is the position on the curve."
+
+  colors:
+    description: "The color curve. Its `times` are positions in the range of values of `driver`, and its `values` are the colors at those positions."

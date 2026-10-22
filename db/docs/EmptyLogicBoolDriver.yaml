@@ -1,0 +1,9 @@
+# EmptyLogicBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that **always returns `false`**. It reads no
+    source and keeps no state.
+  notes:
+    - "Read as a number, it gives `0`."
+    - "No shipped object uses it."

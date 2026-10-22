@@ -1,0 +1,15 @@
+# VfxBreakVector4ToVector2sDriver Documentation
+
+class:
+  description: |
+    A [Vector4 driver](/classes/ivfxvector4driver) that builds a vector from two Vector2
+    drivers. `xy` gives the x and y lanes and `Zw` gives the z and w lanes.
+  notes:
+    - "If one of the two drivers is not set, the driver writes nothing to its two lanes, so they keep the value that the caller passed in."
+
+properties:
+  xy:
+    description: "The Vector2 driver of the x and y lanes."
+
+  Zw:
+    description: "The Vector2 driver of the z and w lanes."

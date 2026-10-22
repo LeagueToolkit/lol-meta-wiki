@@ -1,0 +1,13 @@
+# BoundingBoxWhVector2Driver Documentation
+
+class:
+  description: |
+    A [vector2 driver](/classes/ilogicvector2driver) that returns the **width and height of
+    the bounding box of the source**: the size of the box along the X axis and along the Y
+    axis, in world units.
+
+    The source can be any game object. The driver returns `(0, 0)` without one, and for an
+    object whose bounding box is empty, that is, a box whose minimum is above its maximum on
+    any axis.
+  notes:
+    - "No shipped object uses it."

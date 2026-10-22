@@ -1,0 +1,20 @@
+# IsOnGameplayTextureBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true while the source unit **stands
+    in an area painted on a gameplay texture channel**. A map with a `MapGameplayTexture`
+    feature keeps a map-sized texture that gameplay paints shapes into, one layer per
+    channel. The driver tests the unit's position against the shapes of the channel
+    `GameplayTexture`.
+
+    Before the test, the client removes the painted shapes whose time has run out.
+
+    The driver returns `false` when the source is not a unit, when the map has no
+    `MapGameplayTexture` feature, and when the channel does not resolve.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  GameplayTexture:
+    description: "The `GameplayTextureChannel` to test."

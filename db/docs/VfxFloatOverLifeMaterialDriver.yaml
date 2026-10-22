@@ -1,0 +1,17 @@
+# VfxFloatOverLifeMaterialDriver Documentation
+
+class:
+  description: |
+    A [particle material driver](/classes/ivfxmaterialdriver) that returns a **float curve
+    sampled at t**, written into all four components. With `frequency` `1`, t is the
+    particle's normalized age, so the parameter follows the curve over the life of each
+    particle.
+  notes:
+    - "This is the most common particle material driver in shipped data."
+
+properties:
+  frequency:
+    description: "When the driver is evaluated: `0` once per emitter update, `1` once per particle. [IVfxMaterialDriver](/classes/ivfxmaterialdriver) describes both modes."
+
+  graph:
+    description: "The curve. The driver samples it at t."

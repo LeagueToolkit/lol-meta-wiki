@@ -1,0 +1,18 @@
+# CrowdControlFilter Documentation
+
+class:
+  description: |
+    A [stat stone event filter](/classes/istatstonelogicdriver) that passes when the
+    **crowd-control type** of the event is one of `ValidCcTypes`. With `TrackDuration` set,
+    it also sets the amount to the crowd-control duration that the event carries.
+
+    The filter does not check the kind of event. It reads the crowd-control type and
+    duration from fixed places in the event, so its result is meaningful only for an event
+    that carries crowd control.
+
+properties:
+  ValidCcTypes:
+    description: "The crowd-control type ids that pass. The table of ids is not yet identified."
+
+  TrackDuration:
+    description: "When `true`, the filter sets the amount to the duration of the crowd control in the event. The unit of the duration is not yet identified."

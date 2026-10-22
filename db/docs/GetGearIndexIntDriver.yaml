@@ -1,0 +1,12 @@
+# GetGearIndexIntDriver Documentation
+
+class:
+  description: |
+    An [int driver](/classes/ilogicintdriver) that returns the **gear index of the source**:
+    the number that [HasGearDynamicMaterialBoolDriver](/classes/hasgeardynamicmaterialbooldriver)
+    compares with its `mGearIndex`. The index is signed and can be `-1`.
+
+    The source can be any game object that has gear. For a source without gear, and without
+    a source, the driver returns `0`.
+  notes:
+    - "Shipped data feeds it into `SpellDataNamedValueFloatDriver.SpellLevel`, so that the gear picks the entry of a spell data value. Skin overlays also compare it in a [FloatComparisonMaterialDriver](/classes/floatcomparisonmaterialdriver), and a skin's animation graph picks run clips by gear with it in a [SwitchIntClipData](/classes/switchintclipdata)."

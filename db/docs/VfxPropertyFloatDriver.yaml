@@ -1,0 +1,18 @@
+# VfxPropertyFloatDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ivfxfloatdriver) that reads a per-particle float **channel** of the
+    emitter. Components of the emitter write the channels.
+
+    The driver returns `0` when it is evaluated for the emitter rather than for a particle,
+    when the particle index is not a live particle, or when the emitter has no such channel.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  FloatProperty:
+    description: |
+      Selects the channel. `0` selects none and always returns `0`. `1`, `2` and `3` select
+      three particle channels. What each channel holds is not yet identified. Values above
+      `3` are not established.

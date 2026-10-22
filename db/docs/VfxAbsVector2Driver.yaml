@@ -1,0 +1,10 @@
+# VfxAbsVector2Driver Documentation
+
+class:
+  description: "A [Vector2 driver](/classes/ivfxvector2driver) that returns the absolute value of each lane of `Param`. The Vector2 form of [VfxAbsFloatDriver](/classes/vfxabsfloatdriver). If `Param` is not set, the driver returns `(0, 0)`."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Param:
+    description: "The input vector."

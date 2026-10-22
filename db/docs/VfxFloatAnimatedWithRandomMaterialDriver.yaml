@@ -1,0 +1,23 @@
+# VfxFloatAnimatedWithRandomMaterialDriver Documentation
+
+class:
+  description: |
+    A [particle material driver](/classes/ivfxmaterialdriver) that returns an **animated
+    float value sampled at t**, written into all four components. It is the `ValueFloat`
+    form of [VfxFloatOverLifeMaterialDriver](/classes/vfxfloatoverlifematerialdriver): the
+    value is a `constantValue` plus optional `dynamics`, the same embed that
+    [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata) uses for its animated
+    values.
+
+    - When `graph` has no `dynamics`, the driver returns `constantValue`.
+    - When `graph` has `dynamics`, the driver samples the curve at t.
+
+    [VfxFloatAnimatedWithRandomDriver](/classes/vfxfloatanimatedwithrandomdriver) is the same
+    value as a driver of the VFX driver graph.
+
+properties:
+  frequency:
+    description: "When the driver is evaluated: `0` once per emitter update, `1` once per particle. [IVfxMaterialDriver](/classes/ivfxmaterialdriver) describes both modes."
+
+  graph:
+    description: "The value. Without `dynamics` it is constant; with `dynamics` the curve is sampled at t."

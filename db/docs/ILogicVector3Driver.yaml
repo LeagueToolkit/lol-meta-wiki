@@ -1,0 +1,16 @@
+# ILogicVector3Driver Documentation
+
+class:
+  description: |
+    A **logic driver that produces a three-component vector**, such as a position or a
+    direction in the world. [ILogicFloatDriver](/classes/ilogicfloatdriver) describes how
+    drivers are evaluated and what the source is.
+
+    Read as an [ILogicDriver](/classes/ilogicdriver), a vector3 driver gives
+    `(x, y, z, 0)`.
+
+    Vector3 drivers are held by `JointOrientationRigPoseModifierData.OrientationSource` (see
+    [JointOrientationRigPoseModifierData](/classes/jointorientationrigposemodifierdata)), by
+    the `OrientationSource` of an orientation struct in clip events (`0xc6de5b9c`), and by
+    [VfxVector3LogicDriver](/classes/vfxvector3logicdriver), which passes the value into the
+    [component VFX system](/classes/vfxcomponents).

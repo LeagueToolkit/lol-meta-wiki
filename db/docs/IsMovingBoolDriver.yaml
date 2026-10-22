@@ -1,0 +1,12 @@
+# IsMovingBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true while the source unit **moves**,
+    as its movement system reports it. A unit with a movement component asks that component.
+    Otherwise the unit's path controller answers.
+
+    The source must be a unit. The driver returns `false` without one.
+
+    [IsMovingParametricUpdater](/classes/ismovingparametricupdater) gives the same state to
+    an animation graph.

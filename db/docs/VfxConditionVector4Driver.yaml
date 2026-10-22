@@ -1,0 +1,19 @@
+# VfxConditionVector4Driver Documentation
+
+class:
+  description: |
+    The Vector4 form of [VfxConditionFloatDriver](/classes/vfxconditionfloatdriver). The
+    driver compares `Left` and `Right` lane by lane with `Comparator`. Each lane of the result
+    is `1` if the comparison of that lane is true and `0` if it is false.
+  notes:
+    - "If `Left` or `Right` is not set, the driver returns `(0, 0, 0, 0)`."
+
+properties:
+  Left:
+    description: "The left operand of each comparison."
+
+  Right:
+    description: "The right operand of each comparison."
+
+  Comparator:
+    description: "The comparison that is applied to every lane. The values are listed on [IVfxBaseDriver](/classes/ivfxbasedriver)."

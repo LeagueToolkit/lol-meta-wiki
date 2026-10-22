@@ -1,0 +1,11 @@
+# IsCloneBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true when the source unit **is a
+    clone**.
+
+    The source must be a unit. The driver returns `false` without one. For a champion unit
+    it always returns `false`.
+  notes:
+    - "Shipped data uses it on Vayne and Shaco skins, mostly inside a [NotMaterialDriver](/classes/notmaterialdriver)."

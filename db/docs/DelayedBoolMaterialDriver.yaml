@@ -1,0 +1,35 @@
+# DelayedBoolMaterialDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that follows `mBoolDriver` **with a delay**.
+    When the input turns true, the output turns true `mDelayOn` seconds later. When the input
+    turns false, the output turns false `mDelayOff` seconds later.
+
+    The driver keeps one state **per source**:
+
+    | State | Output | Leaves the state when |
+    |---|---|---|
+    | On | `true` | the input turns false: to pending off, or to off if `mDelayOff` is `0` |
+    | Off | `false` | the input turns true: to pending on, or to on if `mDelayOn` is `0` |
+    | Pending on | `false` | `mDelayOn` seconds have passed: to on. The input turns false: back to off |
+    | Pending off | `true` | `mDelayOff` seconds have passed: to off. The input turns true: back to on |
+
+    The first evaluation for a source sets the state to on or off from the input at once,
+    with no delay.
+
+    A change of the input that ends before the delay has passed is ignored, so the driver
+    also filters out short flickers of the input.
+  notes:
+    - "The driver sees the input only when it is evaluated. A change that starts and ends between two evaluations is not seen."
+    - "A delay below `0.00001` seconds counts as `0`."
+
+properties:
+  mBoolDriver:
+    description: "The input condition. It must be set: the client does not check for a missing operand."
+
+  mDelayOn:
+    description: "The time, in seconds, that the input must stay true before the output turns true."
+
+  mDelayOff:
+    description: "The time, in seconds, that the input must stay false before the output turns false."

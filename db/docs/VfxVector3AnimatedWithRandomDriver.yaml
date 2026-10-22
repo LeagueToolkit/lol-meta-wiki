@@ -1,0 +1,19 @@
+# VfxVector3AnimatedWithRandomDriver Documentation
+
+class:
+  description: "A [Vector3 driver](/classes/ivfxvector3driver) that samples the embedded curve `Vector3` at a time source. The Vector3 form of [VfxFloatAnimatedWithRandomDriver](/classes/vfxfloatanimatedwithrandomdriver), which describes the sampling and the random variation."
+  notes:
+    - "Shipped data uses it only as a particle scale curve over the normalized particle age."
+
+properties:
+  Vector3:
+    description: "The curve, a `ValueVector3`. If it has no animation, the driver returns its constant value."
+
+  frequency:
+    description: "The time source that the curve is sampled at. [IVfxBaseDriver](/classes/ivfxbasedriver) lists the values."
+
+  looping:
+    description: "When `true`, a time past the end of the curve wraps back to its start."
+
+  ShareRandom:
+    description: "When `true`, all three lanes read one random value. When `false`, each lane reads its own random value."

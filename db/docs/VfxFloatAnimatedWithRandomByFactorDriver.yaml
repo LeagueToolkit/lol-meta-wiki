@@ -1,0 +1,26 @@
+# VfxFloatAnimatedWithRandomByFactorDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ivfxfloatdriver) that samples the embedded `ValueFloat` in `Float` at
+    the value of the float driver `Factor`. It works like
+    [VfxFloatAnimatedWithRandomDriver](/classes/vfxfloatanimatedwithrandomdriver), with two
+    differences: the sample position comes from `Factor` instead of a time source, and there
+    is no looping. The curve's `times` are positions on the value of `Factor`.
+
+    The probability tables of the curve take their random numbers in the same way. The vector
+    and colour variants
+    ([VfxVector2AnimatedWithRandomByFactorDriver](/classes/vfxvector2animatedwithrandombyfactordriver),
+    [VfxVector3AnimatedWithRandomByFactorDriver](/classes/vfxvector3animatedwithrandombyfactordriver),
+    [VfxColorAnimatedWithRandomByFactorDriver](/classes/vfxcoloranimatedwithrandombyfactordriver))
+    also have `ShareRandom`.
+  notes:
+    - "If `Factor` is not set, the sample position is not established."
+    - "Shipped data uses it only inside [VfxShimmerEmitterDefinitionData](/classes/vfxshimmeremitterdefinitiondata) emitters."
+
+properties:
+  Float:
+    description: "The curve, a `ValueFloat`. If it has no `dynamics`, the driver returns its `constantValue`."
+
+  Factor:
+    description: "The driver whose value is the sample position on the curve."

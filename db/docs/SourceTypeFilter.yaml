@@ -1,0 +1,18 @@
+# SourceTypeFilter Documentation
+
+class:
+  description: |
+    A [stat stone event filter](/classes/istatstonelogicdriver) that passes when the
+    **source unit** of the event is of a type whose flag is set.
+    [IStatStoneLogicDriver](/classes/istatstonelogicdriver) describes the unit type test. A
+    kind of event that has no source fails. The filter does not set the amount.
+
+properties:
+  ChampionsAreValid:
+    description: "A champion source passes."
+
+  MinionsAreValid:
+    description: "A minion source passes."
+
+  TurretsAreValid:
+    description: "A turret source passes."

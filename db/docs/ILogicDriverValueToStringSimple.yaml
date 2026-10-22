@@ -1,0 +1,10 @@
+# ILogicDriverValueToStringSimple Documentation
+
+class:
+  description: |
+    A [text source](/classes/ilogicdrivervaluetostring) whose **text is constant**. The text
+    is set once, when the bin is loaded. The source does nothing when its holder starts or
+    updates.
+
+    A constant text source is also the separator of a
+    [list text source](/classes/ilogicdrivervaluetostringlist).

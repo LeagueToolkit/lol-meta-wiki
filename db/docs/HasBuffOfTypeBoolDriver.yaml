@@ -1,0 +1,42 @@
+# HasBuffOfTypeBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true while the source **has a buff of
+    a given buff type**, such as a stun or a slow, from any spell.
+
+    The source must be a unit. The driver returns `false` without one.
+  notes:
+    - "Shipped data most often tests `10` and `15`, and most instances sit inside a [NotMaterialDriver](/classes/notmaterialdriver)."
+    - "For a test by loss-of-control category, see [HasLossOfControlTypeBoolDriver](/classes/haslossofcontroltypebooldriver)."
+
+properties:
+  BuffType:
+    description: |
+      The buff type to test for.
+
+      The names below are derived from the order of the client's list of buff-type names.
+      They are not read from the driver itself.
+
+      | Value | Type | Value | Type |
+      |---|---|---|---|
+      | `0` | `Internal` | `20` | `NearSight` |
+      | `1` | `Aura` | `21` | `Currency` |
+      | `2` | `CombatEnchancer` | `22` | `Fear` |
+      | `3` | `CombatDehancer` | `23` | `Charm` |
+      | `4` | `SpellShield` | `24` | `Poison` |
+      | `5` | `Stun` | `25` | `Suppression` |
+      | `6` | `Invisibility` | `26` | `Blind` |
+      | `7` | `Silence` | `27` | `Counter` |
+      | `8` | `Taunt` | `28` | `Shred` |
+      | `9` | `Berserk` | `29` | `Flee` |
+      | `10` | `Polymorph` | `30` | `Knockup` |
+      | `11` | `Slow` | `31` | `Knockback` |
+      | `12` | `Snare` | `32` | `Disarm` |
+      | `13` | `Damage` | `33` | `Grounded` |
+      | `14` | `Heal` | `34` | `Drowsy` |
+      | `15` | `Haste` | `35` | `Asleep` |
+      | `16` | `SpellImmunity` | `36` | `Obscured` |
+      | `17` | `PhysicalImmunity` | `37` | `ClickproofToEnemies` |
+      | `18` | `Invulnerability` | `38` | `UnKillable` |
+      | `19` | `AttackSpeedSlow` | | |

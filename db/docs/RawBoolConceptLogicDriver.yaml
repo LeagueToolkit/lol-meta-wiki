@@ -1,0 +1,18 @@
+# RawBoolConceptLogicDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that returns the **current value of a
+    [BoolConcept](/classes/boolconcept)** for the source, without easing. While nothing has
+    written the concept for the source, the driver returns the concept's `DefaultValue`.
+
+    It works like [RawFloatConceptLogicDriver](/classes/rawfloatconceptlogicdriver), and
+    [EasedBoolConceptLogicDriver](/classes/easedboolconceptlogicdriver) reads the same value
+    as an eased number.
+  notes:
+    - "`Concept` must link a loaded concept. An unset or unresolved link makes the client fail when the driver is evaluated."
+    - "No shipped object uses it."
+
+properties:
+  Concept:
+    description: "The [BoolConcept](/classes/boolconcept) to read."

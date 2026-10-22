@@ -1,0 +1,57 @@
+# 0xb5c28890 Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true when **at least one champion in
+    the game passes a champion filter**. The filter selects champions by their relation to
+    the source and by the roles of their character data.
+
+    The driver checks every champion in the game. A champion passes when:
+
+    - its relation to the source matches one of the flags in `PlayersToInclude`, and
+    - its character data has one of the roles in `0x6f521854`.
+
+    [0xe67a27c8](/classes/0xe67a27c8) uses the same filter and returns the display names of
+    the champions that pass.
+
+    **Caching.** The driver does not run the filter on every evaluation. It stores the result
+    on the driver object, and runs the filter again only after one of a few game events marks
+    the result as stale. The events are not identified. The stored result is shared by every
+    source: the relation to the source is computed for the source that evaluated the driver
+    first after the event.
+  notes:
+    - "Shipped data uses it in a skin's [LogicDriverViewController](/classes/logicdriverviewcontroller) UI, with `PlayersToInclude` `4` and one role per instance (`0`, `1` and `2`), in the enable conditions of UI elements."
+
+properties:
+  PlayersToInclude:
+    description: |
+      The relations that pass, as a list of flags. The driver combines the list into one
+      mask.
+
+      | Flag | Champions that pass |
+      |---|---|
+      | `1` | champions on the team of the source |
+      | `2` | every champion |
+      | `4` | champions that pass a relation test whose meaning is not determined |
+      | `8` | champions on the neutral team (`300`) |
+
+  "0x6f521854":
+    description: |
+      The roles that pass. A champion passes when its character data has one of them.
+
+      | Value | Role |
+      |---|---|
+      | `0` | fighter |
+      | `1` | tank |
+      | `2` | assassin |
+      | `3` | mage |
+      | `4` | marksman |
+      | `5` | support |
+
+  "0x9c5f0056":
+    description: "When not `0`, a champion that currently shows another character's data is tested with its own character data. When `0`, it is tested with the data that it shows."
+
+  "0x8f7bb6e":
+    description: "Selects which of two character records of the champion the roles are read from when the champion's own data is tested: one record when not `0`, the other when `0`."
+    notes:
+      - "Which record holds the base character and which the current one is not determined."

@@ -1,0 +1,27 @@
+# VfxVector2FromVector4Driver Documentation
+
+class:
+  description: |
+    A [Vector2 driver](/classes/ivfxvector2driver) that returns two lanes of the Vector4
+    driver `Input`. `Select` picks the pair.
+  notes:
+    - "If `Input` is not set, the driver returns `(0, 0)`."
+
+properties:
+  Input:
+    description: "The vector that the lanes are read from."
+
+  Select:
+    description: |
+      The pair of lanes that is returned, in this order.
+
+      | Value | Lanes |
+      |-------|-------|
+      | `0` | xy |
+      | `1` | xz |
+      | `2` | xw |
+      | `3` | yz |
+      | `4` | yw |
+      | `5` | zw |
+
+      Any other value writes no output, so the value that the caller passed in stays.

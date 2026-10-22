@@ -1,0 +1,26 @@
+# ILogicDriverValueToString Documentation
+
+class:
+  description: |
+    A **text source**: an object that produces a string for UI text. A view controller uses
+    text sources to put driver values and localized strings into the text of its elements,
+    through the tooltip and text bindings of a
+    [LogicDriverViewEntry](/classes/logicdriverviewentry). A text binding pairs a placeholder
+    token such as `@CurrentGrit@` with a text source, and the text of the source replaces the
+    token in the element's localized text.
+
+    A text source that reads a driver evaluates it for the source of its holder. In a
+    [LogicDriverViewController](/classes/logicdriverviewcontroller) that is the local
+    player's champion. [ILogicFloatDriver](/classes/ilogicfloatdriver) describes how drivers
+    are evaluated.
+
+    A text source works in three steps:
+
+    1. When the bin is loaded, it resolves the strings that do not change, such as a
+       localized format string.
+    2. When its holder starts, it builds its text for the first time.
+    3. On each update of its holder, it builds the text again. A source that reads a driver
+       or a game state builds a new text only when its input has changed.
+
+    A [constant text source](/classes/ilogicdrivervaluetostringsimple) builds its text once
+    at load and does not update.

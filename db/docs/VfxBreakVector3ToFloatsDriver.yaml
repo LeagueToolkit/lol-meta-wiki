@@ -1,0 +1,21 @@
+# VfxBreakVector3ToFloatsDriver Documentation
+
+class:
+  description: |
+    A [Vector3 driver](/classes/ivfxvector3driver) that builds a vector from three [float
+    driver](/classes/ivfxfloatdriver)s: `X`, `Y` and `Z` give the x, y and z lanes.
+
+    If one of them is not set, the driver writes nothing to that lane, so the lane keeps the
+    value that the caller passed in.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  X:
+    description: "The x lane."
+
+  Y:
+    description: "The y lane."
+
+  Z:
+    description: "The z lane."

@@ -1,0 +1,16 @@
+# VfxVector2DynamicProperty Documentation
+
+class:
+  description: |
+    A **vector2 driver value**: the form in which a property of the component VFX system takes
+    a two-component vector from the driver graph. The holder evaluates the driver in `Vector2` each time it
+    needs the value. [IVfxBaseDriver](/classes/ivfxbasedriver) describes when that is and
+    whether the random values of the expression are per particle or per emitter.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Vector2:
+    description: |
+      The top node of the expression. If it is not set, the property keeps the value that its
+      holder starts from, which the holder's page states.

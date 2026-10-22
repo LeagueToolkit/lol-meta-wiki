@@ -1,0 +1,15 @@
+# SpellPreviewOrderConditionData Documentation
+
+class:
+  description: |
+    A [spell preview condition](/classes/spellpreviewconditiondata) that tests the **type of
+    the order** that the spell preview belongs to. The test passes when the order type is in
+    `OrderTypes`. `IsExclusive` inverts the result.
+  notes:
+    - "Shipped data uses it on Ambessa's passive dash preview, as `InputCondition` with the order types `2`, `3` and `7`."
+
+properties:
+  OrderTypes:
+    description: "The order types that pass the test."
+    notes:
+      - "The meaning of the order type values is not resolved."

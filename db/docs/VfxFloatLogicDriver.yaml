@@ -1,0 +1,18 @@
+# VfxFloatLogicDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ivfxfloatdriver) that returns the value of a
+    [logic float driver](/classes/ilogicfloatdriver). The client evaluates `LogicDriver` once
+    per frame for each emitter and stores the result. This driver returns the stored value,
+    so every particle of the emitter reads the same value in one frame. Logic drivers on
+    [IVfxBaseDriver](/classes/ivfxbasedriver) describes the pass.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  LogicDriver:
+    description: "The logic driver that is evaluated. It follows the rules of [ILogicFloatDriver](/classes/ilogicfloatdriver). If it is not set, the driver returns `0`."
+
+  Source:
+    description: "Selects the object that `LogicDriver` is evaluated for: `0` selects one object of the particle system and any other value a second one. Which objects these are is not established. If the selected object is missing, the driver returns `0`."

@@ -1,0 +1,19 @@
+# VfxScaleVector3Driver Documentation
+
+class:
+  description: |
+    A [Vector3 driver](/classes/ivfxvector3driver) that multiplies all three lanes of `Vector3`
+    by the [float driver](/classes/ivfxfloatdriver) `ScaleFactor`.
+
+    - The result starts at `(1, 1, 1)`. If `Vector3` is not set, the driver returns `(1, 1, 1)`
+      and does not evaluate `ScaleFactor`.
+    - If `ScaleFactor` is not set, the driver returns `Vector3` unscaled.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Vector3:
+    description: "The vector that is scaled."
+
+  ScaleFactor:
+    description: "The factor of every lane."

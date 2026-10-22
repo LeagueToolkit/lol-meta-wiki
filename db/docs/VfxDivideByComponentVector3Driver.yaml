@@ -1,0 +1,21 @@
+# VfxDivideByComponentVector3Driver Documentation
+
+class:
+  description: |
+    A [Vector3 driver](/classes/ivfxvector3driver) that divides `Vector3` by `Divisor` lane by
+    lane.
+
+    - The result starts at `(1, 1, 1)`. If `Vector3` is not set, the driver returns `(1, 1, 1)`
+      and does not evaluate `Divisor`.
+    - If `Divisor` is not set, the driver returns `Vector3` unchanged.
+    - A lane whose divisor is within `1e-6` of zero is not divided and keeps the value of
+      `Vector3`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Vector3:
+    description: "The dividend."
+
+  Divisor:
+    description: "The divisor of each lane."

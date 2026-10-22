@@ -1,0 +1,14 @@
+# SourceLessThanHealthPercentageFilter Documentation
+
+class:
+  description: |
+    A [stat stone event filter](/classes/istatstonelogicdriver) that passes when the
+    **health of the source unit**, as a fraction of its maximum health, is below
+    `healthPercentage` ÷ 100. A kind of event that has no source fails. The filter does not
+    set the amount.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  healthPercentage:
+    description: "The threshold in percent, `0`-`100`. The test is strict: health exactly at the threshold fails."

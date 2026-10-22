@@ -1,0 +1,20 @@
+# InterestPointVector3Driver Documentation
+
+class:
+  description: |
+    A [vector3 driver](/classes/ilogicvector3driver) that returns the **point of interest of
+    the source unit**, as a position in world units. It is the point of interest that
+    [LookAtInterestAngleParametricUpdater](/classes/lookatinterestangleparametricupdater)
+    turns toward.
+
+    The point is the first of these that exists:
+
+    1. The position of the unit that the game set as this unit's look-at target.
+    2. The position that the game set as this unit's look-at position.
+    3. The position of the nearest enemy unit.
+
+    The source must be a unit. Without a point of interest the driver returns `(0, 0, 0)`.
+  notes:
+    - "The nearest enemy is looked up again after an interval, not on every evaluation."
+    - "Not every unit falls back to the nearest enemy. Which units do was not identified."
+    - "Shipped data uses it as the `OrientationSource` of clip events in the attack animations of a TFT unit."

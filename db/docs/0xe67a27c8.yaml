@@ -1,0 +1,50 @@
+# 0xe67a27c8 Documentation
+
+class:
+  description: |
+    A [list text source](/classes/ilogicdrivervaluetostringlist) that returns the **display
+    names of the champions in the game that match a filter**, joined with the separator. The
+    filter is the same as on the bool driver [0xb5c28890](/classes/0xb5c28890), which
+    returns whether any champion matches.
+
+    The source walks all champions in the game and keeps a champion when both tests pass:
+
+    - The champion's team relation to the source matches `PlayersToInclude`.
+    - The champion's character record has one of the roles in `0x6f521854`.
+
+    The source then removes duplicates, so a champion that several players picked appears
+    once, and joins the display names of the remaining champions. On each update it builds
+    a new text only when the set of matching champions has changed.
+
+properties:
+  PlayersToInclude:
+    description: |
+      The team relations that pass. Each entry is one flag, and a champion passes when it
+      matches any of them.
+
+      | Value | Name | Champions that pass |
+      |-------|------|---------------------|
+      | `1` | Same team | Champions on the team of the source |
+      | `2` | All | Every champion |
+      | `4` | Unknown | A team-relation test that is not yet identified |
+      | `8` | Neutral | Champions on the neutral team `300` |
+
+  "0x6f521854":
+    description: |
+      The champion roles that pass. A champion passes when its character record lists one of
+      them.
+
+      | Value | Role |
+      |-------|------|
+      | `0` | Fighter |
+      | `1` | Tank |
+      | `2` | Assassin |
+      | `3` | Mage |
+      | `4` | Marksman |
+      | `5` | Support |
+
+  "0x9c5f0056":
+    description: "When non-zero, the filter reads the champion's own character record also while the champion is disguised. When `0`, a disguised champion is tested with the record of its disguise."
+
+  "0x8f7bb6e":
+    description: "Selects which of the champion's two character records the filter reads when it does not use a disguise record. Which value selects the base record and which the current one is not yet identified."

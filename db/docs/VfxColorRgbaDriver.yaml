@@ -1,0 +1,17 @@
+# VfxColorRgbaDriver Documentation
+
+class:
+  description: |
+    A [Vector4 driver](/classes/ivfxvector4driver) that builds a color from a Vector3 driver
+    and a float driver. `Rgb` gives the red, green and blue lanes, and `Alpha` gives the alpha
+    lane.
+  notes:
+    - "If `Rgb` is not set, the red, green and blue lanes are `1`. If `Alpha` is not set, the alpha lane is `1`. A driver with neither returns `(1, 1, 1, 1)`."
+    - "Both operands are evaluated into values that start at `1`, so a lane that an operand does not write is `1`."
+
+properties:
+  Rgb:
+    description: "The [Vector3 driver](/classes/ivfxvector3driver) of the red, green and blue lanes."
+
+  Alpha:
+    description: "The [float driver](/classes/ivfxfloatdriver) of the alpha lane."

@@ -1,0 +1,16 @@
+# HasBuffWithAttributeBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true while the source **has a buff
+    with a given attribute**. The unit's buff manager answers the test.
+
+    The source must be a unit. The driver returns `false` without one.
+  notes:
+    - "Shipped data uses it mostly on Nami, as an entry of a [OneTrueMaterialDriver](/classes/onetruematerialdriver)."
+
+properties:
+  BuffAttribute:
+    description: "The attribute to test for."
+    notes:
+      - "The meaning of the attribute values is not resolved."

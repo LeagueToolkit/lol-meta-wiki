@@ -1,0 +1,12 @@
+# IsAliveBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true when the source unit **is not
+    dead and an internal unit flag is clear**. The meaning of that flag is not determined,
+    so the driver is not always the opposite of
+    [IsDeadDynamicMaterialBoolDriver](/classes/isdeaddynamicmaterialbooldriver).
+
+    The source must be a unit. The driver returns `false` without one.
+  notes:
+    - "No shipped object uses it. Shipped data tests for a living unit with a [NotMaterialDriver](/classes/notmaterialdriver) around [IsDeadDynamicMaterialBoolDriver](/classes/isdeaddynamicmaterialbooldriver)."

@@ -1,0 +1,23 @@
+# TargetTeamFilter Documentation
+
+class:
+  description: |
+    A [stat stone event filter](/classes/istatstonelogicdriver) that passes when the
+    **target unit relates to the source unit** in one of the enabled ways. The filter does
+    not set the amount.
+
+    | Flag | Passes when |
+    |------|-------------|
+    | `Self` | The target is the source. |
+    | `ally` | The target is another unit on the source's team. |
+    | `enemy` | The target is on a different team. |
+
+properties:
+  Self:
+    description: "An event whose target is its source passes."
+
+  ally:
+    description: "An event whose target is another unit on the source's team passes."
+
+  enemy:
+    description: "An event whose target is on a different team from the source passes."

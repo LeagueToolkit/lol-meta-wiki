@@ -1,0 +1,24 @@
+# FixedDurationTriggeredBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that turns a change of `mBoolDriver` into a
+    **pulse of fixed length**. When the input turns true, the output is true for
+    `mCustomDuration` seconds, whatever the input does in that time.
+
+    The driver keeps one state **per source**:
+
+    1. When the input turns from false to true, the output turns true and the pulse starts.
+       The first evaluation for a source with a true input also starts a pulse.
+    2. While the pulse runs, the input is not read.
+    3. When `mCustomDuration` seconds have passed, the output turns false. A new pulse can
+       start only after the input has been false at least once.
+
+    So an input that stays true gives one pulse, not a series of pulses.
+
+properties:
+  mBoolDriver:
+    description: "The condition whose change from false to true starts a pulse. It must be set: the client does not check for a missing operand."
+
+  mCustomDuration:
+    description: "The length of the pulse, in seconds."

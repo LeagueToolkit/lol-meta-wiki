@@ -1,0 +1,11 @@
+# IsMapPropHoveredDynamicMaterialBoolDriver Documentation
+
+class:
+  description: |
+    A [bool driver](/classes/ilogicbooldriver) that is true while the **cursor is over the
+    source map prop**: the client picks the object under the cursor, and the driver is true
+    when that object is the source.
+
+    The source must be a map prop. The driver returns `false` without one.
+  notes:
+    - "No shipped object uses it."

@@ -1,0 +1,22 @@
+# VfxFloatLerpDriver Documentation
+
+class:
+  description: |
+    A [float driver](/classes/ivfxfloatdriver) that blends from `From` to `To` by `Factor`:
+    `From * (1 - Factor) + To * Factor`.
+
+    `Factor` is not clamped, so a value outside `0`-`1` extrapolates. If `From`, `To` or
+    `Factor` is not set, the driver writes nothing.
+  notes:
+    - "The client assigns random slots inside `From` and `To` but not inside `Factor`. A ranged random driver used as `Factor`, or nested under it, draws a new random number on every evaluation, so the blend changes every frame and for every particle."
+    - "No shipped object uses it."
+
+properties:
+  From:
+    description: "The value at `Factor` `0`."
+
+  To:
+    description: "The value at `Factor` `1`."
+
+  Factor:
+    description: "The blend weight."

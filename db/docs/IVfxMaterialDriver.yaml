@@ -1,0 +1,25 @@
+# IVfxMaterialDriver Documentation
+
+class:
+  description: |
+    A **particle material driver**: an object that computes one parameter of a particle
+    material. A material lists its drivers in `VfxMaterialDefinitionData.materialDrivers`, a
+    map from a material parameter name to a driver. The client writes the result of each
+    driver into the parameter of that name.
+
+    A driver returns a four-component value. A float driver writes its value into all four
+    components.
+
+    The client evaluates the drivers of the material on every update of the emitter. The
+    `frequency` of a driver selects how often, and which value of **t** the driver samples:
+
+    | `frequency` | Name | Evaluation |
+    |-------------|------|------------|
+    | `0` | Per emitter | Once per emitter update. The result applies to every particle. |
+    | `1` | Per particle | Once per live particle, with t = the particle's age divided by its lifetime, clamped to `0`-`1`. Each particle gets its own value. |
+    | Other | Skipped | The client skips the entry. |
+
+    For a per-emitter driver the client passes an emitter-level time as t. Which time that
+    is has not yet been identified.
+  examples:
+    - "Shipped skin particles use per-particle drivers to animate material parameters such as `Outline_FinalAlphaMult`, `Master_Blend` and `LayerTint01` over the life of each particle."

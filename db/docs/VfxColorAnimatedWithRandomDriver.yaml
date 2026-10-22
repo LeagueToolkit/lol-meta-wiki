@@ -1,0 +1,25 @@
+# VfxColorAnimatedWithRandomDriver Documentation
+
+class:
+  description: |
+    The color form of [VfxFloatAnimatedWithRandomDriver](/classes/vfxfloatanimatedwithrandomdriver).
+    The driver samples the `ValueColor` curve in `colors` at the time that `frequency`
+    selects, and returns red, green, blue and alpha as a Vector4. `frequency`, `looping` and
+    the random ranges work as on that page.
+
+    If `colors` has no curve, the driver returns `colors.constantValue`.
+  notes:
+    - "Shipped component graphs (see [VfxComponents](/classes/vfxcomponents)) use this driver for the `InitialColor` of the render component's `Color` container. Every shipped instance sets only a constant color and no curve."
+
+properties:
+  frequency:
+    description: "The time source that the curve is sampled at. The values are listed on [IVfxBaseDriver](/classes/ivfxbasedriver)."
+
+  looping:
+    description: "If `true`, a time past the end of the curve wraps back to the start of the curve."
+
+  colors:
+    description: "The color curve and its random ranges."
+
+  ShareRandom:
+    description: "If `true`, all four lanes read one random value. If `false`, each lane that has a random range reads its own random value."

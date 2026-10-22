@@ -1,0 +1,17 @@
+# RawVector3ConceptLogicDriver Documentation
+
+class:
+  description: |
+    A [vector3 driver](/classes/ilogicvector3driver) that returns the **current value of a
+    [Vector3Concept](/classes/vector3concept)** for the source, without easing. While nothing
+    has written the concept for the source, the driver returns the concept's `DefaultValue`.
+
+    It works like [RawFloatConceptLogicDriver](/classes/rawfloatconceptlogicdriver).
+    [EasedVector3ConceptLogicDriver](/classes/easedvector3conceptlogicdriver) reads the same
+    value through the concept's easing.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Concept:
+    description: "The [Vector3Concept](/classes/vector3concept) to read."

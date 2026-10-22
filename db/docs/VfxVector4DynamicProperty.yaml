@@ -1,0 +1,18 @@
+# VfxVector4DynamicProperty Documentation
+
+class:
+  description: |
+    A **vector4 driver value**: the form in which a property of the component VFX system takes
+    a four-component vector or an RGBA colour from the driver graph. The holder evaluates the driver in `Vector4` each time it
+    needs the value. [IVfxBaseDriver](/classes/ivfxbasedriver) describes when that is and
+    whether the random values of the expression are per particle or per emitter.
+  notes:
+    - "Shipped data uses it only inside [VfxShimmerEmitterDefinitionData](/classes/vfxshimmeremitterdefinitiondata) emitters, for particle colours."
+
+properties:
+  Vector4:
+    description: |
+      The top node of the expression. If it is not set, the property keeps the value that its
+      holder starts from, which the holder's page states.
+    examples:
+      - "A constant colour is a [VfxColorConstantDriver](/classes/vfxcolorconstantdriver) in `Vector4`."
