@@ -1,0 +1,32 @@
+# AttackableEntityTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) that places a **unit** on the map, such
+    as a turret, an inhibitor, a nexus or a minion. It creates an
+    [AttackableEntity](/classes/attackableentity). The `AttackableUnit` component creates or
+    binds the unit when the entity activates, and `Character` says which character and skin the
+    unit is.
+
+    The template is networked: the client creates the entity at map load, and the server
+    activates it.
+
+properties:
+  Networking:
+    description: "Receives the server's updates for the entity. Because of it, the client does not activate the entity; the server does."
+  AttackableUnit:
+    description: "Creates or binds the unit that the entity represents. See [AttackableUnitGeComponentDef](/classes/attackableunitgecomponentdef)."
+  Character:
+    description: "Character record and skin of the unit."
+  Team:
+    description: "Team of the unit."
+  Animation:
+    description: "Plays the animations that sequences request on the unit."
+  Icon:
+    description: "Minimap and HUD icon of the entity."
+  StateMachine:
+    description: "State machine of the entity. When null, the entity has no state machine."
+  dynamicMaterial:
+    description: "Material parameters that sequences set on the entity."
+  Sequencer:
+    description: "Lets sequences act on the entity."

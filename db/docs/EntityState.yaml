@@ -1,0 +1,21 @@
+# EntityState Documentation
+
+class:
+  description: |
+    One state of an [entity state machine](/classes/entitystatemachine): the sequence that
+    plays when the entity enters the state and the sequence that plays when it leaves the
+    state.
+
+    A state plays its sequences only if the entity's [`StateMachineGeComponentDef.states`](/classes/statemachinegecomponentdef#states) also
+    has an entry for the same state hash, and that entry has a key for the sequence role. See
+    [StateMachineHelperStateData](/classes/statemachinehelperstatedata).
+
+properties:
+  InSequence:
+    description: |
+      [Sequence](/classes/sequence) that plays when the entity enters the state. The client
+      starts it at the time that has passed since the state change, so an entity that
+      activates after the change joins the sequence where it is.
+
+  OutSequence:
+    description: "Sequence that plays when the entity leaves the state. If it is not set, nothing plays."

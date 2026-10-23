@@ -1,0 +1,17 @@
+# ModesScenarioEntityTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) for a **mode scenario** entity: a
+    networked entity whose `Scenario` data a game mode UI panel shows. It creates a
+    [LolGameEntity](/classes/lolgameentity). The client creates the entity at map load and
+    waits for the server to activate it.
+  notes:
+    - "No shipped object uses it."
+    - "The template holds a script component definition that no property exposes. The client never builds a script component from it."
+
+properties:
+  Networking:
+    description: "Receives the server's updates for the entity. Because of it, the client does not activate the entity; the server does."
+  Scenario:
+    description: "Icon, text and visibility that the mode UI shows for the entity. See [ModesScenarioGeComponentDef](/classes/modesscenariogecomponentdef)."

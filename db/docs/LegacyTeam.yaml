@@ -1,0 +1,10 @@
+# LegacyTeam Documentation
+
+class:
+  description: "A [team source](/classes/iteam) that returns `Team` as the team index, without conversion."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Team:
+    description: "The team index, returned without conversion. Whether it is the client's internal team index or the `100` / `200` / `300` id that [`TeamGeComponentDef.Team`](/classes/teamgecomponentdef#team) takes is not yet identified."

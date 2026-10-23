@@ -1,0 +1,10 @@
+# INeutralCampPreSpawnDef Documentation
+
+class:
+  description: |
+    What a **neutral camp shows before its next spawn**. It sits in
+    [`NeutralCampGeComponentDef.PreSpawnBehavior`](/classes/neutralcampgecomponentdef#prespawnbehavior). When the camp receives the time of its next
+    spawn, the client starts the behaviour with the time that remains until the spawn. If no
+    time remains, the behaviour does not start.
+  notes:
+    - "No shipped object uses it."

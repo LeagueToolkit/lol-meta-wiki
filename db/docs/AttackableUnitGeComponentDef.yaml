@@ -1,0 +1,65 @@
+# AttackableUnitGeComponentDef Documentation
+
+class:
+  description: |
+    The definition of an [AttackableUnitGeComponent](/classes/attackableunitgecomponent).
+    It sets which kind of **unit** a map-placed entity is and where on the lanes it stands.
+    The character and the skin of the unit come from the entity's `Character` field, a
+    [SkinCharacterGeComponentDef](/classes/skincharactergecomponentdef).
+  notes:
+    - "Shipped data uses it for turrets, inhibitors, nexuses and generic units."
+
+properties:
+  type:
+    description: |
+      The kind of unit that the component creates:
+
+      | Value | Unit | On world reset |
+      |---|---|---|
+      | `0` | turret | kept |
+      | `1` | inhibitor | kept |
+      | `2` | nexus | kept |
+      | `3` | minion | destroyed |
+      | `4` | generic unit | destroyed |
+
+      Values `0` to `2` mark the entity as a structure. The reset rule applies to units that
+      the client created.
+    notes:
+      - "Any other value creates no unit. If the component has to create the unit, activating the entity then crashes the client."
+
+  LaneDefinition:
+    description: |
+      Lane and position of the unit, a [SrLaneDefinition](/classes/srlanedefinition).
+      Turrets and inhibitors use the lane and the position, a nexus uses only the lane. Both
+      values become part of the unit's object name. When it is null, the client uses lane
+      `3` and position `0`.
+
+  AiScriptOverride:
+    description: |
+      File name of a Lua AI script. The client passes it to the code that creates the unit.
+    notes:
+      - "Shipped data sets it on a few neutral units."
+
+  "0xcf9b9ca4":
+    description: |
+      Named script values, each an [IScriptValueGet](/classes/iscriptvalueget). The client
+      passes the map to the code that creates the unit, together with `AiScriptOverride`.
+      How that code uses it was not traced.
+
+  BotDifficulty:
+    description: "The client does not read it when it creates or updates the unit."
+
+  "0x397fe037":
+    description: "Unknown bool. The client does not read it when it creates or updates the unit."
+
+  "0xaa0ee4f5":
+    description: "Unknown bool. The client does not read it when it creates or updates the unit."
+
+  "0xf1d3a034":
+    description: "Unknown bool. The client does not read it when it creates or updates the unit."
+
+  "0x4b31cd83":
+    description: "Unknown bool. The client does not read it when it creates or updates the unit."
+
+  "0xafc7dac6":
+    description: "Unknown bool. The client does not read it when it creates or updates the unit."

@@ -1,0 +1,9 @@
+# PlanarReflectorGeComponent Documentation
+
+class:
+  description: |
+    The entity component that a
+    [PlanarReflectorGeComponentDef](/classes/planarreflectorgecomponentdef) adds. When the
+    entity spawns, it loads `SkyboxTexture`. When the entity activates, it joins the list of
+    reflectors that the reflection pass selects from. Deactivation and reset remove it. The
+    definition describes the selection, the mirror plane and the render settings.

@@ -1,0 +1,41 @@
+# VfxGeComponentDef Documentation
+
+class:
+  description: |
+    A **particle effect** placed on the map. It sits in the `Vfx` field of a
+    [VfxEntityTemplate](/classes/vfxentitytemplate) or a
+    [BillboardEntityTemplate](/classes/billboardentitytemplate). When the entity activates, the
+    [VfxGeComponent](/classes/vfxgecomponent) creates a particle object of the older game
+    object system at the entity position and starts the effect of `system`.
+
+    After all entities of the map have spawned, the definition preloads the effect of
+    `system`.
+
+    If the server sends a start time for the effect, the client fast-forwards the effect by
+    the time that has passed since then. Deactivation clears the start time.
+  notes:
+    - "Shipped maps use it for decorative effects, for effects on structures and for the effects of superwards."
+
+properties:
+  system:
+    description: "The [VfxSystemDefinitionData](/classes/vfxsystemdefinitiondata) of the effect."
+  colorModulate:
+    description: "Colour multiplier that the client passes to the effect when it creates it."
+  TextureOverride:
+    description: "Texture replacements that the client applies to the effect when it creates it (see [0x3e265091](/classes/0x3e265091))."
+  eyeCandy:
+    description: "If set, the client adds the effect object to the `EyeCandy` group of objects."
+  AllDimensions:
+    description: "If set, the client passes a dimension setting to the effect object when it creates it. Its effect has not been traced."
+  "0x9f499a15":
+    description: |
+      If set, the client marks the effect object as team-filtered and gives it the teams of
+      `0x658b896a`. How the effect object uses the teams has not been traced.
+  "0x658b896a":
+    description: "The teams for `0x9f499a15`. Each [ITeam](/classes/iteam) entry gives one team."
+  "0x63176011":
+    description: "Copied into the effect object when the client creates it. Its effect has not been traced."
+  "0xf718ab13":
+    description: "Not read when the client creates the effect. No client reader has been identified."
+  "0x9d9b6793":
+    description: "Not read when the client creates the effect. No client reader has been identified."

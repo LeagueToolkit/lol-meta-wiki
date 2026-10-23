@@ -1,0 +1,17 @@
+# 0xa98b5b03 Documentation
+
+class:
+  description: |
+    An entity component that **spins the character mesh** of its entity about the vertical
+    axis, with a speed that decays to zero. Its settings come from its definition,
+    [0x15898c52](/classes/0x15898c52).
+
+    Each tick, while the entity spins, the component finds the game object of the entity's
+    [CharacterMeshGeComponent](/classes/charactermeshgecomponent). It lowers the angular
+    speed by both decay rates of the definition and adds the speed to the yaw of the object.
+    The speed is in degrees per second. When the speed falls to 0.01 degrees per second or
+    less, the spin stops.
+
+    Deactivating the entity also stops the spin.
+  notes:
+    - "No entity template holds its definition, and no client code was found that starts the spin."

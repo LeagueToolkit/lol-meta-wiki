@@ -1,0 +1,7 @@
+# AnimationGeComponentDef Documentation
+
+class:
+  description: |
+    The definition of an [AnimationGeComponent](/classes/animationgecomponent). When the
+    client creates an entity from a template that holds this definition, it adds the
+    component to the entity.

@@ -1,0 +1,23 @@
+# BillboardEntityTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) that places a **billboard**: a particle
+    system on a plane that the client's pick test can hit and that fades with the entity's
+    visibility.
+    It creates a [VfxEntity](/classes/vfxentity).
+
+    The client never builds the networking component of this template, so the entity is local:
+    it activates at map load and does not receive server updates.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Networking:
+    description: "Not built for this template. The entity has no networking component."
+  Billboard:
+    description: "Click area and fade behaviour of the billboard. See [BillboardGeComponentDef](/classes/billboardgecomponentdef)."
+  Vfx:
+    description: "The particle system that the billboard shows."
+  Team:
+    description: "Team of the entity."

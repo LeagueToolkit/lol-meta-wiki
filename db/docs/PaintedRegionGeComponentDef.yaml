@@ -1,0 +1,24 @@
+# PaintedRegionGeComponentDef Documentation
+
+class:
+  description: |
+    A region that is **painted cell by cell** onto the nav grid instead of being sampled from an
+    outline. It sits in the `PaintedRegion` field of a
+    [PaintedRegionEntityTemplate](/classes/paintedregionentitytemplate).
+
+    When the entity spawns, the [PaintedRegionGeComponent](/classes/paintedregiongecomponent)
+    registers the region with the region manager of the map. The manager takes the cells of
+    `data`, clamps their coordinates to the grid and writes the tag of each cell into the
+    region group of `data`. Activation turns the region on in the manager and deactivation
+    turns it off.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  priority:
+    description: |
+      Priority against other regions that cover the same cell in the same group. A painted
+      region writes its tag into a cell if its priority is not lower than the best priority
+      found so far for that cell.
+  data:
+    description: "The region group and the painted cells. See [PaintedRegionData](/classes/paintedregiondata)."

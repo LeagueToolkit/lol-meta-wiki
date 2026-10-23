@@ -1,0 +1,9 @@
+# AttackableEntity Documentation
+
+class:
+  description: |
+    The entity that an [AttackableEntityTemplate](/classes/attackableentitytemplate) creates.
+    Its primary component is the
+    [AttackableUnitGeComponent](/classes/attackableunitgecomponent), which links the entity to
+    its unit. When the entity's transform changes, the client moves the unit with it. See
+    [LolGameEntity](/classes/lolgameentity).

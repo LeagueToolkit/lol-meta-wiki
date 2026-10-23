@@ -1,0 +1,12 @@
+# EsportsBannerGeComponentDef Documentation
+
+class:
+  description: |
+    The definition of an [EsportsBannerGeComponent](/classes/esportsbannergecomponent), in
+    the `banner` field of an
+    [EsportsBannerEntityTemplate](/classes/esportsbannerentitytemplate). The client build
+    that was read does not register this class, so its behaviour is not known.
+
+properties:
+  banner:
+    description: "The banner, an [EsportsBannerData](/classes/esportsbannerdata)."

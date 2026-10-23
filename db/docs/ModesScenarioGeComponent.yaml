@@ -1,0 +1,9 @@
+# ModesScenarioGeComponent Documentation
+
+class:
+  description: |
+    The entity component that a [ModesScenarioGeComponentDef](/classes/modesscenariogecomponentdef)
+    adds. It has no behaviour of its own. The mode interface reaches the definition through
+    it.
+  notes:
+    - "If the entity that the view controller binds to has no scenario component, the client crashes."

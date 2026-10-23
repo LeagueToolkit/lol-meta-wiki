@@ -1,0 +1,7 @@
+# PaintedRegionGeComponent Documentation
+
+class:
+  description: |
+    The entity component that a [PaintedRegionGeComponentDef](/classes/paintedregiongecomponentdef)
+    adds. When the entity spawns, it registers the painted region with the region manager of
+    the map. Activation turns the region on in the manager and deactivation turns it off.

@@ -1,0 +1,16 @@
+# WorldSpaceUiEntityTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) that places a **UI element in the world**.
+    It creates a plain [GameEntity](/classes/gameentity). When the entity activates, its
+    component opens a UI view controller and anchors it to the entity's transform; when the
+    entity deactivates, the controller closes.
+
+    The entity is local: it activates at map load when `0xbbe68da1` is true.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  "0xcd4b1f10":
+    description: "The view controller, its anchor and its scale. See [WorldSpaceUiGeComponentDef](/classes/worldspaceuigecomponentdef)."

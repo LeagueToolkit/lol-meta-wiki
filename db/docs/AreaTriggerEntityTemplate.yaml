@@ -1,0 +1,18 @@
+# AreaTriggerEntityTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) that places a networked
+    [LolGameEntity](/classes/lolgameentity) with a team, an icon and a sequencer. None of its
+    components tests an area on the client. The client creates the entity at map load and
+    waits for the server to activate it.
+
+properties:
+  Networking:
+    description: "Receives the server's updates for the entity. Because of it, the client does not activate the entity; the server does."
+  Team:
+    description: "Team of the entity, which the other components read."
+  Icon:
+    description: "Minimap and HUD icon of the entity."
+  Sequencer:
+    description: "Lets sequences act on the entity."

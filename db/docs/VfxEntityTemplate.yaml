@@ -1,0 +1,27 @@
+# VfxEntityTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) that places a **particle system** on the
+    map. It creates a [VfxEntity](/classes/vfxentity). The `Vfx` component creates the
+    particle object at the entity position when the entity activates and removes it when the
+    entity deactivates.
+
+properties:
+  IsReplicated:
+    description: |
+      Whether the server controls the entity. When false, the client builds no networking
+      component: the entity activates at map load if `0xbbe68da1` allows it, and it does not
+      receive server updates. When true, the entity waits for the server to activate it.
+    notes:
+      - "Shipped templates that set it set it to `false`."
+  Networking:
+    description: "Receives the server's updates for the entity. The client does not build it when `IsReplicated` is false."
+  Vfx:
+    description: "The particle system and its settings. See [VfxGeComponentDef](/classes/vfxgecomponentdef)."
+  StateMachine:
+    description: "State machine of the entity. When null, the entity has no state machine."
+  Team:
+    description: "Team of the entity."
+  Sequencer:
+    description: "Lets sequences act on the entity."

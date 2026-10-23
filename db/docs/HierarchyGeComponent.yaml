@@ -1,0 +1,10 @@
+# HierarchyGeComponent Documentation
+
+class:
+  description: |
+    The entity component that a [HierarchyGeComponentDef](/classes/hierarchygecomponentdef)
+    adds. It holds the **child entities** of the entity. When the entity activates, every
+    child activates. When the entity deactivates, every child deactivates.
+
+    [PrefabEntityTemplate](/classes/prefabentitytemplate) describes how a prefab creates its
+    children.

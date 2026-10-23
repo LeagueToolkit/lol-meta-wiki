@@ -1,0 +1,7 @@
+# SuperwardGeComponent Documentation
+
+class:
+  description: |
+    The entity component of a [SuperwardGeComponentDef](/classes/superwardgecomponentdef). It
+    holds the ground mesh of the vision region, the team list that the server sends and the
+    two effects. Each tick it shows or hides the region entity as the definition describes.

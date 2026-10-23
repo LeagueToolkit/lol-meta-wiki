@@ -1,0 +1,12 @@
+# IconReference Documentation
+
+class:
+  description: |
+    A **reference to an icon texture** for game mode interfaces. For example, the mode
+    interface puts the icon of a [ModesScenarioGeComponentDef](/classes/modesscenariogecomponentdef) into an image element.
+  notes:
+    - "Shipped values are interface icons of game modes."
+
+properties:
+  texturePath:
+    description: "Path of the icon texture."

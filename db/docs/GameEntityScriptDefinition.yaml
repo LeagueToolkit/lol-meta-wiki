@@ -1,0 +1,19 @@
+# GameEntityScriptDefinition Documentation
+
+class:
+  description: |
+    One **script of a map entity** and the values of its instance variables. When the
+    entity spawns, the client creates an instance of `Script` for the entity. For each
+    instance variable of the script, it evaluates the getter in `InstanceVariableOverrides`
+    with the same key, or the default getter of the script if there is none.
+  notes:
+    - "Override keys that the script does not declare are ignored."
+    - "If a getter produces no value, the client logs a script error."
+    - "No shipped object uses it."
+
+properties:
+  Script:
+    description: "The entity script. If it is not set, the client skips the entry."
+
+  InstanceVariableOverrides:
+    description: "Getters for instance variables of the script, keyed by the same hash as the variable in the `InstanceVariables` of the script. Each one replaces the default of the variable for this entity. See [IScriptValueGet](/classes/iscriptvalueget)."

@@ -1,0 +1,23 @@
+# BarracksEntityTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) that places a **minion barracks**: the
+    point where the minions of one lane and one team spawn. It creates a
+    [BarracksEntity](/classes/barracksentity). The `Barracks` component creates the barracks
+    object and registers its lane path when the entity activates.
+
+    The template is networked: the client creates the entity at map load, and the server
+    activates it.
+
+properties:
+  Networking:
+    description: "Receives the server's updates for the entity. Because of it, the client does not activate the entity; the server does."
+  Barracks:
+    description: "Lane, configuration and path of the barracks. See [BarracksGeComponentDef](/classes/barracksgecomponentdef)."
+  Team:
+    description: "Team of the barracks."
+  Icon:
+    description: "Minimap and HUD icon of the entity."
+  Sequencer:
+    description: "Lets sequences act on the entity."

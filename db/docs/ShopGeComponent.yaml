@@ -1,0 +1,7 @@
+# ShopGeComponent Documentation
+
+class:
+  description: |
+    The entity component that builds the shop object of a
+    [ShopGeComponentDef](/classes/shopgecomponentdef) when the entity activates. It owns the
+    object as described on [NeutralCampGeComponent](/classes/neutralcampgecomponent).

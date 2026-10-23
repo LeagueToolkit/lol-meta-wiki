@@ -1,0 +1,19 @@
+# RotateMapLightUpdater Documentation
+
+class:
+  description: |
+    A [light updater](/classes/imaplightupdater) that **turns a spotlight** at a constant
+    speed. On each update the client sets the rotation angle about each axis to the time
+    multiplied by the matching component of `AxisSpeed`, wrapped to one full turn, and
+    combines that rotation with the transform of the light.
+
+    It has no effect on point lights.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  AxisSpeed:
+    description: "Rotation speed about the X, Y and Z axes, in radians per second."
+
+  WorldSpace:
+    description: "Selects the order in which the client multiplies the rotation and the transform of the light, so the light turns about the world axes or about its own axes. Which value gives which order was not confirmed."

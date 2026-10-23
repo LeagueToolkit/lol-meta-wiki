@@ -1,0 +1,15 @@
+# PreSpawnTimerIconProgression Documentation
+
+class:
+  description: |
+    The **icon steps of a pre-spawn timer**: a list of icons, each with the time before the
+    spawn at which it appears. When the object loads, the client sorts the list by
+    `TimeBeforeSpawn`, from the largest to the smallest, so the authored order does not
+    matter. [PreSpawnTimerIconDef](/classes/prespawntimericondef) describes how the steps
+    play.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  IconData:
+    description: "The steps. Each entry has an `Icon` ([GameEntityIconData](/classes/gameentityicondata)) and a `TimeBeforeSpawn` in seconds."

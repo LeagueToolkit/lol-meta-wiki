@@ -6,4 +6,4 @@ class:
     client creates an entity from a template that holds this definition, it adds the
     component to the entity.
   notes:
-    - "No shipped object uses it."
+    - "The `Sequencer` field of a template is an embedded definition, so every entity of a template class with that field gets the component, including every shipped one."

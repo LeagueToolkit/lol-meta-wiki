@@ -1,0 +1,24 @@
+# CharacterMeshGeComponentDef Documentation
+
+class:
+  description: |
+    The definition of a [CharacterMeshGeComponent](/classes/charactermeshgecomponent): a
+    **character mesh placed on the map**, with an optional idle animation. The character and
+    the skin come from the entity's `Character` field, a
+    [SkinCharacterGeComponentDef](/classes/skincharactergecomponentdef).
+
+properties:
+  PlayIdleAnimation:
+    description: |
+      When `true`, the mesh starts its idle animation when the entity activates. When
+      `false`, the component starts no animation.
+
+  IdleAnimationName:
+    description: |
+      Name of the idle animation clip. If the mesh's animation graph has no clip of that
+      name, the client plays `Idle1`.
+
+  "0xb887f6e9":
+    description: |
+      Random start time of the idle animation, in seconds. The idle starts at a random time
+      between 0 and this value. At 0 the clip starts at its beginning.

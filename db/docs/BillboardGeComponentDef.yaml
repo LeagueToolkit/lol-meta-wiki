@@ -1,0 +1,24 @@
+# BillboardGeComponentDef Documentation
+
+class:
+  description: |
+    The definition of a [BillboardGeComponent](/classes/billboardgecomponent): a pick
+    rectangle in the plane of the entity's VFX.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  HitRect:
+    description: |
+      The pick rectangle, as `[min x, min y, max x, max y]` along the two axes of the plane
+      of the entity's VFX object. A ray hits the billboard when its intersection with that
+      plane lies inside the rectangle.
+
+  "0x584ffb14":
+    description: "Unknown bool. The client does not read it."
+
+  "0x795c065":
+    description: "Unknown bool. The client does not read it."
+
+  "0x461a5f31":
+    description: "Unknown hash. The client does not read it."

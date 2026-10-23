@@ -1,0 +1,7 @@
+# CinematicCameraGeComponent Documentation
+
+class:
+  description: |
+    The entity component that a
+    [CinematicCameraGeComponentDef](/classes/cinematiccameragecomponentdef) adds. It does
+    nothing in the client.

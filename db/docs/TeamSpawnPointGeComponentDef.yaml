@@ -1,0 +1,29 @@
+# TeamSpawnPointGeComponentDef Documentation
+
+class:
+  description: |
+    The **spawn point of a team**, the area where the team's units regenerate. It sits in the
+    `TeamSpawnPoint` field of a [TeamSpawnPointEntityTemplate](/classes/teamspawnpointentitytemplate).
+    When the entity activates, the [TeamSpawnPointGeComponent](/classes/teamspawnpointgecomponent)
+    builds a spawn point object of the older game object system with the radius, the tick
+    interval and the health regeneration of this definition.
+
+    Each tick of the spawn point object, the client finds up to 128 units within
+    `RegenAreaRadius` of the spawn point and schedules the next tick `RegenTickInterval`
+    seconds later.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  RegenAreaRadius:
+    description: "Radius of the regeneration area around the entity, in world units."
+  RegenTickInterval:
+    description: "Time between two regeneration ticks, in seconds."
+  HealthRegenPercent:
+    description: "Passed to the spawn point object and read by its tick. The exact regeneration formula has not been traced."
+  ManaRegenPercent:
+    description: "Not passed to the spawn point object. The client does not use it."
+  HpMaxPenaltyRegenPercent:
+    description: "Not passed to the spawn point object. The client does not use it."
+  "0x46551578":
+    description: "Not passed to the spawn point object. The client does not use it."

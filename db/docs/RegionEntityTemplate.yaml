@@ -1,0 +1,14 @@
+# RegionEntityTemplate Documentation
+
+class:
+  description: |
+    A [region template](/classes/regionentitybasetemplate) that can also own map geometry
+    meshes. It creates a [RegionEntity](/classes/regionentity). A mesh in the `.mapgeo` that
+    carries this entity's `name` hash is given to its `envMesh` component, as on
+    [EnvironmentEntityTemplate](/classes/environmententitytemplate).
+  notes:
+    - "Shipped region templates set `0xbbe68da1` to `false`, so the regions stay disabled until a script, a sequence or another system activates them."
+
+properties:
+  envMesh:
+    description: "Receives the map geometry meshes that carry this entity's name. See [EnvMeshGeComponentDef](/classes/envmeshgecomponentdef)."

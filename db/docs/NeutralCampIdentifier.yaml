@@ -1,0 +1,28 @@
+# NeutralCampIdentifier Documentation
+
+class:
+  description: |
+    The **identity of a neutral camp**: its name and the kinds of monster it can spawn. A
+    [NeutralCampGeComponentDef](/classes/neutralcampgecomponentdef) links it in `CampIdentifier`.
+
+    The client gives the camp object the name `CampName`. When the object loads, the client
+    indexes the `SpawnTypes` by the hash of their `TypeName`.
+
+    The server tells the client which spawn type the camp currently has, by the hash of the
+    type name. When that hash changes, the client finds the spawn type with that hash and runs
+    the components in its `0x90373b91` list on the camp (see
+    [IdentifierComponents](/classes/identifiercomponents)). If no spawn type has the hash,
+    nothing happens.
+  notes:
+    - "If `CampIdentifier` is not set, the client names the camp object from its team and spawn index."
+    - "The script block [GetCampSpawnTypes](/classes/getcampspawntypes) reads the `TypeName` of each spawn type."
+
+properties:
+  CampName:
+    description: "Name of the camp object."
+
+  SpawnTypes:
+    description: "The kinds of monster the camp can spawn. See [IdentifierComponents](/classes/identifiercomponents)."
+
+  "0x2d63dca5":
+    description: "Components for the whole camp, called with the hash of `CampName` when the identifier loads. The list can hold no object, because no class implements [0x10a4976a](/classes/0x10a4976a)."

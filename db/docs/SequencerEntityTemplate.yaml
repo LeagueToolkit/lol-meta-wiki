@@ -1,6 +1,21 @@
 # SequencerEntityTemplate Documentation
 
 class:
-  description: "An entity template. What the client does with entities created from it is not yet identified."
+  description: |
+    An [entity template](/classes/gameentitytemplate) for a networked entity that plays
+    sequences by **state**. It creates a [GameModeEntity](/classes/gamemodeentity). The server
+    sets the entity's state, and the `SequencerStateMachine` component plays the sequences of
+    each state. See [StateMachineGeComponentDef](/classes/statemachinegecomponentdef).
+
+    The client creates the entity at map load and waits for the server to activate it.
   notes:
     - "No shipped object uses it."
+    - "The template holds a script component definition that no property exposes. The client never builds a script component from it."
+
+properties:
+  Networking:
+    description: "Receives the server's updates for the entity, including its state. Because of it, the client does not activate the entity; the server does."
+  SequencerStateMachine:
+    description: "The state machine and the per-state sequence overrides. See [StateMachineGeComponentDef](/classes/statemachinegecomponentdef)."
+    notes:
+      - "The property is always present, so its `StateMachineDef` must be set. With a null `StateMachineDef` the client crashes when it creates the entity."

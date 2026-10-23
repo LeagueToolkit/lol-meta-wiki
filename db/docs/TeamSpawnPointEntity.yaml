@@ -1,0 +1,10 @@
+# TeamSpawnPointEntity Documentation
+
+class:
+  description: |
+    The entity that a [TeamSpawnPointEntityTemplate](/classes/teamspawnpointentitytemplate)
+    creates. When the client creates it, it registers the entity position as a spawn point of
+    the entity's team. Its primary component is the
+    [TeamSpawnPointGeComponent](/classes/teamspawnpointgecomponent), which links the entity to
+    the spawn point object. When the entity's transform changes, the client moves the object
+    with it. See [LolGameEntity](/classes/lolgameentity).

@@ -1,0 +1,7 @@
+# DragonCampGeComponent Documentation
+
+class:
+  description: |
+    The entity component that a [DragonCampGeComponentDef](/classes/dragoncampgecomponentdef)
+    adds. It does nothing in the client. The camp behaviour of the entity comes from its
+    [NeutralCampGeComponent](/classes/neutralcampgecomponent).

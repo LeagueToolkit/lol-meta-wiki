@@ -1,0 +1,15 @@
+# GameModeEntityTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) for an entity that has only a position,
+    a name, tags and a team. It creates a [GameModeEntity](/classes/gamemodeentity). Scripts
+    and sequences find such an entity by its name or its tags.
+
+    The entity is local: it activates at map load when `0xbbe68da1` is true.
+  notes:
+    - "The template holds a script component definition that no property exposes. The client never builds a script component from it, so this entity cannot carry authored scripts."
+
+properties:
+  Team:
+    description: "Team of the entity."

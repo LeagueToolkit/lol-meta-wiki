@@ -1,0 +1,16 @@
+# StateMachineHelperSequenceData Documentation
+
+class:
+  description: |
+    The **entity bindings of one state sequence**. Before the client plays the sequence, it
+    binds a map entity to each [selector](/classes/sequenceobjectselector) in
+    `SelectorMappings`, so that the actions of the sequence act on those entities.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  SelectorMappings:
+    description: |
+      The bindings. Each entry names a `Selector` of the sequence and a map entity by the
+      hash in `Entity`. If `Entity` does not resolve to an entity, the client skips the
+      entry and the selector stays unbound.

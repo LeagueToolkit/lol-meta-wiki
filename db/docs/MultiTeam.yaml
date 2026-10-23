@@ -1,0 +1,15 @@
+# MultiTeam Documentation
+
+class:
+  description: |
+    A [team source](/classes/iteam) that returns the team of a
+    [TeamDefinition](/classes/teamdefinition). The client hashes the `teamName` of the
+    definition and looks the hash up in the team table of the current game mode. If the mode
+    has no team of that name, the source returns the default team.
+  notes:
+    - "If `Team` is not set or does not resolve, the client reads through a null pointer and crashes."
+    - "No shipped object uses it."
+
+properties:
+  Team:
+    description: "The team definition to look up."

@@ -1,0 +1,7 @@
+# PaintedRegionEntity Documentation
+
+class:
+  description: |
+    The entity that a [PaintedRegionEntityTemplate](/classes/paintedregionentitytemplate)
+    creates. The client's region manager registers it by this class when the entity spawns, and
+    enables its region while the entity is active.

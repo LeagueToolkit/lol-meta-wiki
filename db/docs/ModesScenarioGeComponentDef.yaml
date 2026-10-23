@@ -1,0 +1,24 @@
+# ModesScenarioGeComponentDef Documentation
+
+class:
+  description: |
+    The data of a **game mode scenario**: an icon, a text and a show flag that the interface of
+    a game mode displays. It sits in the `Scenario` field of a
+    [ModesScenarioEntityTemplate](/classes/modesscenarioentitytemplate).
+
+    The component itself does nothing (see
+    [ModesScenarioGeComponent](/classes/modesscenariogecomponent)). A view controller of the
+    mode interface binds to the scenario entity by its network id, reads this definition from
+    the entity's component and fills its own elements from it.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Icon:
+    description: "Texture that the view controller loads into its image element."
+  "0xacbf093d":
+    description: "Text that the view controller writes into its text element."
+  "0xd15f7f26":
+    description: |
+      Show flag. If false, the view controller hides itself. If true, the view controller is
+      shown when it is in its active state.

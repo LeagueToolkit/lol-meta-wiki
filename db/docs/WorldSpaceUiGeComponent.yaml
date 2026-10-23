@@ -1,0 +1,7 @@
+# WorldSpaceUiGeComponent Documentation
+
+class:
+  description: |
+    The entity component of a [WorldSpaceUiGeComponentDef](/classes/worldspaceuigecomponentdef).
+    It opens its view controller when the entity activates, closes it when the entity
+    deactivates, and keeps it anchored to the entity transform.

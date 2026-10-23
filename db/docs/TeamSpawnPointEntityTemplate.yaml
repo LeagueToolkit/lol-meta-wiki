@@ -1,0 +1,26 @@
+# TeamSpawnPointEntityTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) that places a **team spawn point**: the
+    fountain of a team, where its units spawn and regenerate. It creates a
+    [TeamSpawnPointEntity](/classes/teamspawnpointentity).
+
+    When the client creates the entity, before activation, it reads the entity's team and
+    registers the entity position as a spawn point of that team. When the entity activates, the
+    `TeamSpawnPoint` component creates the spawn point object that regenerates units in its
+    radius.
+
+    The template is networked: the client creates the entity at map load, and the server
+    activates it.
+  notes:
+    - "No shipped object uses it."
+    - "The spawn point needs the `Team` property. Without a team component the client crashes when it creates the entity."
+
+properties:
+  Networking:
+    description: "Receives the server's updates for the entity. Because of it, the client does not activate the entity; the server does."
+  TeamSpawnPoint:
+    description: "Regeneration radius, interval and amounts. See [TeamSpawnPointGeComponentDef](/classes/teamspawnpointgecomponentdef)."
+  Team:
+    description: "Team that owns the spawn point."

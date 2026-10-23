@@ -1,0 +1,68 @@
+# NeutralCampGeComponentDef Documentation
+
+class:
+  description: |
+    A **neutral camp** placed on the map. It sits in the `NeutralCamp` field of a
+    [NeutralCampEntityTemplate](/classes/neutralcampentitytemplate). When the entity activates,
+    the [NeutralCampGeComponent](/classes/neutralcampgecomponent) builds a camp object of the
+    older game object system from these values.
+
+    **Name.** The camp is named after the `CampName` of `CampIdentifier`. Without an
+    identifier, the client builds the name `NeutralCamp_T<team>_<index>_<n>` from the team and
+    the spawn index of the entity.
+
+    **Team.** Three tests on the camp position, which have not been identified, can make the
+    camp neutral, order or chaos, in that order of precedence. If none of them passes, the
+    camp takes the team of the entity's [TeamGeComponentDef](/classes/teamgecomponentdef).
+
+    **Before the spawn.** When the next spawn time of the camp is known, `PreSpawnBehavior`
+    and `PreSpawnAudio` run until the spawn.
+  notes:
+    - "Every shipped camp sets `CampIdentifier` and `MinimapIcon`."
+
+properties:
+  CampIdentifier:
+    description: |
+      The [NeutralCampIdentifier](/classes/neutralcampidentifier) of the camp. It supplies the
+      camp name. When the server reports a new spawn type for the camp, the client finds that
+      type in the identifier and runs the components of the type, for example one that changes
+      the camp icon. An unknown spawn type changes nothing.
+  MinimapIcon:
+    description: "Name of the minimap icon of the camp. The client copies it into the camp object."
+  MinimapIconOffset:
+    description: |
+      Offset of the camp icon from the entity position, in world units. The client applies it
+      when it builds the camp and again on every transform change of the entity.
+  MinimapTimerDefinition:
+    description: "If set, the client creates a minimap timer for the camp from this [MinimapTimerDefinition](/classes/minimaptimerdefinition)."
+  PreSpawnBehavior:
+    description: |
+      Behaviour that runs before the camp spawns (see
+      [INeutralCampPreSpawnDef](/classes/ineutralcampprespawndef)). A
+      [PreSpawnTimerIconDef](/classes/prespawntimericondef) changes the icon of the entity's
+      [NewIconGeComponentDef](/classes/newicongecomponentdef) as the spawn time approaches.
+  PreSpawnAudio:
+    description: |
+      A Wwise RTPC ramp before the spawn (see [PreSpawnAudioDef](/classes/prespawnaudiodef)).
+      The RTPC rises from 0 to 100 over the last `duration` seconds before the spawn and is set
+      back to 0 at the end.
+  ScoreboardTimer:
+    description: "If not 0, the client converts the value through a fixed table and stores the result in the camp object. What the result selects has not been traced."
+  RevealEvent:
+    description: "If not 0, the client converts the value through a fixed table and marks the camp as having a reveal event. What the reveal does has not been traced."
+  StopSpawnTimeSecs:
+    description: "Copied into the camp object. How the camp uses it has not been traced."
+  "0x3011fe7":
+    description: "Copied into the camp object. How the camp uses it has not been traced."
+  "0x7fd43d60":
+    description: "Copied into the camp object. How the camp uses it has not been traced."
+  LeashShape:
+    description: "Not read when the client builds the camp. No client reader has been identified."
+  CampLevel:
+    description: "Not read when the client builds the camp. No client reader has been identified."
+  IconHelper:
+    description: "Not read when the client builds the camp. No client reader has been identified."
+  "0x7d27af7f":
+    description: "Not read when the client builds the camp. No client reader has been identified."
+  "0xf224db3e":
+    description: "Not read when the client builds the camp. No client reader has been identified."

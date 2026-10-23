@@ -1,0 +1,10 @@
+# NeutralCampEntity Documentation
+
+class:
+  description: |
+    The entity that a [NeutralCampEntityTemplate](/classes/neutralcampentitytemplate) or a
+    [DragonCampEntityTemplate](/classes/dragoncampentitytemplate) creates. Its primary component
+    is the [NeutralCampGeComponent](/classes/neutralcampgecomponent), which links the entity to
+    the camp. When the entity's transform changes, the client moves the camp with it. The
+    client's camp code finds camps through this class. See
+    [LolGameEntity](/classes/lolgameentity).

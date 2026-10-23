@@ -1,0 +1,12 @@
+# DeathGeComponentDef Documentation
+
+class:
+  description: |
+    The definition of a [DeathGeComponent](/classes/deathgecomponent). The client does not
+    use it: the component does nothing, and no client code reads the definition.
+
+properties:
+  definition:
+    description: |
+      The death behaviour, an [IDeathGeComponentDef](/classes/ideathgecomponentdef). The
+      client does not read it.

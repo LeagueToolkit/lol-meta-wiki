@@ -1,0 +1,8 @@
+# BarracksEntity Documentation
+
+class:
+  description: |
+    The entity that a [BarracksEntityTemplate](/classes/barracksentitytemplate) creates. Its
+    primary component is the [BarracksGeComponent](/classes/barracksgecomponent), which links
+    the entity to the barracks object. When the entity's transform changes, the client moves
+    the object with it. See [LolGameEntity](/classes/lolgameentity).

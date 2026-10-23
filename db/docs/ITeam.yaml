@@ -1,0 +1,8 @@
+# ITeam Documentation
+
+class:
+  description: |
+    A **source of a team**. The client asks it for a team index, for example to build the
+    set of teams that may see the particle of an entity's [VfxGeComponentDef](/classes/vfxgecomponentdef).
+  notes:
+    - "No shipped object uses it."

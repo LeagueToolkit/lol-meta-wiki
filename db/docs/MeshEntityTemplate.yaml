@@ -1,0 +1,14 @@
+# MeshEntityTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) that places a **static mesh**. It creates
+    a [MeshEntity](/classes/meshentity). The mesh is not a component: when the template loads,
+    the client preloads the mesh resource, and when it creates the entity, it builds a mesh
+    instance at the entity's transform.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  MeshHelper:
+    description: "The mesh and its render settings. See [MeshHelperDef](/classes/meshhelperdef)."

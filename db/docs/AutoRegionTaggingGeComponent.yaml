@@ -1,0 +1,8 @@
+# AutoRegionTaggingGeComponent Documentation
+
+class:
+  description: |
+    The entity component that an
+    [AutoRegionTaggingGeComponentDef](/classes/autoregiontagginggecomponentdef) adds. When the
+    entity activates, it adds the tags of the nav-grid regions that contain the entity
+    position to the entity. The definition describes the lookup and the cases that add no tag.

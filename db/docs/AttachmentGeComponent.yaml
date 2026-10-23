@@ -1,0 +1,7 @@
+# AttachmentGeComponent Documentation
+
+class:
+  description: |
+    The entity component that an
+    [AttachmentGeComponentDef](/classes/attachmentgecomponentdef) adds. The client build
+    that was read does not register this class, so its behaviour is not known.

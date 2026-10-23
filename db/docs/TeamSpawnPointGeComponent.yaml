@@ -1,0 +1,8 @@
+# TeamSpawnPointGeComponent Documentation
+
+class:
+  description: |
+    The entity component that builds the spawn point object of a
+    [TeamSpawnPointGeComponentDef](/classes/teamspawnpointgecomponentdef) when the entity
+    activates. It owns the object as described on
+    [NeutralCampGeComponent](/classes/neutralcampgecomponent).

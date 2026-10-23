@@ -1,0 +1,31 @@
+# SfxGeComponentDef Documentation
+
+class:
+  description: |
+    An **ambient sound** placed on the map, with an optional area. It sits in the `Sfx` field of
+    an [SfxEntityTemplate](/classes/sfxentitytemplate).
+
+    When the entity activates, the [SfxGeComponent](/classes/sfxgecomponent) creates a sound
+    emitter and posts `SoundName` on it, once. Deactivation and reset stop the sound and
+    release the emitter. While the sound plays, the component moves the emitter each tick:
+
+    - Without `shapeData`, the emitter stays at the entity position.
+    - With `shapeData`, the emitter is at the point of the outline nearest to the listener,
+      measured on the ground plane and recomputed every 0.05 seconds. If `FillVolume` is set
+      and the listener is inside the outline, the emitter is on the listener instead, so the
+      sound fills the area.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  SoundName:
+    description: "Name of the Wwise event that the emitter posts when the entity activates."
+  shapeData:
+    description: |
+      The outline of the sound area, as an [EntityShapeData](/classes/entityshapedata). Its
+      points are offsets from the entity position. If it is not set, the sound is a single
+      point at the entity position.
+  FillVolume:
+    description: "If set, the emitter follows the listener while the listener is inside the outline."
+  "0x6a6c6fe":
+    description: "If set, the component sets the Wwise RTPC `Distance2D_To_Camera` on the emitter every tick."

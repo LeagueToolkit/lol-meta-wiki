@@ -1,0 +1,10 @@
+# BarracksGeComponent Documentation
+
+class:
+  description: |
+    The entity component that a [BarracksGeComponentDef](/classes/barracksgecomponentdef)
+    adds. When the entity activates, the component creates the barracks object of its lane,
+    or reuses one that already exists. It resolves the barracks config and registers the
+    lane waypoints from `LinkedPath`.
+
+    Deactivating the entity or resetting the world does not remove the barracks object.

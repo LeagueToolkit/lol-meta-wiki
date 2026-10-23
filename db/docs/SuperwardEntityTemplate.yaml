@@ -1,0 +1,25 @@
+# SuperwardEntityTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) that places a **superward**: a unit that
+    reveals a region of the map. It creates a [SuperwardEntity](/classes/superwardentity). The
+    `AttackableUnit` component creates or binds the unit, and the `Superward` component draws
+    the region on the ground and shows its particle system to the teams that the server names.
+
+    The template is networked: the client creates the entity at map load, and the server
+    activates it.
+
+properties:
+  Networking:
+    description: "Receives the server's updates for the entity. Because of it, the client does not activate the entity; the server does."
+  AttackableUnit:
+    description: "Creates or binds the unit of the ward. See [AttackableUnitGeComponentDef](/classes/attackableunitgecomponentdef)."
+  Character:
+    description: "Character record and skin of the unit."
+  Team:
+    description: "Team of the unit."
+  Superward:
+    description: "The revealed region and the particle systems. See [SuperwardGeComponentDef](/classes/superwardgecomponentdef)."
+  Sequencer:
+    description: "Lets sequences act on the entity."

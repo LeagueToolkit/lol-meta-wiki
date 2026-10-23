@@ -1,0 +1,18 @@
+# NewIconGeComponent Documentation
+
+class:
+  description: |
+    The entity component that shows the **minimap icon** of a
+    [NewIconGeComponentDef](/classes/newicongecomponentdef).
+
+    When the entity spawns, the component registers the entity with the icon manager. If the
+    definition has a `Config`, the component creates the icon, applies its
+    [GameEntityIconData](/classes/gameentityicondata) and shows or hides it from `Enabled`.
+
+    The component also registers with the entity's
+    [SequencerGeComponent](/classes/sequencergecomponent), so sequences can change the icon
+    data and its visibility. Other code changes the icon through the same component:
+
+    - [SetGameEntityIconEnabled](/classes/setgameentityiconenabled) shows or hides it.
+    - A camp object can make the icon visible, and the camp's pre-spawn behaviour and spawn
+      types change the icon (see [NeutralCampGeComponentDef](/classes/neutralcampgecomponentdef)).

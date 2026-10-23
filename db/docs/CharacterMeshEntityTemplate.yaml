@@ -1,0 +1,40 @@
+# CharacterMeshEntityTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) that places a **character mesh**: an
+    animated character model that is not a unit, such as a decorative creature. It creates a
+    [CharacterMeshEntity](/classes/charactermeshentity). The `CharacterMesh` component builds
+    the skinned mesh from the character and skin in `Character` when the entity activates, and
+    plays its idle animation.
+
+properties:
+  IsReplicated:
+    description: |
+      Whether the server controls the entity. When false, the client builds no networking
+      component: the entity activates at map load if `0xbbe68da1` allows it, and it does not
+      receive server updates. When true, the entity waits for the server to activate it.
+    notes:
+      - "Shipped templates that set it set it to `false`."
+  Networking:
+    description: "Receives the server's updates for the entity. The client does not build it when `IsReplicated` is false."
+  Character:
+    description: "Character record and skin of the mesh. When null, the entity has no character component."
+  CharacterMesh:
+    description: "Builds and animates the mesh. See [CharacterMeshGeComponentDef](/classes/charactermeshgecomponentdef)."
+  Team:
+    description: "Team of the entity."
+  Animation:
+    description: "Plays the animations that sequences request on the mesh."
+  StateMachine:
+    description: "State machine of the entity. When null, the entity has no state machine."
+  Icon:
+    description: "Minimap and HUD icon of the entity. When null, the entity has no icon."
+  Script:
+    description: "Scripts that run on the entity. See [ScriptGeComponentDef](/classes/scriptgecomponentdef)."
+  Sequencer:
+    description: "Lets sequences act on the entity."
+  dynamicMaterial:
+    description: "Material parameters that sequences set on the entity."
+  LightChannels:
+    description: "Light channel mask of the mesh. See [LightChannelsGeComponentDef](/classes/lightchannelsgecomponentdef)."

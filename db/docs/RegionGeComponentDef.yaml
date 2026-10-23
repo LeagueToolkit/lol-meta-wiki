@@ -1,0 +1,29 @@
+# RegionGeComponentDef Documentation
+
+class:
+  description: |
+    The **outline of a region entity** and its nav-grid settings. It sits in the `Region` field
+    of a [RegionEntityBaseTemplate](/classes/regionentitybasetemplate). The component itself
+    does nothing (see [RegionGeComponent](/classes/regiongecomponent)). Other code reads this
+    definition through the entity:
+
+    - the [NavRegionGeComponent](/classes/navregiongecomponent) of the same entity, which
+      registers the region with the nav grid;
+    - the bounds of the region entity, computed from the outline;
+    - a [SuperwardGeComponentDef](/classes/superwardgecomponentdef) whose `visionRegion` names
+      the entity, which builds a ground mesh from the outline.
+  notes:
+    - "Shipped regions set `shapeData` and `RenderInfo` only."
+
+properties:
+  shapeData:
+    description: |
+      The outline of the region, as an [EntityShapeData](/classes/entityshapedata). The client
+      moves its points by the entity transform to get the outline in world space.
+  RenderInfo:
+    description: "Render settings for the outline (see [IShapeRenderInfo](/classes/ishaperenderinfo)). The region, nav-grid and bounds code does not read it. Its reader has not been identified."
+  NavRegionDef:
+    description: |
+      The nav-grid settings of the region: tags, priority and minimap colour. If it is not set,
+      the region is not written into the nav grid. See
+      [NavRegionGeComponentDef](/classes/navregiongecomponentdef).

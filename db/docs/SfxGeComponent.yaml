@@ -1,0 +1,8 @@
+# SfxGeComponent Documentation
+
+class:
+  description: |
+    The entity component that plays the ambient sound of an
+    [SfxGeComponentDef](/classes/sfxgecomponentdef). It posts the sound once when the entity
+    activates and stops it on deactivation and reset. It ticks only while the sound plays, and
+    each tick places the emitter as the definition describes.

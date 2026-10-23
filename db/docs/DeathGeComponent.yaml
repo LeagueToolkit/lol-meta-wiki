@@ -1,0 +1,6 @@
+# DeathGeComponent Documentation
+
+class:
+  description: |
+    The entity component that a [DeathGeComponentDef](/classes/deathgecomponentdef) adds. It
+    does nothing in the client.

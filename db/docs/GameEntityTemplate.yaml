@@ -1,0 +1,109 @@
+# GameEntityTemplate Documentation
+
+class:
+  description: |
+    The authored definition of a **game entity**: a placed object of the game entity component
+    system, such as a turret, a camp, a light, a sound or a locator. The client creates one
+    [GameEntity](/classes/gameentity) from each template. The entity takes its world transform
+    from the template's `transform` and its name and tags from the properties below.
+
+    ## Where templates come from
+
+    Templates are placed on a map through [MapContainer](/classes/mapcontainer): each `chunks`
+    bucket is a `MapPlaceableContainer`, and every item of its `items` map is a placed object.
+    The client registers every template that it finds there under a key built from the item key
+    and the map instance. A template that is the top-level object of a bin is also registered,
+    under its object key, but the client does not create an entity from it at map load. A
+    script can create one with [SpawnEntityBlock](/classes/spawnentityblock).
+
+    When a map container is **instanced** at a world offset, the client copies each template as
+    a [GameEntityTemplateProxyLink](/classes/gameentitytemplateproxylink). The copy carries the
+    offset transform and a key that includes the instance index, so every instance creates its
+    own entity of the same class.
+
+    ## Components
+
+    Every property of a template whose value is a component definition (an
+    [IGeComponentDef](/classes/igecomponentdef)) adds **one component** to the entity. The
+    property name is the role of the component; the definition says what the component does. A
+    pointer property that is null adds no component. An embedded definition is always present,
+    so it always adds its component.
+
+    The client sorts the definitions once, when the template loads: the
+    [NetworkingGeComponentDef](/classes/networkinggecomponentdef) first, the
+    [ScriptGeComponentDef](/classes/scriptgecomponentdef) second, and the others in ascending
+    order of the hash of their runtime component class name. Components are created, spawned and
+    activated in this order and deactivated in reverse order. A definition that builds no
+    component leaves an empty slot, so component number `n` always belongs to definition `n`.
+
+    ## Creation at map load
+
+    After the map loads, the client creates an entity from **every** template that a map
+    container places, whether or not the server also knows the template. Only the member
+    templates of a [PrefabEntityTemplate](/classes/prefabentitytemplate) are skipped: the prefab
+    creates them as its children. For each template the client:
+
+    1. Creates the entity of the template's class.
+    2. Creates its components in definition order.
+    3. Adds the entity to the name map (by `name`) and to the list of every tag it carries.
+    4. Spawns each component. Components read their definitions at this point.
+
+    When every entity exists, the client **activates** the entities whose `0xbbe68da1` is true,
+    with one exception: the client never activates an entity that has a networking component.
+    That entity waits until the server activates it. Entities without a networking component
+    activate at load.
+
+    ## Networked entities
+
+    When the server spawns a networked entity, the client finds the template by `name` and
+    looks for the entity that it already created at load. If the entity exists, the client
+    only updates its transform and binds the server's network id to its networking component.
+    Otherwise it creates the entity first. From then on the server activates, deactivates and
+    moves the entity.
+
+    ## Per-frame update
+
+    Entities do not update themselves. When an entity activates, each of its components that
+    ticks (see [IUpdatableGeComponent](/classes/iupdatablegecomponent)) joins the client's tick
+    list; when it deactivates, they leave it. Every frame the client ticks that list, so an
+    inactive entity, or one without a ticking component, costs nothing per frame. Every 0.25
+    seconds of game time the client also sends a periodic event to the scripts of every active
+    entity. Show and hide fades advance in the same frame update.
+
+    ## Reset and destruction
+
+    When the client resets the entity world, it deactivates every placed entity without events
+    and destroys every entity that was created at run time. Then it activates again every
+    remaining entity whose `0xbbe68da1` is true. An entity created at run time is also destroyed
+    when it is deactivated.
+  notes:
+    - "If the server spawns a networked entity whose client template has no `Networking` property, the client crashes. This happens only when the client template differs from the server's, for example in a mod that removes `Networking`."
+    - "Two entities can share a `name`. The name map keeps the first one, so lookups by name find only that entity."
+
+properties:
+  name:
+    description: |
+      Hash that identifies the entity. The client uses it as the key of the entity name map,
+      which script blocks and sequence inputs such as
+      [SeqInputGameEntityObject](/classes/seqinputgameentityobject) search, and to match a
+      server spawn to this template.
+
+  "0xbbe68da1":
+    description: |
+      Whether the entity is **active** when it is created. The client activates the entity at
+      map load and after a world reset only when this is true, and only if the entity has no
+      networking component. A child of a prefab takes this state from its parent instead. When
+      false, the entity exists but stays inactive until a script, a sequence or the server
+      activates it.
+    notes:
+      - "Shipped templates set it only to `false`, on entities that a script or the server turns on later."
+
+  tags:
+    description: |
+      Tags of the entity. The client adds them to the entity after `inheritedTags`, without
+      duplicates. Tag script blocks such as
+      [ForEachEntityWithTagBlock](/classes/foreachentitywithtagblock) and
+      [ShowEntityTagBlock](/classes/showentitytagblock) act on every entity that carries a tag.
+
+  inheritedTags:
+    description: "Tags that the entity carries in addition to `tags`. The client adds them first. They act the same way as `tags`."

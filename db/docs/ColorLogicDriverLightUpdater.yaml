@@ -1,0 +1,15 @@
+# ColorLogicDriverLightUpdater Documentation
+
+class:
+  description: |
+    A [light updater](/classes/imaplightupdater) that sets the **colour of a light from a
+    logic driver**. On each update the client evaluates `driver` and sets the colour of the
+    light to the result multiplied by the intensity of the light. It works on point lights
+    and on spotlights.
+  notes:
+    - "If `driver` is not set, the updater uses the constant `(1, 0, 0, 0)` and the light turns red."
+    - "No shipped object uses it."
+
+properties:
+  driver:
+    description: "The colour, as a four-component [logic driver](/classes/ilogicdriver)."

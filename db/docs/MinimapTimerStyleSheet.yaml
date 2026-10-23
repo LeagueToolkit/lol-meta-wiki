@@ -1,0 +1,10 @@
+# MinimapTimerStyleSheet Documentation
+
+class:
+  description: |
+    The **styles of a minimap timer**, as a list of style sets. Each style set has a
+    `Visibility` value and a list of styles. No client code that reads it was traced.
+
+properties:
+  StyleSets:
+    description: "The style sets of the timer."

@@ -1,0 +1,16 @@
+# DynamicSpotlightGeComponent Documentation
+
+class:
+  description: |
+    The entity component that a
+    [DynamicSpotlightGeComponentDef](/classes/dynamicspotlightgecomponentdef) adds. It
+    builds the spotlight from the definition, with its frustum, its projected texture and
+    its material, and keeps it registered with the dynamic light renderer while the entity
+    is active:
+
+    - **Activate.** The light is registered.
+    - **Deactivate** and **reset.** The light is removed.
+    - **Transform changed.** The light moves with the entity and its frustum is rebuilt.
+
+    When the entity spawns, the component registers the light's colour, intensity and HDR
+    scale with the entity's [SequencerGeComponent](/classes/sequencergecomponent).

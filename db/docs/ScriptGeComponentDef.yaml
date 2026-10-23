@@ -1,0 +1,21 @@
+# ScriptGeComponentDef Documentation
+
+class:
+  description: |
+    Gives an entity **entity scripts**. It sits in the `Script` field of an entity template.
+    The [ScriptGeComponent](/classes/scriptgecomponent) runs one script instance for each entry
+    of `ScriptDef`.
+
+    An entity without this component cannot run scripts. Script blocks that add a script to
+    such an entity fail (see [AttachDynamicScript](/classes/attachdynamicscript) and
+    [AddScriptToEntity](/classes/addscripttoentity)).
+  notes:
+    - "`GameModeEntityTemplate`, `ModesScenarioEntityTemplate`, `SequencerEntityTemplate` and `GameplayLocatorTemplate` build a script definition internally that is not a bin field. It never becomes a component, so these templates never give their entities a script component."
+    - "No shipped template lists a script in it."
+
+properties:
+  ScriptDef:
+    description: |
+      The list of scripts, as a [ScriptHelperDef](/classes/scripthelperdef). Each entry is a
+      [GameEntityScriptDefinition](/classes/gameentityscriptdefinition): a script link and the
+      overrides of its instance variables. Entries without a script link are skipped.

@@ -1,0 +1,22 @@
+# EntityPolygonData Documentation
+
+class:
+  description: |
+    A [shape](/classes/entityshapedata) that is a **polygon**. The outline is the list of
+    `Vertices`, or a smooth curve through them if `Smooth` is set.
+  notes:
+    - "Shipped polygons are the outlines of map regions. No shipped polygon sets `Smooth`."
+
+properties:
+  Vertices:
+    description: "Corners of the polygon, in world units, relative to the entity."
+
+  Smooth:
+    description: |
+      If true and the polygon has at least 3 vertices, the client replaces the outline with a
+      closed centripetal Catmull-Rom curve through the vertices. It subdivides each curve
+      segment until the segment is flat within 4 world units, at most 4 times, and uses the
+      resulting points as the outline.
+
+      If false, or if the polygon has fewer than 3 vertices, the client uses the vertices as
+      they are.

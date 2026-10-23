@@ -1,0 +1,9 @@
+# VfxEntity Documentation
+
+class:
+  description: |
+    The entity that a [VfxEntityTemplate](/classes/vfxentitytemplate) or a
+    [BillboardEntityTemplate](/classes/billboardentitytemplate) creates. Its primary component
+    is the [VfxGeComponent](/classes/vfxgecomponent), which links the entity to the particle
+    object. When the entity's transform changes, the client moves the particle object with it.
+    See [LolGameEntity](/classes/lolgameentity).

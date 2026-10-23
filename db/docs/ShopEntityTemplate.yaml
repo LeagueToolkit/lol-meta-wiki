@@ -1,0 +1,26 @@
+# ShopEntityTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) that places a **shop**. It creates a
+    [ShopEntity](/classes/shopentity). The `Shop` component creates the shop object when the
+    entity activates: it loads the shopkeeper from `Character` and sets the purchase area.
+
+    The template is networked: the client creates the entity at map load, and the server
+    activates it.
+  notes:
+    - "The shop needs the `Team` property. Without a team component the client crashes when the entity activates."
+
+properties:
+  Networking:
+    description: "Receives the server's updates for the entity. Because of it, the client does not activate the entity; the server does."
+  Character:
+    description: "Character record and skin of the shopkeeper."
+  Shop:
+    description: "Purchase area and bounds of the shop. See [ShopGeComponentDef](/classes/shopgecomponentdef)."
+  Team:
+    description: "Team of the shop."
+  Icon:
+    description: "Minimap and HUD icon of the shop."
+  Sequencer:
+    description: "Lets sequences act on the entity."

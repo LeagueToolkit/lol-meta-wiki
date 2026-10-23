@@ -1,0 +1,18 @@
+# DynamicSpotlightEntityTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) that places a **dynamic spotlight** as a
+    game entity. It creates a plain [GameEntity](/classes/gameentity). Unlike a
+    [MapDynamicSpotlight](/classes/mapdynamicspotlight), the light exists only while the entity
+    is active, moves with the entity, and sequences can change its colour and intensity.
+
+    The entity is local: it activates at map load when `0xbbe68da1` is true.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Light:
+    description: "The light. See [DynamicSpotlightGeComponentDef](/classes/dynamicspotlightgecomponentdef)."
+  Sequencer:
+    description: "Lets sequences act on the entity and on the light."

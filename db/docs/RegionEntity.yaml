@@ -1,0 +1,7 @@
+# RegionEntity Documentation
+
+class:
+  description: |
+    The entity that a [RegionEntityTemplate](/classes/regionentitytemplate) creates. It behaves
+    as a [RegionEntityBase](/classes/regionentitybase); its template adds an environment mesh
+    component.

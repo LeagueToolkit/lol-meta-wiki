@@ -1,0 +1,8 @@
+# StateMachineGeComponent Documentation
+
+class:
+  description: |
+    The entity component of a [StateMachineGeComponentDef](/classes/statemachinegecomponentdef).
+    It holds the current state, the time at which the state began and the playbacks of the
+    running entry and exit sequences. The definition describes how the state changes and what
+    plays.

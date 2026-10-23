@@ -1,0 +1,16 @@
+# NewIconGeComponentDef Documentation
+
+class:
+  description: |
+    The **minimap icon** of an entity. It sits in the `Icon` field of an entity template. The
+    [NewIconGeComponent](/classes/newicongecomponent) shows the icon that `Config` describes.
+  notes:
+    - "One shipped entity sets `Config`, with the icon disabled."
+
+properties:
+  Config:
+    description: |
+      The icon settings, as a [0x313c0076](/classes/0x313c0076): the
+      [GameEntityIconData](/classes/gameentityicondata) of the icon and whether the icon
+      starts enabled. If it is not set, the entity has no icon, and
+      [SetGameEntityIconEnabled](/classes/setgameentityiconenabled) raises a script error on it.

@@ -1,0 +1,13 @@
+# EntityCircleData Documentation
+
+class:
+  description: |
+    A [shape](/classes/entityshapedata) that is a **circle** around the entity, in the XZ
+    plane. The client builds the outline as a ring of points: 16 points for each full 400
+    units of `radius`, and at least 16 points.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  radius:
+    description: "Radius of the circle, in world units. A radius of `0` gives 16 points at the entity position."

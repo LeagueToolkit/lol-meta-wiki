@@ -1,0 +1,6 @@
+# AttachmentGeComponentDef Documentation
+
+class:
+  description: |
+    The definition of the [AttachmentGeComponent](/classes/attachmentgecomponent). The client
+    does not register this class, so it has no effect. No client behaviour is documented for it.
