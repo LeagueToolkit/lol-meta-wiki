@@ -1,0 +1,16 @@
+# ContextualConditionMapID Documentation
+
+class:
+  description: |
+    A condition that passes when the id of the current map is in the bit mask `mMapIDs`.
+
+properties:
+  mMapIDs:
+    description: |
+      A bit mask of map ids: bit `N` set means map id `N` passes. The default `0` matches no
+      map.
+    examples:
+      - "`2048` (bit 11) passes on map 11 only."
+      - "`7424` (bits 8, 10, 11 and 12) passes on maps 8, 10, 11 and 12."
+    notes:
+      - "The client takes the map id modulo 32, so map id `N + 32` tests the same bit as map id `N`."

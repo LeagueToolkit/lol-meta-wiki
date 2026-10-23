@@ -1,0 +1,11 @@
+# ContextualConditionPreviousMapRegionName Documentation
+
+class:
+  description: |
+    A condition on the **map region that the owner was in before** its current one. The client
+    keeps, for each region type, the region that the owner was in before the last change.
+    `mRegionType` and `mRegionName` work as on
+    [ContextualConditionMapRegionName](/classes/contextualconditionmapregionname), against
+    that previous region.
+  notes:
+    - "Shipped data uses it with the `GameplayArea` region type."

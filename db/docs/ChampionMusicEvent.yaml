@@ -1,0 +1,18 @@
+# ChampionMusicEvent Documentation
+
+class:
+  description: |
+    The **champion music cue for one game event**. A slot of
+    `MusicProfile.ChampionMusicEvents` links it, and so does
+    [ContextualActionChampionMusicEvent](/classes/contextualactionchampionmusicevent). When
+    the event triggers, it passes the trigger to its `ChampionMusicEventType`.
+
+    A champion music event plays no sound in the current client.
+    [AudioContextEventType](/classes/audiocontexteventtype) describes the trigger and where
+    the chain stops.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+
+properties:
+  ChampionMusicEventType:
+    description: "The [ChampionMusicEventType](/classes/championmusiceventtype) that picks the cue name, or runs a global situation for a `Cac` type."

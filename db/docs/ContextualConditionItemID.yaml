@@ -1,0 +1,14 @@
+# ContextualConditionItemID Documentation
+
+class:
+  description: |
+    A condition that passes when the item of the **current item event** is one of `mItems`.
+    The client sets the current item in the `BuyItem`, `Purchase` and `PingShopItem`
+    situations and clears it afterwards. In any other situation no item is set and the
+    condition fails.
+
+properties:
+  mItems:
+    description: |
+      Links to `ItemData` objects. The condition passes if one of them is the current item.
+      An empty list fails. A link that does not resolve to an item is skipped.

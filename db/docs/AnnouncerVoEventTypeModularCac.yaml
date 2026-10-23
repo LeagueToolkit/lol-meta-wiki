@@ -1,0 +1,27 @@
+# AnnouncerVoEventTypeModularCac Documentation
+
+class:
+  description: |
+    An announcer event type that uses a global contextual situation to **choose a line**,
+    then triggers `PrimaryEvent`.
+
+    When it triggers, the client:
+
+    1. Runs the global situation keyed by the event's `NameHash`, as
+       [AnnouncerVoEventTypeCac](/classes/announcervoeventtypecac) does, in **collect
+       mode**. In collect mode a
+       [ContextualActionAnnouncerVoEvent](/classes/contextualactionannouncervoevent) stores
+       its event without triggering it. The champion music and mix state actions of the
+       situation run as usual.
+    2. Takes the announcer event that the situation stored last, selects its concrete type
+       for the trigger's count and picks that type's line for the local player.
+    3. Triggers `PrimaryEvent` with the picked name as an override name.
+
+    No announcer type reads the override name. The result is the same as triggering
+    `PrimaryEvent` alone, and the line that the situation chose has no effect.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+
+properties:
+  PrimaryEvent:
+    description: "The announcer event type that the client triggers after the situation runs. If it is not set, nothing is triggered."

@@ -1,0 +1,14 @@
+# ContextualConditionCharacterHasCAC Documentation
+
+class:
+  description: |
+    A [character subcondition](/classes/icharactersubcondition) that passes when the unit's contextual action set is one of `mCacs`. The client
+    compares the [ContextualActionData](/classes/contextualactiondata) that the unit uses
+    with each entry of the list.
+
+    - If the unit has no contextual action component, the condition fails.
+    - If `mCacs` is empty, the condition fails.
+
+properties:
+  mCacs:
+    description: "The [ContextualActionData](/classes/contextualactiondata) objects that pass."

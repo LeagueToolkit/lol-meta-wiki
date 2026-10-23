@@ -1,0 +1,12 @@
+# ContextualConditionEndedVoEventName Documentation
+
+class:
+  description: |
+    A [condition](/classes/icontextualcondition) that passes when the **audio event name** of the voice-over line that just
+    ended equals `EventName`. The comparison is case-sensitive.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  EventName:
+    description: "The audio event name that passes."

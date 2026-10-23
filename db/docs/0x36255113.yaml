@@ -1,0 +1,66 @@
+# 0x36255113 Documentation
+
+class:
+  description: |
+    An announcer event type that picks a line by the listener's **role in the event**: the
+    killer, the victim, a member of the succeeding team, a member of the other team, or a
+    spectator. [AudioContextEventType](/classes/audiocontexteventtype) describes the trigger
+    context.
+
+    When the succeeding team is Order (`100`) or Chaos (`200`), the client tests the team
+    players first and the spectators second. Otherwise it tests every client in one pass,
+    as a player.
+
+    For a player, the first rule that applies picks the line:
+
+    | Order | Test | Line | Behaviour |
+    |---|---|---|---|
+    | 1 | the listener is the killer's player and `IndividualSucceededEvent` is set | `IndividualSucceededEvent` | `IndividualPriorityBehavior` |
+    | 2 | the listener is the victim's player and `IndividualFailedEvent` is set | `IndividualFailedEvent` | `IndividualPriorityBehavior` |
+    | 3 | the succeeding team is `100` or `200` and the listener is on it | `TeamSucceededEvent` | `TeamSucceededPriorityBehavior` |
+    | 4 | the succeeding team is `100` or `200` and the listener is not on it | `TeamFailedEvent` | `TeamFailedPriorityBehavior` |
+    | 5 | there is no succeeding team | `GenericEvent` | `GeneralPriorityBehavior` |
+
+    For a spectator, the line is `BlueTeamSpectatorEvent` when the succeeding team is `100`
+    and `RedTeamSpectatorEvent` when it is `200`. If that string is empty, the line is
+    `GenericEvent`. The behaviour is `GeneralPriorityBehavior`.
+
+    If the picked string is empty, the listener gets no line. The type does not use the
+    assister. The client does not play the line, and it does not read the priority
+    behaviours.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+
+properties:
+  IndividualSucceededEvent:
+    description: "The line for the killer's player."
+
+  IndividualFailedEvent:
+    description: "The line for the victim's player."
+
+  TeamSucceededEvent:
+    description: "The line for the players of the succeeding team."
+
+  TeamFailedEvent:
+    description: "The line for the players of the other team."
+
+  BlueTeamSpectatorEvent:
+    description: "The line for spectators when Order (`100`) is the succeeding team. Empty falls back to `GenericEvent`."
+
+  RedTeamSpectatorEvent:
+    description: "The line for spectators when Chaos (`200`) is the succeeding team. Empty falls back to `GenericEvent`."
+
+  GenericEvent:
+    description: "The line for every listener when there is no succeeding team, and the spectator fallback."
+
+  IndividualPriorityBehavior:
+    description: "The [AudioPriorityBehavior](/classes/audioprioritybehavior) paired with the two individual lines. The client does not read it."
+
+  TeamSucceededPriorityBehavior:
+    description: "The [AudioPriorityBehavior](/classes/audioprioritybehavior) paired with `TeamSucceededEvent`. The client does not read it."
+
+  TeamFailedPriorityBehavior:
+    description: "The [AudioPriorityBehavior](/classes/audioprioritybehavior) paired with `TeamFailedEvent`. The client does not read it."
+
+  GeneralPriorityBehavior:
+    description: "The [AudioPriorityBehavior](/classes/audioprioritybehavior) paired with the spectator lines and `GenericEvent`. The client does not read it."

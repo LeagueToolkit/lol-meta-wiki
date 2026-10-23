@@ -1,0 +1,27 @@
+# ContextualConditionMoveDistance Documentation
+
+class:
+  description: |
+    A condition on the **distance to the target point** of the situation. The target point
+    is the clicked point of a `MoveOrder2D` order or the point of a ping. If the situation has
+    no target point, the condition fails.
+
+    The client computes the distance as follows:
+
+    1. The distance is the straight-line distance from the owner to the target point.
+    2. If the owner is a living champion and passes a further client check that is not
+       identified, the client fails the condition while less than 20 seconds have passed
+       since a line of this rule last ended.
+    3. In the same case, if the champion has a path and at least 100 units of it remain, the
+       remaining path length replaces the straight-line distance.
+
+    The condition passes if the distance compares to `mDistance` with `mCompareOp`.
+  notes:
+    - "Shipped data uses it in the `MoveOrder2D` rules of many champions, with 400 or 2000 units."
+
+properties:
+  mDistance:
+    description: "The distance to compare with, in world units."
+
+  mCompareOp:
+    description: "The comparison, with the computed distance on the left. The values are in the `CompareOp` table on [IContextualCondition](/classes/icontextualcondition)."

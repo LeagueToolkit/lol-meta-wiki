@@ -1,0 +1,6 @@
+# ContextualConditionCharacterIsCastingRecall Documentation
+
+class:
+  description: |
+    A [character subcondition](/classes/icharactersubcondition) that passes when the unit's **current cast is the recall spell**. If the unit
+    casts nothing, the condition fails.

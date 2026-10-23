@@ -1,0 +1,12 @@
+# ContextualConditionDamageResultType Documentation
+
+class:
+  description: |
+    A [condition](/classes/icontextualcondition) that passes when the **damage result type** that the situation recorded
+    equals `DamageResultType`.
+  notes:
+    - "The meaning of the result type values is not yet identified."
+
+properties:
+  DamageResultType:
+    description: "The damage result type that passes."

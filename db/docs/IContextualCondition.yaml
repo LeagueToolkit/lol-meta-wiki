@@ -1,0 +1,58 @@
+# IContextualCondition Documentation
+
+class:
+  description: |
+    A **contextual condition**: a test that a [ContextualRule](/classes/contextualrule) runs
+    before it uses one of its actions. A condition returns true or false. The rule combines
+    the results with `ContextualRule.mConditionRelationship`. A null entry in a condition
+    list is skipped.
+
+    ## The situation context
+
+    A condition reads the **situation context** of the unit's contextual action component.
+    The trigger of the situation writes the event data into the context before the rules
+    run. The component also keeps some state across situations. The rule under test is
+    passed to the condition too:
+    [ContextualConditionRuleCooldown](/classes/contextualconditionrulecooldown) uses it.
+
+    | Data | Written by | Read by |
+    |---|---|---|
+    | Owner | always: the unit of the component | unit selector `0` |
+    | Other unit | per situation: the attack target, the kill victim, the damage source, the healer, the spell target, the enemy of `EnemyEncounter`, the local player's champion in shop situations | unit selector `1` |
+    | Event spell | `SpellCast`, `SpellHit`, `MissileMiss`; kill situations write the name and slot of the killing spell | [IContextualConditionSpell](/classes/icontextualconditionspell) |
+    | Spell slots `0`-`3` | refreshed every second: spell, name, slot, level, ready state | [ContextualConditionSpell](/classes/contextualconditionspell) |
+    | Buff | buff situations: buff name hash, new counter value, highest value since the counter was last `0`, change of the counter | [IContextualConditionBuff](/classes/icontextualconditionbuff) |
+    | Item | `BuyItem`, `Purchase`: the item id; the last bought item is kept | [ContextualConditionItemID](/classes/contextualconditionitemid), [ContextualConditionLastBoughtItem](/classes/contextualconditionlastboughtitem) |
+    | Damage | damage situations: the damage result type | [ContextualConditionDamageResultType](/classes/contextualconditiondamageresulttype) |
+    | Heal | `ReceiveHeal` and shield situations: the amount | [ContextualConditionAmountHealed](/classes/contextualconditionamounthealed) |
+    | Kill | kill situations: killer, victim, killer team, multikill size, the killer's champion kills | unit selectors `4` and `6`, [ContextualConditionMultikillSize](/classes/contextualconditionmultikillsize), [ContextualConditionKillCount](/classes/contextualconditionkillcount) |
+    | Owner's killer | `OwnerDeath`: the killer and the killer type; kept afterwards | unit selector `5`, [ContextualConditionKillerType](/classes/contextualconditionkillertype) |
+    | Level | `CharacterLevelUp`: the new level | [ContextualConditionCharacterLevel](/classes/contextualconditioncharacterlevel) |
+    | Animation | `AnimationEnded`: the animation name hash | [ContextualConditionAnimationName](/classes/contextualconditionanimationname) |
+    | Map regions | region changes: the current region of each region type | [ContextualConditionMapRegionName](/classes/contextualconditionmapregionname) |
+    | Objective | `ObjectiveTakeByMyTeam`, `ObjectiveTakeByEnemyTeam`: the objective and the team | [ContextualConditionObjectiveTakeByMyTeam](/classes/contextualconditionobjectivetakebymyteam), [ContextualActionObjectiveCountSource](/classes/contextualactionobjectivecountsource) |
+    | Target point | `MoveOrder2D` and pings: the position | [ContextualConditionCharacterDistance](/classes/contextualconditioncharacterdistance), [ContextualConditionNumberOfCharactersNearTargetPos](/classes/contextualconditionnumberofcharactersneartargetpos) |
+    | Situation history | `AttackNeutral2D`: the last 10 situations, with their times | [ContextualConditionSituationHasRecentlyRun](/classes/contextualconditionsituationhasrecentlyrun) |
+    | User facts | [ContextualActionUserFactAction](/classes/contextualactionuserfactaction): the last 128 facts | [ContextualConditionUserFactCount](/classes/contextualconditionuserfactcount), [ContextualConditionUserFactSequence](/classes/contextualconditionuserfactsequence) |
+
+    The unit selectors are listed on [ICharacterSubcondition](/classes/icharactersubcondition).
+
+    The trigger resets many event fields after the situation runs. Other fields keep their
+    value. A condition that reads a field outside the situation that writes it compares a
+    reset value or the value of an older situation.
+
+    ## Comparison operator
+
+    Conditions with a `CompareOp` or `mCompareOp` field use this table. The left operand is
+    the value from the context, the right operand is the value in the bin.
+
+    | Value | Name | Passes when |
+    |---|---|---|
+    | `0` | Equal | `value == threshold` |
+    | `1` | NotEqual | `value != threshold` |
+    | `2` | Greater | `value > threshold` |
+    | `3` | GreaterOrEqual | `value >= threshold` |
+    | `4` | Less | `value < threshold` |
+    | `5` | LessOrEqual | `value <= threshold` |
+
+    Any other value makes the comparison fail.

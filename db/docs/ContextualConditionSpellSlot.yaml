@@ -1,0 +1,13 @@
+# ContextualConditionSpellSlot Documentation
+
+class:
+  description: |
+    A spell condition that passes when the slot of the tested spell is `mSpellSlot`.
+    [IContextualConditionSpell](/classes/icontextualconditionspell) describes which spell is
+    tested.
+
+properties:
+  mSpellSlot:
+    description: "The slot that passes: `0`-`3` are the four ability slots."
+    notes:
+      - "Shipped data uses `1`, `2` and `3`, mostly `3`."

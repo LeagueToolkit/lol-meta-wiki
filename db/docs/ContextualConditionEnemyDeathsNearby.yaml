@@ -1,0 +1,15 @@
+# ContextualConditionEnemyDeathsNearby Documentation
+
+class:
+  description: |
+    A [condition](/classes/icontextualcondition) that passes when the unit's count of **enemy deaths nearby** equals
+    `mEnemyDeaths`. The comparison is always an exact match and has no compare operator.
+
+    The client holds the count in one byte, so a value above `255` never passes. Which
+    events increase and reset the count is not yet identified.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  mEnemyDeaths:
+    description: "The number of enemy deaths that passes."

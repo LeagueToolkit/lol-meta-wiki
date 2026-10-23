@@ -1,0 +1,14 @@
+# ContextualConditionTeammateDeathsNearby Documentation
+
+class:
+  description: |
+    A condition that passes when a count of **teammate deaths nearby** equals
+    `mTeammateDeaths`. The count is part of the situation context.
+  notes:
+    - "The client code that sets the count was not found."
+    - "The test is exact equality. The client compares only the low 8 bits of the count, so a value above `255` never passes."
+    - "Shipped data uses it in `NearbyChampionDeath` and `NearbyEnemyKilledChampion` rules."
+
+properties:
+  mTeammateDeaths:
+    description: "The count that passes."

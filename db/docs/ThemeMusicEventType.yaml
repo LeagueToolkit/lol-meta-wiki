@@ -1,0 +1,10 @@
+# ThemeMusicEventType Documentation
+
+class:
+  description: |
+    The event type of a [ThemeMusicEvent](/classes/thememusicevent). No theme music type
+    acts on a trigger in the current client: the trigger of
+    [ThemeMusicEventTypeGeneric](/classes/thememusiceventtypegeneric) is empty, and
+    [ThemeMusicEventTypeTeamwide](/classes/thememusiceventtypeteamwide) reads none of its
+    fields. [AudioContextEventType](/classes/audiocontexteventtype) describes the trigger
+    that the other audio event families act on.

@@ -1,0 +1,32 @@
+# ContextualActionPlayAnimation Documentation
+
+class:
+  description: |
+    An **animation action**: plays an animation on the unit that owns the component, at
+    normal speed. If the unit's animation component does not start the animation, the
+    action fails.
+
+    The client runs animation actions only from emotes, situations fired by the server,
+    chained situations, `*EndedNearby` situations and `MarkerTriggeredBySelf`. An animation
+    action in a rule of any other situation never runs.
+    [IContextualAction](/classes/icontextualaction) lists the paths.
+  notes:
+    - "Shipped data uses it in a few champion objects, mostly for recall and dance animations."
+
+properties:
+  mHashedAnimationName:
+    description: "The hash of the name of the animation to play."
+
+  mPlayAsEmote:
+    description: |
+      Passes the animation to the unit's emote handling. The effect is not yet
+      identified.
+    notes:
+      - "Every shipped animation action that sets it uses `true`."
+
+  mHashedSituationTrigger:
+    description: |
+      A situation key that the client fires after the animation starts, as a chained
+      situation on every unit in the game (see [IContextualAction](/classes/icontextualaction)).
+      The key is the FNV-1a hash of the lowercased situation name. If it is `0` or equals the
+      key of the situation that ran the action, nothing is fired.

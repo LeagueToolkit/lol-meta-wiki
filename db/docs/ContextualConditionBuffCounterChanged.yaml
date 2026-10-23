@@ -1,0 +1,30 @@
+# ContextualConditionBuffCounterChanged Documentation
+
+class:
+  description: |
+    A [buff condition](/classes/icontextualconditionbuff) for the `BuffCounterSet` situation that passes when the **counter of the buff
+    `Buff` changed**.
+
+    The client fires the `BuffCounterSet` situation when the counter of a buff is set, and
+    when a buff is removed (new value `0`). The situation carries the buff, the new counter
+    value, the change (new value minus old value) and the highest value that the counter
+    reached since it was last `0`, before this change.
+
+    The condition passes when the buff of the situation is `Buff`, the change is not `0`,
+    and no exclusion applies.
+  notes:
+    - "A change to `0` is also a decrement. `ExcludeDecrements` alone also skips changes to `0`."
+    - "If `Buff` does not resolve to an object, the condition fails."
+
+properties:
+  Buff:
+    description: "The spell object of the buff."
+
+  ExcludeChangedToZero:
+    description: "Skips changes whose new value is `0`."
+
+  ExcludeIncrements:
+    description: "Skips changes that raise the counter."
+
+  ExcludeDecrements:
+    description: "Skips changes that lower the counter, changes to `0` included."

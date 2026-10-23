@@ -1,0 +1,15 @@
+# ContextualConditionNeutralMinionCampName Documentation
+
+class:
+  description: |
+    A condition that passes when the name of the **jungle camp of the situation** is
+    `mCampName`. The client sets the camp in the `PingJungleTimer` situation (the pinged
+    camp) and the `NeutralCampCleared` situation (the cleared camp).
+    [ContextualConditionNeutralCampId](/classes/contextualconditionneutralcampid) tests the
+    same camp by a fixed id.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  mCampName:
+    description: "The camp name, as its hash."

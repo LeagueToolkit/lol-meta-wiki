@@ -1,0 +1,13 @@
+# ContextualConditionShopOpenCount Documentation
+
+class:
+  description: |
+    A condition that passes when the local player has **opened the shop** at least
+    `mShopOpenCount` times. The client counts every shop open for the whole game and never
+    resets the count.
+  notes:
+    - "Shipped data uses it in `ShopOpen` rules."
+
+properties:
+  mShopOpenCount:
+    description: "The minimum number of shop opens."

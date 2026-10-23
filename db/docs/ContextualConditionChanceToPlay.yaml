@@ -1,0 +1,13 @@
+# ContextualConditionChanceToPlay Documentation
+
+class:
+  description: |
+    A [condition](/classes/icontextualcondition) that passes **at random**, with a probability of `mPercentChanceToPlay`
+    percent. Each evaluation draws a whole number from `0` to `99` and passes when the
+    number is below `mPercentChanceToPlay`.
+  notes:
+    - "Shipped rules mostly use values from `20` to `75`."
+
+properties:
+  mPercentChanceToPlay:
+    description: "The chance, in percent. `0` never passes. `100` and above always pass."

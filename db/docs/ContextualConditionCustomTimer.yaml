@@ -1,0 +1,13 @@
+# ContextualConditionCustomTimer Documentation
+
+class:
+  description: |
+    A [condition](/classes/icontextualcondition) that passes when the unit's **custom timer value** is at least
+    `mCustomTimer` seconds.
+
+    The shop writes the custom timer value when it fires a situation on the shopkeeper.
+    What time the value measures is not yet identified.
+
+properties:
+  mCustomTimer:
+    description: "The time, in seconds, that the custom timer value must reach."

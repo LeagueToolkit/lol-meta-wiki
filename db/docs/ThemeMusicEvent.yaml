@@ -9,8 +9,9 @@ class:
 
     A theme music event plays no sound in the current client. The trigger of
     [ThemeMusicEventTypeGeneric](/classes/thememusiceventtypegeneric) is empty, and the
-    trigger of the other concrete type, [0x58a4ecbd](/classes/0x58a4ecbd), reads neither of
-    its two event names.
+    trigger of the other concrete type,
+    [ThemeMusicEventTypeTeamwide](/classes/thememusiceventtypeteamwide), reads neither of its
+    two event names.
   notes:
     - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
 

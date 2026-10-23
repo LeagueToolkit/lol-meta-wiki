@@ -1,0 +1,14 @@
+# ContextualConditionMarkerName Documentation
+
+class:
+  description: |
+    A condition that passes when one of `mMarkerNames` matches the **marker of the
+    situation**. The client sets the marker in the `MarkerTriggeredBySelf` and
+    `MarkerTriggeredNearby` situations.
+  notes:
+    - "How the client compares a name with the marker is not identified."
+    - "Shipped data uses it for paired voice-over exchanges between champions."
+
+properties:
+  mMarkerNames:
+    description: "The marker names that pass. An empty list fails."

@@ -1,0 +1,15 @@
+# ContextualConditionEndedVoCacSituation Documentation
+
+class:
+  description: |
+    A [condition](/classes/icontextualcondition) that passes when the voice-over line that just ended was played by the
+    **situation `SituationName`**. The client hashes `SituationName` and compares it with
+    the key of the situation that played the line.
+
+    If the situation does not carry an ended voice-over line, the condition fails.
+  notes:
+    - "Shipped rules test the situations `TauntEndedNearby` and `JokeEndedNearby`."
+
+properties:
+  SituationName:
+    description: "The name of the situation that passes."

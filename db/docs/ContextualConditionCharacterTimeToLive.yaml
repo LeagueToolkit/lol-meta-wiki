@@ -1,0 +1,27 @@
+# ContextualConditionCharacterTimeToLive Documentation
+
+class:
+  description: |
+    A [character subcondition](/classes/icharactersubcondition) that compares the **estimated time to live** of the unit that the situation
+    belongs to with `mTargetTimeToLive`.
+
+    The estimate is the number of seconds until the owner dies if the enemies near it keep
+    attacking. The client recomputes it once per second from the alive enemies within 1000
+    units of the owner. It sums their physical and their magic damage per second. The
+    owner's health, scaled by `1 + armor / 100` against physical damage and by
+    `1 + magic resist / 100` against magic damage, divided by that damage gives the
+    estimate. The estimate is capped at 30 seconds. With no enemy in range it is 30.
+
+    The condition ignores the unit that its parent condition selects. Under
+    [ContextualConditionCharacter](/classes/contextualconditioncharacter) and
+    [ContextualConditionAnyOtherHero](/classes/contextualconditionanyotherhero) it still
+    tests the owner.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  mTargetTimeToLive:
+    description: "The time, in seconds, that the estimate is compared with."
+
+  mCompareOp:
+    description: "How the estimate is compared with `mTargetTimeToLive`: the test is `estimate <op> mTargetTimeToLive`. The operator table is on [IContextualCondition](/classes/icontextualcondition)."

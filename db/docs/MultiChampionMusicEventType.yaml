@@ -1,0 +1,18 @@
+# MultiChampionMusicEventType Documentation
+
+class:
+  description: |
+    A champion music event type that **selects one type by the trigger's count**. It picks
+    no cue itself. The selection is the same as in
+    [MultiAnnouncerVoEventType](/classes/multiannouncervoeventtype): count `n` uses entry
+    `n` of `ChampionMusicEventTypes`, count `0` selects nothing, and a count larger than the
+    list size selects the last entry only if `0x2f1edf29` is `true`.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+
+properties:
+  ChampionMusicEventTypes:
+    description: "The types to select from, in count order: the first entry for count `1`."
+
+  "0x2f1edf29":
+    description: "If `true`, a count larger than the list size selects the last entry. If `false`, such a count selects nothing."

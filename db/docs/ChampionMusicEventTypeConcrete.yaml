@@ -1,0 +1,8 @@
+# ChampionMusicEventTypeConcrete Documentation
+
+class:
+  description: |
+    A champion music event type that acts on a trigger itself, as opposed to
+    [MultiChampionMusicEventType](/classes/multichampionmusiceventtype), which selects one
+    of these types by the trigger's count. The list of a `Multi` type holds types of this
+    kind.

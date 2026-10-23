@@ -1,0 +1,15 @@
+# ThemeMusicEventTypeGeneric Documentation
+
+class:
+  description: |
+    A theme music event type with one cue for every listener. Its trigger is empty: the
+    client reads none of its fields.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+
+properties:
+  "0x2a2e7fd9":
+    description: "Unknown string, presumably the cue name. The client does not read it."
+
+  PriorityBehavior:
+    description: "The [AudioPriorityBehavior](/classes/audioprioritybehavior) of the cue. The client does not read it."

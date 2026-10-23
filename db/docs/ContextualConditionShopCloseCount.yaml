@@ -1,0 +1,13 @@
+# ContextualConditionShopCloseCount Documentation
+
+class:
+  description: |
+    A condition that passes when the local player has **closed the shop** at least
+    `mShopCloseCount` times. The client counts every shop close for the whole game and never
+    resets the count.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  mShopCloseCount:
+    description: "The minimum number of shop closes."

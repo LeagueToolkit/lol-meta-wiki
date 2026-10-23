@@ -1,0 +1,26 @@
+# ContextualConditionKillComparison Documentation
+
+class:
+  description: |
+    A condition that compares two **kill counts**. `KillBaseSource` and
+    `KillCompareToSource` are each a
+    [ContextualActionKillCountSource](/classes/contextualactionkillcountsource), which
+    produces a list of values: the owner's champion kills, the kills of the owner's team, one
+    value for each opposing team, or a constant.
+
+    The condition passes if any pair of a value from `KillBaseSource` and a value from
+    `KillCompareToSource` satisfies `CompareOp`. If either list is empty, the condition
+    fails.
+  notes:
+    - "With both sources at their defaults, the condition compares the owner's kills with the same value."
+    - "Shipped data uses it in `KillChampion` and `Transform` rules."
+
+properties:
+  KillBaseSource:
+    description: "The left operand of the comparison."
+
+  KillCompareToSource:
+    description: "The right operand of the comparison."
+
+  CompareOp:
+    description: "The comparison, with `KillBaseSource` on the left. The values are in the `CompareOp` table on [IContextualCondition](/classes/icontextualcondition)."

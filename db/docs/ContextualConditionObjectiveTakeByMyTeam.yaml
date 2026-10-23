@@ -1,0 +1,32 @@
+# ContextualConditionObjectiveTakeByMyTeam Documentation
+
+class:
+  description: |
+    A condition on the **kind of objective** of an objective situation. When a team takes an
+    objective, the client fires `ObjectiveTakeByMyTeam` if the local player's team took it,
+    else `ObjectiveTakeByEnemyTeam`, on the killing champion. The condition works in both
+    situations.
+
+    The condition passes if the objective kind equals `mTakenObjective`.
+
+properties:
+  mTakenObjective:
+    description: |
+      The objective kind that passes. The values are flags, but the test is exact equality,
+      so one condition matches one kind. Use an Or rule or several conditions for more kinds.
+
+      | Value | Objective |
+      |---|---|
+      | `1` | Baron killed |
+      | `2` | turret destroyed |
+      | `4` | Rift Herald killed |
+      | `8` | Dragon killed |
+      | `16` | inhibitor destroyed |
+      | `32` | Baron stolen |
+      | `64` | Rift Herald stolen |
+      | `128` | Dragon stolen |
+      | `256` | Voidgrubs killed |
+      | `512` | Voidgrubs stolen |
+    notes:
+      - "Turret deaths do not fire the objective situations, so `2` never passes."
+      - "Other objective events give the kind `0`, which no flag matches."

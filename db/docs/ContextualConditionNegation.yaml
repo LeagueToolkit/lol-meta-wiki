@@ -1,0 +1,10 @@
+# ContextualConditionNegation Documentation
+
+class:
+  description: |
+    A condition that passes when `mChildCondition` fails, and fails when it passes. If
+    `mChildCondition` is not set, the condition passes.
+
+properties:
+  mChildCondition:
+    description: "The condition to invert. It is evaluated with the same situation context and rule as the parent."

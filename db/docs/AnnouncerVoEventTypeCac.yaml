@@ -1,0 +1,16 @@
+# AnnouncerVoEventTypeCac Documentation
+
+class:
+  description: |
+    An announcer event type that picks no line itself. It runs the **global contextual
+    situation** whose key is the event's `NameHash`, on the contextual action manager of a
+    unit involved in the game event. The announcer, champion music and mix state actions of
+    that situation run. [AudioContextEventType](/classes/audiocontexteventtype) describes
+    which unit the client picks and which actions run.
+
+    [ContextualActionAnnouncerVoEvent](/classes/contextualactionannouncervoevent) does not
+    trigger an event of this type, so a global situation cannot trigger itself through an
+    announcer action.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+    - "The only audible effect is a mix state request from a [ContextualActionNotifyMixAction](/classes/contextualactionnotifymixaction) of the situation."

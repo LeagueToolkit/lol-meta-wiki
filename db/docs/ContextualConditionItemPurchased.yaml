@@ -1,0 +1,13 @@
+# ContextualConditionItemPurchased Documentation
+
+class:
+  description: |
+    A condition that compares `mItemPurchased` with an "item purchased" flag of the
+    situation context. The client clears the flag when it builds the context.
+  notes:
+    - "No client code that sets the flag was found. If none exists, `false` always passes and `true` never passes."
+    - "Shipped data uses it in `ShopClose` rules, with the default `false`."
+
+properties:
+  mItemPurchased:
+    description: "The flag value that passes."

@@ -1,0 +1,21 @@
+# ContextualConditionIsInCombat Documentation
+
+class:
+  description: |
+    Character subcondition that evaluates the driver in `InCombat` on the character. The
+    condition passes when the driver returns `true`.
+
+    The condition does not choose the character itself. Its parent condition does:
+    [ICharacterSubcondition](/classes/icharactersubcondition) describes how
+    [ContextualConditionCharacter](/classes/contextualconditioncharacter) and
+    [ContextualConditionAnyOtherHero](/classes/contextualconditionanyotherhero) select it.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  InCombat:
+    description: |
+      The [IsInCombatDynamicMaterialBoolDriver](/classes/isincombatdynamicmaterialbooldriver)
+      that the client evaluates with the character as its source. Its `0x3ef62dce` combat
+      window must be set: with the default `0`, the driver is never true, so the condition
+      always fails.

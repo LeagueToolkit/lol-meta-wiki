@@ -1,0 +1,11 @@
+# ContextualConditionCharacterFormName Documentation
+
+class:
+  description: |
+    A [character subcondition](/classes/icharactersubcondition) that passes when the **form name** of the unit equals `mFormName`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  mFormName:
+    description: "The form name that passes."

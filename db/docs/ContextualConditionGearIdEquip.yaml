@@ -1,0 +1,23 @@
+# ContextualConditionGearIdEquip Documentation
+
+class:
+  description: |
+    A [condition](/classes/icontextualcondition) for the `GearEquipped` situation that tests the **gear change** of the unit.
+    The client records the previous and the new gear number when it fires
+    `GearEquipped`.
+
+    The condition passes when each enabled check passes. With both checks off, it always
+    passes.
+
+properties:
+  CheckNewGearId:
+    description: "Enables the test of the new gear number against `NewGearId`."
+
+  NewGearId:
+    description: "The new gear number that passes."
+
+  CheckPrevGearId:
+    description: "Enables the test of the previous gear number against `PrevGearId`."
+
+  PrevGearId:
+    description: "The previous gear number that passes."

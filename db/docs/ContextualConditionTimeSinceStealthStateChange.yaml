@@ -1,0 +1,21 @@
+# ContextualConditionTimeSinceStealthStateChange Documentation
+
+class:
+  description: |
+    A condition on the **time since the owner's stealth state changed**. The situation
+    context holds two change times. `mStateToCheck` selects one. If that time is not
+    recorded, the condition fails. Otherwise the condition passes if the elapsed time
+    compares to `mTimeThreshold` with `mCompareOp`.
+  notes:
+    - "The client initialises both times to not recorded. No client code that records them was found. If none exists, the condition always fails."
+    - "Shipped data uses it in `SpellCast` rules."
+
+properties:
+  mStateToCheck:
+    description: "Selects the change time: `0` selects one time and any other value the other. Which one records entering stealth and which one leaving it is not identified."
+
+  mTimeThreshold:
+    description: "The time to compare with, in seconds."
+
+  mCompareOp:
+    description: "The comparison, with the elapsed time on the left. The values are in the `CompareOp` table on [IContextualCondition](/classes/icontextualcondition)."

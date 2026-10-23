@@ -1,0 +1,15 @@
+# ContextualConditionCharacterHasTimeRemainingForAnimation Documentation
+
+class:
+  description: |
+    A [character subcondition](/classes/icharactersubcondition) that passes when the unit's animation graph reports that the animation
+    `mAnimationName` has at least `mMinRemainingTime` seconds left.
+  notes:
+    - "Shipped data uses it with the recall animation and `0.7` seconds."
+
+properties:
+  mAnimationName:
+    description: "The name of the animation."
+
+  mMinRemainingTime:
+    description: "The time, in seconds, that must be left in the animation."

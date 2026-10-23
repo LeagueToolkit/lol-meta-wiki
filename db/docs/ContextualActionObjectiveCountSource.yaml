@@ -1,0 +1,49 @@
+# ContextualActionObjectiveCountSource Documentation
+
+class:
+  description: |
+    One side of an objective comparison: a source of **objective counts**. Both sides of a
+    [ContextualConditionObjectiveCountComparison](/classes/contextualconditionobjectivecountcomparison)
+    are objects of this class. Each side produces a list of values, and the condition
+    passes if any pair of a left value and a right value satisfies its `CompareOp` (see
+    [IContextualCondition](/classes/icontextualcondition)). An empty list makes the condition
+    fail.
+
+    `SourceId` selects the values:
+
+    | `SourceId` | Name | Values |
+    |---|---|---|
+    | `0` | Own team | the number of `objectives` that the owner's team has taken, plus `CountOffset` |
+    | `1` | Enemy teams | one value per opposing team: the number of `objectives` that team has taken, plus `CountOffset` |
+    | `2` | Constant | `CountThreshold` |
+
+    Any other value produces no value.
+
+    The counts come from the game's objective tracker, which counts only teams `100` and
+    `200`. In an `ObjectiveTakeByMyTeam` or `ObjectiveTakeByEnemyTeam` situation, the
+    objective that is being taken already counts for its team.
+  notes:
+    - "Shipped data uses it only with `objectives` = `8`, the dragons."
+
+properties:
+  SourceId:
+    description: "Selects the values of the source, as in the table above."
+
+  objectives:
+    description: |
+      A bit mask of the objective types to count. The count is the sum over the set bits.
+
+      | Bit | Objective |
+      |---|---|
+      | `0x1` | Baron Nashor |
+      | `0x2` | Rift Herald |
+      | `0x4` | Voidgrubs |
+      | `0x8` | Dragons |
+
+      Higher bits count nothing.
+
+  CountThreshold:
+    description: "The constant value for `SourceId` `2`. The other sources ignore it."
+
+  CountOffset:
+    description: "A number added to each count for `SourceId` `0` and `1`. The constant source ignores it."

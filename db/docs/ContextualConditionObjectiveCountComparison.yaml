@@ -1,0 +1,24 @@
+# ContextualConditionObjectiveCountComparison Documentation
+
+class:
+  description: |
+    A condition that compares two **objective counts**. `BaseSource` and `CompareToSource`
+    are each a
+    [ContextualActionObjectiveCountSource](/classes/contextualactionobjectivecountsource),
+    which produces a list of values: the objectives of the owner's team, one value for each
+    opposing team, or a constant.
+
+    The condition passes if any pair of a value from `BaseSource` and a value from
+    `CompareToSource` satisfies `CompareOp`. If either list is empty, the condition fails.
+  notes:
+    - "Shipped data uses it in `ObjectiveTakeByMyTeam` rules."
+
+properties:
+  BaseSource:
+    description: "The left operand of the comparison."
+
+  CompareToSource:
+    description: "The right operand of the comparison."
+
+  CompareOp:
+    description: "The comparison, with `BaseSource` on the left. The values are in the `CompareOp` table on [IContextualCondition](/classes/icontextualcondition)."

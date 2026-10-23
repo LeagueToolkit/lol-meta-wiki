@@ -1,0 +1,16 @@
+# ContextualConditionSituationHasRecentlyRun Documentation
+
+class:
+  description: |
+    A condition that passes when the situation `mSituationNameHash` **has fired** less than
+    `mTime` seconds ago. The client keeps a history of the last 10 situations for each unit.
+  notes:
+    - "The client adds a history entry only when `AttackNeutral2D` fires, so only that situation can pass."
+    - "No shipped object uses it."
+
+properties:
+  mSituationNameHash:
+    description: "The situation to look for, as the hash of its name, the same hash as the keys of `ContextualActionData.mSituations`."
+
+  mTime:
+    description: "The time window, in seconds."

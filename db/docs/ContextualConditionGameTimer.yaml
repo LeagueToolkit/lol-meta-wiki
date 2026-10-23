@@ -1,0 +1,16 @@
+# ContextualConditionGameTimer Documentation
+
+class:
+  description: |
+    A [condition](/classes/icontextualcondition) that compares the **game time** with `mGameTimeInMinutes`.
+
+    The client stores the game time in seconds and refreshes it once per second. The
+    condition converts `mGameTimeInMinutes` to seconds and rounds it up to a whole second
+    before the test.
+
+properties:
+  mGameTimeInMinutes:
+    description: "The game time, in minutes, that the stored game time is compared with."
+
+  mCompareOp:
+    description: "How the game time is compared with `mGameTimeInMinutes`: the test is `game time <op> mGameTimeInMinutes`. The operator table is on [IContextualCondition](/classes/icontextualcondition)."

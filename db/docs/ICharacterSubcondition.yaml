@@ -1,0 +1,39 @@
+# ICharacterSubcondition Documentation
+
+class:
+  description: |
+    A **character subcondition**: a test on one unit. A subcondition does not choose the unit.
+    Its parent does:
+
+    - [ContextualConditionCharacter](/classes/contextualconditioncharacter) selects one unit
+      with `mCharacterType` and runs its `mChildConditions` on it. If the selector resolves no
+      unit, the condition fails. An empty list passes. Otherwise every child must pass; the
+      evaluation stops at the first failure.
+    - [ContextualConditionAnyOtherHero](/classes/contextualconditionanyotherhero) runs its
+      children on every hero other than the unit of the situation.
+
+    ## Unit selector
+
+    `ContextualConditionCharacter.mCharacterType` picks the unit from the situation context
+    (see [IContextualCondition](/classes/icontextualcondition)). These fields use the same
+    values:
+
+    - `ContextualConditionCharacterBuffStackCount.BuffCaster`
+    - `ContextualConditionUserFactCount.CharacterType`
+    - `ContextualConditionUserFactSequence.CharacterType`
+    - `ContextualActionUserFactAction.Subject`
+
+    | Value | Name | Unit |
+    |---|---|---|
+    | `0` | Self | the unit that owns the component |
+    | `1` | Other | the other unit of the situation: the attack target, the kill victim, the damage source, and so on |
+    | `2` | Nearby A | a unit from the first nearby list of the owner, refreshed every second. Which units the list holds is not yet identified. |
+    | `3` | Nearby B | a unit from the second nearby list of the owner, refreshed every second. Which units the list holds is not yet identified. |
+    | `4` | Killer | the killer in a kill situation |
+    | `5` | Owner's killer | the unit that last killed the owner. It is set when the owner dies and kept afterwards. |
+    | `6` | Victim | the victim in a kill situation |
+    | `7` | Nearby source | the unit whose event a nearby situation reacts to, such as `TauntEndedNearby` or `MasteryBadgeStartedNearby` |
+    | `8` | Global hero | a hero that the client holds globally, independent of the situation. The identity of this hero is not yet confirmed. |
+    | `9` | Role counterpart | the hero of the other team that holds the same role slot as the owner in the client's per-team role table |
+
+    Any other value resolves no unit.

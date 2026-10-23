@@ -1,0 +1,49 @@
+# IContextualAction Documentation
+
+class:
+  description: |
+    A **contextual action**: what a [ContextualRule](/classes/contextualrule) does when the
+    client chooses it. A rule has one slot per action kind, and each kind chooses its own
+    rule from the situation (see [ContextualSituation](/classes/contextualsituation)).
+
+    | Kind | Rule field | Action |
+    |---|---|---|
+    | Audio | `mAudioAction` | [ContextualActionPlayAudio](/classes/contextualactionplayaudio): a voice line |
+    | Animation | `mAnimationAction` | [ContextualActionPlayAnimation](/classes/contextualactionplayanimation): an animation on the unit |
+    | Trigger event | `mTriggerEventAction` | [ContextualActionTriggerEvent](/classes/contextualactiontriggerevent): fires another situation |
+    | Announcer | `TriggerAnnouncerVoEventAction` | [ContextualActionAnnouncerVoEvent](/classes/contextualactionannouncervoevent) |
+    | Champion music | `TriggerChampionMusicEventAction` | [ContextualActionChampionMusicEvent](/classes/contextualactionchampionmusicevent) |
+    | User fact | `SetUserFactAction` | [ContextualActionUserFactAction](/classes/contextualactionuserfactaction): records a fact for the unit |
+    | Mix state | `NotifyMixAction` | [ContextualActionNotifyMixAction](/classes/contextualactionnotifymixaction): requests an audio mix state |
+
+    ## Which situations run which kinds
+
+    The client does not run every kind for every situation:
+
+    | Situation | Kinds that run |
+    |---|---|
+    | An ordinary situation, on the unit's own [ContextualActionData](/classes/contextualactiondata) | audio, user fact, mix state, champion music, announcer |
+    | The same situation, on each [GlobalContextualActionData](/classes/globalcontextualactiondata) | user fact, mix state, champion music, announcer |
+    | An emote, or a situation that the server fires by name | the kinds of an ordinary situation, then animation and trigger event |
+    | `TauntEndedNearby`, `JokeEndedNearby`, `LaughEndedNearby`, `DanceEndedNearby` | animation; some calls run the kinds of an ordinary situation instead |
+    | `MarkerTriggeredBySelf` | animation |
+    | A chained situation (below), on every unit | animation, audio, trigger event |
+    | A situation run by an audio event type of the `Cac` family (see [AudioContextEventType](/classes/audiocontexteventtype)) | champion music, announcer, mix state, on the global objects only |
+
+    So an animation or trigger event action in a rule of an ordinary situation, such as
+    `KillChampion` or `SpellCast`, never runs.
+
+    ## Chained situations
+
+    [ContextualActionPlayAnimation](/classes/contextualactionplayanimation) and
+    [ContextualActionTriggerEvent](/classes/contextualactiontriggerevent) have a
+    `mHashedSituationTrigger`. After such an action runs, if the hash is set and differs from
+    the key of the situation that ran it, the client fires that key as a **chained
+    situation** on the component of every unit in the game, not only on the owner. Every
+    unit whose data defines the key reacts.
+
+    ## Play count
+
+    The component counts the successful runs of each action, per unit, for the whole game.
+    Only [ContextualActionPlayAudio](/classes/contextualactionplayaudio) uses the count, for
+    `mMaxOccurences`.

@@ -1,0 +1,107 @@
+# ContextualSituation Documentation
+
+class:
+  description: |
+    The rules for one **situation** of a unit: an entry of `ContextualActionData.mSituations`.
+    The key of the entry is the FNV-1a hash of the lowercased situation name. When the game
+    event of that name fires on the unit, the client runs the actions of this entry in the
+    order that [ContextualActionData](/classes/contextualactiondata) describes.
+
+    ## Rule choice
+
+    A rule carries up to one action of each kind. Each action kind chooses its own rule from
+    `mRules`: a rule is valid for a kind when it has an action of that kind and passes its
+    conditions and limits (see [ContextualRule](/classes/contextualrule)). So one situation
+    can play the voice line of one rule and the announcer event of another.
+
+    | `mChooseRandomValidRule` | Rule used |
+    |---|---|
+    | `false` | the first valid rule in list order |
+    | `true` | a valid rule drawn at random, weighted by `ChanceWeight` |
+
+    In random mode the client collects every valid rule, sums their `ChanceWeight`, and draws
+    a number from `0` to the sum. It uses the first rule whose running sum exceeds the
+    number. If every weight is `0`, it picks one of the valid rules with equal chance. Each
+    client draws on its own.
+
+    For the audio action the choice comes before the voice line gates. If the chosen rule
+    fails a gate, no voice line plays for this situation: the client does not try the next
+    rule.
+
+    ## Situation keys
+
+    The client fires these keys from game events. The table lists the keys that shipped data
+    uses. The **other unit** is the unit that `mCharacterType` value `1` selects (see
+    [ICharacterSubcondition](/classes/icharactersubcondition)).
+
+    | Keys | Fired when | Fired on | Other unit |
+    |---|---|---|---|
+    | `KillChampion` | the unit kills a champion | the killer | the victim |
+    | `AssistKill` | the unit assists a champion kill | the assisting unit | the victim |
+    | `NearbyEnemyKilledChampion` | a champion kill | enemies of the killer in range | |
+    | `GotFirstBlood` | the first champion kill of the game | the killer | |
+    | `OnFirstBlood` | the first champion kill of the game | every champion | |
+    | `NearbyChampionDeath` | a champion dies | units in range | |
+    | `OwnerDeath` | the unit dies | the unit | |
+    | `KillMinion`, `KillNeutralMinion`, `KillTurret`, `KillWard` | the unit lands the last hit on a unit of that type | the unit | |
+    | `NeutralCampCleared`, `NeutralCampLoseAggro`, `NeutralCampStartCombat` | a jungle camp changes state | | |
+    | `ObjectiveTakeByMyTeam`, `ObjectiveTakeByEnemyTeam` | a team takes an objective | the killing champion | |
+    | `OnGameEnd` | the game ends | | |
+    | `AttackChampion2D`, `AttackMinion2D`, `AttackBuilding2D`, `AttackNeutral2D` | the player orders an attack on that target type | the unit | the target |
+    | `MoveOrder2D`, `FirstMove2D` | the player orders a move, or the first move of the game | the unit | |
+    | `BuyItem`, `GiftedItem` | the unit receives an item | the unit | |
+    | `UseItem`, `NearbyEnemyUsedItem` | a unit uses an item active | the unit, or enemies in range | |
+    | `ShopOpen`, `ShopClose`, `Purchase`, `Ambient`, `Browsing` | shop events | the shopkeeper | the local player's champion |
+    | `CharacterLevelUp`, `SpellLevelUp` | the unit gains a level or a skill point | the unit | |
+    | `SpellCast`, `SpellHit`, `MissileMiss` | a spell event of the unit | the unit | the spell target |
+    | `SpellReady` | a spell cooldown reaches `0`, checked every second | the unit | |
+    | `MaxResource` | the unit's resource bar becomes full | the unit | |
+    | `EnemyEncounter` | checked every second, for each enemy near the unit | the unit | the enemy |
+    | `SpellBuffCast`, `SpellBuffReceive`, `SpellBuffRemove`, `BuffCounterSet` | buff events on the unit | | |
+    | `ReceiveHeal`, `ReceiveShield` | the unit is healed or shielded | the unit | the healer, for `ReceiveHeal` |
+    | `DamageTakenAttempt`, `DamageSelfMitigated`, `HealthDroppedBelowThreshold` | the unit takes damage | the unit | the damage source |
+    | `Respawn2D`, `ReviveChampion` | the unit respawns or is revived | the unit | |
+    | `EnterGameplayPOIRegion`, `ExitGameplayAreaRegion` | the unit changes map region | the unit | |
+    | `EnterDisguiseMode` | the unit enters a disguise | the unit | |
+    | `GearEquipped` | the unit equips gear | the unit | |
+    | `MarkerTriggeredBySelf`, `MarkerTriggeredNearby` | the unit triggers a map marker, or a unit in range does | the unit | the paired unit |
+    | `MasteryBadgeStartedNearby` | a unit in range shows a mastery badge | units in range | |
+    | `OnVOEndedNearby` | a voice line of another unit ends | units in range | |
+    | `PingAssistMe`, `PingDanger`, `PingMissing`, `PingOnMyWay`, `PingOnMyWayAlly`, `PingTarget` | the player pings | | |
+    | `Taunt`, `Joke`, `Laugh`, `Dance` | the unit plays an emote | the unit | |
+    | `TauntEndedNearby`, `JokeEndedNearby`, `LaughEndedNearby`, `DanceEndedNearby` | an emote of a unit in range ends | units in range | |
+    | `AnimationEnded` | an animation of the unit ends | the unit | |
+
+    The unit's animation component also fires situations by name hash from its animation
+    events and string events. Shipped keys of this kind include `Spell1`, `Death`,
+    `Transform` and `Idle1_Base`.
+
+    An emote fires its own name on the unit, and `NearbyEnemy` followed by the emote name on
+    enemies in range. The server can also fire a situation on a unit by name; such a
+    situation runs the same way as an emote.
+
+    No trigger was found for the shipped keys `RecallLeadIn`, `RecallWinddown`,
+    `RecallChannelingUpdate`, `RecallCancel` and `EatHoneyfruit`.
+  notes:
+    - "How `Ambient` and `Browsing` map to shop events is not yet identified."
+    - "The key `GlobalHeartBeat` fires every second on the [GlobalContextualActionData](/classes/globalcontextualactiondata) objects only."
+
+properties:
+  mRules:
+    description: |
+      The rules of the situation, as embedded [ContextualRule](/classes/contextualrule)
+      objects. List order decides the choice when `mChooseRandomValidRule` is `false`.
+
+  mChooseRandomValidRule:
+    description: |
+      Picks a random valid rule, weighted by `ChanceWeight`, instead of the first valid rule.
+      The draw happens separately for each action kind.
+
+  mCoolDownTime:
+    description: |
+      Minimum time, in seconds, between two voice lines of this situation on one unit. The
+      time counts from the moment the last voice line of a rule with `ActiveVoiceOver` in
+      this situation ended or was interrupted. Only the audio action checks it. The other
+      actions of the situation run during the cooldown.
+    notes:
+      - "Shipped data uses `15` on most situations that set it."

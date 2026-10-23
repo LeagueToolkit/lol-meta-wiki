@@ -1,0 +1,25 @@
+# ContextualConditionNeutralMinionMapSide Documentation
+
+class:
+  description: |
+    A condition on the **side of the map** of the jungle camp that the killed monster
+    belongs to. The client sets the camp side in the `KillNeutralMinion` situation and
+    compares it with the team of the situation's killer.
+  notes:
+    - "The condition does not check that the killer exists. If the situation has no killer, the client crashes."
+    - "No shipped object uses it."
+
+properties:
+  mTeamCompareOp:
+    description: |
+      Selects the test.
+
+      | Value | Name | Passes when the camp is on |
+      |---|---|---|
+      | `0` | Ally | the killer's side |
+      | `1` | Enemy | the side opposite the killer (Order and Chaos swap) |
+      | `2` | Order | the Order (`100`) side |
+      | `3` | Chaos | the Chaos (`200`) side |
+      | `4` | Any | any side: the condition always passes |
+
+      Any other value makes the condition fail.

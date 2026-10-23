@@ -1,0 +1,40 @@
+# ContextualConditionCastTarget Documentation
+
+class:
+  description: |
+    A [condition](/classes/icontextualcondition) that tests the **relation of the cast target** of the situation to the unit
+    that the situation belongs to. The target has exactly one relation:
+
+    | Relation | Target |
+    |---|---|
+    | self | the unit itself |
+    | ally | another unit of the same team |
+    | enemy | a unit of another team |
+
+    Each flag is compared with its relation: `IsSelf` with self, `IsAlly` with ally and
+    `IsEnemy` with enemy. `ConditionRelationship` combines the three results.
+  notes:
+    - "If the situation has no cast target, the client crashes."
+
+properties:
+  ConditionRelationship:
+    description: |
+      How the three flag tests combine.
+
+      | Value | Name | Passes when |
+      |---|---|---|
+      | `0` | And | every flag equals its relation |
+      | any other | Or | at least one flag equals its relation |
+
+      With And, set exactly one flag. With Or, a flag that is `false` also matches each
+      relation that is false. The Or test fails only when every flag is the opposite of
+      its relation.
+
+  IsSelf:
+    description: "Compared with the self relation."
+
+  IsAlly:
+    description: "Compared with the ally relation."
+
+  IsEnemy:
+    description: "Compared with the enemy relation."

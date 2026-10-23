@@ -1,0 +1,15 @@
+# ContextualConditionHasGold Documentation
+
+class:
+  description: |
+    A condition that passes when the **other unit** of the situation has more than `mGold`
+    gold. [IContextualCondition](/classes/icontextualcondition) describes which unit is the other unit in
+    each situation. In the shop situations, such as `ShopOpen`, the other unit is the local
+    player's champion.
+  notes:
+    - "The condition does not check that the other unit exists. If the situation has no other unit, the client crashes. Use it only in situations that set one, such as the shop situations."
+    - "Shipped data uses it in `ShopOpen` rules."
+
+properties:
+  mGold:
+    description: "Gold threshold. The condition passes if the unit's gold is greater than this value. Equal gold fails."

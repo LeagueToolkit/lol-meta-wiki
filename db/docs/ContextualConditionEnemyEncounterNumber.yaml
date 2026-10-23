@@ -1,0 +1,19 @@
+# ContextualConditionEnemyEncounterNumber Documentation
+
+class:
+  description: |
+    A [character subcondition](/classes/icharactersubcondition) that compares the **number of encounters** between the unit that the situation
+    belongs to and the tested unit with `EncounterNumber`.
+
+    The owner keeps an encounter count for each enemy, which the `EnemyEncounter` situation
+    updates. The client looks up the tested unit in this list. If the unit is not in it,
+    the condition fails. Otherwise it tests `count <op> EncounterNumber`.
+  notes:
+    - "Shipped data almost always keeps both properties at their defaults, which test for the first encounter with an enemy."
+
+properties:
+  EncounterNumber:
+    description: "The encounter number that the count is compared with."
+
+  CompareOp:
+    description: "How the count is compared with `EncounterNumber`: the test is `count <op> EncounterNumber`. The operator table is on [IContextualCondition](/classes/icontextualcondition)."

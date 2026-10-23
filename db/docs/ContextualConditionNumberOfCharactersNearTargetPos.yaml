@@ -1,0 +1,30 @@
+# ContextualConditionNumberOfCharactersNearTargetPos Documentation
+
+class:
+  description: |
+    A condition on the **number of units near the target point** of the situation. During
+    `MoveOrder2D` and the ping situations, the client counts the units around the clicked or
+    pinged point in two lists. In other situations both counts are `0`.
+
+    The condition passes if the selected count compares to `mNumberOfCharacters` with
+    `mCompareOp`.
+  notes:
+    - "Shipped data uses it in `PingOnMyWay` rules."
+
+properties:
+  mTeamCompareOp:
+    description: |
+      Selects the count. Only zero and non-zero differ.
+
+      | Value | Name | Count used |
+      |---|---|---|
+      | `0` | Ally | the first list |
+      | any other | Enemy | the second list |
+    notes:
+      - "The two lists use different unit filters. That the first holds allies and the second enemies follows the value convention of the other team selectors and is not verified."
+
+  mNumberOfCharacters:
+    description: "The number of units to compare with."
+
+  mCompareOp:
+    description: "The comparison, with the selected count on the left. The values are in the `CompareOp` table on [IContextualCondition](/classes/icontextualcondition)."

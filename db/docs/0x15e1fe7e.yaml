@@ -1,0 +1,22 @@
+# 0x15e1fe7e Documentation
+
+class:
+  description: |
+    A champion music event type with **one cue for every listener**, like
+    [ChampionMusicEventTypeGeneric](/classes/championmusiceventtypegeneric). The two types
+    walk different player lists to find the local player:
+    `ChampionMusicEventTypeGeneric` walks the team players, this type walks every client.
+    The list contents are presumed from their use and are not confirmed.
+
+    For the local player, the client tests whether `0x4c546bb7` is set and does nothing
+    else. [AudioContextEventType](/classes/audiocontexteventtype) describes where the chain
+    stops.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+
+properties:
+  "0x4c546bb7":
+    description: "The cue name for every listener."
+
+  PriorityBehavior:
+    description: "The [AudioPriorityBehavior](/classes/audioprioritybehavior) of the cue. The client does not read it."

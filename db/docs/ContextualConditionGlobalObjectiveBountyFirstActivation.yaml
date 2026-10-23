@@ -1,0 +1,9 @@
+# ContextualConditionGlobalObjectiveBountyFirstActivation Documentation
+
+class:
+  description: |
+    A [condition](/classes/icontextualcondition) that passes when a value of the global objective bounty is greater than `0`.
+    What the value measures is not yet identified.
+
+    The global objective bounty is a game-wide state with a team. The condition does not
+    read the situation or any unit.
