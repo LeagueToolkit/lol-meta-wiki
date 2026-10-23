@@ -1,0 +1,21 @@
+# VfxPhysicsAttractionDefinitionData Documentation
+
+class:
+  description: |
+    One attractor of the [attraction modifier](/classes/0x402b2a8f): a point that pulls the
+    particles inside a radius with a constant acceleration. All three values are evaluated
+    once per step for the whole emitter.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Position:
+    description: "Position of the attractor, in world units, in the particles' reference frame."
+
+  AttractionRadius:
+    description: "Reach of the attractor, in world units. Particles farther away are not pulled."
+
+  AttractionAcceleration:
+    description: |
+      Strength of the pull, in world units per second squared. It is the same at every
+      distance inside the radius. A negative value pushes the particles away.

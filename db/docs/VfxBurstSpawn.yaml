@@ -1,0 +1,16 @@
+# VfxBurstSpawn Documentation
+
+class:
+  description: |
+    A [spawn behaviour](/classes/vfxspawnbehavior) with a burst and no rate. The emitter
+    spawns `SpawnBurstCount` particles at the start of each emitting phase and nothing
+    between bursts.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  SpawnBurstCount:
+    description: |
+      Number of particles in each burst. It starts at `5`. The value is truncated to a whole
+      number and then to 16 bits, so a count of 65536 or more wraps around. The burst is not
+      scaled by `EffectsQuality`.

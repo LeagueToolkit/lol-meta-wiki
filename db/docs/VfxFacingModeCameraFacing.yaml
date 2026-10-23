@@ -1,0 +1,12 @@
+# VfxFacingModeCameraFacing Documentation
+
+class:
+  description: |
+    A [facing mode](/classes/vfxshimmerfacingmode) that turns each particle toward the
+    camera's position and keeps it upright in the world. Forward runs from the particle to the
+    camera, and up is world +Y. A mesh points its local +Z at the camera.
+
+    The particle collapses onto a line when the camera is straight above or below it, because
+    forward is then parallel to up.
+
+    The particle's own rotation is applied inside that frame.

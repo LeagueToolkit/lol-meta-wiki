@@ -1,0 +1,15 @@
+# VfxAudioRuntime Documentation
+
+class:
+  description: |
+    The running part of a [VfxAudioComponent](/classes/vfxaudiocomponent). It starts the
+    component's cues on the spawn, particle death and step hooks of
+    [IVfxRuntime](/classes/ivfxruntime), as the cue's `LifetimeBehavior` describes on
+    [VfxAudioCue](/classes/vfxaudiocue).
+
+    It stores the handles of the tracked sounds that belong to the whole emitter, and stops
+    them when the emitter leaves its emitting phase. The handle of a per-particle sound is
+    stored on the particle, and the sound is stopped when that particle dies.
+  notes:
+    - "The client creates this object itself. A bin does not hold it."
+    - "Deleting this object does not stop the sounds whose handles it stores."

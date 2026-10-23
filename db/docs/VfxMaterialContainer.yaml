@@ -1,0 +1,12 @@
+# VfxMaterialContainer Documentation
+
+class:
+  description: |
+    The **material** of a [VfxMaterialRenderComponent](/classes/vfxmaterialrendercomponent)
+    (its `MaterialContainer`): either a material authored inline
+    ([VfxEmbeddedMaterial](/classes/vfxembeddedmaterial)) or a link to a material defined
+    elsewhere ([VfxSharedMaterial](/classes/vfxsharedmaterial)). The render component asks
+    the container for the material when the system is prepared and draws with a copy of it,
+    see [VfxMaterialRenderComponent](/classes/vfxmaterialrendercomponent).
+  notes:
+    - "If the render component has no container, or the container returns no material, the client crashes when the system is prepared."

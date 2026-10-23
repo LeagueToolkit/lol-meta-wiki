@@ -4,6 +4,13 @@ class:
   description: |
     The **physics** slot of a [VfxComponents](/classes/vfxcomponents) graph. It moves the
     particles once per update, after that update's spawn, and it is told how many particles
-    each spawn adds.
+    each spawn adds and which particles die.
 
     Required: a graph without a physics component drops its emitter.
+
+    The modern component is [VfxModularPhysicsComponent](/classes/vfxmodularphysicscomponent),
+    which builds the motion from a list of modifiers.
+    [VfxLegacyPhysicsComponent](/classes/vfxlegacyphysicscomponent) carries the motion fields
+    of a complex emitter instead.
+  notes:
+    - "The client checks only that the slot is set. If the component creates no running part when the emitter is created, the client crashes on the emitter's first spawn or update. See [VfxModularPhysicsComponent](/classes/vfxmodularphysicscomponent)."

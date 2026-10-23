@@ -1,0 +1,34 @@
+# VfxFacingModeCameraFacingPerAxis Documentation
+
+class:
+  description: |
+    A [facing mode](/classes/vfxshimmerfacingmode) that aims each particle at an **aim point**
+    built per axis, with world +Y as up. Forward runs from the particle to the aim point.
+
+    | Aim point axis | Source |
+    |---|---|
+    | X | the camera's X if `AlignYaw` is set, else the particle's |
+    | Y | the camera's Y if `AlignPitch` is set, else the particle's |
+    | Z | always the camera's |
+
+    - **Both set** gives the same result as
+      [VfxFacingModeCameraFacing](/classes/vfxfacingmodecamerafacing).
+    - **`AlignYaw` alone** turns the particle about the vertical to face the camera and keeps
+      it upright.
+    - **`AlignPitch` alone** aims the particle within the vertical plane that runs along world
+      Z through the particle.
+    - **Neither** points forward along world +Z or -Z, toward the camera's side. The particle
+      collapses when the camera's Z equals the particle's.
+
+    The aim point works like the one of the legacy
+    [camera alignment](/classes/vfxprimitivemeshbase) flags, but the up axis here is world +Y,
+    not the camera's up vector.
+
+    The particle's own rotation is applied inside that frame.
+
+properties:
+  AlignPitch:
+    description: "When set, the aim point takes the camera's Y; otherwise the particle's Y."
+
+  AlignYaw:
+    description: "When set, the aim point takes the camera's X; otherwise the particle's X."

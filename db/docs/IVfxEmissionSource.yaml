@@ -1,0 +1,46 @@
+# IVfxEmissionSource Documentation
+
+class:
+  description: |
+    A shape that the birth points of a component emitter's particles are sampled from, held
+    by [`VfxPhysicsPositionModifier.EmissionSource`](/classes/vfxphysicspositionmodifier).
+    For each new particle the source returns a **point**, which is added to the particle's
+    birth offset, and an **emission normal**, which
+    [VfxPhysicsVelocityModifier](/classes/vfxphysicsvelocitymodifier) uses as the radial
+    direction.
+
+    | Source | Point | Normal |
+    |---|---|---|
+    | [VfxEmissionPoint](/classes/vfxemissionpoint) | the shape's centre | a random direction |
+    | [VfxEmissionBox](/classes/vfxemissionbox) | on a face, inside, or on a corner | the face normal, or the corner's diagonal |
+    | [VfxEmissionSphere](/classes/vfxemissionsphere) | on the surface | away from the frame origin |
+    | [VfxEmissionCylinder](/classes/vfxemissioncylinder) | on the side, optionally on the caps | along +Y or -Y on a cap |
+    | [VfxEmissionMesh](/classes/vfxemissionmesh) | on a triangle of a static mesh | the triangle's normal |
+    | [VfxEmissionSkin](/classes/vfxemissionskin) | on the bound unit's skinned mesh, in its current pose | the skinned surface normal |
+    | [VfxEmissionSkeleton](/classes/vfxemissionskeleton) | along a bone of the bound unit's skeleton | at right angles to the bone |
+
+    **Shape transform.** `scale`, `rotation` and `ShapeCenter` are evaluated once per spawn,
+    for the whole batch of new particles. The sampled point is scaled, rotated and moved by
+    `ShapeCenter`. The normal is only rotated.
+
+    **Normal after spawn.** From the particle's second step on, the emission normal is
+    recomputed on every step from the particle's current position. For a point, mesh, skin
+    or skeleton source it is the direction from the source's origin to the particle. For a
+    box it is the outward normal of the face on the side of the position's largest
+    coordinate. A sphere and a cylinder compute it from their own shape.
+  notes:
+    - "No shipped object uses an emission source."
+
+properties:
+  rotation:
+    description: "Euler rotation of the shape, in degrees. It turns the sampled point and the normal."
+
+  scale:
+    description: "Per-axis scale of the shape. It scales the sampled point but not the normal."
+
+  ShapeCenter:
+    description: |
+      Offset of the shape from the particle's birth position, in world units, in the
+      particle's reference frame.
+    notes:
+      - "On a sphere the offset is part of the normal, so the normal of an off-centre sphere points away from the frame origin, not from the sphere's centre."

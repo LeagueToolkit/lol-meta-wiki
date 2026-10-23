@@ -1,0 +1,10 @@
+# IVfxAudioRuntime Documentation
+
+class:
+  description: |
+    The base of the running parts of the audio components. The running part of a
+    [VfxAudioComponent](/classes/vfxaudiocomponent) is a
+    [VfxAudioRuntime](/classes/vfxaudioruntime). The hooks that every running part gets are on
+    [IVfxRuntime](/classes/ivfxruntime).
+  notes:
+    - "The client creates these objects itself. A bin does not hold them."

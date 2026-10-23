@@ -1,0 +1,19 @@
+# 0x8edc8e76 Documentation
+
+class:
+  description: |
+    A [physics modifier](/classes/vfxphysicsmodifierbase) that gives the particles random
+    pushes. It is not a continuous noise field: it fires **impulses** at a fixed rate.
+
+    On each step, before the integration, the client evaluates the values of `Noise` once
+    for the whole emitter and works out how many impulses are due: one on the first step,
+    then the number of whole periods of `frequency` that have passed since the last impulse.
+    For each impulse, every particle within `radius` of `Position` gets a random direction,
+    multiplied per axis by `NoiseVector`, added to its acceleration.
+  notes:
+    - "No shipped object uses it."
+    - "The values are evaluated per emitter, not per particle, so per-particle random values and particle-age curves do not vary between particles."
+
+properties:
+  Noise:
+    description: "The impulse settings. See [VfxPhysicsNoiseDefinitionData](/classes/vfxphysicsnoisedefinitiondata)."

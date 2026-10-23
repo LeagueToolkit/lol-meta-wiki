@@ -1,0 +1,47 @@
+# 0x287a50ff Documentation
+
+class:
+  description: |
+    A [lifetime state machine](/classes/vfxlifetimestatebehavior) that plays once with an
+    intro: a start delay, one emitting phase, an outro, then finished, plus an intro that
+    runs from the emitter's creation. It works as [SimpleOutro](/classes/simpleoutro) does,
+    with `IntroDuration` added.
+
+    Its values start at: `startDelay` `0`, `IntroDuration` `0`, `EmitterDuration` `1`,
+    `OutroDuration` `0`, `particleLifetime` `1`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  startDelay:
+    description: |
+      Length of the start delay, in seconds, evaluated once when the emitter is created. A
+      negative value counts as `0`.
+
+  IntroDuration:
+    description: |
+      Length of the intro, in seconds, evaluated once when the emitter is created. The intro
+      starts with the emitter and runs alongside the start delay and the emitting phase. It
+      does not delay or gate emission. The client tracks the intro's progress from `0` to `1`
+      over this time; what reads that progress is not established.
+
+  EmitterDuration:
+    description: |
+      Length of the emitting phase, in seconds, evaluated once when the emitter is created.
+      A negative value makes the emitter emit forever. The value is also the emission
+      duration that the emitter reports to the particle system.
+
+  OutroDuration:
+    description: |
+      Length of the outro, in seconds, evaluated when the outro starts. When the outro ends,
+      the client removes every remaining particle. A negative value uses one new evaluation
+      of `particleLifetime` instead, if that is positive and finite, and `0` otherwise.
+
+  particleLifetime:
+    description: |
+      Lifetime of each particle, in seconds, evaluated once for each new particle. A negative
+      value means the particle never expires and is removed only when the emitter is
+      finished.
+
+  DoesParticleLifeScale:
+    description: "Has no effect. The client reads the flag for each new particle and does not use the result."

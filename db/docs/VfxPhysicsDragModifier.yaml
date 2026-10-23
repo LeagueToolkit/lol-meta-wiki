@@ -1,0 +1,34 @@
+# VfxPhysicsDragModifier Documentation
+
+class:
+  description: |
+    A [physics modifier](/classes/vfxphysicsmodifierbase) that sets the particles' **drag**.
+    It does not move the particles itself. Other parts of the physics read its drag value:
+
+    - The position-based integration of
+      [VfxModularPhysicsComponent](/classes/vfxmodularphysicscomponent) reduces the
+      particle's velocity by the fraction `drag * dt`, clamped to `[0, 1]`, on every step.
+    - [VfxPhysicsVelocityModifier](/classes/vfxphysicsvelocitymodifier) uses it to slow down
+      the velocity it applies.
+    - [VfxPhysicsOrbitModifier](/classes/vfxphysicsorbitmodifier) uses it to slow down the
+      orbit, when its `ApplyDrag` is set.
+
+    The drag value is `0.5 * InitialDrag * KeyedDrag`, per second. The position-based model
+    uses only the length of that vector, so different values per axis act as one value.
+    The explicit model applies the drag per axis.
+  notes:
+    - "Shipped component emitters use it with `InitialDrag` and `KeyedDrag`."
+    - "Without a drag modifier the particles keep their velocity."
+
+properties:
+  InitialDrag:
+    description: |
+      Drag of the particle, evaluated once per particle at spawn. Half of it is stored as
+      the particle's drag coefficient. Required: if the driver is null, the modifier does
+      nothing.
+
+  KeyedDrag:
+    description: "Multiplier on the stored drag, evaluated on every step."
+
+  IsUniform:
+    description: "Uses the X component of the drag for all three axes."

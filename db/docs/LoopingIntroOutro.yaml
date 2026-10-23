@@ -1,0 +1,77 @@
+# LoopingIntroOutro Documentation
+
+class:
+  description: |
+    A [lifetime state machine](/classes/vfxlifetimestatebehavior) that repeats its emitting
+    phase: a start delay, then `EmitterLoops` emitting phases separated by loop delays, then
+    an outro, then finished. An intro runs from the emitter's creation alongside the phases.
+
+    A loop delay follows every emitting phase except the last one. A spawn behaviour with a
+    burst bursts at the start of each emitting phase, so it bursts once per loop.
+
+    The emission duration that the emitter reports to the particle system is
+    `(EmitterDuration + LoopDelay) * EmitterLoops`, or endless when `EmitterLoops` is
+    negative. The estimate includes one loop delay after the last loop, which does not run.
+
+    Its values start at: `startDelay` `0`, `IntroDuration` `0`, `EmitterDuration` `1`,
+    `LoopDelay` `1`, `OutroDuration` `0`, `particleLifetime` `1`.
+  notes:
+    - "If `EmitterLoops` is `-2` or lower, `EmitterDuration` is `0` or less and `LoopDelay` is not longer than the time carried into it (for example `0`), the state machine alternates between the emitting and loop delay phases without end inside one step, and the client crashes."
+    - "A few shipped component emitters use it, with `EmitterLoops` `-1` and `LoopDelay` `2`."
+
+properties:
+  startDelay:
+    description: |
+      Length of the start delay, in seconds, evaluated once when the emitter is created.
+    notes:
+      - "A negative value does not count as `0` here: it sets `EmitterDuration` to `0` instead, so the emitting phases have no length."
+
+  IntroDuration:
+    description: |
+      Length of the intro, in seconds, evaluated once when the emitter is created. The intro
+      starts with the emitter and runs alongside the other phases. It does not delay or gate
+      emission. The client tracks the intro's progress from `0` to `1` over this time; what
+      reads that progress is not established.
+
+  EmitterDuration:
+    description: |
+      Length of each emitting phase, in seconds. It is evaluated once when the emitter is
+      created, and every loop reuses that value unless `0xf3ac39a6` is set.
+    notes:
+      - "A negative value does not mean endless emission here. It sets `startDelay` to `0`, and every emitting phase is skipped, so the emitter never spawns."
+
+  LoopDelay:
+    description: |
+      Length of the pause between two emitting phases, in seconds. It is evaluated once when
+      the emitter is created, and every loop reuses that value unless `0xf3ac39a6` is set.
+
+  OutroDuration:
+    description: |
+      Length of the outro, in seconds, evaluated when the outro starts. When the outro ends,
+      the client removes every remaining particle. A negative value uses one new evaluation
+      of `particleLifetime` instead, if that is positive and finite, and `0` otherwise.
+
+  particleLifetime:
+    description: |
+      Lifetime of each particle, in seconds, evaluated once for each new particle. A negative
+      value means the particle never expires and is removed only when the emitter is
+      finished.
+
+  EmitterLoops:
+    description: |
+      Number of emitting phases. A negative value repeats the loop without end. `0` still
+      runs one emitting phase, although the reported emission duration is `0`.
+    notes:
+      - "With `-1`, a loop whose `EmitterDuration` is not longer than the time carried into it ends the looping: the outro follows that loop. Values of `-2` and lower do not have this exception."
+
+  DoesParticleLifeScale:
+    description: "Has no effect. The client reads the flag for each new particle and does not use the result."
+
+  "0xf3ac39a6":
+    description: |
+      When set, the client evaluates `EmitterDuration` again at the start of each emitting
+      phase and `LoopDelay` again at the start of each loop delay, so a random driver gives
+      each loop its own length. The reported emission duration then becomes the sum of
+      `EmitterLoops` new evaluations of `EmitterDuration` and one fewer of `LoopDelay`,
+      computed when the emitter is created. When clear, every loop uses the values evaluated
+      at creation.

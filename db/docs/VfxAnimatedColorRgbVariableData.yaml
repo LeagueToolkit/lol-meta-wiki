@@ -1,0 +1,23 @@
+# VfxAnimatedColorRgbVariableData Documentation
+
+class:
+  description: |
+    An [RGB colour curve](/classes/vfxcolorrgbbase) without per-span interpolation modes. The
+    driver samples it at the time that its `frequency` selects and returns `(r, g, b)`.
+
+    Its samplers read `probabilityTables`, but the driver draws no random numbers for this
+    curve. What the sampled colour is with tables set is not established.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  times:
+    description: |
+      The positions of the keys on the driver's time source: seconds
+      for the time sources in seconds, fractions for the others.
+
+  values:
+    description: "The colour at each key, `(r, g, b)`, one entry for each entry of `times`."
+
+  probabilityTables:
+    description: "Random variation tables. See the class description."

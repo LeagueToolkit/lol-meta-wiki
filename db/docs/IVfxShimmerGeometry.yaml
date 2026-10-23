@@ -1,0 +1,15 @@
+# IVfxShimmerGeometry Documentation
+
+class:
+  description: |
+    A marker shared by the [component primitives](/classes/vfxshimmerprimitivebase) and some
+    legacy primitives. No client behaviour that depends on the marker has been identified.
+
+    The marker does not make a legacy primitive drawable by the component VFX system. The
+    component emitter builds batched geometry only for
+    [VfxShimmerPrimitiveBase](/classes/vfxshimmerprimitivebase) primitives, and
+    [`VfxGeometryComponent.primitive`](/classes/vfxgeometrycomponent#primitive) takes a
+    `VfxShimmerPrimitiveBase`. A legacy primitive goes in a
+    [VfxLegacyGeometryComponent](/classes/vfxlegacygeometrycomponent) instead.
+  notes:
+    - "`VfxGeometryComponent.primitive` took this type in older builds."

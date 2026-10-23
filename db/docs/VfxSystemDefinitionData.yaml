@@ -89,7 +89,7 @@ properties:
       graph does not supply lifetime, physics, rendering and geometry is dropped while
       the system is prepared.
     notes:
-      - "`Filtering` is not checked for this list. The other spawn gates are."
+      - "Only the `spectatorPolicy` of `Filtering` is tested for this list, once while the system is prepared."
 
   particleName:
     description: |

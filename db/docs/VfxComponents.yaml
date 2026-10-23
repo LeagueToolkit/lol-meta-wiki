@@ -3,82 +3,112 @@
 class:
   description: |
     The **component graph** of a
-    [shimmer emitter](/classes/vfxshimmeremitterdefinitiondata): one object per slot for
-    lifetime, physics, rendering and geometry, plus an optional child component. A shimmer
-    emitter has almost no properties of its own. Everything that a
+    [component emitter](/classes/vfxshimmeremitterdefinitiondata): one object per slot for
+    lifetime, physics, rendering and geometry, an optional child component, and a list of extra
+    components. A component emitter has almost no properties of its own. Everything that a
     [complex emitter](/classes/vfxemitterdefinitiondata) carries as properties - emission,
     lifetime, motion, material and primitive - comes from the components in these slots.
 
     **Required slots.** When the system is prepared, the client builds the emitter only if
     `LifetimeComponent`, `PhysicsComponent`, `RenderComponent` and `GeometryComponent` are all
     set, and the geometry component resolves to a primitive. A graph that misses any of them
-    drops its emitter. `ChildComponent` is the only optional slot.
+    drops its emitter without a message. `ChildComponent` and `components` are optional.
 
-    **Preparing.** The client loads the meshes that the geometry component's primitive names,
-    the same way [VfxMeshDefinitionData](/classes/vfxmeshdefinitiondata) describes. The render
-    component then builds the emitter's draw setup from the primitive, those meshes and the
-    emitter's name.
+    **Preparing.** The lifetime, physics and render components and every `components` entry
+    reserve the random values and driver storage that their drivers need. The client loads the
+    meshes that the geometry component's primitive names, the same way
+    [VfxMeshDefinitionData](/classes/vfxmeshdefinitiondata) describes. The render component
+    then builds the emitter's draw setup from the primitive, those meshes and the emitter's
+    name.
 
-    **Each update**, the components run in a fixed order:
+    **Creating.** When a system instance creates the emitter, every component creates its
+    running part, an [IVfxRuntime](/classes/ivfxruntime) object, in this order: lifetime,
+    physics, render, geometry, child, then the `components` entries in list order. Each
+    running part declares the per-particle values that it stores.
 
-    1. The lifetime component decides whether the emitter is finished.
-    2. If it is not, and emission has not been stopped, the lifetime component returns how
-       many particles to spawn in this update, and they are spawned.
-    3. The physics component moves the particles.
-    4. The render component builds the render data.
-    5. The child component, if set, and the geometry component update.
-    6. Every entry of `components` updates.
+    **Each update.** In every substep of a system update, the component emitters update
+    before the complex and simple emitters. For each component emitter the lifetime component
+    first advances its state machine, see
+    [VfxLifetimeStateBehavior](/classes/vfxlifetimestatebehavior). Then the emitter runs one
+    step:
 
-    Every component is told how many particles were spawned. The count comes straight from
-    the lifetime component. There is no emission-rate accumulator and no burst clamp on this
-    path, so the per-importance emission-rate multiplier of `EffectsQuality` does not apply.
-    The emitter's mesh animation loops on a clock that starts at the start time the lifetime
-    component reports.
+    1. Particles die. A particle dies when its age reaches its lifetime. When the lifetime
+       component reports that the emitter is finished, every particle dies.
+    2. The lifetime component stores the step's time delta on every live particle.
+    3. The render component starts its frame.
+    4. If the lifetime component is still emitting and emission has not been stopped, it
+       returns how many particles to spawn in this step, see
+       [VfxSpawnBehavior](/classes/vfxspawnbehavior). The primitive can lower that count to
+       its capacity. The new particles are spawned and every component is told about them.
+    5. The lifetime component ages the particles.
+    6. The physics, render, child and geometry components update, then every `components`
+       entry in list order.
+    7. The client sets the emitter's UV animation time: the time since the start delay ended,
+       wrapped to the material's animation length. For an attached-mesh primitive it also
+       stores the attachment transform.
 
-    **Shipped data.** Summoner's Rift map data carries the component graphs, plus one test
-    system in `Global.wad.client` that no shipped bin references. Every Summoner's Rift graph
-    fills the four required slots with the modern components and leaves `ChildComponent` and
-    `components` empty. Every Summoner's Rift shimmer emitter also sets `disabled`, and a
-    disabled shimmer emitter is never built, so no Summoner's Rift graph runs.
+    A step with the same time as the previous step does nothing.
+
+    **Stopping.** When the particle system stops emitting, its component emitters spawn no
+    more particles and their lifetime state machines move to the outro. The system counts as
+    finished only when every component emitter is finished. When the system is destroyed, the
+    running parts are deleted without a particle death hook for the particles that are still
+    alive.
+
+    **Shipped data.** Component emitters ship in Summoner's Rift map data and in
+    `Global.wad.client`. Every shipped graph fills the four required slots with
+    [VfxLifetimeComponent](/classes/vfxlifetimecomponent),
+    [VfxModularPhysicsComponent](/classes/vfxmodularphysicscomponent),
+    [VfxMaterialRenderComponent](/classes/vfxmaterialrendercomponent) and
+    [VfxGeometryComponent](/classes/vfxgeometrycomponent), and leaves `ChildComponent` empty.
+    Nearly every shipped component emitter sets `disabled`, and a disabled component emitter is
+    never built.
   notes:
-    - "Summoner's Rift map data also writes component graphs onto complex emitters, as a `VfxComponents` field on `VfxEmitterDefinitionData`. No tracked build registers that field there, and the client skips a property that its class does not register. Those complex emitters set no `rate`, `flexRate`, `isSingleParticle` or material override, so the client drops them when the system is prepared."
+    - "If a slot's component cannot create its running part, for example a physics component with an update model outside its table, the client crashes on the first update of the emitter."
+    - "A few complex emitters in shipped data carry a `VfxComponents` field. `VfxEmitterDefinitionData` does not register that field, and the client skips a property that its class does not register."
 
 properties:
   LifetimeComponent:
     description: |
-      Decides when the emitter is finished and how many particles it spawns in each update.
-      Required. See [VfxLifetimeComponentBase](/classes/vfxlifetimecomponentbase).
+      Runs the emitter's state machine and decides when particles die and how many particles
+      spawn in each step. Required. See
+      [VfxLifetimeComponentBase](/classes/vfxlifetimecomponentbase).
 
   PhysicsComponent:
     description: |
-      Moves the particles once per update, after the spawn. Required. See
+      Moves the particles once per step, after the spawn. Required. See
       [VfxPhysicsComponentBase](/classes/vfxphysicscomponentbase).
 
   RenderComponent:
     description: |
       Builds the emitter's draw setup when the system is prepared and the render data in each
-      update. Required. See [VfxRenderComponentBase](/classes/vfxrendercomponentbase).
+      step. Required. See [VfxRenderComponentBase](/classes/vfxrendercomponentbase).
 
   GeometryComponent:
     description: |
-      Supplies the primitive the particles are drawn as. Required, and it must resolve to a
+      Supplies the primitive that the particles are drawn as. Required, and it must resolve to a
       primitive. See [VfxGeometryComponentBase](/classes/vfxgeometrycomponentbase).
 
   ChildComponent:
     description: |
-      Optional. When set, it is told each spawn count and updates after the render
-      component. See [VfxChildComponent](/classes/vfxchildcomponent).
+      Optional. Creates a child particle system for each particle, at its birth or at its
+      death. It updates after the render component. See
+      [VfxChildComponent](/classes/vfxchildcomponent).
 
   components:
     description: |
-      Extra components beyond the five named slots. Each entry is built into a running part
-      when the emitter is created, and from then on it is updated after the five slots on
-      every update and told about each particle that dies.
+      Extra components beyond the five named slots. Each entry reserves its driver storage when
+      the system is prepared and creates its running part when the emitter is created. From then
+      on it is told about each spawn and each particle death, and it updates after the five
+      slots in every step.
 
-      Two component classes are made for this list:
-      [VfxLightComponent](/classes/vfxlightcomponent), which gives the emitter a point light,
-      and [VfxEffectorComponent](/classes/vfxeffectorcomponent), which gives it an
-      environment effector. The running part of an entry is an
-      [IVfxRuntime](/classes/ivfxruntime) object.
+      Three component classes are made for this list:
+
+      | Class | Effect |
+      |---|---|
+      | [VfxLightComponent](/classes/vfxlightcomponent) | A point light for the emitter. |
+      | [VfxEffectorComponent](/classes/vfxeffectorcomponent) | An environment effector for the emitter. |
+      | [VfxAudioComponent](/classes/vfxaudiocomponent) | Sound events at spawn, at the start of emission or for the life of a particle. |
     notes:
-      - "No shipped graph sets it."
+      - "If an entry is null, the client skips it when the system is prepared and crashes when the emitter is created."
+      - "Shipped graphs in `Global.wad.client` use it for `VfxAudioComponent` entries."

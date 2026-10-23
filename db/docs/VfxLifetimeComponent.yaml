@@ -1,0 +1,44 @@
+# VfxLifetimeComponent Documentation
+
+class:
+  description: |
+    The **phase-based lifetime component** of the component VFX system. It combines two
+    objects:
+
+    - A [state machine](/classes/vfxlifetimestatebehavior) in `LifetimeBehavior`. It moves
+      the emitter through its phases (start delay, emitting, outro), gives each new particle
+      its lifetime and decides when the emitter is finished.
+    - A [spawn behaviour](/classes/vfxspawnbehavior) in `SpawnBehavior`. It supplies the
+      emission rate and the burst count. The component turns them into the spawn count of
+      each step during the emitting phase.
+
+    If a slot is not set, the component uses a [SimpleOutro](/classes/simpleoutro) and a
+    [VfxDefaultSpawnBehavior](/classes/vfxdefaultspawnbehavior), each with its starting
+    values. That default spawn behaviour has a rate of 0 and no burst, so a component with
+    neither slot set spawns nothing.
+
+    The start time that the component reports to the emitter is the length of the start
+    delay.
+  notes:
+    - "If the bin stores a null pointer in `LifetimeBehavior` or `SpawnBehavior`, the client crashes when the emitter is created. Leaving the property out is safe: the defaults apply."
+    - "Every shipped component emitter uses this class, almost always with a `SimpleOutro` and a `VfxDefaultSpawnBehavior`."
+
+properties:
+  LifetimeBehavior:
+    description: |
+      The state machine of the emitter's phases. See
+      [VfxLifetimeStateBehavior](/classes/vfxlifetimestatebehavior). If it is not set, the
+      component uses a [SimpleOutro](/classes/simpleoutro) with its starting values.
+
+  SpawnBehavior:
+    description: |
+      The rate and burst source of the spawn count. See
+      [VfxSpawnBehavior](/classes/vfxspawnbehavior). If it is not set, the component uses a
+      [VfxDefaultSpawnBehavior](/classes/vfxdefaultspawnbehavior) with a rate of 0 and no
+      burst, which spawns nothing.
+
+  "0x2f61e63c":
+    description: |
+      A spawn percentage for each `EffectsQuality` level, in the fields `VeryLow`, `Low`,
+      `medium`, `High` and `VeryHigh`. The client build that was read does not register this
+      property, so the client skips it when it loads the bin.

@@ -1,0 +1,40 @@
+# VfxSpawnBehavior Documentation
+
+class:
+  description: |
+    The **spawn source** of a [VfxLifetimeComponent](/classes/vfxlifetimecomponent), stored in
+    its `SpawnBehavior` slot. A spawn behaviour supplies an emission rate in particles per
+    second, a burst count, or both. The lifetime component turns them into the number of
+    particles to spawn in each simulation step.
+
+    ## Spawn count
+
+    In each step in which the emitter may spawn, the lifetime component computes the count
+    in this order:
+
+    1. **Time window.** During the emitting phase of the
+       [state machine](/classes/vfxlifetimestatebehavior), the time since the last spawn. On
+       the step that ends the emitting phase, the part of that step that was still inside the
+       phase. In every other phase the count is `0`.
+    2. **Rate.** The behaviour's rate, evaluated in every step. If the rate is `0` and the
+       behaviour has no burst, the count is `0`.
+    3. **Quality.** The rate is multiplied by the emission-rate factor of the current
+       effects quality setting.
+    4. **Count.** The rate times the window, truncated to a whole number. One step spawns at
+       most the rate times `0.33`, truncated, plus `1`. After a long step the emitter
+       therefore makes up at most 0.33 seconds of emission.
+    5. **Start of the phase.** While no particle has spawned in the current emitting phase, a
+       behaviour with a burst replaces the count with its burst count. The burst count is
+       not multiplied by the quality factor. A behaviour without a burst adds `1` particle
+       instead.
+    6. **Capacity.** The [primitive](/classes/vfxshimmerprimitivebase) of the geometry
+       component can lower the count to the number of particles that it can still hold.
+
+    Each emitting phase starts again at step 5, so a behaviour with a burst bursts at the
+    start of every emitting phase.
+
+    **Burst test.** Whether a behaviour has a burst is decided once per definition, when the
+    first emitter instance is created, by evaluating its burst count. If the count is `0` at
+    that moment, no instance of that definition ever bursts.
+  notes:
+    - "If the bin stores a null pointer in `SpawnBehavior`, the client crashes when the emitter is created."

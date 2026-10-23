@@ -1,0 +1,58 @@
+# VfxLegacyPhysicsComponent Documentation
+
+class:
+  description: |
+    A physics component that carries the motion fields of a
+    [complex emitter](/classes/vfxemitterdefinitiondata): birth and over-life velocity,
+    acceleration, drag, rotation and scale, the spawn shape, the emission mesh, force fields,
+    terrain following and the emitter-frame overrides. It has its own running part, which
+    moves the particles of a [component emitter](/classes/vfxshimmeremitterdefinitiondata)
+    with these fields.
+
+    The client creates it only when a bin declares one. It never converts a complex
+    emitter's motion fields into this component.
+
+    A field with the same name as a field of
+    [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata) has the meaning that page
+    gives it. This page documents only what differs.
+  notes:
+    - "No shipped data uses this class."
+    - "The force fields of `fieldCollectionDefinition` always work in the emitter's frame on this component. No property turns this off."
+
+properties:
+  birthRotationalVelocity:
+    description: "Counterpart of `birthRotationalVelocity0` on a complex emitter."
+
+  flexBirthRotationalVelocity:
+    description: "Counterpart of `flexBirthRotationalVelocity0` on a complex emitter."
+
+  birthScale:
+    description: "Counterpart of `birthScale0` on a complex emitter."
+
+  scale:
+    description: "Counterpart of `scale0` on a complex emitter."
+
+  rotation0:
+    description: |
+      Spin rate over the particle's life. On a complex emitter it is an integrated value; here
+      it is a plain `ValueVector3`. How the legacy running part reads it is not documented.
+
+  Linger:
+    description: |
+      Motion replacements while the particles linger. See
+      [VfxPhysicsLingerDefinitionData](/classes/vfxphysicslingerdefinitiondata).
+
+  "0x469f89dc":
+    description: |
+      Keeps lingering particles spinning. When set, the particle's rotation gets an extra
+      angle of `rate * 60 * t`, where `t` is a per-particle time that is set only while the
+      particle lingers, and `rate` is `rotation0` or a switched-on replacement in `Linger`.
+      That `t` is the time since the particle started to linger is not confirmed.
+
+  "0x2d19f1a4":
+    description: |
+      Moves each particle into the emitter's frame after its position is set: the particle's
+      transform is multiplied by the emitter's transform, rotation and translation both. The
+      particles then move and turn with the emitter.
+    notes:
+      - "One other use of this flag in the running part is not documented."

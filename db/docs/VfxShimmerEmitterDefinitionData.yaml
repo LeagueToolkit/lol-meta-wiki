@@ -2,72 +2,79 @@
 
 class:
   description: |
-    An emitter definition that delegates its behavior to the **component graph** in its
-    `VfxComponents` property instead of carrying it as properties. It is the third
-    emitter list on [VfxSystemDefinitionData](/classes/vfxsystemdefinitiondata), held
-    by `ShimmerEmitterDefinitionData`, and keeps only a handful of spawn gates of its
-    own; emission, lifetime, physics, material and geometry all come from the graph.
+    A **component emitter**: an emitter definition that delegates its behavior to the
+    **component graph** in its `VfxComponents` property instead of carrying it as properties.
+    It is the third emitter list on [VfxSystemDefinitionData](/classes/vfxsystemdefinitiondata),
+    held by `ShimmerEmitterDefinitionData`, and keeps only a handful of gates of its own;
+    emission, lifetime, physics, material and geometry all come from the graph. The graph's
+    page describes the slots and the order in which they run, see
+    [VfxComponents](/classes/vfxcomponents).
 
-    **An incomplete graph drops the emitter.** While the system is prepared, every
-    entry whose `disabled` is unset must supply a lifetime component, a physics
-    component, a render component, and a geometry component that resolves to a
-    primitive. An entry missing any of those is discarded there and never reaches the
-    running system; the child component is the only optional slot. The other two
-    emitter lists have no equivalent check, so a misconfigured complex or simple
+    **An incomplete graph drops the emitter.** While the system is prepared, every entry whose
+    `disabled` is unset and that passes `Filtering` must supply a lifetime component, a physics
+    component, a render component, and a geometry component that resolves to a primitive. An
+    entry missing any of those is discarded there and never reaches the running system. The
+    other two emitter lists have no equivalent check, so a misconfigured complex or simple
     emitter still runs.
 
-    The graph also supplies what gets drawn: the client loads the meshes that the geometry
-    component's primitive names, and the render component builds the emitter's draw setup
-    from them before the system spawns.
-
-    Per-spawn gates differ from the other lists. `ChanceToNotExist`, the `importance`
-    cull and `colorblindVisibility` all apply, as they do to complex emitters.
-    [`Filtering`](/classes/vfxemitterdefinitiondata#filtering) does not, and no material
-    overrides are bound for these emitters.
+    **Spawn gates.** When a system instance spawns, `ChanceToNotExist` and
+    `colorblindVisibility` decide whether the emitter is created, as they do for complex
+    emitters. No material overrides are bound for these emitters.
   notes:
-    - "The `EffectsQuality` per-importance emission-rate multiplier does not reach these emitters, because spawn counts come from the component graph rather than from a rate property. The `importance` visibility cull still applies."
+    - "If `VfxComponents` is null, the emitter passes the prepare step and the client crashes when a system instance creates it."
 
 properties:
   VfxComponents:
     description: |
-      The **component graph** supplying the emitter's entire behavior: lifetime,
-      physics, rendering, geometry, and optionally children.
+      The **component graph** supplying the emitter's entire behavior: lifetime, physics,
+      rendering, geometry, and optionally children and extra components.
 
-      Required, and required to be complete. Without a lifetime, physics and render
-      component, and a geometry component that resolves to a primitive, the emitter is
-      discarded while the system is prepared.
+      Required, and required to be complete. Without a lifetime, physics and render component,
+      and a geometry component that resolves to a primitive, the emitter is discarded while the
+      system is prepared.
 
   emitterName:
     description: |
-      Name of the emitter. Passed to the render component while the draw setup is
-      built, so it reaches the renderer as data rather than serving only as an
-      authoring label.
+      Name of the emitter. Passed to the render component while the draw setup is built, so it
+      reaches the renderer as data rather than serving only as an authoring label.
 
   disabled:
     description: |
-      Skips the emitter. Tested while the system is prepared, so a disabled entry is
-      never built at all rather than being suppressed per spawn.
+      Skips the emitter. Tested while the system is prepared, so a disabled entry is never built
+      at all rather than being suppressed per spawn.
     notes:
-      - "Every shipped shimmer emitter sets it, so no shipped component graph runs through this list."
+      - "Nearly every shipped component emitter sets it."
 
-  importance:
+  Filtering:
     description: |
-      Selects the emitter's slot in the quality cull table: at lower `EffectsQuality`
-      settings the higher-numbered slots are not instantiated.
-    notes:
-      - "Only the cull applies on this path. The per-importance emission-rate multiplier complex and simple emitters get has no effect here."
+      Optional conditions on the emitter's existence, see
+      [`Filtering`](/classes/vfxemitterdefinitiondata#filtering). For these emitters only
+      `spectatorPolicy` is tested, once while the system is prepared. An entry that fails it is
+      not built. The keyword lists are not tested.
 
   ChanceToNotExist:
     description: |
-      Probability, `0` to `1`, that the emitter is skipped for a given spawn. Rolled
-      once per spawn, so the same effect played twice can differ.
+      Probability, `0` to `1`, that the emitter is left out of an instance. One random number in
+      `0..1` is drawn per emitter when the system spawns, and the emitter is skipped when this
+      value is greater. The same effect played twice can differ.
 
   colorblindVisibility:
     description: |
-      Restricts the emitter to one color palette. `0` instantiates always, `1` only
-      while the default palette is active, `2` only while the colorblind palette is.
+      Filters the emitter by colour palette when the system spawns.
+
+      | Value | Emitter is created |
+      |---|---|
+      | `0` | always |
+      | `1` | only with the normal palette |
+      | `2` | only with the colourblind palette |
+      | `3` and above | never |
+
+  isUniformScale:
+    description: |
+      When a [child component](/classes/vfxchildcomponent) creates a child system on a bone, the
+      X scale is used for all three axes of the child's scale.
 
   ParticleScale:
     description: |
-      Per-axis scale, `1` on each axis meaning unscaled. What it scales, and at what
-      point, is not yet identified.
+      Per-axis scale, `1` on each axis meaning unscaled. What it scales, and at what point, is
+      not yet identified.

@@ -1,0 +1,12 @@
+# VfxEmissionPoint Documentation
+
+class:
+  description: |
+    An [emission source](/classes/ivfxemissionsource) that is a single point. Every particle
+    is born at `ShapeCenter`. Its emission normal is a random direction, drawn per particle:
+    each axis is random in `[-1, 1]` and the vector is normalised, so the directions are not
+    spread evenly over the sphere. A radial velocity on
+    [VfxPhysicsVelocityModifier](/classes/vfxphysicsvelocitymodifier) then shoots the
+    particles out in all directions.
+  notes:
+    - "No shipped object uses it."

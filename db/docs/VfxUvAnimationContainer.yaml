@@ -1,0 +1,42 @@
+# VfxUvAnimationContainer Documentation
+
+class:
+  description: |
+    The **flipbook** of a
+    [VfxMaterialRenderComponent](/classes/vfxmaterialrendercomponent) (its `UvAnimation`): the
+    texture is a grid of `AnimationDimensions` cells, and each particle shows one cell at a
+    time.
+
+    At spawn, the client picks each particle's frame range:
+
+    - start frame = `InitialFrameOffset`, rounded toward zero. `0` if it is not set.
+    - frame count = `NumFramesInAnimation`, rounded toward zero. The whole grid,
+      columns times rows, if it is not set.
+    - end frame = start frame + frame count - 1.
+
+    In each update, the client evaluates `AnimCurve` for each particle and shows the frame
+    `start + (end - start) * AnimCurve`, rounded toward zero. Frames count left to right and
+    then top to bottom. The client passes the UV offset of that cell to the shader for the
+    particle. A frame past the end of the grid wraps around to the start of the grid.
+  notes:
+    - "If `AnimCurve` is not set, every particle stays on its start frame."
+    - "A few shipped component emitters set `InitialFrameOffset`."
+
+properties:
+  AnimationDimensions:
+    description: |
+      Columns (x) and rows (y) of the flipbook grid. Values below `1` are treated as `1`.
+
+  InitialFrameOffset:
+    description: |
+      The first frame of the particle's range, evaluated once at spawn.
+
+  NumFramesInAnimation:
+    description: |
+      How many frames the particle's range has, evaluated once at spawn.
+
+  AnimCurve:
+    description: |
+      The position in the frame range, evaluated in every update: `0` shows the start frame,
+      `1` the end frame. A driver on the particle age fraction plays the range once over the
+      particle's lifetime.

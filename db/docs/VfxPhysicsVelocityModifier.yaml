@@ -1,0 +1,60 @@
+# VfxPhysicsVelocityModifier Documentation
+
+class:
+  description: |
+    A [physics modifier](/classes/vfxphysicsmodifierbase) that moves the particles at a
+    velocity. On each step, before the integration, the velocity is the sum of three parts:
+
+    - local: `InitialLocalVelocity * KeyedLocalVelocity`, in the axes of the particle's
+      reference frame;
+    - world: `InitialWorldVelocity * KeyedWorldVelocity`, which keeps its world direction;
+    - radial: `InitialRadialVelocity` along the radial direction (see `RadialOriginOffset`).
+
+    The particle is moved by `velocity * dt` as a displacement. This velocity is not added
+    to the particle's own velocity, so it stops acting when its keyed value drops to zero,
+    and accelerations do not add to it. Units are world units per second.
+
+    **Drag.** With a [VfxPhysicsDragModifier](/classes/vfxphysicsdragmodifier) in the list,
+    the drag takes away part of this velocity on every step: a fraction `drag * dt`,
+    clamped to `[0, 1]`, of what is left is absorbed and stays absorbed. The particle
+    slows down even when the keyed values stay constant.
+  notes:
+    - "Some shipped component emitters use it, with a constant `InitialLocalVelocity`."
+
+properties:
+  InitialLocalVelocity:
+    description: "Local velocity, evaluated once per particle at spawn."
+
+  KeyedLocalVelocity:
+    description: "Multiplier on `InitialLocalVelocity`, evaluated on every step."
+
+  InitialWorldVelocity:
+    description: "World velocity, evaluated once per particle at spawn."
+
+  KeyedWorldVelocity:
+    description: "Multiplier on `InitialWorldVelocity`, evaluated on every step."
+
+  InitialRadialVelocity:
+    description: |
+      Speed along the radial direction, as a
+      [float driver value](/classes/vfxfloatdynamicproperty) evaluated once per particle at
+      spawn. A positive value moves the particle away from the radial origin.
+
+  KeyedRadialVelocity:
+    description: |
+      Expected to multiply `InitialRadialVelocity` on every step, in the way of the other
+      Keyed values. This is not confirmed.
+
+  RadialOriginOffset:
+    description: |
+      The point that the radial direction points away from, in the particle's reference
+      frame. The direction depends on whether the particle has an emission normal from a
+      [VfxPhysicsPositionModifier](/classes/vfxphysicspositionmodifier) with an
+      `EmissionSource`:
+
+      | Emission normal | `RadialOriginOffset` | Radial direction |
+      |---|---|---|
+      | no | unset | From the frame origin to the particle. |
+      | no | set | From this point to the particle. |
+      | yes | unset | The emission normal. |
+      | yes | set | From this point to the particle's emission point. If the two coincide, the emission normal. |

@@ -1,0 +1,29 @@
+# VfxPhysicsScaleModifier Documentation
+
+class:
+  description: |
+    A [physics modifier](/classes/vfxphysicsmodifierbase) that sets the particles' scale. It
+    runs on each step after the integration. The scale is `InitialScale * KeyedScale`,
+    multiplied by the factor of `ScaleByVelocity` when that is enabled, and then by the
+    emitter instance's scale.
+  notes:
+    - "Every shipped component emitter has one, with a constant `InitialScale`."
+    - "In the explicit update model of [VfxModularPhysicsComponent](/classes/vfxmodularphysicscomponent) this modifier also prevents the scale from compounding with the instance scale."
+
+properties:
+  InitialScale:
+    description: |
+      Per-axis scale of the particle, evaluated once per particle at spawn. Left at its
+      default, it is 1 on every axis. Required: if the driver is null, the modifier does
+      nothing.
+
+  KeyedScale:
+    description: "Multiplier on `InitialScale`, evaluated on every step. A curve over the particle's age here grows or shrinks the particle over its life."
+
+  IsUniform:
+    description: "Uses the X component of the scale for all three axes."
+
+  ScaleByVelocity:
+    description: |
+      An extra scale factor taken from the particle's speed. See
+      [VfxScaleByVelocityData](/classes/vfxscalebyvelocitydata).

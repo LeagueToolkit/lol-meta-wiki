@@ -1,0 +1,31 @@
+# VfxDynamicParticleParameterDefinition Documentation
+
+class:
+  description: |
+    One **per-particle shader value**, an entry of `DynamicParticleParameter` on
+    [VfxDriverContainer](/classes/vfxdrivercontainer). The entry's key selects where the value
+    goes in the particle's record, which the material's shader reads.
+
+    - At spawn, the client evaluates `InitialParameters` once for each new particle and
+      writes the result into the particle's record.
+    - In each update, the client evaluates `KeyedParameters` for each particle. If
+      `InitialParameters` is also set, the result is multiplied, component by component, by
+      the particle's spawn value. The product replaces the value in the record.
+
+    So with both values set, the shader reads `InitialParameters` (at spawn) times
+    `KeyedParameters` (now). With only one of them set, it reads that one.
+  notes:
+    - "The client stores the spawn value of a particle only when both values are set. With only `InitialParameters` set, the record keeps the spawn value."
+    - "No shipped object uses it."
+
+properties:
+  InitialParameters:
+    description: |
+      The value at spawn, a [VfxVector4DynamicProperty](/classes/vfxvector4dynamicproperty)
+      evaluated once per particle.
+
+  KeyedParameters:
+    description: |
+      The value over the particle's life, a
+      [VfxVector4DynamicProperty](/classes/vfxvector4dynamicproperty) evaluated for each
+      particle in every update.

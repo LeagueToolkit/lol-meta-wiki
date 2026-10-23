@@ -1,0 +1,8 @@
+# VfxAudioComponentBase Documentation
+
+class:
+  description: |
+    The base of the **audio components**: components that play sound events for a
+    [component emitter](/classes/vfxshimmeremitterdefinitiondata). An audio component goes in
+    the `components` list of the emitter's [VfxComponents](/classes/vfxcomponents) graph. See
+    [VfxAudioComponent](/classes/vfxaudiocomponent) for how the sounds start and stop.

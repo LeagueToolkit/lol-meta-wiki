@@ -1,0 +1,137 @@
+# VfxModularPhysicsComponent Documentation
+
+class:
+  description: |
+    The physics component of a
+    [component emitter](/classes/vfxshimmeremitterdefinitiondata). It keeps a position, a
+    velocity, a rotation and a scale per particle, and builds the motion from the
+    `Modifiers` list. [VfxPhysicsModifierBase](/classes/vfxphysicsmodifierbase) describes the
+    modifiers and when they run.
+
+    ## Reference frame
+
+    Each particle moves inside a **reference frame**. The particle's own position is
+    relative to the frame, and the frame places it in the world.
+
+    - **Translation.** The frame starts at the emitter's position at the particle's birth.
+      On each step it moves toward the emitter's current position by the weight in
+      `0x1fd12444`.
+    - **Rotation.** With `0xf35c764c` the frame keeps the emitter's rotation at the
+      particle's birth. With `0x1064c2a8` it follows the emitter's current rotation by
+      `EmitterOrientationWeight`. With neither flag the frame has no rotation and its axes
+      are the world axes.
+    - If the emitter has a parent transform, the frame is multiplied by it.
+
+    The frame decides what **local** and **world** mean in the modifiers. A local vector is
+    in the frame's axes. A world vector keeps its world direction whatever the frame's
+    rotation: the client turns it by the emitter's rotation at birth when `0xf35c764c` is
+    set, and by the emitter's current rotation when only `0x1064c2a8` is set.
+
+    ## Spawn
+
+    The particles of one spawn are spread along the emitter's path in that update: the
+    birth position of each new particle is interpolated from the emitter's previous
+    position to its current position. Each modifier then initialises the new particles, in
+    list order.
+
+    ## Update models
+
+    `0xb5d23158` selects how the particles are integrated.
+
+    | Value | Model | Behaviour |
+    |---|---|---|
+    | `0` | Explicit | Integrates velocity and position separately and keeps a world-space offset apart from the local position. Drag works per axis, as on a complex emitter: each axis slows toward zero and never reverses. |
+    | `1` | Position based | The model that the rest of this page and the modifier pages describe. |
+    | other | None | The component creates no running part. The client crashes on the emitter's first spawn or update. |
+
+    One step of the position-based model:
+
+    1. The modifiers that act before the integration run, in list order. They add an
+       acceleration `a`, a displacement `d`, a velocity change and a rotation.
+    2. Each particle moves: `p = p0 + v * dt * (1 - k) + a * dt^2 + d`. `p0` is the
+       previous position, `v` the velocity, and `k` the drag of a
+       [VfxPhysicsDragModifier](/classes/vfxphysicsdragmodifier) times `dt`, clamped to
+       `[0, 1]`.
+    3. The velocity is recomputed from the move without `d`: `v = (p - p0 - d) / dt`. A
+       displacement moves the particle but gives it no momentum.
+    4. The reference frame is applied, then the direction orientation of
+       `IsDirectionVelocityOriented`. The world velocity is the change of the world
+       position divided by `dt`.
+    5. The modifiers that act after the integration run:
+       [VfxPhysicsScaleModifier](/classes/vfxphysicsscalemodifier) and
+       [VfxPhysicsFollowTerrainModifier](/classes/vfxphysicsfollowterrainmodifier).
+    6. The acceleration and the displacement are reset. The particle scale is multiplied by
+       the emitter instance's scale.
+
+    Positions are in world units, velocities in world units per second and `dt` in
+    seconds.
+  notes:
+    - "Every shipped component emitter uses this component with every field left at its default, so it runs the position-based model with the birth-rotation frame. The modifiers in shipped data are scale, rotation, velocity, position and drag."
+    - "In the explicit model the particle scale is multiplied by the instance scale on every step. Without a [VfxPhysicsScaleModifier](/classes/vfxphysicsscalemodifier) to reset it, the scale compounds when the instance scale is not 1."
+    - "[VfxPhysicsGroundCollisionModifier](/classes/vfxphysicsgroundcollisionmodifier) has no effect in the explicit model."
+
+properties:
+  Modifiers:
+    description: |
+      The modifiers that build the motion, in the order they run. Each entry is turned into
+      a running part when the emitter is created. An entry that creates no running part is
+      skipped. See [VfxPhysicsModifierBase](/classes/vfxphysicsmodifierbase).
+
+  "0x1fd12444":
+    description: |
+      How far the reference frame's translation follows the emitter, as a
+      [float driver value](/classes/vfxfloatdynamicproperty) evaluated per particle on every
+      step and clamped to `[0, 1]`. At `0` the particle stays where it was born and the
+      emitter's later movement does not carry it. At `1` it moves with the emitter. Between
+      the two, the frame moves that fraction of the remaining distance on each step.
+    notes:
+      - "Left unset, it is 0: particles do not follow the emitter."
+
+  EmitterOrientationWeight:
+    description: |
+      How far the reference frame's rotation follows the emitter's current rotation, as a
+      [float driver value](/classes/vfxfloatdynamicproperty). Read only when `0x1064c2a8`
+      is set.
+
+      | Value | Frame rotation |
+      |---|---|
+      | `1` or more | Set to the emitter's current rotation on every step. |
+      | between `0` and `1` | Turned toward the emitter's current rotation by this fraction on every step, so it follows with a lag. |
+      | `0` or less | Kept as it is. |
+    notes:
+      - "Left unset, it is 1."
+
+  "0xf35c764c":
+    description: |
+      Gives the reference frame the emitter's rotation at the particle's birth. The
+      particle's local motion follows the emitter's orientation at that moment, and later
+      rotation of the emitter does not turn it.
+    notes:
+      - "When this flag and `0x1064c2a8` are both set, the modifiers turn their world vectors by the birth rotation."
+
+  "0x1064c2a8":
+    description: |
+      Makes the reference frame's rotation follow the emitter's current rotation, weighted
+      by `EmitterOrientationWeight`. The modifiers then turn their world vectors by the
+      emitter's current rotation.
+
+  IsDirectionVelocityOriented:
+    description: |
+      Orients each particle along its motion. On each step in which the particle moves
+      inside its frame, the client stores the direction of that move and turns the
+      particle's orientation to it. Before the first move the direction is the frame's +X
+      axis.
+    notes:
+      - "If the geometry orients itself along the motion, the physics does not turn the particle and the geometry reads the stored direction. See [VfxShimmerFacingMode](/classes/vfxshimmerfacingmode)."
+
+  IsDirectionVelocityOrientedOnSpawn:
+    description: |
+      Like `IsDirectionVelocityOriented`, but the direction is taken from the particle's
+      first step only and kept for its whole life.
+
+  "0xb5d23158":
+    description: |
+      The update model: `0` explicit, `1` position based. See the table in the class
+      description.
+    notes:
+      - "If the value is 2 or more, the client crashes on the emitter's first spawn or update."

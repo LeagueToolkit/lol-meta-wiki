@@ -2,17 +2,28 @@
 
 class:
   description: |
-    A quad per particle, built on the CPU each frame and drawn in one batch with the
-    emitter's other quads. It is the only batched shimmer primitive that ships.
+    A quad per particle, built on the CPU in every update and drawn in one batch with the
+    emitter's other quads. It is the only batched component primitive that ships.
   notes:
     - "Shipped quads set none of their properties."
 
 properties:
-  "0x4fe2b16f":
+  PivotPoint:
     description: |
-      A two-component value. Its effect on the quad is not yet identified.
+      The particle's position inside the quad, in `0` to `1` on each of the quad's two axes.
+      The client moves the quad's centre away from the particle by `(2 · x - 1) · scale.x`
+      along the quad's X axis and `(2 · y - 1) · scale.y` along its Y axis, where `scale` is
+      the particle's scale.
+
+      | Value | Result |
+      |---|---|
+      | `(0.5, 0.5)` | the quad is centred on the particle |
+      | `(0, 0)` | the particle sits on the quad's corner in the +X +Y direction |
 
   FacingMode:
     description: |
-      How the quad faces the camera; see [VfxShimmerFacingMode](/classes/vfxshimmerfacingmode).
-      Whether the quad builder applies it is not yet identified.
+      Sets the quad's two axes. The quad spans the facing basis across the facing direction,
+      so it faces the camera the way the chosen mode describes, and it keeps the particle's
+      position. For the two oriented modes, the quad's Y axis runs along the orientation axis.
+      See [VfxShimmerFacingMode](/classes/vfxshimmerfacingmode). Which axes the quad uses when
+      no facing mode is set is not yet identified.

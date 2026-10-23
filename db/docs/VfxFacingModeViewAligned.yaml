@@ -1,0 +1,11 @@
+# VfxFacingModeViewAligned Documentation
+
+class:
+  description: |
+    A [facing mode](/classes/vfxshimmerfacingmode) that gives every particle the same
+    orientation, built from the camera alone. Forward is a direction taken from two camera
+    points, and up is the camera's up vector. Particles therefore stay parallel to each other
+    wherever they are in the scene, and they do not turn toward the camera's position.
+    Whether forward is exactly the view direction is not yet identified.
+
+    The particle's own rotation is applied inside that frame.

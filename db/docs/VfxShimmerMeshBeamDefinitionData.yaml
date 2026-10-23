@@ -1,0 +1,13 @@
+# VfxShimmerMeshBeamDefinitionData Documentation
+
+class:
+  description: |
+    The endpoints of a [VfxShimmerPrimitiveMeshBeam](/classes/vfxshimmerprimitivemeshbeam).
+    The two offsets work as [VfxBeamBaseDefinitionData](/classes/vfxbeambasedefinitiondata)
+    describes: the source end starts at the system's position, the target end starts at the
+    effect's target position, and each offset is in the system's local space.
+
+    Unlike [VfxBeamDefinitionData](/classes/vfxbeamdefinitiondata), it carries no width mode,
+    texture tiling or color settings. The mesh beam takes its shape from its mesh.
+  notes:
+    - "No shipped data uses this class."

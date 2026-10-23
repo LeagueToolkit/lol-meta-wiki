@@ -1,0 +1,11 @@
+# VfxFacingModeCameraFacingRotationOriented Documentation
+
+class:
+  description: |
+    A [facing mode](/classes/vfxshimmerfacingmode) that lines each particle up with its own
+    **local Z axis** and turns it about that axis to face the camera. A quad runs along the
+    axis, like a [VfxPrimitiveRay](/classes/vfxprimitiveray), and a mesh points its local -X
+    along it.
+
+    The particle's rotation only supplies the axis. The rest of it, such as a roll about the
+    axis, is discarded.

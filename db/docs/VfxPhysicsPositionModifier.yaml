@@ -1,0 +1,47 @@
+# VfxPhysicsPositionModifier Documentation
+
+class:
+  description: |
+    A [physics modifier](/classes/vfxphysicsmodifierbase) that offsets the particles' position.
+    It places them at spawn and can move them by an animated offset afterwards.
+
+    - **Spawn.** The birth offset is `InitialLocalOffset`, plus `InitialWorldOffset`, plus a
+      point sampled from `EmissionSource`. It is added to the particle's position.
+    - **Each step, before the integration.** `LocalKeyedOffset` and `WorldKeyedOffset` are
+      evaluated, and the particle is moved by how much each value changed since the
+      previous step. The particle therefore sits at the keyed offset from where its other
+      motion takes it. On the first step the full value is applied.
+
+    All offsets are in world units. The movement is a displacement, so it gives the
+    particle no momentum.
+  notes:
+    - "A few shipped component emitters use it."
+    - "Its behaviour in the explicit update model of [VfxModularPhysicsComponent](/classes/vfxmodularphysicscomponent) is not documented."
+
+properties:
+  InitialLocalOffset:
+    description: "Birth offset in the axes of the particle's reference frame, evaluated once per particle at spawn."
+
+  InitialWorldOffset:
+    description: "Birth offset that keeps its world direction, evaluated once per particle at spawn."
+
+  LocalKeyedOffset:
+    description: |
+      Animated offset in the axes of the particle's reference frame, evaluated on every
+      step. Only its change between steps moves the particle. Left unset, there is no keyed
+      offset.
+
+  WorldKeyedOffset:
+    description: |
+      Animated offset that keeps its world direction, evaluated on every step. Only its
+      change between steps moves the particle. Left unset, there is no keyed offset.
+
+  EmissionSource:
+    description: |
+      A shape that each particle's birth point is sampled from, such as a sphere, a box, a
+      mesh or the bound unit's body. The sampled point is added to the birth offset. The
+      shape also gives each particle an **emission normal**, which
+      [VfxPhysicsVelocityModifier](/classes/vfxphysicsvelocitymodifier) uses as the radial
+      direction. See [IVfxEmissionSource](/classes/ivfxemissionsource).
+    notes:
+      - "From the particle's second step on, the emission normal is recomputed on every step from the particle's current position."

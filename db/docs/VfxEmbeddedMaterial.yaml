@@ -1,0 +1,16 @@
+# VfxEmbeddedMaterial Documentation
+
+class:
+  description: |
+    A [material container](/classes/vfxmaterialcontainer) that holds its material inline. The
+    material is a complete [StaticMaterialDef](/classes/staticmaterialdef) that exists only
+    for this render component, so no other bin can link to it.
+  notes:
+    - "Every shipped component emitter uses it."
+
+properties:
+  Material:
+    description: |
+      The material that the emitter draws with. The render component draws with a copy of
+      it, see `MaterialContainer` on
+      [VfxMaterialRenderComponent](/classes/vfxmaterialrendercomponent).

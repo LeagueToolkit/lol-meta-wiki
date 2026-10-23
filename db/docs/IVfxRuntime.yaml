@@ -2,15 +2,27 @@
 
 class:
   description: |
-    The root of the **running parts of components**. When the client creates a
-    [shimmer emitter](/classes/vfxshimmeremitterdefinitiondata), each entry of the
-    `components` list of its [VfxComponents](/classes/vfxcomponents) graph builds one
-    object of a class under this root. The emitter then calls that object on three events:
+    The root of the **running parts of components**. When a system instance creates a
+    [component emitter](/classes/vfxshimmeremitterdefinitiondata), every component of its
+    [VfxComponents](/classes/vfxcomponents) graph creates one running part: the five slots and
+    every entry of the `components` list. The running part holds the per-instance state of the
+    component. The emitter calls it on these events:
 
-    - particles are spawned, with the count
-    - a particle is killed, with its index
-    - the emitter updates
+    | Event | Argument | Order of the calls |
+    |---|---|---|
+    | Spawn | the number of new particles; they are the last particles of the emitter | lifetime, physics, render, child, geometry, `components` |
+    | Particle death | the index of the particle | render, physics, child, geometry, `components` |
+    | Step | the current time and the time delta, in seconds | physics, render, child, geometry, `components` |
 
-    The object is destroyed with the emitter.
+    The lifetime slot does not get the particle death and step calls. It has its own hooks for
+    the state machine, the particle ages and the spawn count, described on
+    [VfxComponents](/classes/vfxcomponents).
+
+    **Particle removal.** After the death calls, the particle is removed from the emitter. If
+    the primitive keeps particle order, the later particles move down by one. Otherwise the
+    last particle moves into the free index.
+
+    The running parts are deleted with the emitter. Particles that are still alive at that
+    point get no death call.
   notes:
     - "The client creates these objects itself. The classes have no properties and a bin does not hold them."

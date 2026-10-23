@@ -1,0 +1,36 @@
+# VfxEmissionSphere Documentation
+
+class:
+  description: |
+    An [emission source](/classes/ivfxemissionsource) that is the surface of a sphere. Each
+    point is placed by two coordinates `u` and `v`, each in `[-1, 1]`:
+
+    - the angle around the vertical axis is `u * 180` degrees;
+    - the height is `v * radius`, on the ring of radius `sqrt(1 - v^2) * radius` at that
+      height.
+
+    The emission normal is the direction from the frame origin to the transformed point.
+    With a `ShapeCenter` offset that is not the direction from the sphere's centre.
+  notes:
+    - "No shipped object uses it."
+    - "Points are only on the surface. There is no setting that fills the volume."
+
+properties:
+  radius:
+    description: "Radius of the sphere, in world units, as a [float driver value](/classes/vfxfloatdynamicproperty)."
+
+  "0x654153c3":
+    description: |
+      A [VfxVector2AnimatedWithRandomDriver](/classes/vfxvector2animatedwithrandomdriver)
+      that supplies the `(u, v)` coordinates. Its use depends on `DistributionMode`:
+
+      - `0`: `(u, v)` is the driver's value. If the driver is null, `u` and `v` are
+        uniform random in `[-1, 1]`.
+      - other: `u` is random within the key range of the curve's X lane, and `v` is the
+        particle's index in its spawn batch divided by the batch size, mapped onto the key
+        range of the Y lane. Left unset, both ranges are `[-1, 1]`.
+
+  DistributionMode:
+    description: |
+      `0` takes the coordinates from `0x654153c3` or at random. Any other value spreads the
+      particles of one spawn evenly over the height, in spawn order.

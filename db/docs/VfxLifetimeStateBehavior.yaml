@@ -1,0 +1,48 @@
+# VfxLifetimeStateBehavior Documentation
+
+class:
+  description: |
+    The **state machine** of a [VfxLifetimeComponent](/classes/vfxlifetimecomponent), stored
+    in its `LifetimeBehavior` slot. It moves the emitter through its phases, decides when
+    emission is on, gives each new particle its lifetime and decides when the emitter is
+    finished.
+
+    ## Phases
+
+    | Phase | What happens | Ends when |
+    |---|---|---|
+    | Start delay | No emission. | `startDelay` seconds have passed. A delay of `0` or less skips the phase. |
+    | Emitting | The spawn behaviour emits, see [VfxSpawnBehavior](/classes/vfxspawnbehavior). | `EmitterDuration` seconds have passed. |
+    | Loop delay | No emission. The next emitting phase follows. Only [LoopingIntroOutro](/classes/loopingintrooutro) has this phase. | `LoopDelay` seconds have passed. |
+    | Outro | No emission. The live particles keep updating and expire by their own lifetime. | `OutroDuration` seconds have passed, or no particle is alive. |
+    | Finished | The emitter is done. | - |
+
+    The emitting phase is the only phase in which the emitter spawns particles.
+
+    **Evaluation.** `startDelay`, `EmitterDuration` and `LoopDelay` are evaluated once, when
+    the emitter is created. `OutroDuration` is evaluated when the outro starts.
+    `particleLifetime` is evaluated once for each new particle. Each value is a
+    [driver value](/classes/vfxfloatdynamicproperty) in seconds.
+
+    **Carry-over time.** The state machine advances once per simulation step, before the
+    emitter updates. When a phase ends inside a step, the rest of that step is carried into
+    the next phase, so phase lengths do not round to the step length. A phase that is not
+    longer than the carried time ends in the same step, and the machine moves on to the
+    phase after it. The step that ends the emitting phase still spawns particles for the
+    part of the step that was inside the phase.
+
+    **Finished.** The emitter counts as finished when the outro has ended, or during the
+    outro when no particle is alive. While the emitter is finished, the client removes every
+    remaining particle in one pass. `OutroDuration` is therefore the longest time that
+    particles outlive emission. It is not a fade. With an `OutroDuration` of `0`, every
+    particle is removed in the step in which emission ends.
+
+    **Stopping.** When the particle system is stopped, an emitter in its start delay,
+    emitting or loop delay phase enters the outro at once.
+
+    **Particle lifetime.** A particle is removed when its age reaches the lifetime that it
+    received at spawn. A negative lifetime means the particle never expires; it is removed
+    only when the emitter is finished.
+
+    **Intro.** The behaviours with an `IntroDuration` also track an intro, see that property.
+    The intro does not delay or gate emission.

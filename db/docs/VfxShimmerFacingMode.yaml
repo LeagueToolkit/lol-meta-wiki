@@ -2,12 +2,59 @@
 
 class:
   description: |
-    How a shimmer mesh faces the camera. Legacy mesh primitives choose this with flags; the
-    shimmer meshes hold one of these objects in `FacingMode` instead, and the subclass chosen
-    decides the orientation.
+    How a component mesh or quad faces the camera. Legacy mesh primitives choose this with
+    flags. The component primitives hold one of these objects in `FacingMode` instead, and
+    the class chosen decides the orientation. The client applies it to every particle in
+    every draw.
 
-    When a mesh's `FacingMode` is set, the object orients each particle and the camera look-at
-    is skipped. How each subclass orients the particle is not yet identified. Quads also carry
-    a `FacingMode`, but whether the quad builder reads it is not yet identified.
+    ## The facing basis
+
+    The first four modes build a rotation from a **forward** direction and an **up**
+    direction:
+
+    ```text
+    F = normalize(forward)
+    R = normalize(up × F)
+    U = F × R
+    ```
+
+    A mesh gets `R` as its local X, `U` as its local Y and `F` as its local Z, so its local +Z
+    points along forward. A quad spans `R` and `U`, so it lies across the forward direction.
+
+    The two **oriented** modes build the rotation from an axis `A` instead:
+
+    ```text
+    V = normalize(particle - camera)
+    B = normalize(V × A)
+    C = A × B
+    ```
+
+    A mesh gets `-A` as its local X, `B` as its local Y and `C` as its local Z, so its local
+    -X points along the axis and its local +Z points away from the camera, as far as the axis
+    allows. A quad takes `B` as its X axis and `A` as its Y axis, so it runs along the axis and
+    turns about it to face the camera.
+
+    The result is a rotation only. Except for the rotation-oriented mode, the particle's own
+    rotation is applied first, inside this frame, so spin and authored rotation still show.
+
+    ## Modes
+
+    | Mode | Forward or axis | Up |
+    |---|---|---|
+    | [VfxFacingModeViewAligned](/classes/vfxfacingmodeviewaligned) | a direction taken from the camera, the same for every particle | the camera's up vector |
+    | [VfxFacingModeCameraAligned](/classes/vfxfacingmodecameraaligned) | from the particle to the camera | the camera's up vector |
+    | [VfxFacingModeCameraFacing](/classes/vfxfacingmodecamerafacing) | from the particle to the camera | world +Y |
+    | [VfxFacingModeCameraFacingPerAxis](/classes/vfxfacingmodecamerafacingperaxis) | from the particle to an aim point built per axis | world +Y |
+    | [VfxFacingModeCameraFacingDirectionOriented](/classes/vfxfacingmodecamerafacingdirectionoriented) | axis: the particle's direction of travel | - |
+    | [VfxFacingModeCameraFacingRotationOriented](/classes/vfxfacingmodecamerafacingrotationoriented) | axis: the particle's local Z | - |
+
+    **Degenerate cases.** The client leaves a vector unchanged when it is too short to
+    normalize. If forward is parallel to up, `R` and `U` become zero and the particle
+    collapses onto a line. The same happens to `B` and `C` in the oriented modes when the axis
+    points at the camera.
+
+    **Position.** A quad and a skinned mesh keep the particle's position. A static mesh drawn
+    one particle at a time loses it; see
+    [`VfxShimmerPrimitiveMeshBase.FacingMode`](/classes/vfxshimmerprimitivemeshbase#facingmode).
   notes:
     - "No shipped data sets a facing mode."

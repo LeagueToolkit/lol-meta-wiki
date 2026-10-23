@@ -2,13 +2,13 @@
 
 class:
   description: |
-    The modern geometry component. It holds one primitive from the shimmer family; see
+    The modern geometry component. It holds one primitive of the component family; see
     [VfxShimmerPrimitiveBase](/classes/vfxshimmerprimitivebase) for how those draw.
 
 properties:
   primitive:
     description: |
-      The primitive the particles are drawn as. Must be set, or the emitter is dropped when the
-      system is prepared.
+      The primitive that the particles are drawn as. Must be set, or the emitter is dropped when
+      the system is prepared.
     notes:
       - "Shipped graphs use `VfxShimmerPrimitiveMesh` for most emitters and `VfxShimmerPrimitiveQuad` for the rest."

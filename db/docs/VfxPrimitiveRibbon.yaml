@@ -1,0 +1,22 @@
+# VfxPrimitiveRibbon Documentation
+
+class:
+  description: |
+    A **ribbon**: a strip built on the CPU in every update and drawn in one batch, through the
+    geometry builder of the [component primitives](/classes/vfxshimmerprimitivebase). Only
+    the component VFX system builds it. Its settings are in `Ribbon`.
+
+    The ribbon caps the emitter's particle count at an integer from `Ribbon`. When a spawn
+    would exceed that cap, the emitter spawns fewer particles. Which field holds the cap is
+    not yet identified. The number of vertices and indices per particle also follows from the
+    settings in `Ribbon`.
+
+    The ribbon has no facing mode.
+  notes:
+    - "No shipped data uses this class."
+
+properties:
+  Ribbon:
+    description: |
+      The ribbon's settings, a `VfxRibbonDefinitionData`. Most of its fields are unnamed, and
+      their effect is not yet identified.

@@ -1,0 +1,138 @@
+# VfxLegacyLifetimeComponent Documentation
+
+class:
+  description: |
+    A lifetime component that uses the emission and lifetime rules of a
+    [complex emitter](/classes/vfxemitterdefinitiondata) instead of phases. Its properties
+    mirror the emission and lifetime properties of
+    [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata); that page gives their
+    shared meaning, and this page states where they differ. The client creates this component
+    only when a bin declares one. It does not convert a `VfxEmitterDefinitionData` into one.
+
+    Times below are emitter time, in seconds since the emitter was created.
+
+    ## Emission
+
+    In each simulation step the emitter spawns nothing if any of these holds:
+
+    - `IsBurstEmitter` is set and the emitter has already spawned.
+    - Emitter time is below `EmitterTimeOffset`.
+    - `EmitterLifetime` is set and emitter time is past it.
+    - `emitter time mod EmitterPeriod` is not below `EmitterTimeActiveDuringPeriod`.
+
+    Otherwise the count is built in this order:
+
+    1. The rate is `EmissionRate` plus the `FlexEmitterRate` contribution. When
+       `EmitterRateByVelocity` is not `(0, 0)`, it replaces both, capped by
+       `MaximumRateByVelocity`.
+    2. The rate is multiplied by the `importance` emission-rate multiplier for the current
+       `EffectsQuality`. A negative result counts as `0`.
+    3. The count is the rate times the time since the later of the last spawn and the start
+       of the current period, truncated. One step spawns at most the rate times `0.33` plus
+       `1`.
+    4. On the first spawn, a count of `0` becomes `1` unless `HasVariableStartTime` is set.
+       With `IsBurstEmitter` the count is the rate, truncated, and at least `1`.
+    5. The [primitive](/classes/vfxshimmerprimitivebase) of the geometry component can lower
+       the count to the number of particles that it can still hold.
+
+    ## End of the emitter
+
+    Spawning is done when emitter time passes `EmitterLifetime`, or `emitterLinger` while
+    the particle system is stopping. With `IsBurstEmitter`, spawning is done once the
+    emitter has spawned. The linger rule of `particleLingerType` starts when spawning is
+    done. The emitter is finished when it has spawned, emitter time is past
+    `EmitterLifetime` and every particle has expired.
+  notes:
+    - "Stopping the particle system does not force this component to finish. It ends only through `emitterLinger` and the linger rules."
+    - "No shipped object uses it."
+
+properties:
+  EmitterTimeOffset:
+    description: |
+      Emitter time, in seconds, before which the emitter does not spawn. The emission
+      progress of the emitter also counts from this time.
+
+  EmissionRate:
+    description: |
+      Base emission rate, in particles per second. Only its value at time `0` is used, so a
+      curve in `dynamics` contributes its first value and no change over time.
+
+  FlexEmitterRate:
+    description: "Adds `flex * mValue` to the rate, as `flexRate` does on a complex emitter. Not applied when `EmitterRateByVelocity` is in use."
+
+  EmitterLifetime:
+    description: |
+      End time of emission, in seconds of emitter time. Unset means the emitter has no end.
+    notes:
+      - "With `IsBurstEmitter`, an unset value or a value more than 10 seconds longer than the evaluated `particleLifetime` is replaced by that lifetime, unless the lifetime is `-1`."
+
+  emitterLinger:
+    description: |
+      Emitter time, in seconds, at which spawning ends while the particle system is
+      stopping. It is capped at `EmitterLifetime + 10`.
+
+  particleLinger:
+    description: |
+      Linger time, in seconds, applied to the live particles once spawning is done, by the
+      rule of `particleLingerType`. It is capped at `particleLifetime + 10`, and unset takes
+      the cap.
+
+  particleLingerType:
+    description: |
+      How `particleLinger` (`L`) is applied once spawning is done.
+
+      | Value | Starts when | Effect on each live particle |
+      |---|---|---|
+      | `0` | spawning is done and the system is stopping | Every step its lifetime is cut to at most `L`, counted from its birth. |
+      | `1` | spawning is done and the system is stopping | Once: its lifetime becomes its current age plus `L`. |
+      | `2` | spawning is done, stopping or not | The same rewrite as `1`. |
+
+  EmitterPeriod:
+    description: |
+      Length of the emission cycle, in seconds. The emitter spawns only while
+      `emitter time mod EmitterPeriod` is below `EmitterTimeActiveDuringPeriod`. Time spent
+      outside the active part of a cycle does not count toward the next spawn.
+
+  EmitterTimeActiveDuringPeriod:
+    description: "Seconds at the start of each `EmitterPeriod` during which the emitter may spawn. Unset means always."
+
+  EmitterRateByVelocity:
+    description: |
+      A pair `(x, y)` that, when not `(0, 0)`, replaces the emission rate with
+      `speed * x + y`, where `speed` is the emitter's speed in world units per second.
+      `EmissionRate` and `FlexEmitterRate` are not read in that case.
+
+  MaximumRateByVelocity:
+    description: "Upper limit of the rate produced by `EmitterRateByVelocity`, in particles per second. Unset means 300."
+
+  timeBeforeFirstEmission:
+    description: |
+      Start time that the animation clock of the emitter's material counts from, in
+      seconds. It does not delay spawning, unlike the property of the same name on a
+      complex emitter. `EmitterTimeOffset` delays spawning.
+
+  particleLifetime:
+    description: |
+      Lifetime of each particle, in seconds, evaluated at spawn. `flexParticleLifetime` is
+      added and `DoesParticleLifeScale` can scale the result. A negative result means the
+      particle never expires.
+
+  flexParticleLifetime:
+    description: "Adds the flex contribution to `particleLifetime` at particle spawn."
+
+  HasVariableStartTime:
+    description: "Removes the guaranteed first particle. Normally, when the first emission computes to zero particles, one is spawned anyway. With this flag it is not."
+
+  IsBurstEmitter:
+    description: |
+      The emitter emits once: a single burst of the rate, truncated and at least one
+      particle, at its first spawn, and never again.
+
+  DoesParticleLifeScale:
+    description: "Multiplies each particle's lifetime at spawn by the lifetime scale factor of the particle system instance."
+
+  "0x2f61e63c":
+    description: |
+      A spawn percentage for each `EffectsQuality` level, in the fields `VeryLow`, `Low`,
+      `medium`, `High` and `VeryHigh`. The client build that was read does not register this
+      property, so the client skips it when it loads the bin.

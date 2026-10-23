@@ -1,0 +1,28 @@
+# VfxPhysicsFollowTerrainModifier Documentation
+
+class:
+  description: |
+    A [physics modifier](/classes/vfxphysicsmodifierbase) that keeps the particles at a
+    fixed height above the ground. It runs on each step after the integration. It reads the
+    terrain height, sets the particle's world height to that height plus `HeightOffset`, and
+    moves the particle's position in its reference frame by the same amount.
+
+    The correction is a displacement, so it gives the particle no vertical velocity. A
+    particle that walks over a slope follows the slope, and its other motion continues
+    unchanged.
+  notes:
+    - "No shipped object uses it."
+    - "Its behaviour in the explicit update model of [VfxModularPhysicsComponent](/classes/vfxmodularphysicscomponent) is not documented."
+
+properties:
+  HeightOffset:
+    description: |
+      Height above the terrain, in world units, as a
+      [float driver value](/classes/vfxfloatdynamicproperty) evaluated on every step.
+      Required: if the driver is null, the modifier does nothing.
+
+  "0xc3c071f0":
+    description: |
+      Where the terrain height is read. When set, the height is read once per step at the
+      emitter's position and used for every particle. When clear, it is read per particle
+      at the particle's own world position.

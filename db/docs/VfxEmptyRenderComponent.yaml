@@ -1,0 +1,24 @@
+# VfxEmptyRenderComponent Documentation
+
+class:
+  description: |
+    A [render component](/classes/vfxrendercomponentbase) without a material. It fills the
+    required render slot of a [VfxComponents](/classes/vfxcomponents) graph and keeps no
+    per-particle render data.
+
+    Everything except the draw-order key is fixed:
+
+    - render phase `4` (PostDistortion);
+    - blend mode `3` (None);
+    - particle colour white;
+    - no material and no drivers. Building the draw setup succeeds without a material.
+
+    What the emitter draws with this component is not established.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  RenderOrder:
+    description: |
+      The first key of the draw order inside a render phase, as `RenderOrder` on
+      [VfxMaterialRenderComponent](/classes/vfxmaterialrendercomponent).

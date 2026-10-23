@@ -2,6 +2,7 @@
 
 class:
   description: |
-    A shimmer mesh primitive that draws the mesh named in `Mesh` for every particle. Everything
-    it does is described on [VfxShimmerPrimitiveMeshBase](/classes/vfxshimmerprimitivemeshbase).
-    Most shipped component graphs use it.
+    A component mesh primitive that draws the mesh named in `Mesh` for every particle.
+    Everything it does is described on
+    [VfxShimmerPrimitiveMeshBase](/classes/vfxshimmerprimitivemeshbase). Most shipped
+    component graphs use it.

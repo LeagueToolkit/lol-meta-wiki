@@ -1,0 +1,20 @@
+# VfxEmissionSkin Documentation
+
+class:
+  description: |
+    An [emission source](/classes/ivfxemissionsource) that is the skinned mesh of the unit
+    the effect is bound to, in the unit's current pose. The point and the normal are picked
+    and skinned as [VfxEmissionMeshData](/classes/vfxemissionmeshdata) describes for a
+    complex emitter. The client then converts both from world space into the emitter's
+    frame.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  SkinData:
+    description: |
+      The mesh, skeleton and submesh settings. When the effect is bound to a unit with a
+      skinned mesh, the unit's own mesh and skeleton replace `meshName` and `skeletonName`.
+      The names in the data are used only when the bound object has no skinned mesh.
+      `Submeshes` selects the submeshes as on
+      [VfxEmissionMeshData](/classes/vfxemissionmeshdata).

@@ -8,3 +8,10 @@ class:
     it builds the particles' render data after the physics component has moved them.
 
     Required: a graph without a render component drops its emitter.
+
+    The render component also supplies the values that place the emitter among all drawn
+    emitters: the render phases it draws in, its draw-order key, its blend mode and its
+    material. It supplies the colour of each particle. Like the other slots, it is told about
+    every spawn and every particle death.
+  notes:
+    - "Shipped data uses only [VfxMaterialRenderComponent](/classes/vfxmaterialrendercomponent)."

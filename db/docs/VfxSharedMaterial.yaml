@@ -1,0 +1,16 @@
+# VfxSharedMaterial Documentation
+
+class:
+  description: |
+    A [material container](/classes/vfxmaterialcontainer) that links to a material defined
+    elsewhere, for example a [StaticMaterialDef](/classes/staticmaterialdef) object of the
+    same bin. Several emitters can link to one material. Each render component still draws
+    with its own copy of it.
+  notes:
+    - "If the link does not resolve, the container returns no material, and the client crashes when the system is prepared."
+    - "No shipped object uses it."
+
+properties:
+  Material:
+    description: |
+      The link to the material, the FNV-1a hash of the material's name, lowercased.

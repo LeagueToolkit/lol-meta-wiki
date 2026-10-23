@@ -1,0 +1,39 @@
+# VfxPhysicsGroundCollisionModifier Documentation
+
+class:
+  description: |
+    A [physics modifier](/classes/vfxphysicsmodifierbase) that bounces the particles off the
+    ground. It runs on each step before the integration and changes only the velocity.
+
+    A particle collides when its world height is below the terrain height plus
+    `GroundHeightOffset`. If it is moving down, its vertical speed is reversed and
+    multiplied by `Bounce`, and its horizontal speed is multiplied by `1 - Friction`. The
+    test uses the particle's world velocity of the previous step.
+
+    The modifier never moves the particle back above the ground. A particle that is already
+    below the surface stays there, and only its velocity changes.
+  notes:
+    - "No shipped object uses it."
+    - "It has no effect in the explicit update model of [VfxModularPhysicsComponent](/classes/vfxmodularphysicscomponent)."
+
+properties:
+  GroundHeightOffset:
+    description: |
+      Height of the collision surface above the terrain, in world units, as a
+      [float driver value](/classes/vfxfloatdynamicproperty).
+
+  Bounce:
+    description: |
+      Fraction of the downward speed that is kept, reversed, after a collision. Clamped to
+      `[0, 1]`: `0` stops the particle's vertical motion, `1` is a perfect bounce.
+
+  Friction:
+    description: |
+      Fraction of the horizontal speed that is removed on each colliding step. Clamped to
+      `[0, 1]`.
+
+  "0xc3c071f0":
+    description: |
+      Where the terrain height is read. When set, the height is read once per step at the
+      emitter's position and used for every particle, so the collision surface is flat.
+      When clear, it is read per particle at the particle's own world position.
