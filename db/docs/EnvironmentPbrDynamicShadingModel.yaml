@@ -1,0 +1,16 @@
+# EnvironmentPbrDynamicShadingModel Documentation
+
+class:
+  description: |
+    The environment shading model for map meshes that have a **stationary light** lightmap and
+    a **reflection probe**, but no baked light texture. See
+    [IEnvironmentShadingModel](/classes/ienvironmentshadingmodel) for the lighting block in
+    the `.mapgeo` file.
+
+    The client loads the probe as a plain texture and binds it as `ENV_PROBE`, with the float
+    from the file as `ENV_PROBE_SCALE`. Unlike
+    [EnvironmentPbrShadingModel](/classes/environmentpbrshadingmodel), it does not use the
+    shared probe array.
+  notes:
+    - "If a mesh's probe name is empty, the client crashes when it builds the mesh's draw."
+    - "No shipped object uses it."

@@ -1,0 +1,7 @@
+# SkinnedUnlitShadingModel Documentation
+
+class:
+  description: |
+    The shading model of unlit skinned shaders. Its lighting update does nothing: it reads no
+    light-grid cell and uploads no lighting constants. See
+    [ISkinnedShadingModel](/classes/iskinnedshadingmodel).

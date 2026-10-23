@@ -1,0 +1,53 @@
+# X3DSharedConstantDef Documentation
+
+class:
+  description: |
+    A **shared shader constant** inside an
+    [X3DSharedConstantBufferDef](/classes/x3dsharedconstantbufferdef). Its size is the size of
+    its `type` times `Count`, and the buffer lays the constants out in list order.
+
+    Constants are shared by name. If two buffers declare a constant with the same name, the
+    client keeps one constant that is bound to a place in each buffer.
+
+properties:
+  name:
+    description: "The name of the constant. Constants with the same name in different buffers are one constant."
+
+  type:
+    description: |
+      The element type, which sets the element size:
+
+      | Value | Name | Size |
+      |---|---|---|
+      | `0` | Scalar | 4 bytes |
+      | `1` | Vector2 | 8 bytes |
+      | `2` | Vector3 | 12 bytes |
+      | `3` | Vector4 | 16 bytes |
+      | `4` | Scalar (second set) | 4 bytes |
+      | `5` | Vector2 (second set) | 8 bytes |
+      | `6` | Vector3 (second set) | 12 bytes |
+      | `7` | Vector4 (second set) | 16 bytes |
+      | `8` | Matrix 4x3 | 48 bytes |
+      | `9` | Matrix 4x4 | 64 bytes |
+      | `10` | Structure | the size of the structure that `StructureLink` links |
+
+      Any other value has size `0`. What distinguishes `0`-`3` from `4`-`7` is not yet
+      identified.
+
+  Count:
+    description: "The number of elements. The constant's size is `Count` times the element size."
+
+  StructureLink:
+    description: "For `type` `10`, the structure definition whose size is the element size. Other types do not read it."
+
+  SetManually:
+    description: "If any constant of a buffer that passes the filters leaves it `false`, the client keeps a CPU-side copy of that buffer. What else it changes is not yet identified."
+
+  register:
+    description: "Not read when the client creates the buffer."
+
+  PlatformMask:
+    description: "The platforms on which the constant takes space in its buffer, see [X3DSharedData](/classes/x3dshareddata)."
+
+  ShaderModel:
+    description: "The renderer mode in which the constant takes space in its buffer, see [X3DSharedData](/classes/x3dshareddata)."

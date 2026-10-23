@@ -1,0 +1,11 @@
+# IParticleShadingModel Documentation
+
+class:
+  description: |
+    A shading model for **particle** materials. The client calls the model's lighting update
+    for each particle with the particle's world position, but in every particle model the
+    update does nothing. The only effect of a particle model is its kind: the client checks
+    whether it is a quad shading model, see
+    [IParticleQuadShadingModel](/classes/iparticlequadshadingmodel).
+  notes:
+    - "Whether particles take dynamic lights depends on their shader, not on the shading model. See [MapDynamicLighting](/classes/mapdynamiclighting)."

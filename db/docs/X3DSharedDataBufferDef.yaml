@@ -1,0 +1,52 @@
+# X3DSharedDataBufferDef Documentation
+
+class:
+  description: |
+    A **shared data buffer slot**: a GPU buffer of elements that shaders find by `name`, such as the light region data and the particle instance data. See
+    [X3DSharedData](/classes/x3dshareddata) for registration, filtering, `register` and
+    `BindLocation`.
+
+    Shader buffers of every kind look up this list: structured buffers, byte-address buffers
+    and their read-write forms. A read-write buffer in the shader marks the binding as
+    writable.
+
+properties:
+  name:
+    description: "The name under which shaders find the buffer. Before the lookup, the client strips the suffix `_SharedDataBuffer` from the name that the shader declares."
+
+  DataBufferElementType:
+    description: |
+      The element type, which sets the element stride:
+
+      | Value | Name | Stride |
+      |---|---|---|
+      | `0`, `1`, `2` | Scalar | 4 bytes |
+      | `3`, `4`, `5` | Vector2 | 8 bytes |
+      | `6`, `7`, `8` | Vector3 | 12 bytes |
+      | `9`, `10`, `11` | Vector4 | 16 bytes |
+      | `12` | Matrix 4x3 | 48 bytes |
+      | `13` | Matrix 4x4 | 64 bytes |
+      | `14` | Structure | the size of the structure that `StructureLink` links |
+
+      Any other value gives a stride of `0`. What distinguishes the values of each group of
+      three is not yet identified.
+
+  StructureLink:
+    description: "For `DataBufferElementType` `14`, the structure definition whose size is the element stride."
+
+  register:
+    description: "If `-1`, the client binds the buffer per effect. Any other value leaves it out of the effect bindings. See [X3DSharedData](/classes/x3dshareddata)."
+
+  BindLocation:
+    description: "Stored with the buffer slot, see [X3DSharedData](/classes/x3dshareddata)."
+
+  frequency:
+    description: "Purpose not yet identified. The client does not read it when it creates the slot."
+
+  PlatformMask:
+    description: "The platforms on which the slot loads, see [X3DSharedData](/classes/x3dshareddata)."
+
+  ShaderModel:
+    description: "The renderer mode in which the slot loads, see [X3DSharedData](/classes/x3dshareddata)."
+    notes:
+      - "Every shipped data buffer sets `2`, so none loads in the `1` mode."

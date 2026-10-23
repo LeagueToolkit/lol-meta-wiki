@@ -1,0 +1,29 @@
+# VfxShapeBox Documentation
+
+class:
+  description: |
+    A box [spawn shape](/classes/ivfxshape) centred on the birth position.
+
+    In **interior mode** (`flags` bit `0x1`, see [VfxShapeVolume](/classes/vfxshapevolume))
+    the offset is uniform in the solid box: each axis is uniform in `-Size..Size`. The shape
+    does not turn the birth velocity or acceleration.
+
+    In **surface mode** (bit `0x1` clear) the shape picks a point on the `+Z` face: x uniform
+    in `-Size.x..Size.x`, y uniform in `-Size.y..Size.y`, z equal to `Size.z`. It then turns
+    the offset, the birth velocity and the birth acceleration by one of four quarter turns
+    about Y, followed by a turn of 0 or 90 degrees about Z. The point lands on each face with
+    these probabilities:
+
+    | Face | Probability |
+    |---|---|
+    | `+Z` | 1/4 |
+    | `-Z` | 1/4 |
+    | `+X`, `-X`, `+Y`, `-Y` | 1/8 each |
+
+    A birth velocity along +Z leaves along the normal of the chosen face.
+  notes:
+    - "In surface mode each side face is the `+Z` face turned into place. It keeps the `Size.x` by `Size.y` extent and lies `Size.z` from the centre. For a box that is not a cube the samples therefore do not lie on the faces of the `Size` box."
+
+properties:
+  Size:
+    description: "Half extents of the box per axis, in world units, in the emitter's local frame."

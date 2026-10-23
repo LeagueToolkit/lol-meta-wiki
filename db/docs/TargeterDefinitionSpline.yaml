@@ -1,0 +1,53 @@
+# TargeterDefinitionSpline Documentation
+
+class:
+  description: |
+    A [targeting indicator](/classes/targeterdefinition) that draws a **curved ribbon**
+    from `startLocator` to `endLocator`, along a spline. The client builds the spline from
+    the two positions with `overrideSpline`, or with the spline of the spell's missile
+    movement if `overrideSpline` is not set; [HermiteSplineInfo](/classes/hermitesplineinfo)
+    describes the curve. The end is moved to the height of the start.
+
+    The ribbon is `splineWidth` wide. With `L` the length of the spline:
+
+    - If `L` is greater than the width, the base texture covers the first `L - width` of
+      the ribbon and the front texture covers the last piece, as long as the width.
+    - Otherwise the front texture covers the whole ribbon.
+
+    The client cuts the ribbon into segments of length `min(L / minSegmentCount,
+    maxSegmentLength)`.
+  notes:
+    - "If `overrideSpline` is not set and the spell's missile movement has no spline, the ribbon is not drawn. If the spell has a missile specification without a `movementComponent`, the client crashes when it draws the ribbon."
+    - "Unlike `splineWidth`, `constraintRange` has no replacement when unset. An unset `constraintRange` with `isConstrainedToRange` puts the end on the start, and a ribbon of length `0` is not drawn."
+    - "A `maxSegmentLength` of `0` gives an invalid segment count."
+
+properties:
+  startLocator:
+    description: "Start of the spline, see [DrawablePositionLocator](/classes/drawablepositionlocator)."
+
+  endLocator:
+    description: "End of the spline. Its height is replaced by the height of the start."
+
+  baseTextureName:
+    description: "Texture of the body of the ribbon. If it is empty, the `LineRangeLocalBase` texture of [SharedTargeterResources](/classes/sharedtargeterresources) applies."
+
+  frontTextureName:
+    description: "Texture of the front piece. If it is empty, the `LineRangeLocalTarget` texture of [SharedTargeterResources](/classes/sharedtargeterresources) applies."
+
+  splineWidth:
+    description: "Width of the ribbon and length of its front piece, in world units. If it is unset, the spell's `mLineWidth` applies."
+
+  overrideSpline:
+    description: "The spline parameters. If it is not set, the client takes the spline of the spell's missile movement, such as `GenericSplineMovementSpec.mSplineInfo`."
+
+  minSegmentCount:
+    description: "Smallest number of segments of the ribbon. The client uses more segments when `L / minSegmentCount` is longer than `maxSegmentLength`."
+
+  maxSegmentLength:
+    description: "Longest segment of the ribbon, in world units."
+
+  isConstrainedToRange:
+    description: "Keeps the end within `constraintRange` of the start."
+
+  constraintRange:
+    description: "Largest distance from start to end, in world units, read only with `isConstrainedToRange`."

@@ -1,0 +1,25 @@
+# VfxAnimatedVector3f Documentation
+
+class:
+  description: |
+    A **three-component keyframe curve with an interpolation mode per span**: the `dynamics` of a
+    [ValueVector3](/classes/valuevector3). It samples each component as
+    [VfxAnimatedFloat](/classes/vfxanimatedfloat) samples its value, with the same
+    interpolation modes, and the holder multiplies the result by `constantValue` per
+    component.
+  notes:
+    - "Under an [IntegratedValueVector3](/classes/integratedvaluevector3), the curve is not integrated: the client logs an error and samples the plain curve."
+    - "The empty-list and short-list cases on [VfxAnimatedFloat](/classes/vfxanimatedfloat) apply to this curve as well."
+
+properties:
+  times:
+    description: "The positions of the keys on the holder's clock, ascending."
+
+  values:
+    description: "The value at each key, with two tangent entries after each key that starts a Bezier span. See Interpolation modes on [VfxAnimatedFloat](/classes/vfxanimatedfloat)."
+
+  InterpModes:
+    description: "The interpolation mode of each span between two keys, one entry per span. [VfxAnimatedFloat](/classes/vfxanimatedfloat) lists the values."
+
+  probabilityTables:
+    description: "Not read. The client copies the tables with the curve but never applies them."

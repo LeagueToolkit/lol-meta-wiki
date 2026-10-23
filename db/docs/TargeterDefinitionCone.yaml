@@ -1,0 +1,47 @@
+# TargeterDefinitionCone Documentation
+
+class:
+  description: |
+    A [targeting indicator](/classes/targeterdefinition) that draws a **cone** on the
+    ground, with its apex at `startLocator` and aimed at `endLocator`. If the two positions
+    coincide, the cone aims along `fallbackDirection`.
+
+    The range of the cone is the [growing range](/classes/targeterdefinitionrange) of
+    `coneRange` and the `rangeGrowth*` properties.
+
+properties:
+  startLocator:
+    description: "Apex of the cone, see [DrawablePositionLocator](/classes/drawablepositionlocator)."
+
+  endLocator:
+    description: "Point that the cone aims at."
+
+  fallbackDirection:
+    description: "Direction of the cone when start and end coincide, from the orientation table of [DrawablePositionLocator](/classes/drawablepositionlocator)."
+
+  hasMaxGrowRange:
+    description: "Draws a second cone at the maximum of the range growth, with the `textureConeMaxGrowName` texture. Its range is `rangeGrowthMax` if that is set, otherwise `mCastRangeGrowthMax` at the spell level."
+
+  coneFollowsEnd:
+    description: "If the aim point is farther from the apex than the range, moves the apex toward the aim point so the cone ends at the aim point."
+
+  coneAngleDegrees:
+    description: "Angle of the cone, in degrees. If it is not set, the spell's `castConeAngle` applies."
+
+  coneRange:
+    description: "Base range of the cone, in world units, before range growth. If it is not set, the spell's `castConeDistance` applies."
+
+  rangeGrowthStartTime:
+    description: "Start of the range growth, see [TargeterDefinitionRange](/classes/targeterdefinitionrange)."
+
+  rangeGrowthDuration:
+    description: "Duration of the range growth, see [TargeterDefinitionRange](/classes/targeterdefinitionrange)."
+
+  rangeGrowthMax:
+    description: "Maximum of the range growth, see [TargeterDefinitionRange](/classes/targeterdefinitionrange)."
+
+  textureConeOverrideName:
+    description: "Texture of the cone. If it is empty, the `ConicRangeIndicator` texture of [SharedTargeterResources](/classes/sharedtargeterresources) applies."
+
+  textureConeMaxGrowName:
+    description: "Texture of the maximum growth cone. Same fallback as `textureConeOverrideName`."

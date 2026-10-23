@@ -1,0 +1,17 @@
+# ValueVector3 Documentation
+
+class:
+  description: |
+    An **animated three-component value**: a constant plus an optional curve. It evaluates as
+    [ValueFloat](/classes/valuefloat) does, per component. Emitters use it for positions,
+    velocities, scales and rotations, such as `birthScale0`, `birthVelocity` and
+    `EmitterPosition`.
+  notes:
+    - "[IntegratedValueVector3](/classes/integratedvaluevector3) is the same value with its curve replaced by the curve's integral at load."
+
+properties:
+  constantValue:
+    description: "The value when `dynamics` is not set. With a `VfxAnimated*` curve it multiplies the curve per component. With a `VfxAnimated*VariableData` curve it is not used."
+
+  dynamics:
+    description: "The curve. See [ValueFloat](/classes/valuefloat) for how its type changes the result."

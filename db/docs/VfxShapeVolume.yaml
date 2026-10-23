@@ -1,0 +1,26 @@
+# VfxShapeVolume Documentation
+
+class:
+  description: |
+    A [spawn shape](/classes/ivfxshape) that samples either the boundary or the interior of
+    a volume. `flags` selects which.
+
+properties:
+  flags:
+    description: |
+      Bit mask that selects where the shape samples.
+
+      | Bit | Name | Effect |
+      |---|---|---|
+      | `0x1` | Interior | Samples the interior instead of the boundary. |
+
+      What the bit does on each shape:
+
+      | Shape | Bit `0x1` clear | Bit `0x1` set |
+      |---|---|---|
+      | [VfxShapeBox](/classes/vfxshapebox) | A point on one face, with a random quarter turn. | Uniform in the solid box, with no turn. |
+      | [VfxShapeCylinder](/classes/vfxshapecylinder) | On the side surface, `radius` from the axis. | The radial coordinate is uniform in `-radius..radius`. |
+      | [VfxShapeSphere](/classes/vfxshapesphere) | On the sphere, `radius` from the centre. | The distance from the centre is uniform in `0..radius`. |
+    notes:
+      - "The client reads only bit `0x1`. The other bits have no effect."
+      - "The cylinder and sphere interior modes are not corrected for volume, so their samples cluster toward the axis or the centre."

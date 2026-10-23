@@ -1,0 +1,6 @@
+# VfxVector3fBase Documentation
+
+class:
+  description: |
+    A **three-component curve**: the `dynamics` of a [ValueVector3](/classes/valuevector3).
+    It is sampled as a [float curve](/classes/vfxfloatbase) is, per component.

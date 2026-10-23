@@ -1,0 +1,11 @@
+# IntegratedValueVector3 Documentation
+
+class:
+  description: |
+    A three-component animated value that holds a **rate**: a
+    [ValueVector3](/classes/valuevector3) whose curve the client replaces by its running
+    integral when the definition loads. Each component is integrated on its own.
+    [IntegratedValueFloat](/classes/integratedvaluefloat) describes the integration and which
+    curves it skips.
+  notes:
+    - "Shipped data uses it for `worldAcceleration` and `rotation0`."

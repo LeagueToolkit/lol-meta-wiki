@@ -1,0 +1,39 @@
+# X3DSharedConstantBufferDef Documentation
+
+class:
+  description: |
+    A **shared constant buffer**: one GPU constant buffer that the client creates from the
+    `constants` list and that shaders find by `name`. See
+    [X3DSharedData](/classes/x3dshareddata) for registration and filtering.
+
+    The client lays out the constants in list order with the HLSL 16-byte packing rules.
+    Constants that `PlatformMask` or `ShaderModel` filter
+    out take no space. The buffer size is the end of the last constant, rounded up to 16
+    bytes. The buffer is always a dynamic buffer that the CPU writes.
+  notes:
+    - "If the buffer has no constant after filtering, its size is `0`. The client then logs `Failed constant buffer of size 0 for usage ...` and crashes. The same happens for a buffer above the GPU limit of 64 KB."
+
+properties:
+  name:
+    description: "The name under which shaders find the buffer."
+
+  constants:
+    description: "The constants of the buffer, in layout order, see [X3DSharedConstantDef](/classes/x3dsharedconstantdef)."
+
+  type:
+    description: "The client stores it with the buffer, as `1` for value `0`, `2` for value `1` and `0` for any other value. It does not change the GPU buffer. What reads it is not yet identified."
+
+  frequency:
+    description: "Purpose not yet identified. The client does not read it when it creates the buffer."
+
+  OpenglConstantBuffer:
+    description: "Purpose not yet identified. The client does not read it when it creates the buffer."
+
+  register:
+    description: "Not read when the client creates the buffer, see the `register` table on [X3DSharedData](/classes/x3dshareddata)."
+
+  PlatformMask:
+    description: "The platforms on which the buffer loads, see [X3DSharedData](/classes/x3dshareddata)."
+
+  ShaderModel:
+    description: "The renderer mode in which the buffer loads, see [X3DSharedData](/classes/x3dshareddata)."

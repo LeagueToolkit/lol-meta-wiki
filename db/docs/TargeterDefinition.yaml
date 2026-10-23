@@ -1,0 +1,89 @@
+# TargeterDefinition Documentation
+
+class:
+  description: |
+    One **targeting indicator** of a spell: a shape that the client draws on the ground or
+    on the minimap while the local player aims the spell, such as a range circle, a
+    skillshot line or a cone. A spell lists its indicators in
+    `SpellDataResourceClient.mTargeterDefinitions`, in the `mClientData` of its
+    [SpellDataResource](/classes/spelldataresource).
+
+    ## Which list the client uses
+
+    The **active list** is `mTargeterDefinitions` unless a custom targeter set is selected.
+    `mCustomTargeterDefinitions` maps a hash key to an alternative list. The game can select
+    one of these sets at run time by its key; key `0` selects `mTargeterDefinitions` again.
+    If the selected key is not in the map, the client uses `mTargeterDefinitions`. If the
+    game selects a non-zero key that the spell does not define, the client logs
+    `Unknown custom targeter definition for spell: <name>` and keeps the previous set.
+    Every change of the selection rebuilds the indicators.
+
+    If the spell's `mMissileSpec` has a behaviour that carries its own indicator, which is
+    a `FixedDistanceIgnoringTerrain` with `mTargeterDefinition` set, the client draws only
+    that behaviour's indicator. It does not read the spell's lists, and no fallback below
+    runs.
+
+    ## Drawing
+
+    When the targeter is built, the client turns every definition of the active list into
+    an indicator, in list order. Every frame while the spell is aimed, it draws **all** of
+    them. Nothing selects an indicator by the cast state, so a spell that shows a range
+    circle and a line lists both and both draw together.
+
+    A definition whose locators use the offset-target position (`basePosition` `1`, see
+    [DrawablePositionLocator](/classes/drawablepositionlocator)) is an **offset
+    indicator**. The client keeps a list of offset target units for the targeting mode.
+    After the other indicators, it draws each offset indicator once for every unit in that
+    list that is alive, with the offset-target position at that unit. With no units in the
+    list, offset indicators do not draw. What adds a unit to the list is not established.
+
+    If the spell sets `mHideRangeIndicatorWhenCasting`, the client skips the draw of the
+    spell's active indicators.
+
+    ## Fade
+
+    Each indicator evaluates `mFadeBehavior` every time it draws and multiplies all four
+    channels of its colour, alpha included, by the result. Each channel is clamped to
+    `255`. A result of `0` or less skips the draw. The fade classes measure two things:
+    the time since the targeting mode started, and the ground distance from the caster to
+    the cursor.
+
+    ## Fallback indicators
+
+    If `mTargeterDefinitions` is empty, the client adds built-in indicators that it makes
+    from fields of the spell. Which ones depends on the targeting kind of the spell:
+
+    | Targeting kind | Built-in indicators |
+    |---|---|
+    | Self | None. |
+    | Unit target, unit or location, closest target | The default range circle. |
+    | Area, aimed area, clamped area | The default range circle, and an area circle at the cursor with the `AoeRangeIndicator` texture. The circle texture faces the cursor if `mOrientRadiusTextureFromPlayer` is set. |
+    | Cone | A cone toward the cursor with angle `castConeAngle` and range `castRangeDisplayOverride` at the spell level, or `castConeDistance` if that is not set. |
+    | Self area | The default range circle. |
+    | Location, direction, aimed direction, clamped location, nudge into brush | The default range circle. If `mLineWidth` is greater than `0`, also a line from the caster to the cursor, `mLineWidth` wide, that grows by the spell's cast range growth and stops at the cursor if `mProjectTargetToCastRange` is set. The range circle then hides with the line indicator setting, as `TargeterDefinitionRange.hideWithLineIndicator` describes. |
+    | Drag direction | The default range circle. If `mLineWidth` and `mLineDragLength` are both greater than `0`, also a line from the drag start to the drag end, `mLineWidth` wide, with `mLineDragLength` as its base length and a minimum length of `50`, drawn whatever the line indicator setting. |
+    | Terrain location, wall detection | None. |
+    | Terrain type | A cursor that shows the terrain type under it: no terrain, river or brush. |
+    | Line target to caster | None. A spell of this kind draws no indicator at all, not even the definitions in its list. |
+
+    The **default range circle** is a [TargeterDefinitionRange](/classes/targeterdefinitionrange)
+    at the caster with the display cast range of the spell, which adds the caster's
+    bounding radius if `castRangeUseBoundingBoxes` is set. If `mUseMinimapTargeting` is
+    set, a [TargeterDefinitionMinimap](/classes/targeterdefinitionminimap) circle is
+    added as well.
+
+    The **display cast range** is `castRangeDisplayOverride` at the spell level if it is
+    set, otherwise the cast range of the spell at that level, at least `1`. A range that
+    the game sets on the spell at run time takes precedence over both.
+  notes:
+    - "Only the list in `mTargeterDefinitions` decides whether the fallback runs. A spell with an empty `mTargeterDefinitions` and a selected custom set draws the custom set and the fallback."
+    - "The area fallback circle keeps a reference to a temporary definition that the client releases as soon as the circle is built. Its behaviour after that is undefined. Give area spells their own `mTargeterDefinitions` instead of relying on this fallback."
+    - "If a [TargeterDefinitionSkipTerrain](/classes/targeterdefinitionskipterrain) is in `mTargeterDefinitions` or a custom set, the client crashes when it draws the indicators. That class works only in `FixedDistanceIgnoringTerrain.mTargeterDefinition`."
+    - "Several indicator properties take a [FloatPerSpellLevel](/classes/floatperspelllevel). Each property states what the indicator uses when that value is unset."
+
+properties:
+  mFadeBehavior:
+    description: |
+      The [fade behaviour](/classes/itargeterfadebehavior) that scales the indicator's
+      colour, as described under Fade above. If it is not set, the indicator draws at full
+      colour.

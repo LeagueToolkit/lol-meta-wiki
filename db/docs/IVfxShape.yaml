@@ -1,0 +1,48 @@
+# IVfxShape Documentation
+
+class:
+  description: |
+    A **spawn shape**: the object in the `SpawnShape` of an
+    [emitter](/classes/vfxemitterdefinitiondata) that places each new particle relative to
+    the birth position. A shape returns an offset in the emitter's local frame and can turn
+    the particle's birth velocity and birth acceleration.
+
+    ## When a shape is sampled
+
+    Complex and simple emitters both apply the shape, once for every particle at birth.
+    For each particle the emitter:
+
+    1. Computes the birth velocity and birth acceleration.
+    2. Takes the offset from the shape.
+    3. Applies `offsetLifetimeScaling` to the particle's lifetime with this raw offset.
+    4. Multiplies the offset by the offset factors of `FlexShapeDefinition` and by the
+       system scale.
+    5. Adds the emission mesh or emission surface point to the base position. When
+       `useEmissionMeshNormalForBirth` is set, it points the velocity and acceleration
+       along the surface normal.
+    6. Lets the shape turn the offset, the velocity and the acceleration by one rotation.
+    7. Sets the birth position to the base position plus the offset.
+
+    A [VfxShapeLegacy](/classes/vfxshapelegacy) also evaluates its curves once per spawn
+    step, before the particles of the step are made. The other shapes have no curves.
+
+    ## Rotation of velocity and acceleration
+
+    The shape returns no normal. Its only effect on motion is the rotation in step 6: the
+    rotation that places the offset also turns the birth velocity and birth acceleration.
+    A velocity authored along the direction in which the shape seeds its offset therefore
+    leaves the shape outward.
+
+    | Shape | Rotation | Effect on the birth velocity |
+    |---|---|---|
+    | [VfxShapeSphere](/classes/vfxshapesphere) | Random turns about Y, then Z | A velocity along +X points away from the centre. |
+    | [VfxShapeCylinder](/classes/vfxshapecylinder) | A random turn about Y | A velocity along +X points away from the Y axis. |
+    | [VfxShapeBox](/classes/vfxshapebox) | Random quarter turns, or none in interior mode | A velocity along +Z becomes the normal of the chosen face. In interior mode the velocity is unchanged. |
+    | [VfxShapeLegacy](/classes/vfxshapelegacy) | The authored turns | The velocity turns with the offset. |
+    | [VfxShapePointDoNotUse](/classes/vfxshapepointdonotuse) | None | The velocity is unchanged. |
+
+    The shape does not set the particle's orientation. A direction-oriented particle
+    (`isDirectionOriented`) follows the turn only through its velocity.
+  notes:
+    - "If `SpawnShape` is not set, the offset is zero and the birth velocity and acceleration are not turned. The client creates no default shape."
+    - "A volume shape of size zero is not the same as no shape: it still turns the birth velocity and acceleration."

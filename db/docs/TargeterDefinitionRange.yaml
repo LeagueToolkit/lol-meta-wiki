@@ -1,0 +1,83 @@
+# TargeterDefinitionRange Documentation
+
+class:
+  description: |
+    A [targeting indicator](/classes/targeterdefinition) that draws a **range circle** on
+    the ground, by default the cast range around the caster. The radius can grow while the
+    player aims, and a second circle can show the largest radius of that growth.
+
+    ## Range growth
+
+    The range circle, [TargeterDefinitionLine](/classes/targeterdefinitionline) and
+    [TargeterDefinitionCone](/classes/targeterdefinitioncone) compute a **growing range**
+    each frame from a base range and three growth values, `rangeGrowthStartTime`,
+    `rangeGrowthDuration` and `rangeGrowthMax`. The time `t` is the time in seconds since
+    the targeting mode started.
+
+    1. The base range `b` is the holder's base range property if it is set, otherwise the
+       display cast range of the spell.
+    2. The range grows only if the spell has cast range growth (at some level both
+       `mCastRangeGrowthMax` and `mCastRangeGrowthDuration` are greater than `0`), or if
+       `rangeGrowthDuration` and `rangeGrowthMax` are both set and greater than `0`.
+       Otherwise the range is `b`.
+    3. The start `s` is `rangeGrowthStartTime` if it is set, otherwise
+       `mCastRangeGrowthStartTime` at the spell level. Until `t` passes `s`, the range is
+       `b`.
+    4. The duration `d` is `rangeGrowthDuration` if it is set and not `0`, otherwise
+       `mCastRangeGrowthDuration` at the spell level.
+    5. The maximum `m` is `rangeGrowthMax` if it is set, otherwise
+       `mCastRangeGrowthMax` at the spell level. A maximum that the game sets on the spell
+       at run time takes precedence over both.
+    6. The range is `max(b, min(m, b + (t - s) / d * (m - b)))`.
+
+    The range grows linearly from `b` to `m` over `d` seconds and then holds at `m`. A
+    duration of `0` makes the range jump to `m` at the start time.
+  notes:
+    - "A growth or base value counts as set when its [FloatPerSpellLevel](/classes/floatperspelllevel) has `mValueType` `1` or `2`."
+
+properties:
+  centerLocator:
+    description: "Center of the circle, see [DrawablePositionLocator](/classes/drawablepositionlocator). If the position is invalid, the circle is not drawn."
+
+  textureOrientation:
+    description: "Direction that the top of the circle texture faces, from the orientation table of [DrawablePositionLocator](/classes/drawablepositionlocator)."
+
+  hideWithLineIndicator:
+    description: |
+      Hides the circle while the line indicators are shown. If it is `true` and the
+      `EnableLineMissileVis` game setting is on, the circle is not drawn. With the setting
+      off, the circle draws. Paired with a [line](/classes/targeterdefinitionline) without
+      `alwaysDraw`, the spell shows the line when the setting is on and the circle when it
+      is off.
+
+  hasMaxGrowRange:
+    description: |
+      Draws a second circle at the maximum of the range growth, with the
+      `textureMaxGrowName` texture. Its radius is `rangeGrowthMax` if that is set,
+      otherwise `mCastRangeGrowthMax` at the spell level.
+
+  useCasterBoundingBox:
+    description: "Adds the caster's bounding radius to the radius when `true`. If it is not set, the spell's `castRangeUseBoundingBoxes` decides."
+
+  overrideBaseRange:
+    description: "Base radius of the circle, in world units, before range growth. If it is unset, the circle uses the display cast range of the spell."
+
+  rangeGrowthStartTime:
+    description: "Time, in seconds after the targeting mode starts, at which the radius starts to grow. If it is unset, the spell's `mCastRangeGrowthStartTime` applies. See Range growth above."
+
+  rangeGrowthDuration:
+    description: "Time, in seconds, that the radius takes to grow to its maximum. If it is unset or `0`, the spell's `mCastRangeGrowthDuration` applies. See Range growth above."
+
+  rangeGrowthMax:
+    description: "Radius, in world units, at the end of the growth. If it is unset, the spell's `mCastRangeGrowthMax` applies. See Range growth above."
+
+  textureOverrideName:
+    description: |
+      Texture of the circle. If it is empty, the circle uses the
+      `CircularRangeIndicator` texture of
+      [SharedTargeterResources](/classes/sharedtargeterresources), which holds one quarter
+      of the circle: the client mirrors it into all four quarters. A texture set here is
+      drawn once across the whole circle, so it must hold the full circle.
+
+  textureMaxGrowName:
+    description: "Texture of the maximum growth circle, read only with `hasMaxGrowRange`. The empty fallback and the full-circle rule are the same as for `textureOverrideName`."

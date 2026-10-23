@@ -1,0 +1,30 @@
+# FadeOverTimeBehavior Documentation
+
+class:
+  description: |
+    A [fade rule](/classes/itargeterfadebehavior) that fades a targeting indicator **over
+    time**. With `x` the time in seconds since the targeting mode started:
+
+    1. If `mTimeStart` is greater than `mTimeEnd`, the factor is `0` and the indicator is
+       hidden.
+    2. If `mStartAlpha` equals `mEndAlpha`, or `x` is not greater than `mTimeStart`, the
+       factor is `mStartAlpha`.
+    3. If `x` is not less than `mTimeEnd`, or the two times are equal, the factor is
+       `mEndAlpha`.
+    4. Otherwise the factor goes linearly from `mStartAlpha` to `mEndAlpha` between the
+       two times.
+  notes:
+    - "Shipped data uses it for short fades of a fraction of a second, most of them fading an indicator out with `mEndAlpha` `0`."
+
+properties:
+  mTimeStart:
+    description: "Time, in seconds after the targeting mode starts, at which the fade begins."
+
+  mTimeEnd:
+    description: "Time, in seconds after the targeting mode starts, at which the fade ends."
+
+  mStartAlpha:
+    description: "Factor up to `mTimeStart`."
+
+  mEndAlpha:
+    description: "Factor from `mTimeEnd` on. `0` hides the indicator after the fade."

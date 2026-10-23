@@ -1,0 +1,18 @@
+# TargeterDefinitionMinimap Documentation
+
+class:
+  description: |
+    A [targeting indicator](/classes/targeterdefinition) that draws a **range circle on the
+    minimap**, with the `MinimapCircularRangeIndicator` texture of
+    [SharedTargeterResources](/classes/sharedtargeterresources). It has no texture of its
+    own. If there is no minimap, nothing draws.
+
+properties:
+  centerLocator:
+    description: "Center of the circle, see [DrawablePositionLocator](/classes/drawablepositionlocator)."
+
+  useCasterBoundingBox:
+    description: "Adds the caster's bounding radius to the radius when `true`. If it is not set, the spell's `castRangeUseBoundingBoxes` decides."
+
+  overrideBaseRange:
+    description: "Radius of the circle, in world units. If it is unset, the display cast range of the spell applies."

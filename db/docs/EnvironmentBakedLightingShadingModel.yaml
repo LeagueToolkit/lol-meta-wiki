@@ -1,0 +1,9 @@
+# EnvironmentBakedLightingShadingModel Documentation
+
+class:
+  description: |
+    The environment shading model for map meshes that are lit by two baked lightmaps: a
+    **baked light** texture and a **stationary light** texture, each with a scale and bias.
+    The loader also uses this layout for a mesh whose material has no shading model. See
+    [IEnvironmentShadingModel](/classes/ienvironmentshadingmodel) for the lighting block in
+    the `.mapgeo` file and the shader resources that the mesh binds.

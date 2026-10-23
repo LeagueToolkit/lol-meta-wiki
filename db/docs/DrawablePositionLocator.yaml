@@ -1,0 +1,65 @@
+# DrawablePositionLocator Documentation
+
+class:
+  description: |
+    A **position rule** of a [targeting indicator](/classes/targeterdefinition): a base
+    position, optionally moved by a distance along a direction. The client resolves it
+    every time the indicator draws. If the base position is invalid, the indicator is not
+    drawn in that frame.
+
+    The resolved position is the base position from `basePosition`. If `distanceOffset` is
+    not `0`, the client then takes the direction `(dx, dy, dz)` from `orientationType`,
+    rotates it by `angleOffsetRadian` (`a`) and moves the position by `distanceOffset`
+    (`d`):
+
+    ```
+    x += (cos(a) * dx + sin(a) * dz) * d
+    z += (cos(a) * dz - sin(a) * dx) * d
+    y += dy * d
+    ```
+
+    ## Orientations
+
+    `orientationType` and the orientation properties of the indicator classes
+    (`textureOrientation`, `fallbackDirection`, `mFallbackDirection`, `wallOrientation`)
+    all use this table:
+
+    | Value | Name | Direction |
+    |---|---|---|
+    | `0` | World | World +Z, `(0, 0, 1)`. |
+    | `1` | Caster facing | The facing direction of the caster. World +Z if the caster has none. |
+    | `2` | To target unit | From the caster to the unit that the targeting mode tracks, if that unit is visible. Otherwise world +Z. |
+    | `3` | To cursor | From the caster to the cursor on the ground plane. In drag-direction targeting, from the caster to the drag start. If the two points coincide, the caster facing. |
+    | `4` | Drag direction | From the drag start to the drag end. Only in drag-direction targeting; otherwise world +Z. |
+    | other | World | World +Z. |
+  notes:
+    - "Which unit the targeting mode tracks for base position `2` and orientation `2` is not confirmed. It is most likely the current target of the spell."
+    - "Shipped data sets `angleOffsetRadian` to `45` and `10` on some locators. The client reads radians, so `45` rotates by about 58 degrees and `10` by about 213 degrees, not by 45 and 10 degrees."
+
+properties:
+  basePosition:
+    description: |
+      The base position:
+
+      | Value | Name | Position |
+      |---|---|---|
+      | `0` | Caster | The caster's position. |
+      | `1` | Offset target | The offset target unit that the indicator is drawn for, if that unit is visible; otherwise the caster. A definition that uses this value in any of its locators is an offset indicator and draws once per offset target unit, see [TargeterDefinition](/classes/targeterdefinition). |
+      | `2` | Target unit | The unit that the targeting mode tracks. Invalid if there is none. |
+      | `3` | Cursor | The cursor position. In drag-direction targeting, the drag end. |
+      | `4` | Second point | The second point of the targeting mode. In drag-direction targeting it is the drag end. For other targeting kinds the point that it holds is not established. |
+      | `5` | Drag start | The drag start in drag-direction targeting. Invalid in other targeting kinds. |
+      | `6` | Caller point | A point that the caller of the draw passes in. Which point that is is not established. |
+      | `7` | Placed cursor | The cursor position projected onto the ground. For some spells the client then moves it into a circular area around an object within `300` units. Which objects count is not established. |
+      | other | Invalid | The indicator is not drawn. |
+
+      An invalid position skips the indicator for that frame.
+
+  distanceOffset:
+    description: "Distance, in world units, that the position moves from the base position along the rotated direction. If it is `0`, the position is the base position and `orientationType` and `angleOffsetRadian` are not read."
+
+  orientationType:
+    description: "Direction of the offset, from the orientation table above."
+
+  angleOffsetRadian:
+    description: "Rotation of the offset direction about the vertical axis, in radians. Read only when `distanceOffset` is not `0`."

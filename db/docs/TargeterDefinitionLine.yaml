@@ -1,0 +1,128 @@
+# TargeterDefinitionLine Documentation
+
+class:
+  description: |
+    A [targeting indicator](/classes/targeterdefinition) that draws a **skillshot line**
+    from `startLocator` toward `endLocator`: a base piece and an arrow head, each with its
+    own texture.
+
+    **Visibility.** The line draws only if the `EnableLineMissileVis` game setting is on or
+    `alwaysDraw` is set. A width of `0` or less also skips it.
+
+    **Length.** The range is the [growing range](/classes/targeterdefinitionrange) of
+    `overrideBaseRange` and the `rangeGrowth*` properties. The length `L` is
+    `factor * max(minimumDisplayedRange, range)`, where `factor` is `1` unless `facingLine`
+    sets it. If start and end coincide, the line points along `fallbackDirection`.
+
+    **Mode.** The line is **global** if `indicatorType` is an
+    [IndicatorTypeGlobal](/classes/indicatortypeglobal), or if `indicatorType` is not set
+    and `useGlobalLineIndicator` is `true`. Otherwise it is **local**. In global mode, and
+    in local mode when `lineStopsAtEndPosition` is `true`, the line is no longer than the
+    distance from start to end.
+
+    - **Local**: the arrow head covers the last `arrowSize` of the line, or the whole line
+      if it is shorter, with the target texture. If `L` is greater than `arrowSize`, the
+      base texture covers the rest, from the start to the head.
+    - **Global**: two pieces, each `arrowSize` long. The base piece starts at the start
+      position and the target piece starts at distance `L`. If `L` is not greater than
+      `arrowSize` and the indicator is not floating (`IndicatorTypeGlobal.mIsFloating`),
+      only the target piece draws, at the start position.
+
+    **Facing.** If `facingLine` is set, the client compares the caster's facing with the
+    line direction every frame. Inside the window from `minAngle` to `maxAngle` the length
+    factor goes from `minAngleRangeFactor` to `maxAngleRangeFactor` with the angle, and the
+    line has full brightness. Within `fadeAngle` outside the window the brightness falls to
+    `0`, and beyond that it is `0`. The brightness scales the red, green and blue of the
+    colour and leaves alpha unchanged.
+  notes:
+    - "The angle properties and `fade` are read only when `facingLine` is set. Shipped data sets `maxAngle` on many lines that do not set `facingLine`; on those lines it has no effect."
+    - "The textures default to the line textures of [SharedTargeterResources](/classes/sharedtargeterresources): `LineRangeLocalBase` and `LineRangeLocalTarget` in local mode, `LineRangeGlobalIndicatorBase` and `LineRangeGlobalIndicatorTarget` in global mode."
+
+properties:
+  indicatorType:
+    description: "Selects global or local mode, see Mode above. If it is set, `useGlobalLineIndicator` is ignored."
+
+  useGlobalLineIndicator:
+    description: "Selects global mode when `indicatorType` is not set."
+
+  startLocator:
+    description: "Start of the line, see [DrawablePositionLocator](/classes/drawablepositionlocator)."
+
+  endLocator:
+    description: "Point that the line aims at. It sets the direction, and the length limit in global mode or with `lineStopsAtEndPosition`."
+
+  fallbackDirection:
+    description: "Direction of the line when start and end coincide, from the orientation table of [DrawablePositionLocator](/classes/drawablepositionlocator)."
+
+  alwaysDraw:
+    description: "Draws the line even when the `EnableLineMissileVis` game setting is off."
+
+  hasMaxGrowRange:
+    description: |
+      Draws a second line at the maximum of the range growth, with the
+      `textureBaseMaxGrowName` and `textureTargetMaxGrowName` textures. Its length is
+      `rangeGrowthMax` if that is set, otherwise `mCastRangeGrowthMax` at the spell level.
+      It always uses the local layout and is not scaled by the facing factor.
+
+  lineStopsAtEndPosition:
+    description: "In local mode, limits the length to the distance from start to end when `true`. If it is not set, the spell's `mProjectTargetToCastRange` decides."
+
+  minimumDisplayedRange:
+    description: "Shortest length that the line draws at, in world units, before the facing factor."
+
+  arrowSize:
+    description: "Length of the arrow head, in world units. `0` uses `500` in global mode and `200` in local mode."
+
+  lineWidth:
+    description: "Width of the line, in world units. If it is unset, the spell's `mLineWidth` applies."
+
+  overrideBaseRange:
+    description: "Base range of the line, in world units. If it is unset, the display cast range of the spell applies. See [range growth](/classes/targeterdefinitionrange)."
+
+  rangeGrowthStartTime:
+    description: "Start of the range growth, see [TargeterDefinitionRange](/classes/targeterdefinitionrange)."
+
+  rangeGrowthDuration:
+    description: "Duration of the range growth, see [TargeterDefinitionRange](/classes/targeterdefinitionrange)."
+
+  rangeGrowthMax:
+    description: "Maximum of the range growth, see [TargeterDefinitionRange](/classes/targeterdefinitionrange)."
+
+  textureBaseOverrideName:
+    description: "Texture of the base piece. If it is empty, the base line texture of the mode applies."
+
+  textureTargetOverrideName:
+    description: "Texture of the arrow head. If it is empty, the target line texture of the mode applies."
+
+  textureBaseMaxGrowName:
+    description: "Texture of the base piece of the maximum growth line. Loaded only with `hasMaxGrowRange`. Same fallback as `textureBaseOverrideName`."
+
+  textureTargetMaxGrowName:
+    description: "Texture of the arrow head of the maximum growth line. Loaded only with `hasMaxGrowRange`. Same fallback as `textureTargetOverrideName`."
+
+  mAngleLineToEndpointHeight:
+    description: "Moves the start to the height of the end, so the line is level at the height of the end position."
+
+  mCenterArrowToEndPoint:
+    description: "In local mode, extends the line by half of `arrowSize`, so the middle of the arrow head sits on the end point."
+
+  facingLine:
+    description: "Turns on the facing rule, see Facing above."
+
+  minAngle:
+    description: "Start of the facing window, in degrees between the caster's facing and the line. Clamped to `0`-`180`."
+
+  maxAngle:
+    description: "End of the facing window, in degrees. Clamped to `0`-`180`. If `minAngle` is greater than `maxAngle`, the window covers every angle."
+
+  fadeAngle:
+    description: "Width, in degrees, of the band outside the window over which the brightness falls to `0`."
+
+  minAngleRangeFactor:
+    description: "Length factor at `minAngle`."
+
+  maxAngleRangeFactor:
+    description: "Length factor at `maxAngle`."
+
+  fade:
+    description: "If it is `false`, the line keeps full brightness at every angle."

@@ -1,0 +1,29 @@
+# IEnvironmentShadingModel Documentation
+
+class:
+  description: |
+    A shading model for **map geometry**. It decides which baked lighting a map mesh has and
+    how that lighting is stored in the `.mapgeo` file.
+
+    **Loading a mesh.** Each mesh of a `.mapgeo` file carries a lighting block. Its layout
+    depends on the shading model. For each mesh, the loader takes the shading model of the
+    material of the mesh's last submesh, reads the block in that model's layout and creates
+    the mesh's lighting from it. The models of the other submeshes are not used. If that
+    material has no shading model, the loader reads the block in the
+    [EnvironmentBakedLightingShadingModel](/classes/environmentbakedlightingshadingmodel)
+    layout.
+
+    In the table, a **name** is a string with a 32-bit length prefix that names a texture. A
+    **scale-and-bias** is four floats (16 bytes). A **float** is one float (4 bytes).
+
+    | Model | Lighting block, in file order | Shader resources that the mesh binds |
+    |---|---|---|
+    | [EnvironmentBakedLightingShadingModel](/classes/environmentbakedlightingshadingmodel), or no model | name, scale-and-bias, name, scale-and-bias | `BAKED_LIGHT` and `BAKED_LIGHT_SCALE_AND_BIAS` from the first pair; `STATIONARY_LIGHT` and `STATIONARY_LIGHT_SCALE_AND_BIAS` from the second pair |
+    | [EnvironmentPbrShadingModel](/classes/environmentpbrshadingmodel) | name, scale-and-bias, name, scale-and-bias, name, float | The two pairs as above; `ENV_PROBE_INDEX` from the third name |
+    | [EnvironmentPbrDynamicShadingModel](/classes/environmentpbrdynamicshadingmodel) | name, scale-and-bias, name, float | `STATIONARY_LIGHT` and `STATIONARY_LIGHT_SCALE_AND_BIAS` from the first pair; `ENV_PROBE` from the second name and `ENV_PROBE_SCALE` from the float |
+    | [EnvironmentUnlitShadingModel](/classes/environmentunlitshadingmodel) | nothing | nothing |
+
+    An empty lightmap name resolves to the client's default texture. The pages of the PBR
+    models describe how each one loads its probe.
+  notes:
+    - "The layout follows the shading model of the material, not the `.mapgeo` version. A tool that reads every lighting block in the two-pair layout misreads each mesh whose last submesh uses another model, and every byte of the file after that block."

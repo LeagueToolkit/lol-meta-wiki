@@ -1,0 +1,18 @@
+# SkinnedStandardShadingModel Documentation
+
+class:
+  description: |
+    The shading model of non-PBR character shaders. For each draw it finds the light-grid cell
+    at the draw's position (see [ISkinnedShadingModel](/classes/iskinnedshadingmodel)) and
+    uploads the cell as two shader constants:
+
+    - `LIGHTGRID_COLORS`, the six ambient colours of the cell,
+    - `LIGHTGRID_SCALE`, the scale that the shader applies to them.
+
+    While an ambient override is active, it uploads the override's six colours and a
+    `LIGHTGRID_SCALE` of `(1, 0, 0, 0)` instead of the cell.
+
+    For the `LIT_UBER` shader,
+    [SkinMeshDataProperties](/classes/skinmeshdataproperties) selects between this model and
+    [SkinnedPbrShadingModel](/classes/skinnedpbrshadingmodel) through its roughness-metallic
+    texture.

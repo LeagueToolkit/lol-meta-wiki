@@ -1,0 +1,49 @@
+# TargeterDefinitionAoe Documentation
+
+class:
+  description: |
+    A [targeting indicator](/classes/targeterdefinition) that draws an **area circle**, the
+    area that the spell hits, usually at the cursor.
+
+    The radius is the first of these that is set:
+
+    1. `overrideRadius`.
+    2. `DynamicGameCalcSizeScalar`, evaluated for the caster at the spell level. A negative
+       result counts as `0`.
+    3. `castRadius` of the spell at the spell level.
+
+    `MaxRangeSizeScalar` can then scale the radius by the distance to the cursor.
+
+    If `isConstrainedToRange` is set, the client resolves `constraintPosLocator` and moves
+    the center onto the ground circle of radius `constraintRange` around that position if
+    the center is outside it.
+  notes:
+    - "Unlike `overrideRadius`, `constraintRange` has no replacement when unset. An unset `constraintRange` with `isConstrainedToRange` puts the circle on the constraint position."
+
+properties:
+  centerLocator:
+    description: "Center of the circle, see [DrawablePositionLocator](/classes/drawablepositionlocator). If the position is invalid, the circle is not drawn."
+
+  textureOrientation:
+    description: "Direction that the top of the circle texture faces, from the orientation table of [DrawablePositionLocator](/classes/drawablepositionlocator)."
+
+  isConstrainedToRange:
+    description: "Keeps the center within `constraintRange` of `constraintPosLocator`, measured on the ground plane. If the constraint position is invalid, the circle is not drawn."
+
+  constraintPosLocator:
+    description: "Center of the constraint circle, read only with `isConstrainedToRange`."
+
+  constraintRange:
+    description: "Radius of the constraint circle, in world units, read only with `isConstrainedToRange`."
+
+  overrideRadius:
+    description: "Radius of the circle, in world units. If it is unset, `DynamicGameCalcSizeScalar` or the spell's `castRadius` applies."
+
+  DynamicGameCalcSizeScalar:
+    description: "A [game calculation](/classes/igamecalculation) that returns the radius, in world units, when `overrideRadius` is unset. The client evaluates it with the caster's stats, the spell's data and the spell level every frame that the circle draws."
+
+  MaxRangeSizeScalar:
+    description: "Scales the radius by the distance from the caster to the cursor, see [TargeterDefinitionAoeScalar](/classes/targeterdefinitionaoescalar)."
+
+  textureRadiusOverrideName:
+    description: "Texture of the circle. If it is empty, the `AoeRangeIndicator` texture of [SharedTargeterResources](/classes/sharedtargeterresources) applies."

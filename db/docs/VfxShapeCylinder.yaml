@@ -1,0 +1,24 @@
+# VfxShapeCylinder Documentation
+
+class:
+  description: |
+    A cylinder [spawn shape](/classes/ivfxshape) whose axis runs along +Y from the birth
+    position. The shape takes the offset `(r, h, 0)` and turns it, the birth velocity and
+    the birth acceleration by a random angle in `0..360` degrees about Y.
+
+    - `h` is uniform in `0..height`, so the cylinder extends on one side of the birth
+      position only.
+    - In surface mode (`flags` bit `0x1` clear, see
+      [VfxShapeVolume](/classes/vfxshapevolume)) `r` is `radius`.
+    - In interior mode (bit `0x1` set) `r` is uniform in `-radius..radius`. The samples
+      cluster toward the axis.
+
+    A birth velocity along +X points away from the axis. In interior mode the particles
+    with a negative `r` get that velocity pointed toward the axis.
+
+properties:
+  radius:
+    description: "Distance of the side surface from the axis, in world units. In interior mode it bounds the radial coordinate."
+
+  height:
+    description: "Length of the cylinder along +Y, in world units. A negative value extends it along -Y."

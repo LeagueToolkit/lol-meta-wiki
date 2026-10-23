@@ -1,0 +1,14 @@
+# EnvironmentPbrShadingModel Documentation
+
+class:
+  description: |
+    The environment shading model for map meshes that have the two baked lightmaps of
+    [EnvironmentBakedLightingShadingModel](/classes/environmentbakedlightingshadingmodel) and
+    a **reflection probe**. See [IEnvironmentShadingModel](/classes/ienvironmentshadingmodel)
+    for the lighting block in the `.mapgeo` file.
+
+    The client loads the probe into its shared probe array, once per probe, and binds
+    `ENV_PROBE_INDEX`, the probe's index in that array. The float that follows the probe name
+    in the file is not used.
+  notes:
+    - "If a mesh's probe name is empty, the client loads no probe and uploads the float from the file as `ENV_PROBE_INDEX`, so the shader reads a wrong probe index."

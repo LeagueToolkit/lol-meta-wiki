@@ -1,0 +1,14 @@
+# ValueColor Documentation
+
+class:
+  description: |
+    An **animated RGBA colour**: a constant plus an optional curve, with the components
+    `(r, g, b, a)`. It evaluates as [ValueFloat](/classes/valuefloat) does, per component.
+    Emitters use it for `Color`, `birthColor` and the erosion and palette colour values.
+
+properties:
+  constantValue:
+    description: "The colour when `dynamics` is not set, `(r, g, b, a)`. With a `VfxAnimated*` curve it multiplies the curve per component. With a `VfxAnimated*VariableData` curve it is not used."
+
+  dynamics:
+    description: "The colour curve. See [ValueFloat](/classes/valuefloat) for how its type changes the result."

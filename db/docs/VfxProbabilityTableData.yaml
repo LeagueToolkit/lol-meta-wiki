@@ -1,0 +1,45 @@
+# VfxProbabilityTableData Documentation
+
+class:
+  description: |
+    A **probability table**: a random factor for one channel of a
+    `VfxAnimated*VariableData` curve. Each time the curve is evaluated, the table turns a
+    random number `u` in 0..1 into a factor, and the curve multiplies that channel of its
+    result by the factor. A table never replaces or adds to the value. The `VfxAnimated*`
+    curves do not read their tables.
+
+    ## Sampling
+
+    The factor is:
+
+    1. `singleValue`, if `keyTimes` is empty.
+    2. `keyValues[0] + u * (keyValues[1] - keyValues[0])`, if `keyTimes` is `[0, 1]`. This is a
+       uniform draw between the two values.
+    3. `0`, if `keyValues` does not have as many entries as `keyTimes`.
+    4. Otherwise a lookup of `u` along `keyTimes`: `keyValues[0]` at or before the first key, a
+       straight line between the two keys around `u`, and the last value after the last key.
+
+    `keyTimes` are positions of the random number, so the table is an inverse cumulative
+    distribution: the share of 0..1 between two keys is the probability that the factor
+    falls between their values.
+
+    ## Random number
+
+    The holder supplies `u`. If the holder supplies none, each channel draws a new number at
+    each evaluation. The draw table under Animated values on
+    [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata) lists when each emitter
+    property draws. A driver reads `u` from its random slots, see Random values on
+    [IVfxBaseDriver](/classes/ivfxbasedriver).
+  notes:
+    - "A `singleValue` of `0`, or a length mismatch between `keyTimes` and `keyValues`, makes the factor `0` and so zeroes the channel."
+    - "Most shipped tables have `keyTimes` `[0, 1]`, so they are uniform draws between two factors."
+
+properties:
+  keyTimes:
+    description: "Positions in the random range 0..1, ascending. If it is empty, the factor is `singleValue`."
+
+  keyValues:
+    description: "The factor at each entry of `keyTimes`. It needs as many entries as `keyTimes`, otherwise the factor is `0`."
+
+  singleValue:
+    description: "The factor when `keyTimes` is empty."

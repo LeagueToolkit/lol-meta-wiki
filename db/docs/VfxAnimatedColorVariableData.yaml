@@ -1,0 +1,22 @@
+# VfxAnimatedColorVariableData Documentation
+
+class:
+  description: |
+    An **RGBA colour linear keyframe curve with probability tables**: the `dynamics` of a
+    [ValueColor](/classes/valuecolor). It samples each component as
+    [VfxAnimatedFloatVariableData](/classes/vfxanimatedfloatvariabledata) samples its value,
+    and it does not use the holder's `constantValue`.
+  notes:
+    - "If the first probability table is set and a later one is null, the client crashes when it evaluates the curve."
+    - "If `values` has fewer entries than `times`, the client reads past the end of `values`."
+    - "Shipped data also uses this curve as the `colors` of the colour curve material drivers, [ColorGraphMaterialDriver](/classes/colorgraphmaterialdriver) and [VfxColorOverLifeMaterialDriver](/classes/vfxcoloroverlifematerialdriver), in materials."
+
+properties:
+  times:
+    description: "The positions of the keys on the holder's clock, ascending."
+
+  values:
+    description: "The colour at each key, `(r, g, b, a)`, one entry per entry of `times`."
+
+  probabilityTables:
+    description: "One [probability table](/classes/vfxprobabilitytabledata) per component, `r`, `g`, `b`, `a`. If the first one is not set, no table applies. If it is set, all four must be set."

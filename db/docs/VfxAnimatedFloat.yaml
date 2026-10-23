@@ -1,0 +1,58 @@
+# VfxAnimatedFloat Documentation
+
+class:
+  description: |
+    A **keyframe curve with an interpolation mode per span**. The holder multiplies the
+    sampled value by its `constantValue`, see [ValueFloat](/classes/valuefloat). This page
+    describes sampling for all `VfxAnimated*` curves
+    ([VfxAnimatedVector2f](/classes/vfxanimatedvector2f),
+    [VfxAnimatedVector3f](/classes/vfxanimatedvector3f),
+    [VfxAnimatedColor](/classes/vfxanimatedcolor)).
+
+    ## Sampling
+
+    At a time `t` the curve returns:
+
+    1. The only entry of `values`, if `values` has exactly one entry. `times` is not read.
+    2. The first entry of `values`, if `t` is at or before the first key.
+    3. Otherwise, for the span from `times[i]` to `times[i+1]` that contains `t`, the
+       interpolation that `InterpModes[i]` selects, with
+       `s = (t - times[i]) / (times[i+1] - times[i])`.
+    4. The last entry of `values`, if `t` is after the last key.
+
+    So the curve holds its first value before the first key and its last value after the
+    last key. It does not clamp or wrap `t` itself.
+
+    ## Interpolation modes
+
+    Each entry of `InterpModes` selects the mode of one span. If `InterpModes` is empty,
+    every span is linear.
+
+    | Value | Mode | Entries of `values` per key | Result in the span |
+    |---|---|---|---|
+    | `0` | Linear | 1 | Straight line from the key's value to the next key's value. |
+    | `1` | Step | 1 | The key's value, held until the next key. |
+    | `2` | Bezier | 3: value, out-tangent, in-tangent | Cubic curve from the key's value to the next key's value. The out-tangent is the slope at the start of the span, and the in-tangent that follows it is the slope at the end of the span, both in value units per unit of `t`. |
+    | `3` and above | Invalid | 0 | The span is skipped. Later spans read the wrong entries of `values`. |
+
+    A Bezier span uses three entries for its start key, so `values` holds one entry per key
+    plus two per Bezier span, and it is longer than `times` when the curve has Bezier spans.
+    Shipped curves use only modes `0` and `2`.
+  notes:
+    - "Under an [IntegratedValueFloat](/classes/integratedvaluefloat), the curve is not integrated: the client logs an error and samples the plain curve."
+    - "If `times` is empty and `values` does not have exactly one entry, the client crashes when it samples the curve."
+    - "If `InterpModes` is not empty but has fewer entries than the curve has spans, the client reads past the end of the list."
+    - "If `values` is empty and `times` has two or more keys, the client reads outside the list."
+
+properties:
+  times:
+    description: "The positions of the keys on the holder's clock, ascending."
+
+  values:
+    description: "The value at each key, with two tangent entries after each key that starts a Bezier span. See Interpolation modes above."
+
+  InterpModes:
+    description: "The interpolation mode of each span between two keys, one entry per span. The values are listed in Interpolation modes above."
+
+  probabilityTables:
+    description: "Not read. The client copies the tables with the curve but never applies them."

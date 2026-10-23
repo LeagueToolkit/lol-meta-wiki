@@ -1,0 +1,8 @@
+# VfxColorBase Documentation
+
+class:
+  description: |
+    An **RGBA colour curve**: the `dynamics` of a [ValueColor](/classes/valuecolor). It is
+    sampled as a [float curve](/classes/vfxfloatbase) is, per component `(r, g, b, a)`.
+  notes:
+    - "No integrated colour value exists, so a colour curve is never integrated."

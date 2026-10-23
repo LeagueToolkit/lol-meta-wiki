@@ -1,0 +1,29 @@
+# TargeterDefinitionWall Documentation
+
+class:
+  description: |
+    A [targeting indicator](/classes/targeterdefinition) that draws a **rotated rectangle**
+    on the ground, centred on `centerLocator`, such as the outline of a wall that the spell
+    creates. `wallOrientation` gives the direction of the rectangle, and `wallRotation`
+    turns it further.
+  notes:
+    - "`thickness` and `length` have no replacement when unset: a wall that sets neither draws a rectangle of size `0`."
+
+properties:
+  centerLocator:
+    description: "Center of the rectangle, see [DrawablePositionLocator](/classes/drawablepositionlocator). If the position is invalid, the rectangle is not drawn."
+
+  wallOrientation:
+    description: "Direction of the rectangle, from the orientation table of [DrawablePositionLocator](/classes/drawablepositionlocator)."
+
+  wallRotation:
+    description: "Extra rotation of the direction about the vertical axis, in degrees."
+
+  thickness:
+    description: "Full thickness of the rectangle, in world units. Half of it lies on each side of the center."
+
+  length:
+    description: "Full length of the rectangle, in world units. Half of it lies on each side of the center."
+
+  textureWallOverrideName:
+    description: "Texture of the rectangle. If it is empty, the `WallRangeIndicator` texture of [SharedTargeterResources](/classes/sharedtargeterresources) applies."

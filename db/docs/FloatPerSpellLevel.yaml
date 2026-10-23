@@ -1,0 +1,30 @@
+# FloatPerSpellLevel Documentation
+
+class:
+  description: |
+    A **number that can depend on the spell level**, used by the
+    [targeting indicators](/classes/targeterdefinition) for sizes, ranges and growth
+    times. `mValueType` says whether it is unset, one value for every level, or one value
+    per level.
+
+    The holder decides what an unset value means. Most holders replace it with a field of
+    the spell, such as `mLineWidth` or `castRadius`; each property that takes this class
+    states its replacement. A holder that names no replacement reads `mPerLevelValues[0]`
+    for an unset value, which is `0` unless the data writes it.
+  notes:
+    - "The spell level is used as an index without an upper limit. At spell level `7` or higher the client reads past the six values and gets a meaningless number."
+    - "The spell's own per-level lists, such as `castRadius` and `mCastRangeGrowthMax`, have seven entries and start at level `0`, the unlearned spell. `mPerLevelValues` starts at level `1`."
+
+properties:
+  mValueType:
+    description: |
+      How the value is read:
+
+      | Value | Name | Value read |
+      |---|---|---|
+      | `0` | Unset | The holder's replacement, see above. |
+      | `1` | Single | `mPerLevelValues[0]` at every level. |
+      | `2` | Per level | `mPerLevelValues[level - 1]`. Level `0` reads the first entry. |
+
+  mPerLevelValues:
+    description: "The values for spell levels `1`-`6`. With `mValueType` `1` only the first entry is read."

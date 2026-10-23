@@ -1,0 +1,20 @@
+# VfxShapeSphere Documentation
+
+class:
+  description: |
+    A sphere [spawn shape](/classes/ivfxshape) centred on the birth position. The shape takes
+    the offset `(r, 0, 0)` and turns it, the birth velocity and the birth acceleration by a
+    random angle in `0..360` degrees about Y, then by a random angle in `0..360` degrees
+    about Z.
+
+    - In surface mode (`flags` bit `0x1` clear, see
+      [VfxShapeVolume](/classes/vfxshapevolume)) `r` is `radius`.
+    - In interior mode (bit `0x1` set) `r` is uniform in `0..radius`.
+
+    Both angles are uniform, so the samples cluster toward the two poles on the Z axis. In
+    interior mode they also cluster toward the centre. A birth velocity along +X points away
+    from the centre in both modes.
+
+properties:
+  radius:
+    description: "Radius of the sphere, in world units. In interior mode it bounds the distance from the centre."

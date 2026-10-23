@@ -1,0 +1,35 @@
+# TargeterDefinitionArc Documentation
+
+class:
+  description: |
+    A [targeting indicator](/classes/targeterdefinition) that draws an **arc** from
+    `startLocator` to `endLocator`: a piece of a circle of radius `overrideRadius` through
+    both points. If the distance between the two points is more than twice the radius, no
+    circle passes through both and the arc is not drawn.
+  notes:
+    - "Unlike `overrideRadius`, `constraintRange` has no replacement when unset. An unset `constraintRange` with `isConstrainedToRange` puts the end on the start, and the arc collapses."
+
+properties:
+  startLocator:
+    description: "Start of the arc, see [DrawablePositionLocator](/classes/drawablepositionlocator)."
+
+  endLocator:
+    description: "End of the arc."
+
+  isClockwiseArc:
+    description: "Direction of the arc from start to end: clockwise when `true`."
+
+  isConstrainedToRange:
+    description: "Keeps the end within `constraintRange` of the start."
+
+  constraintRange:
+    description: "Largest distance from start to end, in world units, read only with `isConstrainedToRange`."
+
+  overrideRadius:
+    description: "Radius of the arc's circle, in world units. If it is unset, the spell's `castRadius` at the spell level applies."
+
+  textureArcOverrideName:
+    description: "Texture of the arc. If it is empty, the `AoeRangeIndicator` texture of [SharedTargeterResources](/classes/sharedtargeterresources) applies. There is no dedicated arc texture."
+
+  thicknessOffset:
+    description: "Passed to the arc mesh. Its effect on the shape of the arc band is not established."
