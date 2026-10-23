@@ -1,0 +1,24 @@
+# ISplineInfo Documentation
+
+class:
+  description: |
+    The **parameters of a spline** from an origin to an end point: the path of a missile
+    with `GenericSplineMovementSpec` movement, the curve of a
+    [spline indicator](/classes/targeterdefinitionspline), or the path in
+    `TftDamageSkinCeremony.SplineInfo`. The client builds the curve each time it needs one,
+    from the two points and these parameters, in a local frame that follows the direction
+    from the origin to the end point.
+    [HermiteSplineInfo](/classes/hermitesplineinfo) describes the curve and its local
+    frame.
+
+properties:
+  mStartPositionOffset:
+    description: "Start of the curve, in world units, in the local frame of the spline (relative to the origin, +Z toward the end point). The curve ends at the end point."
+
+  mUseMissilePositionAsOrigin:
+    description: |
+      For a missile, selects which of two positions that the client receives with the
+      missile it uses as the origin when it rebuilds the spline. What the two positions
+      are is not established. `GenericSplineMovementSpec.mUseMissilePositionAsOrigin` is a
+      different setting that the movement reads when it starts. The spline indicator reads
+      neither.

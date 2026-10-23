@@ -4,7 +4,7 @@ class:
   description: |
     An **animated RGB colour**: a constant plus an optional curve, the RGB form of the
     animated values of [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata) (see
-    Animated values there). It is the `colors` of
+    [ValueFloat](/classes/valuefloat)). It is the `colors` of
     [VfxColorRgbAnimatedWithRandomDriver](/classes/vfxcolorrgbanimatedwithrandomdriver), which
     samples it.
   notes:

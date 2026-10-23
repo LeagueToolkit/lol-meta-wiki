@@ -1,0 +1,12 @@
+# IParticleQuadShadingModel Documentation
+
+class:
+  description: |
+    A particle shading model for **quad particles**. When the client sets up the vertex data
+    of a quad emitter, it checks whether the material's shading model is of this kind, and
+    passes the result to the quad vertex setup as a flag. What the flag changes in the vertex
+    data is not yet identified. The model's own lighting update does nothing, see
+    [IParticleShadingModel](/classes/iparticleshadingmodel).
+
+    [ParticleQuadUnlitShadingModel](/classes/particlequadunlitshadingmodel) is not of this
+    kind, so a quad emitter with that model takes the setup without the flag.

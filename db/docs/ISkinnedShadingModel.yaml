@@ -1,0 +1,19 @@
+# ISkinnedShadingModel Documentation
+
+class:
+  description: |
+    A shading model for **skinned meshes**: champions, minions, monsters, structures and every
+    other mesh that a skin draws. Before a skinned mesh draws, the client runs the lighting
+    update of its material's shading model with the draw's transform.
+
+    The update of [SkinnedStandardShadingModel](/classes/skinnedstandardshadingmodel) and
+    [SkinnedPbrShadingModel](/classes/skinnedpbrshadingmodel) finds the cell of the map's
+    **light grid** at the draw's position. The light grid is the map's baked ambient lighting
+    for characters: a square grid over the ground with six colours per cell, one for each
+    axis direction. The client takes the nearest cell and does not filter between cells. Map
+    meshes never read the grid. A map that ships no grid gets a fallback that the client
+    builds each frame from the map's sun and sky colours.
+
+    The update of [SkinnedUnlitShadingModel](/classes/skinnedunlitshadingmodel) does nothing.
+  notes:
+    - "Dynamic lights reach skinned meshes through their shaders, not through the shading model. See [MapDynamicLighting](/classes/mapdynamiclighting)."

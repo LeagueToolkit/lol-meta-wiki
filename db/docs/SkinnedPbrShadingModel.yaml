@@ -1,0 +1,12 @@
+# SkinnedPbrShadingModel Documentation
+
+class:
+  description: |
+    The shading model of PBR character shaders. For each draw it finds the light-grid cell at
+    the draw's position (see [ISkinnedShadingModel](/classes/iskinnedshadingmodel)), but it
+    uploads no light-grid constants. What uses the cell it finds is not yet identified.
+
+    For the `LIT_UBER` shader,
+    [SkinMeshDataProperties](/classes/skinmeshdataproperties) selects between this model and
+    [SkinnedStandardShadingModel](/classes/skinnedstandardshadingmodel) through its
+    roughness-metallic texture.

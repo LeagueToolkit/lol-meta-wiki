@@ -1,0 +1,101 @@
+# X3DSharedSamplerDef Documentation
+
+class:
+  description: |
+    A **shared sampler**: a GPU sampler state that shaders and shared textures find by `name`.
+    See [X3DSharedData](/classes/x3dshareddata) for registration, filtering, `register` and
+    `BindLocation`.
+
+    **Filter.** The client builds the filter from `filterMin`, `filterMag`, `mipFilter`,
+    `maxAnisotropy` and `CompareOp`. If `maxAnisotropy` is above `1` and `filterMin` and
+    `filterMag` are both linear, the sampler filters anisotropically. If `CompareOp` is not
+    `1`, the sampler is a comparison sampler.
+
+properties:
+  name:
+    description: "The name under which shaders and [X3DSharedTextureDef](/classes/x3dsharedtexturedef) `SAMPLER` links find the sampler."
+
+  filterMin:
+    description: "Minification filter. `1` is linear. Any other value is point."
+
+  filterMag:
+    description: "Magnification filter. `1` is linear. Any other value is point."
+
+  mipFilter:
+    description: |
+      Filter between mip levels:
+
+      | Value | Name | Effect |
+      |---|---|---|
+      | `0` | None | Point, and `MaxLod` is forced to `0`, so the sampler reads only the top mip |
+      | `1` | Point | Point between mip levels |
+      | `2` | Linear | Linear between mip levels |
+
+      Any other value is point.
+
+  maxAnisotropy:
+    description: "The maximum anisotropy. A value above `1` turns on anisotropic filtering when `filterMin` and `filterMag` are both linear."
+
+  addressModeU:
+    description: |
+      Address mode along U:
+
+      | Value | Name |
+      |---|---|
+      | `0` | Wrap |
+      | `1` | Clamp |
+      | `2` | Mirror |
+      | `3` | Border |
+
+      Values from `4` up read past the client's table and give an undefined mode.
+
+  addressModeV:
+    description: "Address mode along V. Same values as `addressModeU`."
+
+  addressModeW:
+    description: "Address mode along W. Same values as `addressModeU`."
+
+  BorderColor:
+    description: "The colour that address mode `3` (Border) returns outside the texture."
+
+  CompareOp:
+    description: |
+      The comparison function of a comparison sampler:
+
+      | Value | Name |
+      |---|---|
+      | `0` | Always |
+      | `1` | Never |
+      | `2` | Less |
+      | `3` | LessEqual |
+      | `4` | Greater |
+      | `5` | GreaterEqual |
+      | `6` | Equal |
+      | `7` | NotEqual |
+
+      `1` also turns comparison off: the sampler uses the plain filters. Any other value
+      makes it a comparison sampler.
+
+  MinLod:
+    description: "The lowest mip level that the sampler reads, in whole levels. `0` is the top mip."
+
+  MaxLod:
+    description: "The highest mip level that the sampler reads, in whole levels. `mipFilter` `0` forces it to `0`."
+
+  mipLodBias:
+    description: "The bias added to the mip level, in whole levels."
+
+  type:
+    description: "Purpose not yet identified. The client does not read it when it creates the sampler."
+
+  register:
+    description: "If not `-1`, the slot at which the client binds the sampler once, when it creates it. See [X3DSharedData](/classes/x3dshareddata)."
+
+  BindLocation:
+    description: "The shader stage of a sampler with a fixed `register`, see [X3DSharedData](/classes/x3dshareddata)."
+
+  PlatformMask:
+    description: "The platforms on which the sampler loads, see [X3DSharedData](/classes/x3dshareddata)."
+
+  ShaderModel:
+    description: "The renderer mode in which the sampler loads, see [X3DSharedData](/classes/x3dshareddata)."

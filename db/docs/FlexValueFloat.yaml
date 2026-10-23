@@ -1,0 +1,29 @@
+# FlexValueFloat Documentation
+
+class:
+  description: |
+    An **additive flex value**: a flex slot index and an animated amount. The holder adds
+    `flex * mValue` to its base property, where `flex` is the current value of the slot.
+    Flex values on [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata) describes
+    the three slots, where their values come from, and the properties that apply the flex
+    value twice. This page also covers the slot rules of
+    [FlexValueVector2](/classes/flexvaluevector2), [FlexValueVector3](/classes/flexvaluevector3)
+    and [FlexTypeFloat](/classes/flextypefloat).
+
+    ## Slot reads
+
+    - The client reads the slot each time it evaluates the holder property, so a change of
+      the slot value reaches the next evaluation.
+    - If `mFlexID` is `3` or more, or no source fills the slot, the slot reads `0`.
+    - The same three slots feed
+      [`audioParameterFlexID`](/classes/vfxsystemdefinitiondata#audioparameterflexid).
+  notes:
+    - "For `flexRate`, `mValue` is evaluated every step without a random number from the emitter, so a probability table on its curve draws a new number every step."
+    - "Shipped data uses it for `flexRate` and `flexParticleLifetime`."
+
+properties:
+  mFlexID:
+    description: "Index of the flex slot, `0`, `1` or `2`. Any other value reads `0`, so the property has no effect."
+
+  mValue:
+    description: "Amount added per unit of flex value, a [ValueFloat](/classes/valuefloat). The holder adds `flex * mValue` to its base."

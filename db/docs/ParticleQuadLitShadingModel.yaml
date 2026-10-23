@@ -1,0 +1,7 @@
+# ParticleQuadLitShadingModel Documentation
+
+class:
+  description: |
+    The shading model for lit quad particles. It counts as a quad shading model, which sets
+    the flag that [IParticleQuadShadingModel](/classes/iparticlequadshadingmodel) describes.
+    It has no other effect.

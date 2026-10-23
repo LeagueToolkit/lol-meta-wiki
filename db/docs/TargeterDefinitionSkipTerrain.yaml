@@ -1,0 +1,42 @@
+# TargeterDefinitionSkipTerrain Documentation
+
+class:
+  description: |
+    A [targeting indicator](/classes/targeterdefinition) for a missile that passes over
+    terrain: a line that shows which parts of its path cross walls, with a circle at the
+    end. It works only as the `mTargeterDefinition` of a `FixedDistanceIgnoringTerrain`
+    missile behaviour, which then replaces the spell's other indicators.
+
+    The line starts at `mStartLocator` and points toward `mEndLocator`. The locators set
+    only the direction. The length is the cast range of the spell at the spell level, and
+    the width is the spell's `mLineWidth`. The client finds the wall crossings along the
+    line with the scan settings of the `FixedDistanceIgnoringTerrain` behaviour
+    (`mMaximumDistance`, `mMinimumGapBetweenTerrainWalls`, `mMaximumTerrainWallsToSkip`,
+    `scanWidthOverride`). It draws the parts outside walls with `mBaseTextureName`, the
+    parts inside walls with `mTerrainTextureName`, and a circle at the end with
+    `mTargetTextureName`.
+  notes:
+    - "If this class is in `mTargeterDefinitions` or a custom targeter set of a spell, the client crashes when it draws the indicators."
+    - "If the last wall exit is at the end of the line, the last part starts `50` units before the end."
+
+properties:
+  mStartLocator:
+    description: "Start of the line, see [DrawablePositionLocator](/classes/drawablepositionlocator)."
+
+  mEndLocator:
+    description: "Point that sets the direction of the line. It does not change the length."
+
+  mFallbackDirection:
+    description: "Direction of the line when start and end coincide, from the orientation table of [DrawablePositionLocator](/classes/drawablepositionlocator)."
+
+  mBaseTextureName:
+    description: "Texture of the parts of the line outside walls. If it is empty, the `LineRangeLocalBase` texture of [SharedTargeterResources](/classes/sharedtargeterresources) applies."
+
+  mTerrainTextureName:
+    description: "Texture of the parts of the line inside walls. Same fallback as `mBaseTextureName`."
+
+  mTargetTextureName:
+    description: "Texture of the circle at the end of the line. If it is empty, the `AoeRangeIndicator` texture of [SharedTargeterResources](/classes/sharedtargeterresources) applies."
+
+  mTargetTextureRadius:
+    description: "Radius of the circle at the end, in world units."

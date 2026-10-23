@@ -1,0 +1,21 @@
+# VfxAnimatedVector3fVariableData Documentation
+
+class:
+  description: |
+    A **three-component linear keyframe curve with probability tables**: the `dynamics` of
+    a [ValueVector3](/classes/valuevector3). It samples each component as
+    [VfxAnimatedFloatVariableData](/classes/vfxanimatedfloatvariabledata) samples its value,
+    and it does not use the holder's `constantValue`.
+  notes:
+    - "If the first probability table is set and a later one is null, the client crashes when it evaluates the curve."
+    - "If `values` has fewer entries than `times`, the client reads past the end of `values`."
+
+properties:
+  times:
+    description: "The positions of the keys on the holder's clock, ascending."
+
+  values:
+    description: "The value at each key, one entry per entry of `times`."
+
+  probabilityTables:
+    description: "One [probability table](/classes/vfxprobabilitytabledata) per component. If the first one is not set, no table applies. If it is set, all three must be set."

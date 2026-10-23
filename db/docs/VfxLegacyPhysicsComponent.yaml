@@ -37,6 +37,14 @@ properties:
       Spin rate over the particle's life. On a complex emitter it is an integrated value; here
       it is a plain `ValueVector3`. How the legacy running part reads it is not documented.
 
+  SpawnShape:
+    description: |
+      Counterpart of `SpawnShape` on a complex emitter. The offset gets the same
+      `FlexShapeDefinition` and system scaling and the same turn, and is added to the birth
+      position. See [IVfxShape](/classes/ivfxshape).
+    notes:
+      - "The time at which this component samples the curves of a [VfxShapeLegacy](/classes/vfxshapelegacy) is not established."
+
   Linger:
     description: |
       Motion replacements while the particles linger. See

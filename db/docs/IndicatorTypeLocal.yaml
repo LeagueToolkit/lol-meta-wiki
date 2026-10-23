@@ -1,0 +1,4 @@
+# IndicatorTypeLocal Documentation
+
+class:
+  description: "Puts a [line indicator](/classes/targeterdefinitionline) in **local mode**: one line from the start, with the arrow head at its far end. Setting it overrides `useGlobalLineIndicator`."

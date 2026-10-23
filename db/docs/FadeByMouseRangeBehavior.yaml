@@ -1,0 +1,31 @@
+# FadeByMouseRangeBehavior Documentation
+
+class:
+  description: |
+    A [fade rule](/classes/itargeterfadebehavior) that fades a targeting indicator **by
+    the cursor distance**. With `x` the distance on the ground plane from the caster to the
+    cursor, in world units:
+
+    1. If `mRangeToStartFading` is greater than `mRangeToEndFading`, the factor is `0` and
+       the indicator is hidden.
+    2. If `mStartAlpha` equals `mEndAlpha`, or `x` is not greater than
+       `mRangeToStartFading`, the factor is `mStartAlpha`.
+    3. If `x` is not less than `mRangeToEndFading`, or the two ranges are equal, the factor
+       is `mEndAlpha`.
+    4. Otherwise the factor goes linearly from `mStartAlpha` to `mEndAlpha` between the
+       two ranges.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  mRangeToStartFading:
+    description: "Cursor distance, in world units, at which the fade begins."
+
+  mRangeToEndFading:
+    description: "Cursor distance, in world units, at which the fade ends."
+
+  mStartAlpha:
+    description: "Factor up to `mRangeToStartFading`."
+
+  mEndAlpha:
+    description: "Factor from `mRangeToEndFading` on."

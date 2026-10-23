@@ -1,0 +1,35 @@
+# HermiteSplineInfo Documentation
+
+class:
+  description: |
+    A [spline](/classes/isplineinfo) that is a **cubic Hermite curve**, set by two control
+    points that act as the tangents at its two ends.
+
+    The client builds the curve in a **local frame**: +Z points from the origin to the end
+    point on the ground plane, +Y is up, and +X is `(f.z, 0, -f.x)` for the +Z direction
+    `f`. In that frame:
+
+    - `P0` is `mStartPositionOffset` and `P1` is the end point.
+    - `s` is the distance on the ground plane from `P0` to `P1`.
+    - The start tangent `T0` is `s * mControlPoint1` and the end tangent `T1` is
+      `s * mControlPoint2`.
+
+    The curve is
+
+    ```
+    P(t) = (2t^3 - 3t^2 + 1) P0 + (t^3 - 2t^2 + t) T0 + (-2t^3 + 3t^2) P1 + (t^3 - t^2) T1
+    ```
+
+    for `t` from `0` to `1`. Because the tangents scale with `s`, the control points have
+    no unit: they are multiples of the start-to-end distance.
+  notes:
+    - "If the origin and the end point are at the same ground position, the client moves the origin back by `0.001` times `mControlPoint1` to get a direction."
+    - "The default control points give an S curve: the curve leaves toward local -X and arrives moving toward local +X."
+    - "Shipped data uses it for the paths of spline missiles, for the TFT damage skin ceremony paths and for the curve of spline indicators."
+
+properties:
+  mControlPoint1:
+    description: "Start tangent, as a multiple of the start-to-end distance, in the local frame."
+
+  mControlPoint2:
+    description: "End tangent, as a multiple of the start-to-end distance, in the local frame."

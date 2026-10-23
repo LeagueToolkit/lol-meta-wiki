@@ -1,0 +1,9 @@
+# ITargeterFadeBehavior Documentation
+
+class:
+  description: |
+    A **fade rule** of a [targeting indicator](/classes/targeterdefinition): it returns an
+    alpha factor every time the indicator draws. The indicator multiplies its colour by the
+    factor and skips the draw when the factor is `0` or less, as the Fade section of
+    [TargeterDefinition](/classes/targeterdefinition) describes. Each indicator keeps its
+    own copy of the rule.

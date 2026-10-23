@@ -1,0 +1,7 @@
+# EnvironmentUnlitShadingModel Documentation
+
+class:
+  description: |
+    The environment shading model for unlit map meshes. A mesh with this model has no
+    lighting block in the `.mapgeo` file, and the client binds no lightmap or probe for it.
+    See [IEnvironmentShadingModel](/classes/ienvironmentshadingmodel).

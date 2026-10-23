@@ -1,0 +1,8 @@
+# ILineIndicatorType Documentation
+
+class:
+  description: |
+    The **mode** of a [line indicator](/classes/targeterdefinitionline): global or local.
+    A line with this object set ignores its `useGlobalLineIndicator` property.
+    [TargeterDefinitionLine](/classes/targeterdefinitionline) describes how each mode lays
+    out the line.

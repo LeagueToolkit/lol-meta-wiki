@@ -1,0 +1,16 @@
+# FlexValueVector3 Documentation
+
+class:
+  description: |
+    An **additive flex value** with a three-component amount. The holder adds
+    `flex * mValue` to its base property, per component.
+    [FlexValueFloat](/classes/flexvaluefloat) describes the slot reads.
+  notes:
+    - "Shipped data uses it for `flexBirthVelocity`, `flexBirthRotationalVelocity0` and the `flexBirthTranslation` of `FlexShapeDefinition`. All three apply the flex value twice, see Flex values on [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata)."
+
+properties:
+  mFlexID:
+    description: "Index of the flex slot, `0`, `1` or `2`. Any other value reads `0`, so the property has no effect."
+
+  mValue:
+    description: "Amount added per unit of flex value, a [ValueVector3](/classes/valuevector3)."

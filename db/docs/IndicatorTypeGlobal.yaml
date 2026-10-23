@@ -1,0 +1,11 @@
+# IndicatorTypeGlobal Documentation
+
+class:
+  description: "Puts a [line indicator](/classes/targeterdefinitionline) in **global mode**: a base piece at the start and a target piece at the range, each `arrowSize` long."
+
+properties:
+  mIsFloating:
+    description: |
+      Always draws the target piece at the range, next to the base piece at the start. If
+      it is `false` and the line is not longer than `arrowSize`, only the target piece
+      draws, at the start.

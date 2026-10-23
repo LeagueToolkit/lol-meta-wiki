@@ -1,0 +1,13 @@
+# VfxShapePointDoNotUse Documentation
+
+class:
+  description: |
+    A [spawn shape](/classes/ivfxshape) that adds the same fixed offset to every particle's
+    birth position. It draws no random numbers and does not turn the birth velocity or
+    birth acceleration.
+  notes:
+    - "With a zero `emitOffset` the shape behaves the same as an unset `SpawnShape`."
+
+properties:
+  emitOffset:
+    description: "Offset from the birth position, in world units, in the emitter's local frame. The offset factors of `FlexShapeDefinition` and the system scale multiply it."

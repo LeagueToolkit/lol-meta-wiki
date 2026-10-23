@@ -1,0 +1,29 @@
+# FlexTypeFloat Documentation
+
+class:
+  description: |
+    A **flex multiplier**: a flex slot index and a plain factor. The holder multiplies its
+    base property by a product of the slot value, and skips the multiplication unless the
+    product is above zero, so a slot that reads `0` changes nothing.
+    [FlexValueFloat](/classes/flexvaluefloat) describes the slot reads.
+
+    Whether the holder reads `mValue` depends on the property:
+
+    | Holder | Factor |
+    |---|---|
+    | `flexScaleBirthScale` | `flex * mValue` |
+    | `flexScaleEmitOffset` of `FlexShapeDefinition` | `flex * mValue` |
+    | `FlexInstanceScale` | `flex` alone. `mValue` is not read. |
+
+    The properties are described on
+    [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata).
+  notes:
+    - "Many shipped `FlexInstanceScale` values set `mValue`. It has no effect there."
+    - "The legacy troybin keys `<key>_flex0`, `<key>_flex1` and `<key>_flex2` convert to this class. The digit becomes `mFlexID`."
+
+properties:
+  mFlexID:
+    description: "Index of the flex slot, `0`, `1` or `2`. Any other value reads `0`, so the property has no effect."
+
+  mValue:
+    description: "Factor per unit of flex value. The holder multiplies its base by `flex * mValue`, except `FlexInstanceScale`, which does not read it."

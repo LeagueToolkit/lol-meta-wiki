@@ -1,0 +1,8 @@
+# ParticleQuadUnlitShadingModel Documentation
+
+class:
+  description: |
+    The shading model for unlit quad particles. Unlike the lit and PBR quad models, it does
+    not count as a quad shading model, so a quad emitter with this model does not set the flag
+    that [IParticleQuadShadingModel](/classes/iparticlequadshadingmodel) describes. It has no
+    other effect, see [IParticleShadingModel](/classes/iparticleshadingmodel).

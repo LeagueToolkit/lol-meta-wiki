@@ -1,0 +1,16 @@
+# FlexValueVector2 Documentation
+
+class:
+  description: |
+    An **additive flex value** with a two-component amount. The holder adds `flex * mValue`
+    to its base property, per component. [FlexValueFloat](/classes/flexvaluefloat) describes
+    the slot reads.
+  notes:
+    - "Shipped data uses it for the UV flex properties of emitters: `flexBirthUVOffset`, `flexBirthUVScrollRate` and `flexBirthUVScrollRateMult`."
+
+properties:
+  mFlexID:
+    description: "Index of the flex slot, `0`, `1` or `2`. Any other value reads `0`, so the property has no effect."
+
+  mValue:
+    description: "Amount added per unit of flex value, a [ValueVector2](/classes/valuevector2)."

@@ -1,0 +1,45 @@
+# ValueFloat Documentation
+
+class:
+  description: |
+    An **animated value**: a constant plus an optional curve. Most numeric properties of
+    [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata) are this value or one of
+    its vector and colour forms ([ValueVector2](/classes/valuevector2),
+    [ValueVector3](/classes/valuevector3), [ValueColor](/classes/valuecolor)). This page
+    describes how all four evaluate.
+
+    ## Evaluation
+
+    If `dynamics` is not set, the value is `constantValue`. If `dynamics` is set, the holder
+    samples the curve at a time `t`, and the curve type decides the result:
+
+    | Curve type | Result |
+    |---|---|
+    | `VfxAnimated*VariableData`, for example [VfxAnimatedFloatVariableData](/classes/vfxanimatedfloatvariabledata) | The curve value at `t`, multiplied per channel by its [probability tables](/classes/vfxprobabilitytabledata). `constantValue` is not used. |
+    | `VfxAnimated*`, for example [VfxAnimatedFloat](/classes/vfxanimatedfloat) | The curve value at `t` multiplied by `constantValue`, per component. The probability tables are not read. |
+
+    Shipped data uses the `VfxAnimated*VariableData` curves for nearly every animated value.
+    A `VfxAnimated*` curve with `constantValue` at `0` evaluates to `0`, so a value that uses
+    one needs `constantValue` set, usually to `1`. A curve converted from one type to the
+    other gives a different result unless `constantValue` is `1`.
+
+    ## Time
+
+    The holder chooses `t`. The curves do not clamp, wrap or scale it. Values sampled over a
+    particle's life use the particle's age fraction, clamped to 0..1. Animated values on
+    [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata) lists which clock each
+    emitter property uses. A driver that embeds the value, such as
+    [VfxFloatAnimatedWithRandomDriver](/classes/vfxfloatanimatedwithrandomdriver), samples it
+    at its own time source.
+
+    The random number that a probability table reads also comes from the holder, see
+    [VfxProbabilityTableData](/classes/vfxprobabilitytabledata).
+  notes:
+    - "[IntegratedValueFloat](/classes/integratedvaluefloat) is the same value with its curve replaced by the curve's integral at load."
+
+properties:
+  constantValue:
+    description: "The value when `dynamics` is not set. With a `VfxAnimated*` curve it multiplies the curve. With a `VfxAnimated*VariableData` curve it is not used."
+
+  dynamics:
+    description: "The curve. See Evaluation above for how its type changes the result."

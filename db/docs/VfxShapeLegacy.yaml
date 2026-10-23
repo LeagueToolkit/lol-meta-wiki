@@ -1,0 +1,49 @@
+# VfxShapeLegacy Documentation
+
+class:
+  description: |
+    A [spawn shape](/classes/ivfxshape) that places particles at an authored offset, which
+    can be animated, and turns them by an authored chain of axis-angle rotations.
+
+    ## Evaluation
+
+    1. Once per spawn step, before the particles of the step are made, the shape evaluates
+       `emitOffset` and every entry of `emitRotationAngles` at the **emitter phase** (see
+       Clocks on [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata)). Every
+       particle of the step starts from these values. The curves are not sampled on
+       particle age.
+    2. For each particle, the probability tables of a curve multiply the step value (see
+       [VfxProbabilityTableData](/classes/vfxprobabilitytabledata)). For `emitOffset` each
+       axis gets its own random draw. `ParticlesShareRandomValue` does not apply to these
+       draws.
+    3. The shape builds one rotation from the turns, in list order. Turn 0 is applied first.
+       A turn is skipped when its angle is at most `0.000001` degrees in absolute value, or
+       when `emitRotationAxes` has no entry at its index.
+    4. If at least one turn was applied, the rotation turns the offset, the birth velocity
+       and the birth acceleration.
+
+    How a `ValueFloat` or `ValueVector3` combines `constantValue` and its curve is described
+    on [ValueFloat](/classes/valuefloat).
+  notes:
+    - "An emitter loaded from a legacy `.troy` file always gets a `VfxShapeLegacy`, even when it has no offset or rotation keys. `p-offset` becomes `emitOffset`, each `e-rotation<N>` becomes one entry of `emitRotationAngles` with a `VfxAnimatedFloatVariableData` curve, and each `e-rotation<N>-axis` becomes the matching entry of `emitRotationAxes`. A missing axis defaults to `(0, 1, 0)`. The conversion normalises the axes. It stops at the first missing `e-rotation<N>` key, or at one whose value is a constant `0` with no curve."
+
+properties:
+  emitOffset:
+    description: "Offset from the birth position, in world units, in the emitter's local frame, before the turns. The offset factors of `FlexShapeDefinition` and the system scale multiply it."
+
+  emitRotationAngles:
+    description: "Turn angles, in degrees, paired by index with `emitRotationAxes` and applied in list order."
+    notes:
+      - "An angle without a matching axis is skipped."
+
+  emitRotationAxes:
+    description: |
+      Axes of the turns, in the emitter's local frame, paired by index with
+      `emitRotationAngles`. Entries beyond the last angle are ignored.
+
+      The client uses each axis as authored and does not normalise it. A zero axis with a
+      non-zero angle multiplies the offset, the birth velocity and the birth acceleration by
+      the cosine of the angle instead of turning them, and reverses them past 90 degrees. An
+      axis that is not of unit length gives a rotation that also scales and skews.
+    notes:
+      - "Shipped data contains many zero axes. Paired with an angle of `0` they have no effect."

@@ -1,0 +1,26 @@
+# VfxAnimatedColor Documentation
+
+class:
+  description: |
+    An **RGBA colour keyframe curve with an interpolation mode per span**: the `dynamics` of
+    a [ValueColor](/classes/valuecolor). The holder multiplies the sampled colour by
+    `constantValue` per component, see [ValueFloat](/classes/valuefloat).
+
+    The curve has the same lists as [VfxAnimatedFloat](/classes/vfxanimatedfloat). It is
+    not confirmed that the colour sampler treats each interpolation mode and each empty list
+    the way the float sampler does.
+  notes:
+    - "Shipped curves of this type use the modes `0` and `2`."
+
+properties:
+  times:
+    description: "The positions of the keys on the holder's clock, ascending."
+
+  values:
+    description: "The colour at each key, `(r, g, b, a)`. On the float curve, each key that starts a Bezier span is followed by two tangent entries, see [VfxAnimatedFloat](/classes/vfxanimatedfloat)."
+
+  InterpModes:
+    description: "The interpolation mode of each span between two keys, one entry per span. [VfxAnimatedFloat](/classes/vfxanimatedfloat) lists the values of the float curve."
+
+  probabilityTables:
+    description: "Not read. The client copies the tables with the curve but never applies them."

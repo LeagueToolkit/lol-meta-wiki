@@ -1,0 +1,29 @@
+# TargeterDefinitionAoeScalar Documentation
+
+class:
+  description: |
+    A **distance scale** for the radius of an
+    [area circle](/classes/targeterdefinitionaoe): the circle grows as the cursor moves
+    away from the caster.
+
+    With `r` the radius of the circle, `x` the distance from the caster to the cursor and
+    `R` the cast range of the spell:
+
+    1. If `Scalar` is not `0` and `R` is greater than `0`, `r = r * (1 + Scalar * x / R)`.
+    2. If `MaxAdjustedRadius` is greater than `MinAdjustedRadius`, `r` is clamped to the
+       range from `MinAdjustedRadius` to `MaxAdjustedRadius`. Otherwise, if
+       `MinAdjustedRadius` is greater than `0` and `MaxAdjustedRadius` is `0`, `r` is at
+       least `MinAdjustedRadius`.
+    3. A negative `r` counts as `0`.
+
+    With `Scalar` at `0`, only the clamp of step 2 applies.
+
+properties:
+  Scalar:
+    description: "Growth of the radius per cast range of cursor distance, as a fraction of the radius. `0.5` makes the circle 50% larger with the cursor at the cast range."
+
+  MinAdjustedRadius:
+    description: "Smallest radius after scaling, in world units."
+
+  MaxAdjustedRadius:
+    description: "Largest radius after scaling, in world units. `0` with a positive `MinAdjustedRadius` sets only the lower limit."

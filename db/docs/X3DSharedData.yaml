@@ -1,0 +1,70 @@
+# X3DSharedData Documentation
+
+class:
+  description: |
+    The **shared shader resources** of the renderer: constant buffers, textures, samplers and
+    data buffers that every shader can use without its material providing them. The client
+    reads one object of this class from `ASSETS/Shaders/SharedData.bin` and registers its four
+    lists once, when it sets up the render device. Each resource is registered under its
+    `name`. The lists of the shading models are registered after these, see
+    [IX3dShadingModel](/classes/ix3dshadingmodel).
+
+    **Filtering.** Before the client creates a resource, it checks the resource's
+    `PlatformMask` and `ShaderModel`. A resource that fails either check is not created, and a
+    shader that uses its name finds nothing.
+
+    `PlatformMask`:
+
+    | Value | Effect |
+    |---|---|
+    | `0` | The resource loads on every platform. |
+    | Any other value | The resource loads only if the bit of the current platform is set. The Windows client is bit `0x8`. What the other bits select is not yet identified. |
+
+    `ShaderModel` selects a renderer mode. The client has one mode flag, and the Windows
+    client always sets it:
+
+    | Value | Name | Effect |
+    |---|---|---|
+    | `0` | Any | The resource always loads. |
+    | `1` | Legacy | The resource loads only if the mode flag is not set. The Windows client never loads it. |
+    | `2` | Current | The resource loads only if the mode flag is set. The Windows client always loads it. |
+
+    The same flag makes [EnvironmentPbrShadingModel](/classes/environmentpbrshadingmodel) load
+    its probes into the shared probe array.
+
+    **Binding.** When the client builds an effect, it matches the textures, samplers and data
+    buffers that the compiled shader declares against the shared resources by name, and binds
+    each match at the slot that the shader declares. `register` changes this:
+
+    | `register` | Sampler | Texture, data buffer | Constant buffer, constant |
+    |---|---|---|---|
+    | `-1` | Bound per effect, at the slot that the shader declares | Bound per effect, at the slot that the shader declares | Not read |
+    | `0` or more | Bound once, when the client creates it, at this slot of the stage that `BindLocation` selects. Left out of the effect bindings. | Left out of the effect bindings | Not read |
+
+    `BindLocation` selects the shader stage of a sampler:
+
+    | Value | Stage |
+    |---|---|
+    | `0` | Vertex shader |
+    | Any other value | Pixel shader |
+
+    For textures and data buffers the client stores `BindLocation` with the resource. How it
+    uses the value there is not yet identified.
+  notes:
+    - "If `SharedData.bin` has no X3DSharedData object, the client crashes when it sets up the render device."
+    - "Shipped data uses the filters to ship one texture name twice: as a cube map with `ShaderModel` `1` and as a cube map array with `ShaderModel` `2`. Each renderer mode creates one of them."
+    - "Shipped `PlatformMask` values `0x1` and `0x3` exclude the Windows client. `0x18` and `0x1A` include it."
+    - "Shipped data sets `BindLocation` `0` on textures whose names end in `_VS` and on the particle instance data buffers."
+
+properties:
+  constantBuffers:
+    description: "The shared constant buffers, see [X3DSharedConstantBufferDef](/classes/x3dsharedconstantbufferdef)."
+
+  textures:
+    description: "The shared textures, see [X3DSharedTextureDef](/classes/x3dsharedtexturedef)."
+
+  samplers:
+    description: "The shared samplers, see [X3DSharedSamplerDef](/classes/x3dsharedsamplerdef)."
+
+  dataBuffers:
+    description: "The shared data buffers, see [X3DSharedDataBufferDef](/classes/x3dshareddatabufferdef)."

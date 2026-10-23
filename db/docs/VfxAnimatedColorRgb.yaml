@@ -19,7 +19,8 @@ properties:
   InterpModes:
     description: |
       How the curve gets from each key to the next, one entry for each span between two keys.
-      Which value selects which interpolation is not established for this class.
+      Which value selects which interpolation is not established for this class. The float
+      curve uses the modes listed on [VfxAnimatedFloat](/classes/vfxanimatedfloat).
 
   probabilityTables:
     description: |

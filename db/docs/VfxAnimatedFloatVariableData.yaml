@@ -1,0 +1,46 @@
+# VfxAnimatedFloatVariableData Documentation
+
+class:
+  description: |
+    A **linear keyframe curve with probability tables**, the curve type that shipped data
+    uses for nearly every animated value. It returns its own value and does not use the
+    holder's `constantValue`, see [ValueFloat](/classes/valuefloat). This page describes
+    sampling for all `VfxAnimated*VariableData` curves
+    ([VfxAnimatedVector2fVariableData](/classes/vfxanimatedvector2fvariabledata),
+    [VfxAnimatedVector3fVariableData](/classes/vfxanimatedvector3fvariabledata),
+    [VfxAnimatedColorVariableData](/classes/vfxanimatedcolorvariabledata)).
+
+    ## Sampling
+
+    At a time `t` the curve returns:
+
+    | Keys in `times` | Result |
+    |---|---|
+    | None | `0`. |
+    | One | The first entry of `values` at every `t`. |
+    | Two or more | The first value at or before the first key, a straight line between the two keys around `t`, and the last value after the last key. |
+
+    The value at key `i` is entry `i` of `values`, so `values` needs one entry per entry of
+    `times`. Extra entries are not read.
+
+    Under an [IntegratedValueFloat](/classes/integratedvaluefloat), a curve with two or more
+    keys is replaced at load by a table of its integral, which the curve then returns.
+
+    ## Probability tables
+
+    After sampling, the curve multiplies each channel by the factor of that channel's
+    [probability table](/classes/vfxprobabilitytabledata). If the first table is not set, no
+    table applies.
+  notes:
+    - "If `values` has fewer entries than `times`, the client reads past the end of `values`."
+    - "Shipped data also uses this curve as the `graph` of the curve material drivers, [FloatGraphMaterialDriver](/classes/floatgraphmaterialdriver) and [VfxFloatOverLifeMaterialDriver](/classes/vfxfloatoverlifematerialdriver), in materials and skin data."
+
+properties:
+  times:
+    description: "The positions of the keys on the holder's clock, ascending."
+
+  values:
+    description: "The value at each key, one entry per entry of `times`."
+
+  probabilityTables:
+    description: "One [probability table](/classes/vfxprobabilitytabledata) per channel. Each table scales the sampled value by a random factor."

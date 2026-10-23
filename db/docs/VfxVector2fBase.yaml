@@ -1,0 +1,6 @@
+# VfxVector2fBase Documentation
+
+class:
+  description: |
+    A **two-component curve**: the `dynamics` of a [ValueVector2](/classes/valuevector2). It
+    is sampled as a [float curve](/classes/vfxfloatbase) is, per component.

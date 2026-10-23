@@ -1,0 +1,43 @@
+# IX3dShadingModel Documentation
+
+class:
+  description: |
+    A **shading model**: the object that tells the client how to light the meshes that a
+    shader draws. A shader definition links one through `IShaderDef.ShadingModel`, and the
+    client reads the model from the material when it loads and draws a mesh. A shading model
+    carries no lighting parameters. Its class alone selects the behaviour:
+
+    | Family | Meshes | What the model does |
+    |---|---|---|
+    | [IEnvironmentShadingModel](/classes/ienvironmentshadingmodel) | map geometry | Selects the layout of each mesh's lighting block in the `.mapgeo` file, reads the block, and binds the mesh's lightmaps and probe |
+    | [ISkinnedShadingModel](/classes/iskinnedshadingmodel) | characters and other skinned meshes | Finds the light-grid cell of the draw and, for the standard model, uploads the cell's ambient colours |
+    | [IParticleShadingModel](/classes/iparticleshadingmodel) | particles | Nothing per particle. Only the kind of model has an effect, see [IParticleQuadShadingModel](/classes/iparticlequadshadingmodel) |
+
+    Shipped data defines the shading models as objects in `assets/shaders/shareddata.bin`,
+    next to the [X3DSharedData](/classes/x3dshareddata) object. Many shaders link the same
+    model object.
+
+    **Shared resources.** A model can carry the same four kinds of shared resources as
+    [X3DSharedData](/classes/x3dshareddata). The client reads them once, when it sets up the
+    render device, after the X3DSharedData lists, and registers them the same way. Across all
+    models it registers each constant buffer object once and each texture, sampler and data
+    buffer name once. If a model entry has the same name as an X3DSharedData entry, which of
+    the two a shader binds is not yet identified.
+  notes:
+    - "Every shipped model leaves the four lists empty. Whether the client registers the lists of a model that loads with map or skin data is not yet identified."
+
+properties:
+  objectPath:
+    description: "Purpose not yet identified. Shipped models set it to a hash."
+
+  SharedConstantBuffers:
+    description: "Constant buffers that the model adds to the shared constant buffers, as `X3DSharedData.constantBuffers` does. A buffer object that a model has already registered is skipped."
+
+  SharedTextures:
+    description: "Textures that the model adds to the shared textures, as `X3DSharedData.textures` does. A name that a model has already registered is skipped."
+
+  sharedSamplers:
+    description: "Samplers that the model adds to the shared samplers, as `X3DSharedData.samplers` does. A name that a model has already registered is skipped."
+
+  sharedDataBuffers:
+    description: "Data buffers that the model adds to the shared data buffers, as `X3DSharedData.dataBuffers` does. A name that a model has already registered is skipped."

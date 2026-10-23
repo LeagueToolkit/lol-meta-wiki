@@ -1,0 +1,33 @@
+# IntegratedValueFloat Documentation
+
+class:
+  description: |
+    An animated value that holds a **rate**. It is a [ValueFloat](/classes/valuefloat) whose
+    curve the client replaces, when the definition loads, by the curve's running integral.
+    The holder samples it on the particle's age fraction, so the result at any age is the
+    amount accumulated since birth. This page describes integration for all three forms
+    ([IntegratedValueVector2](/classes/integratedvaluevector2),
+    [IntegratedValueVector3](/classes/integratedvaluevector3)).
+
+    ## Integration
+
+    When the definition loads, the result depends on `dynamics`:
+
+    | `dynamics` | Result at `t` |
+    |---|---|
+    | Not set | `constantValue`. Nothing is integrated. |
+    | A `VfxAnimated*VariableData` curve with two or more keys | `F(t)`, the integral of the curve from its first key to `t`. The client stores `F` as a table of 64 samples over 0..1 and reads it with `t` clamped to 0..1. |
+    | A `VfxAnimated*VariableData` curve with one key or none | The plain curve value. Nothing is integrated. |
+    | A `VfxAnimated*` curve | The plain curve value. The client logs an error once per process and does not integrate the curve. |
+
+    The holder turns the result into its own units, for example `rotation0` scales it by the
+    particle's lifetime. Each property on
+    [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata) states its scaling.
+
+    **Constant rates.** A plain value is applied as one fixed amount for the whole life, so
+    nothing moves. A constant rate needs a curve with two keys that have the same value, for
+    example `times` `[0, 1]` and `values` `[v, v]`. Its integral is `v * t`.
+  notes:
+    - "The integral starts at the first key. If the first key is after `0`, the integral before it is extrapolated from the first span, so it is negative for a positive rate."
+    - "After the last key, the integral continues with the last value as the rate."
+    - "Shipped data uses it for `particleUVRotateRate` and `ParticleIntegratedUvRotateMult`."

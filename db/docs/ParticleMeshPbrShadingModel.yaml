@@ -1,0 +1,7 @@
+# ParticleMeshPbrShadingModel Documentation
+
+class:
+  description: |
+    The shading model for PBR mesh particles. Its lighting update does nothing, and it is not
+    a quad shading model, so it has no effect on the draw. See
+    [IParticleShadingModel](/classes/iparticleshadingmodel).

@@ -1,0 +1,67 @@
+# X3DSharedTextureDef Documentation
+
+class:
+  description: |
+    A **shared texture slot**: a texture that shaders find by `name`. See [X3DSharedData](/classes/x3dshareddata) for registration, filtering,
+    `register` and `BindLocation`.
+
+    When the client creates the slot, it also creates a 1x1 **default texture** of the
+    dimension that `type` selects, filled with `DefaultValue`. Slots with the same `type`,
+    `DefaultValue` and `TextureElementType` share one default texture.
+
+properties:
+  name:
+    description: "The name under which shaders find the texture. Before the lookup, the client strips the suffix `_SharedTexture` or `__TX` from the name that the shader declares."
+
+  type:
+    description: |
+      The dimension of the default texture:
+
+      | Value | Default texture |
+      |---|---|
+      | `0` | 2D |
+      | `1` | 3D |
+      | `2` | Cube map |
+      | `3` | 2D. Shipped data uses it for the shadow map depth texture. |
+      | `4` | Cube map. Shipped data uses it for the point-light shadow map depth texture. |
+      | `5` | 2D array |
+      | `6` | 2D array |
+      | `7` | Cube map array |
+      | `8` | Cube map array |
+
+      A value above `8` creates no default texture. What distinguishes the values of each
+      pair is not yet identified.
+
+  DefaultValue:
+    description: "The colour of the default texture, `(r, g, b, a)`."
+
+  TextureElementType:
+    description: "Selects the pixel format of the default texture: `1` and `2` give one format, any other value another. Which formats these are is not yet identified."
+    notes:
+      - "Shipped data sets `1` on the textures of clustered lighting."
+
+  SAMPLER:
+    description: "The shared sampler that the client stores with the texture, found by the linked sampler's name. If `PlatformMask` or `ShaderModel` filter that sampler out, the texture has no sampler."
+
+  IsCurrentFramebufferDepthRead:
+    description: "The client stores it with the texture slot. What it changes is not yet identified."
+    notes:
+      - "Shipped data sets it on one texture."
+
+  register:
+    description: "If `-1`, the client binds the texture per effect. Any other value leaves it out of the effect bindings. See [X3DSharedData](/classes/x3dshareddata)."
+
+  BindLocation:
+    description: "Stored with the texture slot, see [X3DSharedData](/classes/x3dshareddata)."
+
+  frequency:
+    description: "Purpose not yet identified. The client does not read it when it creates the slot."
+
+  ElementCount:
+    description: "Purpose not yet identified. The client does not read it when it creates the slot."
+
+  PlatformMask:
+    description: "The platforms on which the slot loads, see [X3DSharedData](/classes/x3dshareddata)."
+
+  ShaderModel:
+    description: "The renderer mode in which the slot loads, see [X3DSharedData](/classes/x3dshareddata)."

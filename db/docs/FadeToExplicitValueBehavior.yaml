@@ -1,0 +1,10 @@
+# FadeToExplicitValueBehavior Documentation
+
+class:
+  description: "A [fade rule](/classes/itargeterfadebehavior) that returns the constant `mAlpha`."
+  notes:
+    - "Shipped data uses it to hide an indicator with `0` or to draw it partly transparent."
+
+properties:
+  mAlpha:
+    description: "The alpha factor. `0` or less hides the indicator."

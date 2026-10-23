@@ -1,0 +1,10 @@
+# VfxFloatBase Documentation
+
+class:
+  description: |
+    A **float curve**: the `dynamics` of a [ValueFloat](/classes/valuefloat). The holder
+    samples it at a time that the holder chooses. The two curve types differ in
+    interpolation, in what they do with `constantValue`, in probability tables and in
+    integration, see [ValueFloat](/classes/valuefloat).
+  notes:
+    - "A driver with `looping` set wraps its time at the time of the curve's last key, see [VfxFloatAnimatedWithRandomDriver](/classes/vfxfloatanimatedwithrandomdriver)."

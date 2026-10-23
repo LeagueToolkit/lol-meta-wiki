@@ -1,0 +1,55 @@
+# SharedTargeterResources Documentation
+
+class:
+  description: |
+    The **default textures of the targeting indicators**. An
+    [indicator](/classes/targeterdefinition) whose texture property is empty, and every
+    fallback indicator, draws with the texture in the matching field here. The client
+    reads one object of this class; shipped data has it at
+    `Shared/SharedTargeterResources` in `Global.wad.client`.
+
+    If the object is missing, the client uses built-in paths under
+    `DATA/Spells/Textures/` for the spell indicator textures and no texture for the three
+    auto-attack fields.
+
+properties:
+  CircularRangeIndicator:
+    description: "Range circle of [TargeterDefinitionRange](/classes/targeterdefinitionrange). It holds one quarter of the circle, which the client mirrors into four. Shipped: `circularrangeindicatorul.tex`."
+
+  MinimapCircularRangeIndicator:
+    description: "Circle of [TargeterDefinitionMinimap](/classes/targeterdefinitionminimap). Shipped: `minimapcircularrangeindicator.tex`."
+
+  ConicRangeIndicator:
+    description: "Cone of [TargeterDefinitionCone](/classes/targeterdefinitioncone). Shipped: `conicrangeindicator.tex`."
+
+  LineRangeLocalBase:
+    description: "Base piece of a local [line](/classes/targeterdefinitionline), body of a [spline ribbon](/classes/targeterdefinitionspline) and both line textures of [TargeterDefinitionSkipTerrain](/classes/targeterdefinitionskipterrain). Shipped: `locallinemissilebase.tex`."
+
+  LineRangeLocalTarget:
+    description: "Arrow head of a local [line](/classes/targeterdefinitionline) and front piece of a [spline ribbon](/classes/targeterdefinitionspline). Shipped: `locallinemissiletarget.tex`."
+
+  LineRangeGlobalIndicatorBase:
+    description: "Base piece of a global [line](/classes/targeterdefinitionline). Shipped: `globallinemissilebase.tex`."
+
+  LineRangeGlobalIndicatorTarget:
+    description: "Target piece of a global [line](/classes/targeterdefinitionline). Shipped: `globallinemissiletarget.tex`."
+
+  AoeRangeIndicator:
+    description: |
+      Circle of [TargeterDefinitionAoe](/classes/targeterdefinitionaoe),
+      [TargeterDefinitionArc](/classes/targeterdefinitionarc),
+      [TargeterDefinitionMultiAOE](/classes/targeterdefinitionmultiaoe), the end circle of
+      [TargeterDefinitionSkipTerrain](/classes/targeterdefinitionskipterrain) and the area
+      fallback indicator. Shipped: `aoe.tex`.
+
+  WallRangeIndicator:
+    description: "Rectangle of [TargeterDefinitionWall](/classes/targeterdefinitionwall). Shipped: `walltargetcursor.tex`."
+
+  AutoAttackDistanceIndicator:
+    description: "Auto-attack distance indicator texture. Shipped: `autoattackrangeindicator.tex`. No spell indicator class falls back to it; which indicator draws it is not covered here."
+
+  AutoAttackDistanceIndicatorOutOfRange:
+    description: "Out-of-range variant of `AutoAttackDistanceIndicator`. Shipped: `autoattackrangeindicator_outrange.tex`. No spell indicator class falls back to it."
+
+  AutoAttackRangeIndicator:
+    description: "Auto-attack range indicator texture. Shipped: `autoattackrangeindicator_arc.tex`. No spell indicator class falls back to it."

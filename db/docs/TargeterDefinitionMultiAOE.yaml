@@ -1,0 +1,47 @@
+# TargeterDefinitionMultiAOE Documentation
+
+class:
+  description: |
+    A [targeting indicator](/classes/targeterdefinition) that draws a **fan of area
+    circles**: `numOfInnerAOE + 2` circles at the same distance from `centerLocator`,
+    spread by `angelOffsetRadian` around the direction from the caster to the cursor.
+
+    The distance `d` is the distance from the center to the cursor, limited by
+    `overrideMinCastRange` and `overrideMaxCastRange` where they are set. With `n` the value
+    of `numOfInnerAOE`, circle `i` (from `0` to `n + 1`) sits at
+
+    ```
+    center + rotate(dir, (i - (n + 1) / 2) * angelOffsetRadian) * d
+    ```
+
+    where `dir` is the direction from the caster to the cursor. Circle `0` uses
+    `leftTextureName`, circle `n + 1` uses `rightTextureName`, and the circles between use
+    `innerTextureName`.
+
+properties:
+  centerLocator:
+    description: "Pivot of the fan, see [DrawablePositionLocator](/classes/drawablepositionlocator)."
+
+  overrideAOERadius:
+    description: "Radius of each circle, in world units. If it is unset, the spell's `castRadius` at the spell level applies."
+
+  overrideMinCastRange:
+    description: "Smallest distance of the circles from the center, in world units. Not applied when unset."
+
+  overrideMaxCastRange:
+    description: "Largest distance of the circles from the center, in world units. Not applied when unset."
+
+  angelOffsetRadian:
+    description: "Angle between two neighbouring circles, in radians."
+
+  numOfInnerAOE:
+    description: "Number of circles between the first and the last. The fan always has these two, so `0` draws two circles."
+
+  leftTextureName:
+    description: "Texture of the first circle. If it is empty, the `AoeRangeIndicator` texture of [SharedTargeterResources](/classes/sharedtargeterresources) applies."
+
+  rightTextureName:
+    description: "Texture of the last circle. Same fallback as `leftTextureName`."
+
+  innerTextureName:
+    description: "Texture of the circles between the first and the last. Same fallback as `leftTextureName`."

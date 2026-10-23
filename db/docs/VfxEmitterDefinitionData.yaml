@@ -52,10 +52,11 @@ class:
 
     Most numeric properties are an embed of `constantValue` plus optional `dynamics`.
 
-    - Without `dynamics` the constant is the value. With `dynamics`, its curve supplies
-      the value and a scalar's `constantValue` is ignored. A curve is a list of `times`
-      and `values`, interpolated linearly and held at its first and last key. `times`
-      are positions on the clock the property is sampled on, not seconds.
+    - Without `dynamics` the constant is the value. A `*VariableData` curve supplies the
+      value alone and `constantValue` is ignored. A `VfxAnimated*` curve is multiplied by
+      `constantValue`. A curve is a list of `times` and `values`, held at its first and
+      last key; see [ValueFloat](/classes/valuefloat) for the interpolation. `times` are
+      positions on the clock the property is sampled on, not seconds.
     - Every `Birth*` property, `particleLifetime`, `rate` and `EmitterPosition` are
       sampled on the **emitter phase**. A birth value is sampled once, when the
       particle spawns: its curve changes what later particles get and never changes a
@@ -69,9 +70,10 @@ class:
     - **Integrated values** (`rotation0`, `worldAcceleration`, `particleUVScrollRate`,
       `particleUVRotateRate`) hold a rate. When the definition loads, the curve is
       replaced by its running integral over the particle's life, so the effect at any
-      age is the accumulated rate. Only a `dynamics` curve is integrated. With a bare
-      `constantValue` the engine applies one fixed amount for the whole life, and
-      nothing moves. A constant rate needs a `dynamics` with a single key.
+      age is the accumulated rate. Only a `*VariableData` curve with two or more keys is
+      integrated. With a bare `constantValue` the engine applies one fixed amount for the
+      whole life, and nothing moves. A constant rate needs a `dynamics` with two keys of
+      the same value. See [IntegratedValueFloat](/classes/integratedvaluefloat).
 
     When the random number of a probability table is drawn:
 
@@ -425,16 +427,17 @@ properties:
 
   SpawnShape:
     description: |
-      A shape object that gives each new particle a random offset from the birth
-      position. A shape can also turn the particle's birth velocity and birth
-      acceleration with the same random rotation as the offset. Unset means no offset.
+      A [spawn shape](/classes/ivfxshape) that gives each new particle an offset from the
+      birth position. A shape can also turn the particle's birth velocity and birth
+      acceleration with the same rotation as the offset. Unset means no offset and no turn.
 
       | Shape | Offset | Rotation of offset, velocity and acceleration |
       |---|---|---|
-      | `VfxShapeLegacy` | `emitOffset` | one turn per entry of `emitRotationAngles` (degrees) about the matching `emitRotationAxes` entry, in order |
-      | `VfxShapeBox` | x and y uniform within `Size` as half extents; z on the `+Size.z` face, or uniform through the depth with `flags` bit `0x1` | random quarter turns about Y and Z, or none with `flags` bit `0x1` |
-      | `VfxShapeCylinder` | `radius` out along X, or uniform up to it with `flags` bit `0x1`; y uniform in `0..height` | a full random turn about Y |
-      | `VfxShapeSphere` | `radius` out along X, or uniform up to it with `flags` bit `0x1` | full random turns about Y, then Z |
+      | [VfxShapePointDoNotUse](/classes/vfxshapepointdonotuse) | `emitOffset` | none |
+      | [VfxShapeLegacy](/classes/vfxshapelegacy) | `emitOffset`, sampled on the emitter phase | one turn per entry of `emitRotationAngles` (degrees) about the matching `emitRotationAxes` entry, in order |
+      | [VfxShapeBox](/classes/vfxshapebox) | x and y uniform within `Size` as half extents; z on the `+Size.z` face, or uniform through the depth with `flags` bit `0x1` | random quarter turns about Y and Z, or none with `flags` bit `0x1` |
+      | [VfxShapeCylinder](/classes/vfxshapecylinder) | `radius` out along X, or uniform in `-radius..radius` with `flags` bit `0x1`; y uniform in `0..height` | a full random turn about Y |
+      | [VfxShapeSphere](/classes/vfxshapesphere) | `radius` out along X, or uniform in `0..radius` with `flags` bit `0x1` | full random turns about Y, then Z |
 
       `flags` bit `0x1` fills the volume; without it only the boundary is sampled. The
       offset is multiplied by the system scale and by the offset factors of
