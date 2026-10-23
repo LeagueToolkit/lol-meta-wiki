@@ -1,0 +1,30 @@
+# ContextualConditionNeutralCampId Documentation
+
+class:
+  description: |
+    A condition on the **jungle camp of the situation**, selected by a fixed camp id. The
+    client sets the camp in the `PingJungleTimer` and `NeutralCampCleared` situations. The
+    condition passes if the camp is one of the camps that `mCampId` selects.
+
+properties:
+  mCampId:
+    description: |
+      The camp to test. Values `1`-`5` and `8` match the camp of either team.
+
+      | Value | Camp |
+      |---|---|
+      | `1` | Blue (Order or Chaos) |
+      | `2` | Wolves (Order or Chaos) |
+      | `3` | Wraiths (Order or Chaos) |
+      | `4` | Red (Order or Chaos) |
+      | `5` | Small Golems (Order or Chaos) |
+      | `6` | Dragon |
+      | `7` | Baron |
+      | `8` | OwlBear (Order or Chaos) |
+      | `9` | Dragon Crab |
+      | `10` | Baron Crab |
+      | `11` | Rift Herald |
+
+      `0` and any value above `11` make the condition fail.
+    notes:
+      - "Shipped data uses `1`-`5` and `8`."

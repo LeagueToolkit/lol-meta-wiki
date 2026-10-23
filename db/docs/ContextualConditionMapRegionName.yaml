@@ -1,0 +1,33 @@
+# ContextualConditionMapRegionName Documentation
+
+class:
+  description: |
+    A condition on the **map region that the owner is in**. The client tracks, for each
+    region type, the region that the owner is currently in, and updates it when the owner
+    enters or leaves a region. The condition passes if the owner is in a region of type
+    `mRegionType` and that region's name is `mRegionName`. If the owner is in no region of
+    that type, the condition fails.
+
+    [ContextualConditionPreviousMapRegionName](/classes/contextualconditionpreviousmapregionname)
+    tests the region that the owner was in before.
+
+properties:
+  mRegionType:
+    description: |
+      The region type to test.
+
+      | Value | Region type |
+      |---|---|
+      | `0` | Vfx |
+      | `1` | Music |
+      | `2` | Ambiance |
+      | `3` | GameplayLane |
+      | `4` | GameplayArea |
+      | `5` | GameplayPOI |
+
+      Any other value makes the condition fail.
+    notes:
+      - "Shipped data uses `3`, `4` and `5`."
+
+  mRegionName:
+    description: "The name of the region. The comparison ignores case."

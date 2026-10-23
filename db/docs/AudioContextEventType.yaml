@@ -1,0 +1,80 @@
+# AudioContextEventType Documentation
+
+class:
+  description: |
+    The part of an [AudioContextEvent](/classes/audiocontextevent) that **picks the event
+    name** for a game event. Announcer, champion music and theme music events each link one
+    event type.
+
+    ## Trigger
+
+    When an audio context event triggers, the event first asks its type for the
+    **concrete type** for the trigger's count. A type that picks a name itself returns
+    itself. A `Multi` type returns one of its list entries (see
+    [MultiAnnouncerVoEventType](/classes/multiannouncervoeventtype)). The client then
+    triggers the concrete type with the **trigger context**:
+
+    | Value | Meaning |
+    |---|---|
+    | Succeeding team | The killer's team. If there is no killer champion, the team opposite the victim's team. If there is no victim either, the assister's team. `0` when none applies. |
+    | Killer | The killing champion, or none. |
+    | Victim | The killed champion, or none. |
+    | Assister | The local player's champion, if it is in the assist list of the kill. Assists of other players are not part of the context. |
+    | Count | The multi-kill size for a multi-kill. `0` for a kill, an execute, a pentakill, a shutdown and a timed event. `1` when a contextual action triggers the event. |
+
+    The [AudioGlobalEventManager](/classes/audioglobaleventmanager) triggers events for its
+    game events and its timed lists.
+    [ContextualActionAnnouncerVoEvent](/classes/contextualactionannouncervoevent) and
+    [ContextualActionChampionMusicEvent](/classes/contextualactionchampionmusicevent)
+    trigger events from contextual rules.
+
+    ## Name selection
+
+    A concrete type picks one of its event strings for each listener. The client computes
+    the name only for the **local player**. An empty string skips the listener. The roles of
+    the strings:
+
+    | String | Picked when |
+    |---|---|
+    | `IndividualSucceededEvent` | the listener is the killer's player |
+    | `IndividualFailedEvent` | the listener is the victim's player |
+    | `IndividualAssistedEvent` | the listener is the assister (champion music only) |
+    | `TeamSucceededEvent` | the listener is on the succeeding team |
+    | `TeamFailedEvent` | the listener is not on the succeeding team |
+    | `BlueTeamSpectatorEvent` / `RedTeamSpectatorEvent` | the listener is a spectator and the succeeding team is Order (`100`) or Chaos (`200`) (announcer only) |
+    | `GenericEvent` | the type has one name for every listener, or no rule above applies |
+
+    Each concrete type page gives the exact order of its tests.
+
+    **The client does not post the chosen name to the audio engine.** No code queues the
+    name or plays it, so these events play no sound. The
+    [AudioPriorityBehavior](/classes/audioprioritybehavior) objects of the types are not
+    read either.
+
+    ## Cac types
+
+    [AnnouncerVoEventTypeCac](/classes/announcervoeventtypecac),
+    [AnnouncerVoEventTypeModularCac](/classes/announcervoeventtypemodularcac) and
+    [ChampionMusicEventTypeCac](/classes/championmusiceventtypecac) pick no name. They run a
+    **global contextual situation** instead:
+
+    1. The client takes the contextual action manager of the killer. If there is none, it
+       takes that of the first champion of the succeeding team (of any team if the
+       succeeding team is `0`), else that of the local player's champion. If it finds none,
+       nothing happens.
+    2. The client writes the trigger context into that unit's situation context: the
+       succeeding team, the killer, the victim and the assister.
+    3. The client looks up the event's `NameHash` as a situation key in every
+       [GlobalContextualActionData](/classes/globalcontextualactiondata) of the
+       `AudioGlobalEventManager.GlobalContextualActionData` list. For each object that
+       defines the situation, it runs the announcer actions, the champion music actions and
+       the [ContextualActionNotifyMixAction](/classes/contextualactionnotifymixaction)
+       actions of the situation. Each of the three action kinds picks its own rule.
+
+    The other actions of a rule, `mAudioAction` included, do not run on this path. The
+    announcer and champion music actions only trigger further audio context events, so the
+    **only audible effect** of a `Cac` type is a mix state request.
+  notes:
+    - "No shipped bin contains an audio context event or event type. The behaviour is read from the client and is not tested in game."
+    - "[ContextualSituation](/classes/contextualsituation) describes the situation keys and rule choice. [IContextualAction](/classes/icontextualaction) describes which situations run which action kind."
+    - "The client copies the event's `objectPath` and `NameHash` into its type when the event loads. A `Multi` type passes them on to every entry of its list."

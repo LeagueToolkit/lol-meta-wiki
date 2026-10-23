@@ -1,0 +1,15 @@
+# ContextualConditionTurretPosition Documentation
+
+class:
+  description: |
+    A condition that passes when the **position number of the killed turret** equals
+    `mTurretPosition`. The client sets the number in the `KillTurret` situation from the
+    position that the turret received when it spawned. Outside that situation the number is
+    `-1`, which only `255` matches.
+  notes:
+    - "The client counts the turrets of positions `1`-`3` for each lane. What each number means is not identified."
+    - "No shipped object uses it."
+
+properties:
+  mTurretPosition:
+    description: "The position number that passes."

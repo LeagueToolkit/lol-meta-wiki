@@ -1,0 +1,39 @@
+# ContextualConditionUserFactCount Documentation
+
+class:
+  description: |
+    A [condition](/classes/icontextualcondition) that counts recent **user facts** of the unit and compares the count with
+    `Count`.
+
+    A user fact is a hash that a
+    [ContextualActionUserFactAction](/classes/contextualactionuserfactaction) records on
+    the unit, together with the game time and, optionally, a unit. Each unit keeps its last
+    128 facts. A new fact replaces the oldest one.
+
+    The condition walks the facts from the newest to the oldest. It stops at the first fact
+    that is older than `TimeWindow` seconds. It counts the facts whose hash equals
+    `UserFact` and that pass the unit filter. Then it tests `count <op> Count`.
+
+    The unit filter uses `CharacterType`. A fact passes the filter when it was recorded
+    without a unit, or when its unit is the unit that `CharacterType` selects. If
+    `CharacterType` selects no unit, every fact passes the filter.
+  notes:
+    - "No shipped object uses this condition or records user facts."
+
+properties:
+  UserFact:
+    description: "The fact hash to count: the `FactName` of the action that records the fact."
+
+  TimeWindow:
+    description: "Age limit, in seconds. Facts recorded more than `TimeWindow` seconds ago are not counted."
+
+  Count:
+    description: "The number that the count of matching facts is compared with."
+
+  CompareOp:
+    description: "How the count is compared with `Count`: the test is `count <op> Count`. The operator table is on [IContextualCondition](/classes/icontextualcondition)."
+
+  CharacterType:
+    description: |
+      The unit of the filter, chosen with the unit selector table on [ICharacterSubcondition](/classes/icharactersubcondition). A fact that
+      was recorded with a different unit is not counted.

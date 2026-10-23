@@ -1,0 +1,16 @@
+# AnnouncerVoEventTypeGeneric Documentation
+
+class:
+  description: |
+    An announcer event type with **one line for every listener**: it picks `GenericEvent`
+    with the type's `PriorityBehavior` for each listener.
+
+    The client does not play the line.
+    [AudioContextEventType](/classes/audiocontexteventtype) describes where the chain
+    stops.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+
+properties:
+  GenericEvent:
+    description: "The announcer event name for every listener. If it is empty, the type picks no line."

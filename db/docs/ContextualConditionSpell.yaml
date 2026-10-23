@@ -1,0 +1,22 @@
+# ContextualConditionSpell Documentation
+
+class:
+  description: |
+    A condition that tests **one spell slot of the owner** instead of the spell of the
+    situation. Each child in `mChildConditions` is an
+    [IContextualConditionSpell](/classes/icontextualconditionspell) and receives the spell
+    in the slot `mSpellSlot`. Every child must pass. Null children are skipped, and an empty
+    list passes.
+
+    The client refreshes the data of the four slots once per second, so the data can be up
+    to one second old.
+
+properties:
+  mSpellSlot:
+    description: "The slot to test: `0`-`3` are the four ability slots."
+    notes:
+      - "The client does not check the value. A value above `3` makes the children read unrelated context data, so their results are wrong."
+      - "Shipped data uses `2` and `3`."
+
+  mChildConditions:
+    description: "The spell conditions to evaluate on the selected slot."

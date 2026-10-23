@@ -1,0 +1,20 @@
+# ContextualActionTriggerEvent Documentation
+
+class:
+  description: |
+    An action that **fires another situation**. The action itself does nothing and
+    succeeds. The client then fires `mHashedSituationTrigger` as a chained situation on the
+    component of every unit in the game, not only on the owner (see
+    [IContextualAction](/classes/icontextualaction)). Every unit whose data defines the key
+    runs its rules for it.
+
+    The client runs trigger event actions only from emotes, situations fired by the server
+    and chained situations. A trigger event action in a rule of any other situation never
+    runs.
+
+properties:
+  mHashedSituationTrigger:
+    description: |
+      The situation key to fire, as the FNV-1a hash of the lowercased situation name. If it
+      equals the key of the situation that ran the action, the client fires nothing and
+      counts the action as failed.

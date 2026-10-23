@@ -1,0 +1,13 @@
+# ContextualConditionItemPriceMinimum Documentation
+
+class:
+  description: |
+    A condition that passes when the item of the **current item event** has a price of at
+    least `mItemPriceMinimum`. The client sets the current item in the `BuyItem`, `Purchase`
+    and `PingShopItem` situations.
+  notes:
+    - "The client reads the value from the item's data by its id. That the value is the item's total gold cost is not verified."
+
+properties:
+  mItemPriceMinimum:
+    description: "Minimum price, in gold. An equal price passes."

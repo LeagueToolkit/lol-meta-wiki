@@ -1,0 +1,31 @@
+# ContextualActionKillCountSource Documentation
+
+class:
+  description: |
+    One side of a kill comparison: a source of **champion kill counts**. Both sides of a
+    [ContextualConditionKillComparison](/classes/contextualconditionkillcomparison) are
+    objects of this class. Each side produces a list of values, and the condition passes if
+    any pair of a left value and a right value satisfies its `CompareOp` (see
+    [IContextualCondition](/classes/icontextualcondition)). An empty list makes the condition
+    fail.
+
+    `SourceId` selects the values:
+
+    | `SourceId` | Name | Values |
+    |---|---|---|
+    | `0` | Own kills | the owner's champion kills plus `KillOffset`; no value if the owner has no player statistics |
+    | `1` | Team kills | the sum of the champion kills of the owner's team, plus `KillOffset` |
+    | `2` | Enemy team kills | one value per opposing team: that team's champion kills plus `KillOffset` |
+    | `3` | Constant | `KillThreshold` |
+
+    Any other value produces no value.
+
+properties:
+  SourceId:
+    description: "Selects the values of the source, as in the table above."
+
+  KillThreshold:
+    description: "The constant value for `SourceId` `3`. The other sources ignore it."
+
+  KillOffset:
+    description: "A number added to each kill count for `SourceId` `0`, `1` and `2`. The constant source ignores it."

@@ -1,0 +1,11 @@
+# ContextualConditionSpellIsReady Documentation
+
+class:
+  description: |
+    A spell condition that compares the ready state of the tested spell with
+    `mSpellIsReady`. [IContextualConditionSpell](/classes/icontextualconditionspell)
+    describes which spell is tested.
+
+properties:
+  mSpellIsReady:
+    description: "The ready state that passes."

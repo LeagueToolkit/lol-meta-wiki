@@ -1,0 +1,9 @@
+# ContextualConditionCharacterSkinID Documentation
+
+class:
+  description: |
+    A [character subcondition](/classes/icharactersubcondition) that passes when the **skin number of the unit** is in `mSkinIDs`.
+
+properties:
+  mSkinIDs:
+    description: "The skin numbers that pass."

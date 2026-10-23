@@ -1,0 +1,18 @@
+# AnnouncerVoEvent Documentation
+
+class:
+  description: |
+    An **announcer voice-over event** for one game event. A slot of the
+    `AudioGlobalEventManager.AnnouncerVoEvents` table links it, and so does
+    [ContextualActionAnnouncerVoEvent](/classes/contextualactionannouncervoevent). When the
+    event triggers, it passes the trigger to its `AnnouncerVoEventType`.
+
+    The client picks an announcer line name but does not play it.
+    [AudioContextEventType](/classes/audiocontexteventtype) describes the trigger and where
+    the chain stops.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+
+properties:
+  AnnouncerVoEventType:
+    description: "The [AnnouncerVoEventType](/classes/announcervoeventtype) that picks the line name, or runs a global situation for a `Cac` type."

@@ -1,0 +1,20 @@
+# ContextualConditionCharacterPlayingEmote Documentation
+
+class:
+  description: |
+    A [character subcondition](/classes/icharactersubcondition) that passes when the unit is a champion that is **playing the emote
+    `mEmoteID`**. The client compares `mEmoteID` with the emote id that it stores on the
+    champion. A state check of the champion that is not yet identified must also pass.
+
+    For a unit that is not a champion, the condition fails.
+
+properties:
+  mEmoteID:
+    description: |
+      The emote id that passes.
+
+      | Value | Name | Behaviour |
+      |---|---|---|
+      | `6` | None | never passes |
+
+      The meaning of the other values is not yet identified.

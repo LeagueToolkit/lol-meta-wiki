@@ -1,0 +1,17 @@
+# ContextualConditionRuleCooldown Documentation
+
+class:
+  description: |
+    A per-rule cooldown. The condition passes if more than `mRuleCooldown` seconds have passed
+    since a line of the rule under test last ended. The client records the time when an
+    `ActiveVoiceOver` line of the rule ends or is stomped. A rule that has never ended a line
+    counts as having ended one at time `0`.
+
+    [ContextualRule](/classes/contextualrule) describes the other cooldowns.
+  notes:
+    - "Rules whose `ActiveVoiceOver` is `false` never record a time, so the condition always tests against time `0`."
+    - "Shipped data uses it in the rules of many champions, mostly with `30` or `10` seconds."
+
+properties:
+  mRuleCooldown:
+    description: "The cooldown, in seconds."

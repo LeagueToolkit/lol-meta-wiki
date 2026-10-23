@@ -1,0 +1,13 @@
+# ContextualConditionGearIdCheck Documentation
+
+class:
+  description: |
+    A [condition](/classes/icontextualcondition) that passes when the **gear that the unit has equipped** is one of
+    `GearIds`. The client refreshes the stored gear number once per second. If `GearIds`
+    is empty, the condition fails.
+  notes:
+    - "[ContextualConditionGearIdEquip](/classes/contextualconditiongearidequip) tests a change of gear instead."
+
+properties:
+  GearIds:
+    description: "The gear numbers that pass."

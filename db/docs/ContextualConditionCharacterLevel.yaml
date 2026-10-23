@@ -1,0 +1,16 @@
+# ContextualConditionCharacterLevel Documentation
+
+class:
+  description: |
+    A [condition](/classes/icontextualcondition) for the `CharacterLevelUp` situation that compares the **new level** of the
+    unit with `mCharacterLevel`.
+
+    The client records the new level when it fires `CharacterLevelUp`. No other situation
+    writes it. The condition does not read the current level of any unit.
+
+properties:
+  mCharacterLevel:
+    description: "The level that the recorded level is compared with."
+
+  mCompareOp:
+    description: "How the level is compared with `mCharacterLevel`: the test is `level <op> mCharacterLevel`. The operator table is on [IContextualCondition](/classes/icontextualcondition)."

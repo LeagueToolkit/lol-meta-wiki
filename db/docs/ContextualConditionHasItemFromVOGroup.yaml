@@ -1,0 +1,13 @@
+# ContextualConditionHasItemFromVOGroup Documentation
+
+class:
+  description: |
+    A condition that passes when the **other unit** of the situation holds an item of the VO
+    group `mItemVOGroupHash`. [IContextualCondition](/classes/icontextualcondition) describes which unit is the
+    other unit in each situation. If the situation has no other unit, the condition fails.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  mItemVOGroupHash:
+    description: "The VO group to look for, as the hash of its name."

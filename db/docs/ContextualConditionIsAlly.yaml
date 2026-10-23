@@ -1,0 +1,23 @@
+# ContextualConditionIsAlly Documentation
+
+class:
+  description: |
+    Character subcondition that compares the team of the character with the team of the
+    **owner**, the unit whose contextual actions run.
+
+    The condition does not choose the character itself. Its parent condition does:
+    [ICharacterSubcondition](/classes/icharactersubcondition) describes how
+    [ContextualConditionCharacter](/classes/contextualconditioncharacter) and
+    [ContextualConditionAnyOtherHero](/classes/contextualconditionanyotherhero) select it.
+  notes:
+    - "Shipped data uses it widely, mostly with `mIsAlly` set to `true`."
+
+properties:
+  mIsAlly:
+    description: |
+      Selects the test.
+
+      | Value | Passes when |
+      |---|---|
+      | `true` | the character is on the owner's team |
+      | `false` | the character is on another team |

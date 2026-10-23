@@ -1,0 +1,15 @@
+# ContextualConditionCharacterIsLocalPlayer Documentation
+
+class:
+  description: |
+    A [character subcondition](/classes/icharactersubcondition) that tests whether the unit is the **local player's champion**: the champion
+    that this client controls. The condition passes when the result of the test equals
+    `IsLocal`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  IsLocal:
+    description: |
+      With `true`, the condition passes when the unit is the local player's champion. With
+      `false`, it passes for every other unit.

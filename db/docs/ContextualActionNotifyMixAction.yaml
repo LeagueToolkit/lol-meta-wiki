@@ -1,4 +1,4 @@
-# 0x28556403 Documentation
+# ContextualActionNotifyMixAction Documentation
 
 class:
   description: |
@@ -8,7 +8,13 @@ class:
     duration. The mix state manager then decides, on its next update, whether that state
     becomes the current one. `AudioDynamicMixState` describes the rules.
 
-    The action does nothing when `MixState` links no loaded object.
+    The action does nothing and fails when `MixState` links no loaded object.
+
+    The client runs the action from
+    ordinary situations and emotes, on the unit's own data and on
+    [GlobalContextualActionData](/classes/globalcontextualactiondata), and from the situations
+    that an audio event type of the `Cac` family runs. A chained situation does not run it
+    (see [IContextualAction](/classes/icontextualaction)).
   notes:
     - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
 

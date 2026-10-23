@@ -1,0 +1,20 @@
+# ContextualConditionWinningTeam Documentation
+
+class:
+  description: |
+    A condition on the **winning team**. The client sets the winning team in the
+    `NexusDestroyed` and `OnGameEnd` situations. Before that, no team has won.
+
+    The condition compares the winning team with the owner's team.
+  notes:
+    - "Before the game ends, `IsSameTeam` `false` passes, because no team has won."
+
+properties:
+  IsSameTeam:
+    description: |
+      Selects the test.
+
+      | Value | Passes when |
+      |---|---|
+      | `true` | the owner's team won |
+      | `false` | the owner's team did not win |

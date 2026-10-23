@@ -1,0 +1,24 @@
+# ContextualConditionAnyOtherHero Documentation
+
+class:
+  description: |
+    A [condition](/classes/icontextualcondition) that passes when **at least one other champion** passes every
+    [character subcondition](/classes/icharactersubcondition) in `mChildConditions`.
+
+    The client walks all champions in the game, skips the unit that the situation belongs
+    to, and evaluates the subconditions on each champion in turn. The condition passes at
+    the first champion for which every subcondition passes.
+
+    - If `mChildConditions` is empty, the condition passes when the game has any other
+      champion.
+    - If the game has no other champion, the condition fails.
+
+    The walk does not filter by team and does not skip dead champions. A rule that needs
+    an enemy or a living champion must test it with a subcondition.
+  notes:
+    - "A null entry in `mChildConditions` crashes the client. [ContextualConditionCharacter](/classes/contextualconditioncharacter) skips null entries, this condition does not."
+    - "Shipped data also places it inside `ContextualConditionNegation`, to test that no other champion matches."
+
+properties:
+  mChildConditions:
+    description: "The subconditions that one champion must pass, all of them. The test of a champion stops at the first subcondition that fails."

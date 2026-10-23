@@ -1,0 +1,28 @@
+# ContextualConditionKillerType Documentation
+
+class:
+  description: |
+    A condition on the **kind of unit that killed the owner**. The client sets the kind when
+    the owner dies (situation `OwnerDeath`) and does not reset it, so in a later situation the
+    condition tests the killer of the owner's last death.
+
+    The killer is the unit that dealt the damage. If that unit belongs to another unit, such
+    as a pet, the owner of that unit is the killer.
+
+properties:
+  KillerType:
+    description: |
+      The kind of killer that passes.
+
+      | Value | Name | Killer |
+      |---|---|---|
+      | `0` | Unset | never set by the client, so no death matches |
+      | `1` | None | the owner died with no killer |
+      | `2` | Champion | a champion |
+      | `3` | Turret | a turret |
+      | `4` | AI turret | never set: every turret gives `3` |
+      | `5` | Minion | a minion that is not on the neutral team |
+      | `6` | Monster | a minion on the neutral team |
+      | `7` | Other | any other unit |
+    notes:
+      - "Shipped data uses only `2`."

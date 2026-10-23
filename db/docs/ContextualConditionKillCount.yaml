@@ -1,0 +1,19 @@
+# ContextualConditionKillCount Documentation
+
+class:
+  description: |
+    A condition on the **champion kill count of the killer** in a kill situation. The kill
+    situations `KillChampion` and `AssistKill` set the count from the killer's statistics; in
+    `KillChampion` the killer is the owner. The client resets the count to `0` after the
+    situation, so in any other situation the count is `0`.
+
+    The condition passes if the count compares to `mTotalKills` with `mCompareOp`.
+  notes:
+    - "Shipped data uses it for kill milestone lines, such as every fifth kill."
+
+properties:
+  mTotalKills:
+    description: "The kill count to compare with."
+
+  mCompareOp:
+    description: "The comparison, with the killer's count on the left. The values are in the `CompareOp` table on [IContextualCondition](/classes/icontextualcondition)."

@@ -1,0 +1,15 @@
+# IContextualConditionSpell Documentation
+
+class:
+  description: |
+    A condition on **one spell**: its name, slot, level or ready state. The spell under test
+    depends on where the condition is:
+
+    | Placed in | Spell tested |
+    |---|---|
+    | a rule's `mConditions` | the spell of the situation |
+    | a [ContextualConditionSpell](/classes/contextualconditionspell) | the owner's spell in its `mSpellSlot` |
+
+    The spell situations `SpellCast`, `SpellHit` and `MissileMiss` set the cast spell,
+    `SpellReady` sets the spell that became ready, and the kill situations set the name and
+    slot of the killing spell.

@@ -7,7 +7,7 @@ class:
     mix state manager. Once per frame the manager picks one object and applies it: it sets
     the state group named `MixGroup` to the state named `MixState`.
 
-    A contextual action, [0x28556403](/classes/0x28556403), **requests** a mix state. The
+    A contextual action, [ContextualActionNotifyMixAction](/classes/contextualactionnotifymixaction), **requests** a mix state. The
     request records the game time and a duration in seconds.
 
     The manager picks the state in this order:

@@ -1,0 +1,20 @@
+# ContextualConditionCharacter Documentation
+
+class:
+  description: |
+    A [condition](/classes/icontextualcondition) that selects **one unit** of the situation and passes when that unit passes
+    every [character subcondition](/classes/icharactersubcondition) in `mChildConditions`.
+
+    - If `mCharacterType` gives no unit, the condition fails.
+    - If the unit exists and `mChildConditions` is empty, the condition passes.
+    - The subconditions run in list order. The test stops at the first subcondition that
+      fails. Null entries are skipped.
+  notes:
+    - "Shipped data mostly selects the other unit of the situation (`1`) or the kill victim (`6`)."
+
+properties:
+  mChildConditions:
+    description: "The subconditions that the unit must pass, all of them."
+
+  mCharacterType:
+    description: "The unit to test. The unit selector table is on [ICharacterSubcondition](/classes/icharactersubcondition)."

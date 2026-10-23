@@ -1,0 +1,18 @@
+# ContextualConditionAbilityResourceType Documentation
+
+class:
+  description: |
+    A [condition](/classes/icontextualcondition) for the `MaxResource` situation that compares the **resource type of the bar
+    that filled** with `AbilityResourceType`.
+    [ContextualConditionAbilityResourceIsPips](/classes/contextualconditionabilityresourceispips)
+    describes when the client fires `MaxResource`.
+
+    The type `2` is None: the bar of a unit without a resource never reports full. After
+    the situation the client resets the stored type to `2`. In any other situation the
+    condition passes only when `AbilityResourceType` is `2`.
+  notes:
+    - "The other type values are not identified on this page."
+
+properties:
+  AbilityResourceType:
+    description: "The resource type that passes."

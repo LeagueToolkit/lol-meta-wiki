@@ -1,0 +1,29 @@
+# ContextualActionAnnouncerVoEvent Documentation
+
+class:
+  description: |
+    A contextual action that **triggers an announcer event**. When the action runs, the
+    client triggers `TriggerAnnouncerVoEvent` with a count of `1` and with the killer, the
+    victim, the assister and the succeeding team of the situation context. Kill situations
+    write these values. [AudioContextEventType](/classes/audiocontexteventtype) describes
+    what the event does with them.
+
+    The action stores the event as the unit's last announcer event.
+    [AnnouncerVoEventTypeModularCac](/classes/announcervoeventtypemodularcac) reads it.
+    During the collect mode of that type, the action only stores the event and does not
+    trigger it.
+
+    If the event's type for count `1` is an
+    [AnnouncerVoEventTypeCac](/classes/announcervoeventtypecac) or derives from it, the
+    action stores the event but does not trigger it. This prevents a global situation from
+    triggering itself.
+
+    The client picks a line name but plays no sound.
+    [IContextualAction](/classes/icontextualaction) describes which situations run this
+    action kind.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+
+properties:
+  TriggerAnnouncerVoEvent:
+    description: "The [AnnouncerVoEvent](/classes/announcervoevent) to trigger. If it links no loaded object, the action fails."

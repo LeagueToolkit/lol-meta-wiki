@@ -1,0 +1,13 @@
+# ContextualConditionItemVOGroup Documentation
+
+class:
+  description: |
+    A condition that passes when the item of the **current item event** belongs to the VO
+    group `mItemVOGroupHash`. The client sets the current item in the `BuyItem`, `Purchase`
+    and `PingShopItem` situations. If no item is set, the condition fails.
+  notes:
+    - "Shipped data uses it to give wards, potions and elixirs their own lines."
+
+properties:
+  mItemVOGroupHash:
+    description: "The VO group, as the hash of its name. The client compares it with `ItemData.itemVOGroup` of the current item."

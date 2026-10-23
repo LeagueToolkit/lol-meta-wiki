@@ -1,0 +1,6 @@
+# IContextualConditionBuff Documentation
+
+class:
+  description: |
+    A condition on the **buff of the situation**. The situations `SpellBuffCast`,
+    `SpellBuffReceive`, `SpellBuffRemove` and `BuffCounterSet` set the buff.

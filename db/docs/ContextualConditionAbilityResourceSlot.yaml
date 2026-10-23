@@ -1,0 +1,17 @@
+# ContextualConditionAbilityResourceSlot Documentation
+
+class:
+  description: |
+    A [condition](/classes/icontextualcondition) for the `MaxResource` situation that compares the **index of the resource
+    bar that filled** with `AbilityResourceSlot`.
+    [ContextualConditionAbilityResourceIsPips](/classes/contextualconditionabilityresourceispips)
+    describes when the client fires `MaxResource`.
+
+    After the situation the client resets the stored index to `2`. In any other situation
+    the condition passes only when `AbilityResourceSlot` is `2`.
+  notes:
+    - "Which bar has which index is not yet identified. Shipped data uses the value `1`."
+
+properties:
+  AbilityResourceSlot:
+    description: "The bar index that passes."

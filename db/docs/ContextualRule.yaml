@@ -1,11 +1,146 @@
+# ContextualRule Documentation
 
 class:
   description: |
-    `ContextualRule` is used to trigger audio, animation, or situation events. These events can be triggered either unconditionally when the `ContextualSituation` occurs, or conditionally by adding [mConditions](https://meta-wiki.leaguetoolkit.dev/classes/contextualrule/#mconditions) to the `ContextualRule`. Currently available `mConditions` can be found on the [**IContextualCondition**](https://meta-wiki.leaguetoolkit.dev/classes/icontextualcondition/) page. `ContextualSituation` respects everything you add inside a `ContextualRule`, meaning that [**mPriority**](https://meta-wiki.leaguetoolkit.dev/classes/contextualrule/#mpriority) can also be used. If two separate `ContextualSituations` collide, the one with the higher `mPriority` value will take precedence and trigger over the other. 
+    One rule of a [ContextualSituation](/classes/contextualsituation): a list of conditions
+    and up to one action of each kind. A rule triggers audio, animation or situation events.
+    It runs unconditionally when the situation occurs, or only when its `mConditions` pass.
+    The conditions are listed on the [IContextualCondition](/classes/icontextualcondition)
+    page.
+
+    Each action kind picks its own rule from the situation
+    ([ContextualSituation](/classes/contextualsituation) describes the choice). For one kind,
+    a rule is valid when all of these hold:
+
+    1. The rule has an action of that kind.
+    2. The action has not reached its play limit (`ContextualActionPlayAudio.mMaxOccurences`).
+       Only audio actions have a limit.
+    3. The conditions pass, combined by `mConditionRelationship`.
+
+    ## Voice line gates
+
+    After the client picks a rule for the audio action, it checks these gates in order. A
+    rule whose `ActiveVoiceOver` is `false` skips all of them.
+
+    1. While the unit is paired with another unit for a voice exchange (from
+       `MarkerTriggeredNearby`), the rule fails.
+    2. If `CanStompSelf` is `false` and the line of this rule is playing, the rule fails.
+    3. Priority: see below.
+    4. Shared cooldown: unless the rule sets `mOverrideCacCooldown` or
+       `CooldownModifications.IgnoreTimer`, the rule fails while the unit's timer shows
+       `ContextualActionData.mCooldown` seconds or less.
+
+    If the chosen rule fails a gate, the situation plays no voice line.
+
+    ## Priority and stomping
+
+    `mPriority` does not choose between rules, and it does not choose between situations. It
+    decides whether a new voice line may **stomp** (interrupt) the line that plays on the
+    unit:
+
+    | Case | Result |
+    |---|---|
+    | `mPriority` unset, or `StompLowerPriority` is `false` | the rule fails while a line plays on the unit or a line is queued |
+    | a rule's line plays with priority `q` (unset counts as `0`), and `mPriority < q` | the rule fails |
+    | a rule's line plays with priority `q`, and `mPriority >= q` | the new line stomps the playing line |
+    | no rule's line plays, and `mPriority` is negative | the rule waits as if `mPriority` were unset |
+
+    When the audio action of the chosen rule sets `mWaitForAnnouncerQueue`, the client first
+    removes every queued line whose rule priority is not higher than this rule's priority.
+
+    A stomped line counts as ended for the situation cooldown.
+
+    ## Cooldown overrides
+
+    `mOverrideCacCooldown` and [ContextualActionCooldownModifications](/classes/contextualactioncooldownmodifications)
+    change how the rule interacts with the shared cooldown of
+    [ContextualActionData](/classes/contextualactiondata). A per-rule cooldown is a
+    condition: [ContextualConditionRuleCooldown](/classes/contextualconditionrulecooldown).
+  examples:
+    - 'mRuleName: string = "Q - Cast"'
+  notes:
+    - "The client does not register `mRuleName`. Shipped rules carry it as a label for the rule, and the loader drops it."
 
 properties:
-  mRuleName:
+  mConditionRelationship:
     description: |
-      The name of a `ContextualRule`. Its name does not affect the logic, what matters most is the name of a `ContextualSituation`, as it is the primary trigger.
-    examples:
-      mRuleName: string = "Q - Cast"
+      How the conditions in `mConditions` combine.
+
+      | Value | Name | Passes when | Empty list |
+      |---|---|---|---|
+      | `0` | And | every condition passes; evaluation stops at the first failure | passes |
+      | any other value | Or | at least one condition passes; evaluation stops at the first success | fails |
+    notes:
+      - "Shipped data uses `1` on a few rules."
+
+  mConditions:
+    description: |
+      The conditions of the rule, as [IContextualCondition](/classes/icontextualcondition)
+      objects. A null entry is skipped.
+
+  mAudioAction:
+    description: |
+      The voice line of the rule, a [ContextualActionPlayAudio](/classes/contextualactionplayaudio).
+      Shipped data uses [ContextualActionPlayVO](/classes/contextualactionplayvo).
+
+  mAnimationAction:
+    description: "The animation of the rule, a [ContextualActionPlayAnimation](/classes/contextualactionplayanimation). It runs only from the situations that [IContextualAction](/classes/icontextualaction) lists."
+
+  mTriggerEventAction:
+    description: "The situation that the rule fires, a [ContextualActionTriggerEvent](/classes/contextualactiontriggerevent). It runs only from the situations that [IContextualAction](/classes/icontextualaction) lists."
+
+  TriggerAnnouncerVoEventAction:
+    description: "The announcer event of the rule, a [ContextualActionAnnouncerVoEvent](/classes/contextualactionannouncervoevent)."
+
+  TriggerChampionMusicEventAction:
+    description: "The champion music event of the rule, a [ContextualActionChampionMusicEvent](/classes/contextualactionchampionmusicevent)."
+
+  SetUserFactAction:
+    description: "The user fact that the rule records, a [ContextualActionUserFactAction](/classes/contextualactionuserfactaction)."
+
+  NotifyMixAction:
+    description: "The mix state that the rule requests, a [ContextualActionNotifyMixAction](/classes/contextualactionnotifymixaction)."
+
+  ChanceWeight:
+    description: |
+      Weight of the rule when `ContextualSituation.mChooseRandomValidRule` is `true`. The
+      chance of the rule is its weight divided by the sum of the weights of all valid rules.
+      A rule with weight `0` is not picked, unless every valid rule has weight `0`: then each
+      has an equal chance. In first-valid mode the client ignores it.
+
+  ActiveVoiceOver:
+    description: |
+      Marks the voice line as the unit's **active voice line**. When it is `true`, the rule
+      passes the voice line gates above, its line becomes the line that plays on the unit,
+      and the end of the line starts the situation cooldown, the rule cooldown and the
+      shared cooldown timer.
+
+      When it is `false`, the line skips the voice line gates and does not become the
+      playing line. It starts no cooldown, and other rules do not wait for it.
+    notes:
+      - "Shipped data sets `false` on about 135 rules."
+
+  mPriority:
+    description: |
+      Priority of the voice line for stomping, as described above. A higher value stomps a
+      lower one. When it is unset, the line never stomps and waits for the playing line and
+      the queue.
+    notes:
+      - "Shipped data uses `30` on most rules that set it."
+
+  StompLowerPriority:
+    description: "Allows the line to stomp a playing line of lower or equal priority. When it is `false`, the rule fails while any line plays on the unit or a line is queued."
+
+  CanStompSelf:
+    description: "Allows the rule to stomp its own playing line. When it is `false`, the rule fails while its own line plays."
+
+  mOverrideCacCooldown:
+    description: |
+      Exempts the rule from the shared cooldown (`ContextualActionData.mCooldown`). The rule
+      skips the check, and the end of its line does not restart the timer.
+
+  CooldownModifications:
+    description: |
+      Finer control of the shared cooldown, as a
+      [ContextualActionCooldownModifications](/classes/contextualactioncooldownmodifications):
+      skip the check, keep the timer, or both.

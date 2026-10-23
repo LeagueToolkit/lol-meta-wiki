@@ -1,0 +1,20 @@
+# ContextualActionCooldownModifications Documentation
+
+class:
+  description: |
+    Per-rule changes to the **shared cooldown** of a unit, `ContextualActionData.mCooldown`
+    (see [ContextualActionData](/classes/contextualactiondata)). A
+    [ContextualRule](/classes/contextualrule) links it through `CooldownModifications`. It
+    applies only to rules whose `ActiveVoiceOver` is `true`, because other rules neither check
+    nor restart the shared cooldown.
+
+    `ContextualRule.mOverrideCacCooldown` has the effect of both flags together.
+  notes:
+    - "Most shipped rules carry this object with `IgnoreTimer` set, so the shared cooldown blocks only the rules without it."
+
+properties:
+  IgnoreTimer:
+    description: "Skips the shared cooldown check: the rule can play while the unit's timer is still running."
+
+  DontResetTimer:
+    description: "Keeps the unit's timer running when the line of this rule ends, instead of restarting it."

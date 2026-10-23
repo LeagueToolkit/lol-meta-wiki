@@ -1,0 +1,29 @@
+# GlobalContextualActionData Documentation
+
+class:
+  description: |
+    Contextual action data that applies to **every unit**. The
+    [AudioGlobalEventManager](/classes/audioglobaleventmanager) lists these objects in
+    `GlobalContextualActionData`. The properties have the same meaning as in
+    [ContextualActionData](/classes/contextualactiondata), with the limits below.
+
+    The client runs a global object in two cases:
+
+    - After a situation runs on a unit's own data, the client runs the entry with the same
+      key in each listed global object, in list order, against that unit's context. Only the
+      user fact, mix state, champion music and announcer actions run.
+    - An audio event type of the `Cac` family runs a situation on the global objects only
+      (see [AudioContextEventType](/classes/audiocontexteventtype)). Only the champion music,
+      announcer and mix state actions run.
+
+    The audio, animation and trigger event actions of a global object never run. So
+    `mCooldown`, `ContextualSituation.mCoolDownTime` and `mHealthPercentThreshold` of a global
+    object have no effect.
+
+    Every second, the component of each unit fires the situation `GlobalHeartBeat` on the
+    global objects only. A unit's own data does not receive it.
+
+    Without an active [AudioGlobalEventManager](/classes/audioglobaleventmanager), the list is
+    empty and no global object runs.
+  notes:
+    - "No shipped bin contains an object of this class, and no shipped bin contains an `AudioGlobalEventManager`."

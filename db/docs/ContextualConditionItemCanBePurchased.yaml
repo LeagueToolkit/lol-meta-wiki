@@ -1,0 +1,15 @@
+# ContextualConditionItemCanBePurchased Documentation
+
+class:
+  description: |
+    A condition that compares `mItemCanBePurchased` with a flag of the current shop item ping.
+    The client sets the flag only while it handles a `PingShopItem` situation, from the data
+    that the ping carries, and clears it afterwards. In every other situation the flag is
+    `false`, so `false` passes and `true` fails.
+  notes:
+    - "What the ping data that sets the flag means is not identified."
+    - "No shipped object uses it."
+
+properties:
+  mItemCanBePurchased:
+    description: "The flag value that passes."

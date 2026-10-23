@@ -1,0 +1,6 @@
+# ContextualConditionCharacterInRangeForSyncedAnimation Documentation
+
+class:
+  description: |
+    A [character subcondition](/classes/icharactersubcondition) that passes when the unit is **within 250 world units** of the unit that the
+    situation belongs to. The distance is fixed.

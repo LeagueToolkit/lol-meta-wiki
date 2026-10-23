@@ -1,0 +1,15 @@
+# ContextualConditionCharacterName Documentation
+
+class:
+  description: |
+    A [character subcondition](/classes/icharactersubcondition) that passes when the unit is **one of the characters in `mCharacters`**. The
+    client compares the unit's character name with the name of each
+    [CharacterRecord](/classes/characterrecord) in the list. The comparison ignores ASCII
+    case.
+
+    - An entry that does not resolve is skipped.
+    - If `mCharacters` is empty, the condition fails.
+
+properties:
+  mCharacters:
+    description: "The [CharacterRecord](/classes/characterrecord) objects that pass."

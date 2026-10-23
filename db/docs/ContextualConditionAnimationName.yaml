@@ -1,0 +1,11 @@
+# ContextualConditionAnimationName Documentation
+
+class:
+  description: |
+    A [condition](/classes/icontextualcondition) for the `AnimationEnded` situation that passes when the animation that ended
+    is `AnimationName`. The client records the hash of the animation name when it fires
+    `AnimationEnded`. No other situation writes it.
+
+properties:
+  AnimationName:
+    description: "The name of the animation that passes. The client compares the hashes."

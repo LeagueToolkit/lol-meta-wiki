@@ -1,0 +1,15 @@
+# ContextualConditionCharacterHealth Documentation
+
+class:
+  description: |
+    A [character subcondition](/classes/icharactersubcondition) that compares the **health of the unit**, in percent of its maximum health,
+    with `mTargetHealth`.
+
+    If the unit is the kill victim of the situation, the health is `0` for the test.
+
+properties:
+  mTargetHealth:
+    description: "The health, in percent from `0` to `100`, that the unit's health is compared with."
+
+  mCompareOp:
+    description: "How the health is compared with `mTargetHealth`: the test is `health <op> mTargetHealth`. The operator table is on [IContextualCondition](/classes/icontextualcondition)."

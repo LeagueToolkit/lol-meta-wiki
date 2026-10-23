@@ -1,0 +1,22 @@
+# ContextualConditionAbilityResourceIsPips Documentation
+
+class:
+  description: |
+    A [condition](/classes/icontextualcondition) for the `MaxResource` situation that tests **which kind of resource bar
+    filled**.
+
+    The client fires `MaxResource` from the unit's resource bar in the HUD when the bar
+    becomes full. A segmented bar (pips) is full when the whole-number part of the current
+    amount reaches the whole-number part of the maximum. A continuous bar is full when it
+    is filled to `1`.
+
+    The condition passes when `AbilityResourceIsPips` equals the kind of the bar that
+    filled: `true` for a segmented bar, `false` for a continuous bar. After the situation
+    the client resets the stored kind to `false`. In any other situation the condition
+    passes only when `AbilityResourceIsPips` is `false`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  AbilityResourceIsPips:
+    description: "`true` matches a segmented bar, `false` matches a continuous bar."

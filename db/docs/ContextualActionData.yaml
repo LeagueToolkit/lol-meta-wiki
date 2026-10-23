@@ -6,20 +6,58 @@ class:
     something happens in the game, such as a spell cast, a kill or low health. The unit's
     contextual action component reads this object.
 
-    A situation is a named game event. When a situation happens to the unit, the client
-    looks up its name in `mSituations`. If the map has no entry for it, nothing plays. If it
-    has one, the client picks a [ContextualRule](/classes/contextualrule) from the entry and
-    runs that rule's actions. Situations can come from the client's own checks, such as
-    `mHealthPercentThreshold`, and from the server.
+    ## Which units run it
 
-    Two cooldowns limit how often actions play:
+    The client creates a contextual action component when it initializes a unit. The
+    shopkeeper also has one. The component finds the unit's data through
+    `SkinCharacterDataProperties.mContextualActionData`. Each component keeps its own state:
+    the situation context, the cooldown timers and the play counts. The client does not test
+    whether a unit belongs to the local player before it evaluates a situation, so every
+    client evaluates the situations of every unit that has a component. Only the voice line
+    event name depends on the viewer (see
+    [ContextualActionPlayAudio](/classes/contextualactionplayaudio)).
 
-    | Cooldown | Scope | Set by |
-    |---|---|---|
-    | Situation cooldown | one situation | `ContextualSituation.mCoolDownTime` |
-    | Shared cooldown | all situations of the unit | `mCooldown` |
+    ## What fires a situation
+
+    A situation is a named game event, such as a kill, an attack order, a spell cast or an
+    emote. The game event fires the situation on the components that it concerns.
+    [ContextualSituation](/classes/contextualsituation) lists the situation keys and the
+    game event that fires each one. `mHealthPercentThreshold` sets the condition of one of
+    them.
+
+    ## Order of a run
+
+    When a situation fires on a unit, the client runs these steps:
+
+    1. It looks up the key in this object's `mSituations` and runs the audio action of the
+       situation, with the gates that [ContextualRule](/classes/contextualrule) describes.
+    2. In the same entry, it runs the user fact action, the mix state action, the champion
+       music action and the announcer action, in this order.
+    3. For each [GlobalContextualActionData](/classes/globalcontextualactiondata) in
+       `AudioGlobalEventManager.GlobalContextualActionData`, in list order, it runs the same
+       four actions of the entry with the same key, against this unit's context. The audio
+       action of a global object does not run.
+
+    If `mSituations` has no entry for the key, steps 1 and 2 do nothing. Each action kind
+    chooses its own rule from the entry (see [ContextualSituation](/classes/contextualsituation)).
+    Animation and trigger event actions run only from some situations:
+    [IContextualAction](/classes/icontextualaction) lists them.
+
+    ## Cooldowns
+
+    Three cooldowns limit how often voice lines play:
+
+    | Cooldown | Scope | Set by | Applies to |
+    |---|---|---|---|
+    | Situation cooldown | one situation on one unit | `ContextualSituation.mCoolDownTime` | the audio action of that situation |
+    | Shared cooldown | all situations of the unit | `mCooldown` | audio actions of rules with `ActiveVoiceOver` |
+    | Rule cooldown | one rule on one unit | [ContextualConditionRuleCooldown](/classes/contextualconditionrulecooldown) | rules that have the condition |
+
+    Each time starts when a voice line of a rule with `ActiveVoiceOver` ends, not when it
+    starts. A rule whose `ActiveVoiceOver` is `false` never starts a cooldown. The other
+    action kinds ignore all three cooldowns.
   notes:
-    - "Shipped data has about 560 objects, in champion WADs and in a few map WADs. They are stored in the merged skin bins of each champion, not in separate files."
+    - "Shipped data has about 590 objects, in champion WADs and in a few map WADs. They are stored in the merged skin bins of each champion, not in separate files."
 
 properties:
   mSituations:
@@ -29,31 +67,41 @@ properties:
       `HealthDroppedBelowThreshold`, matches the client's own hash. Each value is a
       [ContextualSituation](/classes/contextualsituation).
 
-      When the situation happens, the client first checks the situation cooldown: if fewer
-      than `mCoolDownTime` seconds have passed since this situation last played, nothing
-      plays. Then it picks a rule. When `mChooseRandomValidRule` is `false`, it takes the
-      first rule in `mRules` whose conditions pass. When it is `true`, it picks one of the
+      When the situation happens, the audio action first checks the situation cooldown: if
+      fewer than `mCoolDownTime` seconds have passed since a voice line of this situation
+      ended, no voice line plays. The other actions of the situation still run. Then each
+      action kind picks a rule. When `mChooseRandomValidRule` is `false`, it takes the first
+      rule in `mRules` that is valid for that kind. When it is `true`, it picks one of the
       valid rules at random, weighted by each rule's `ChanceWeight`.
 
   mCooldown:
     description: |
-      A cooldown, in seconds, shared by all situations of the unit. While the unit's
-      contextual action timer shows `mCooldown` seconds or less, the client skips every rule
-      whose `ActiveVoiceOver` is `true`. A rule is exempt when it sets `mOverrideCacCooldown`,
-      or when its `CooldownModifications` sets `IgnoreTimer`
+      A cooldown, in seconds, shared by all situations of the unit. The unit's contextual
+      action timer restarts when a voice line of a rule with `ActiveVoiceOver` ends. While
+      the timer shows `mCooldown` seconds or less, the client skips every rule whose
+      `ActiveVoiceOver` is `true`. The first voice line of the game is free, because the
+      timer has not started yet.
+
+      A rule is exempt from the check when it sets `mOverrideCacCooldown`, or when its
+      `CooldownModifications` sets `IgnoreTimer`
       (see [ContextualActionCooldownModifications](/classes/contextualactioncooldownmodifications)).
+      A rule does not restart the timer when it sets `mOverrideCacCooldown`, or when its
+      `CooldownModifications` sets `DontResetTimer`.
 
       Rules whose `ActiveVoiceOver` is `false` do not check this cooldown.
     notes:
       - "Shipped data sets `15` on almost every object. A few use `9`, `10` or `20`."
-      - "What restarts the timer is not yet identified."
 
   mHealthPercentThreshold:
     description: |
       A health fraction, from `0` to `1`. When the unit takes damage and its health goes from
       above this value to this value or below, the client fires the situation
       `HealthDroppedBelowThreshold` for the unit. It fires once per crossing: health must rise
-      above the threshold again before it can fire again.
+      above the threshold again before it can fire again. With `0`, the situation fires only
+      when health reaches `0`.
+
+      The client reads the value only from the unit's own object. The value in a
+      [GlobalContextualActionData](/classes/globalcontextualactiondata) has no effect.
     notes:
       - "Shipped data sets it on 8 objects: `0.4` on seven and `0.2` on one."
 

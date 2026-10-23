@@ -1,0 +1,18 @@
+# ContextualConditionCharacterRole Documentation
+
+class:
+  description: |
+    A [character subcondition](/classes/icharactersubcondition) that passes when the unit **holds the role `mRole` in its team**.
+
+    The client keeps five role slots per team, each holding one unit. The condition
+    passes when the slot `mRole` of the unit's team holds the unit. If the unit has no
+    contextual action component, the condition fails.
+  notes:
+    - "How the client fills the role slots is not yet identified."
+    - "No shipped object uses it."
+
+properties:
+  mRole:
+    description: |
+      The role slot, from `0` to `4`. Which role each slot stands for is not yet
+      identified. A value above `4` does not pass for any unit.

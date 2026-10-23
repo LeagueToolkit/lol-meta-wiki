@@ -1,0 +1,33 @@
+# ContextualConditionCharacterBuffStackCount Documentation
+
+class:
+  description: |
+    A [character subcondition](/classes/icharactersubcondition) that compares the **stack count of a buff** on the unit with `Count`.
+
+    The client looks up the buff of the spell object `Buff` on the unit. If the unit does
+    not have the buff, the count is `0`. Otherwise the count is the total number of stacks
+    of the buff, or, with `FilterBuffByCaster`, the number of stacks that the unit selected
+    by `BuffCaster` applied. Then it tests `count <op> Count`.
+
+    - A missing buff gives the count `0`. The test `== 0` passes, and so does `< Count`
+      with a `Count` above `0`.
+    - If `Buff` does not resolve to an object, or the unit has no buffs at all, the
+      condition fails.
+
+properties:
+  Buff:
+    description: "The spell object of the buff."
+
+  Count:
+    description: "The number of stacks that the count is compared with."
+
+  CompareOp:
+    description: "How the count is compared with `Count`: the test is `count <op> Count`. The operator table is on [IContextualCondition](/classes/icontextualcondition)."
+
+  FilterBuffByCaster:
+    description: "Counts only the stacks that the unit selected by `BuffCaster` applied."
+
+  BuffCaster:
+    description: |
+      The caster for `FilterBuffByCaster`, chosen with the unit selector table on [ICharacterSubcondition](/classes/icharactersubcondition).
+      If the selector gives no unit, the count is `0`.

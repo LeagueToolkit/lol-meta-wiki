@@ -1,0 +1,22 @@
+# AudioPriorityBehavior Documentation
+
+class:
+  description: |
+    Priority and queue settings for an audio event line. The client loads these values but
+    reads none of them, so they have no effect. What each value is meant to control is not
+    confirmed.
+  notes:
+    - "No shipped bin contains an object of this class."
+
+properties:
+  priority:
+    description: "A priority value. The client does not read it."
+
+  TargetQueue:
+    description: "A hash, presumably naming an audio queue. The client does not read it."
+
+  disabled:
+    description: "A flag. The client does not read it."
+
+  MaxQueueTimes:
+    description: "An optional time limit, presumably for the wait in a queue. The client does not read it."

@@ -1,0 +1,31 @@
+# ContextualActionUserFactAction Documentation
+
+class:
+  description: |
+    An action that records a **user fact** for the unit: the hash `FactName`, the game time
+    and, optionally, a unit. The component of the unit keeps the last 128 facts; a new fact
+    replaces the oldest one. Two conditions read the log:
+    [ContextualConditionUserFactCount](/classes/contextualconditionuserfactcount) counts a
+    fact within a time window, and
+    [ContextualConditionUserFactSequence](/classes/contextualconditionuserfactsequence) tests
+    a list of facts within a time window.
+
+    The fact goes into the log of the unit whose situation runs the action. This also holds
+    when the action is in a [GlobalContextualActionData](/classes/globalcontextualactiondata).
+    The action runs from ordinary situations and emotes, not from chained situations (see
+    [IContextualAction](/classes/icontextualaction)).
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  FactName:
+    description: |
+      The fact to record. It is an arbitrary hash that the conditions compare. If it is `0`,
+      the action records nothing and fails.
+
+  Subject:
+    description: |
+      The unit to record with the fact, as a unit selector value (see
+      [ICharacterSubcondition](/classes/icharactersubcondition)). When it is unset, or when
+      the selector resolves no unit, the fact has no unit, and it matches every unit filter
+      of the conditions.

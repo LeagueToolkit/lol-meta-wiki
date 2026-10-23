@@ -1,0 +1,27 @@
+# ContextualConditionCharacterDistance Documentation
+
+class:
+  description: |
+    A [character subcondition](/classes/icharactersubcondition) that compares the **distance** between the unit and a point with `mDistance`,
+    in world units. `mDistanceTarget` selects the point.
+
+properties:
+  mDistance:
+    description: "The distance, in world units, that the measured distance is compared with."
+
+  mCompareOp:
+    description: "How the distance is compared with `mDistance`: the test is `distance <op> mDistance`. The operator table is on [IContextualCondition](/classes/icontextualcondition)."
+
+  mDistanceTarget:
+    description: |
+      The point that the distance is measured from.
+
+      | Value | Name | Point |
+      |---|---|---|
+      | `0` | Owner | the position of the unit that the situation belongs to |
+      | any other | Situation position | the target position of the situation |
+
+      The client records the target position of a move order in `MoveOrder2D` and of a
+      spell in the spell situations, and clears it after each situation.
+    notes:
+      - "Shipped data uses the value `1` to test the distance to the point of a move order."

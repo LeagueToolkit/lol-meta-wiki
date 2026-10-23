@@ -1,0 +1,31 @@
+# MultiAnnouncerVoEventType Documentation
+
+class:
+  description: |
+    An announcer event type that **selects one type by the trigger's count**, such as one
+    line per multi-kill size. It picks no line itself.
+
+    For count `n`, the client uses entry `n` of `AnnouncerVoEventTypes`, counting from
+    `1`:
+
+    | Count | Result |
+    |---|---|
+    | `0` | no type, nothing plays |
+    | `1` to the list size | entry `n` |
+    | larger than the list size | the last entry if `0x2f1edf29` is `true`, else no type |
+
+    The count is `0` for a kill, an execute, a pentakill, a shutdown and a timed event, so a
+    `Multi` type acts only on a multi-kill and when a contextual action triggers it (count
+    `1`). [AudioContextEventType](/classes/audiocontexteventtype) describes the count.
+
+    When the event loads, the client copies its `objectPath` and `NameHash` into every entry
+    of the list, so a `Cac` entry runs the situation of the outer event.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+
+properties:
+  AnnouncerVoEventTypes:
+    description: "The types to select from, in count order: the first entry for count `1`."
+
+  "0x2f1edf29":
+    description: "If `true`, a count larger than the list size selects the last entry. If `false`, such a count selects nothing."

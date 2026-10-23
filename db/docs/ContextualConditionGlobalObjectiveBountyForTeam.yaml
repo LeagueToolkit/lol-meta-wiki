@@ -1,0 +1,26 @@
+# ContextualConditionGlobalObjectiveBountyForTeam Documentation
+
+class:
+  description: |
+    A [condition](/classes/icontextualcondition) that compares the **team of the global objective bounty** with a team that
+    `TeamCompareOp` selects.
+
+    The global objective bounty is a game-wide state with a team. The condition does not
+    read the situation or any unit.
+  notes:
+    - "Whether the bounty team is the team that can claim the bounty or the team that it is placed on is not yet identified."
+
+properties:
+  TeamCompareOp:
+    description: |
+      The team that the bounty team must be.
+
+      | Value | Name | Passes when the bounty team is |
+      |---|---|---|
+      | `0` | Own team | the team of the unit that the situation belongs to |
+      | `1` | Enemy team | the other team: `200` for a unit of team `100`, and `100` otherwise |
+      | `2` | Team 100 | `100` |
+      | `3` | Team 200 | `200` |
+      | `4` | Any | always passes |
+
+      Any other value fails.

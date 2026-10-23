@@ -1,0 +1,32 @@
+# ContextualConditionNearbyChampionCount Documentation
+
+class:
+  description: |
+    A condition on the **number of champions near the owner**. The situation context holds
+    two counts, one for the owner's team and one for the other teams. `mTeamCompareOp`
+    selects the count, and the condition passes if it compares to `mCount` with
+    `mCompareOp`.
+  notes:
+    - "The client code that fills the two counts was not found, so the radius and the units that count are not identified."
+    - "Shipped data uses `mTeamCompareOp` `1` with `mCompareOp` `3` (`>=`) and a count of 1 or 2."
+
+properties:
+  mTeamCompareOp:
+    description: |
+      Selects the count.
+
+      | Value | Name | Count used |
+      |---|---|---|
+      | `0` | Ally | champions of the owner's team |
+      | `1` | Enemy | champions of the other teams |
+      | `2` | Order | the owner's team if it is Order (`100`), else the other teams |
+      | `3` | Chaos | the owner's team if it is Chaos (`200`), else the other teams |
+      | `4` | Both | the sum of both counts |
+
+      Any other value uses the count of the other teams.
+
+  mCount:
+    description: "The number of champions to compare with."
+
+  mCompareOp:
+    description: "The comparison, with the selected count on the left. The values are in the `CompareOp` table on [IContextualCondition](/classes/icontextualcondition)."

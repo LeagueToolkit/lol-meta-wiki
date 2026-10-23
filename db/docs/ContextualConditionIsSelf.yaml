@@ -1,0 +1,21 @@
+# ContextualConditionIsSelf Documentation
+
+class:
+  description: |
+    Character subcondition that tests whether the character is the **owner**, the unit whose
+    contextual actions run.
+
+    The condition does not choose the character itself. Its parent condition does:
+    [ICharacterSubcondition](/classes/icharactersubcondition) describes how
+    [ContextualConditionCharacter](/classes/contextualconditioncharacter) and
+    [ContextualConditionAnyOtherHero](/classes/contextualconditionanyotherhero) select it.
+
+properties:
+  IsSelf:
+    description: |
+      Selects the test.
+
+      | Value | Passes when |
+      |---|---|
+      | `true` | the character is the owner |
+      | `false` | the character is any other unit |

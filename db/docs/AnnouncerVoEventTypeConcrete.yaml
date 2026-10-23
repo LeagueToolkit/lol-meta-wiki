@@ -1,0 +1,8 @@
+# AnnouncerVoEventTypeConcrete Documentation
+
+class:
+  description: |
+    An announcer event type that acts on a trigger itself, as opposed to
+    [MultiAnnouncerVoEventType](/classes/multiannouncervoeventtype), which selects one of
+    these types by the trigger's count. The list of a `Multi` type and
+    `AnnouncerVoEventTypeModularCac.PrimaryEvent` hold types of this kind.

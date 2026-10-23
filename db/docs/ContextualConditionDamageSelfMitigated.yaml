@@ -1,0 +1,14 @@
+# ContextualConditionDamageSelfMitigated Documentation
+
+class:
+  description: |
+    A [condition](/classes/icontextualcondition) for the `DamageSelfMitigated` situation that passes when the damage of the
+    situation was **partly mitigated**.
+
+    When the client fires `DamageSelfMitigated`, it records the total damage of the hit
+    and the amount that the unit mitigated. The condition passes when the mitigated amount
+    divided by the total damage is greater than `0`. The threshold is fixed and cannot be
+    set from data.
+
+    The client resets both amounts to `0` after the situation. In any other situation the
+    condition fails.

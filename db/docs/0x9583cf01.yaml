@@ -1,0 +1,52 @@
+# 0x9583cf01 Documentation
+
+class:
+  description: |
+    A champion music event type that picks a cue by the local player's **role in the
+    event**. [AudioContextEventType](/classes/audiocontexteventtype) describes the trigger
+    context.
+
+    | Local player | Cue |
+    |---|---|
+    | is the killer | `IndividualSucceededEvent` |
+    | is the victim | `IndividualFailedEvent` |
+    | assisted the kill | `IndividualAssistedEvent` |
+    | is none of these, on the succeeding team | `TeamSucceededEvent` |
+    | is none of these, on the other team | `TeamFailedEvent` |
+
+    If the local player is the killer, the victim or the assister and the matching
+    individual string is empty, the local player gets no cue. The client picks the cue and
+    does nothing else with it.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+
+properties:
+  IndividualSucceededEvent:
+    description: "The cue when the local player is the killer."
+
+  IndividualFailedEvent:
+    description: "The cue when the local player is the victim."
+
+  IndividualAssistedEvent:
+    description: "The cue when the local player assisted the kill."
+
+  TeamSucceededEvent:
+    description: "The cue for an uninvolved local player on the succeeding team."
+
+  TeamFailedEvent:
+    description: "The cue for an uninvolved local player on the other team."
+
+  IndividualPriorityBehavior:
+    description: "The [AudioPriorityBehavior](/classes/audioprioritybehavior) of the individual cues. The client does not read it."
+
+  AssistedPriorityBehavior:
+    description: "The [AudioPriorityBehavior](/classes/audioprioritybehavior) of the assisted cue. The client does not read it."
+
+  TeamPriorityBehavior:
+    description: "The [AudioPriorityBehavior](/classes/audioprioritybehavior) of the team cues. The client does not read it."
+
+  "0xe2030a49":
+    description: "Unknown flag. No client code that reads it was found."
+
+  "0x8c107881":
+    description: "Unknown [AudioPriorityBehavior](/classes/audioprioritybehavior). No client code that reads it was found."

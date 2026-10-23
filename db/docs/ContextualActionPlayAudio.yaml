@@ -1,0 +1,84 @@
+# ContextualActionPlayAudio Documentation
+
+class:
+  description: |
+    A **voice line action**: the audio action of a [ContextualRule](/classes/contextualrule).
+    It chooses an audio event name for the viewer and plays it on the unit. Only
+    [ContextualActionPlayVO](/classes/contextualactionplayvo) plays a line: shipped data uses
+    that class for every audio action.
+
+    ## Event name
+
+    Each client chooses the name for its own player:
+
+    | Viewer | Name used |
+    |---|---|
+    | no champion (a spectator) | `mSpectatorEventName` |
+    | the viewer's champion is the unit | `mSelfEventName` |
+    | the viewer's champion is on the unit's team | `mAllyEventName` |
+    | the viewer's champion is on another team | `mEnemyEventName` |
+
+    If the chosen name is empty, the action fails and this viewer hears no line.
+
+    ## Queue
+
+    A line can wait in the unit's queue instead of playing at once. The component checks the
+    queue every second and plays a queued line when it can. A queued line expires
+    `mWaitTimeout` seconds after it was queued.
+  notes:
+    - "No shipped object uses this class itself."
+
+properties:
+  mSelfEventName:
+    description: "The audio event name for the player whose champion is the unit."
+
+  mAllyEventName:
+    description: "The audio event name for players on the unit's team."
+
+  mEnemyEventName:
+    description: "The audio event name for players on another team."
+
+  mSpectatorEventName:
+    description: "The audio event name for a viewer without a champion."
+
+  mMaxOccurences:
+    description: |
+      Maximum number of successful plays of this action per unit per game. When the count
+      reaches the value, the rule is no longer valid for the audio action, so the next valid
+      rule of the situation can play. `0` means no limit. The count is not reset during the game.
+    notes:
+      - "Shipped data uses `1` on most actions that set it: a line that plays once per game."
+
+  mWaitForAnnouncerQueue:
+    description: |
+      Queues the line instead of playing it when the game has no announcer, when the
+      announcer is speaking, or when the situation is one of `OwnerDeath`, `KillChampion`,
+      `NearbyChampionDeath`, `NearbyEnemyKilledChampion`, `GotFirstBlood` and
+      `OnFirstBlood`.
+
+      When the rule of this action is chosen, the client also removes every queued line
+      whose rule priority is not higher than the priority of this rule.
+
+  WaitForShopkeeperVo:
+    description: "Queues the line while any shopkeeper plays a voice line."
+
+  mWaitTimeout:
+    description: |
+      Time, in seconds, that a queued line waits before it expires. A value of `0` or less
+      makes the line wait without limit.
+    notes:
+      - "Shipped data uses `-1` on almost every action that sets it."
+
+  mResolveEventAsTarget:
+    description: |
+      Plays the line through the voice state of the other unit of the situation instead of
+      the owner's (see [ICharacterSubcondition](/classes/icharactersubcondition) for the
+      other unit). If the situation has no other unit, the action fails.
+
+  mResolveEventUsingStolenLines:
+    description: |
+      Plays the line through the owner's voice state for lines taken from another champion.
+      If the owner has no such state, the action fails.
+
+  mAuxBusName:
+    description: "The name of an auxiliary audio bus that the client passes with the line."

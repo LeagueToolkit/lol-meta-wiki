@@ -1,0 +1,14 @@
+# ContextualConditionSpellLevel Documentation
+
+class:
+  description: |
+    A spell condition on the level of the tested spell.
+    [IContextualConditionSpell](/classes/icontextualconditionspell) describes which spell is
+    tested. The condition passes if the level compares to `mSpellLevel` with `mCompareOp`.
+
+properties:
+  mSpellLevel:
+    description: "The spell level to compare with."
+
+  mCompareOp:
+    description: "The comparison, with the spell's level on the left. The values are in the `CompareOp` table on [IContextualCondition](/classes/icontextualcondition)."

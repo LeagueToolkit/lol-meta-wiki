@@ -1,0 +1,7 @@
+# ThemeMusicEventTypeConcrete Documentation
+
+class:
+  description: |
+    A theme music event type that would act on a trigger itself. No concrete theme music
+    type does anything in the current client.
+    [ThemeMusicEventType](/classes/thememusiceventtype) gives the details.

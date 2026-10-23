@@ -1,0 +1,20 @@
+# ThemeMusicEventTypeTeamwide Documentation
+
+class:
+  description: |
+    A theme music event type with a cue for each team: one for the succeeding team of the
+    event and one for the other team. When it triggers, the client reads the local
+    player's id and nothing else: it reads none of the fields and none of the trigger
+    context.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+
+properties:
+  TeamSucceededEvent:
+    description: "The cue for listeners on the succeeding team. The client does not read it."
+
+  TeamFailedEvent:
+    description: "The cue for listeners on the other team. The client does not read it."
+
+  PriorityBehavior:
+    description: "The [AudioPriorityBehavior](/classes/audioprioritybehavior) of the cue. The client does not read it."

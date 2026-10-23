@@ -1,0 +1,12 @@
+# ContextualConditionNeutralMinionCampIsAlive Documentation
+
+class:
+  description: |
+    A condition that compares `mCampIsAlive` with the alive state of the pinged jungle camp.
+    The client sets the state only in the `PingJungleTimer` situation.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  mCampIsAlive:
+    description: "The alive state that passes."

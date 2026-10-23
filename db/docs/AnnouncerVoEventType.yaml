@@ -1,0 +1,18 @@
+# AnnouncerVoEventType Documentation
+
+class:
+  description: |
+    The event type of an [AnnouncerVoEvent](/classes/announcervoevent): the object that
+    picks the announcer line name for each listener, or selects another type that does.
+    [AudioContextEventType](/classes/audiocontexteventtype) describes the trigger context
+    and the name selection.
+
+    For the local player, an announcer type builds the full event name from a fixed prefix
+    and the chosen string, then discards it.
+
+properties:
+  PriorityBehavior:
+    description: |
+      The [AudioPriorityBehavior](/classes/audioprioritybehavior) of the line.
+      [AnnouncerVoEventTypeGeneric](/classes/announcervoeventtypegeneric) returns it together
+      with the chosen name. The client does not read its values.

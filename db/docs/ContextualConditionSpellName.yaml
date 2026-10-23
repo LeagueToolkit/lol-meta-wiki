@@ -1,0 +1,13 @@
+# ContextualConditionSpellName Documentation
+
+class:
+  description: |
+    A spell condition that passes when the tested spell is the spell that `mSpell` links to.
+    [IContextualConditionSpell](/classes/icontextualconditionspell) describes which spell is
+    tested.
+  notes:
+    - "Shipped data uses it in most spell rules, often to give one spell its own lines."
+
+properties:
+  mSpell:
+    description: "A link, by object path, to a spell object. If the link does not resolve, the condition fails."

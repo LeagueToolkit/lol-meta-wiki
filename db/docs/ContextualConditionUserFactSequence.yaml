@@ -1,0 +1,34 @@
+# ContextualConditionUserFactSequence Documentation
+
+class:
+  description: |
+    A [condition](/classes/icontextualcondition) that tests whether every fact in `UserFacts` was recorded on the unit within
+    the last `TimeWindow` seconds, and optionally in list order.
+    [ContextualConditionUserFactCount](/classes/contextualconditionuserfactcount) describes
+    user facts and the unit filter of `CharacterType`. This condition uses the same filter.
+
+    The condition fails when `UserFacts` is empty, or when the unit holds fewer facts than
+    the list has entries. Each entry of the list needs its own recorded fact inside the
+    window. A hash that appears twice in the list needs two recorded facts.
+
+    - When `CheckChronologicalOrder` is `true`, the recorded facts must occur in list order:
+      the first entry matches the oldest fact and the last entry matches the newest.
+    - When it is `false`, the order does not matter.
+  notes:
+    - "When `CheckChronologicalOrder` is `true`, the condition fails if the first entry of the list matches the oldest fact that the unit still holds, even though the sequence is complete."
+    - "No shipped object uses this condition or records user facts."
+
+properties:
+  UserFacts:
+    description: "The fact hashes to find. Each hash is the `FactName` of the action that records the fact."
+
+  TimeWindow:
+    description: "Age limit, in seconds. Facts recorded more than `TimeWindow` seconds ago do not match."
+
+  CharacterType:
+    description: |
+      The unit of the filter, chosen with the unit selector table on [ICharacterSubcondition](/classes/icharactersubcondition). A fact that
+      was recorded with a different unit does not match.
+
+  CheckChronologicalOrder:
+    description: "Requires the facts to occur in the order of `UserFacts`."

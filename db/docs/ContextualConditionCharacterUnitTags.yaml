@@ -7,9 +7,11 @@ class:
     tags come from.
 
     The condition does not choose the character itself. Its parent condition does:
-    `ContextualConditionCharacter` evaluates it on the one character that its
-    `mCharacterType` selects, and `ContextualConditionAnyOtherHero` evaluates it on every
-    hero other than the unit the situation belongs to.
+    [ContextualConditionCharacter](/classes/contextualconditioncharacter) evaluates it on
+    the one character that its `mCharacterType` selects, and
+    [ContextualConditionAnyOtherHero](/classes/contextualconditionanyotherhero) evaluates it
+    on each hero other than the unit that the situation belongs to, until one hero passes
+    all its subconditions.
 
     `mTagMode` selects the comparison.
 

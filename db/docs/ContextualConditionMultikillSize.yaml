@@ -1,0 +1,13 @@
+# ContextualConditionMultikillSize Documentation
+
+class:
+  description: |
+    A condition that passes when the **multikill size** of a kill situation equals
+    `mMultikillSize`. The `KillChampion` situation sets the size; `AssistKill` sets `0`.
+  notes:
+    - "The test is exact equality. `3` passes for a triple kill only, not for a quadra kill."
+    - "Shipped data uses `2` to `5`, mostly `5`."
+
+properties:
+  mMultikillSize:
+    description: "The multikill size that passes: `2` for a double kill up to `5` for a penta kill."

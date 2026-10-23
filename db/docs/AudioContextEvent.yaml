@@ -1,0 +1,27 @@
+# AudioContextEvent Documentation
+
+class:
+  description: |
+    An **audio event for a game event**: the common part of
+    [AnnouncerVoEvent](/classes/announcervoevent),
+    [ChampionMusicEvent](/classes/championmusicevent) and
+    [ThemeMusicEvent](/classes/thememusicevent). Each event links an event type that picks
+    the event name.
+
+    When the event loads, it copies `objectPath` and `NameHash` into its event type. When
+    the event triggers, it asks the type for the concrete type for the trigger's count and
+    triggers that type. [AudioContextEventType](/classes/audiocontexteventtype) describes
+    the trigger context and how a type picks a name.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+
+properties:
+  NameHash:
+    description: |
+      A situation key, for event types of the `Cac` kind. Those types run the global
+      contextual situation with this key. The key is the FNV-1a hash of the lowercased
+      situation name, as in `ContextualActionData.mSituations`. Other event types do not use
+      it.
+
+  objectPath:
+    description: "A path hash. The client copies it into the event type. No use of it was identified."

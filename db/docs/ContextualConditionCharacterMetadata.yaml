@@ -1,0 +1,16 @@
+# ContextualConditionCharacterMetadata Documentation
+
+class:
+  description: |
+    A [character subcondition](/classes/icharactersubcondition) that tests one entry of the unit's **metadata**: a set of strings keyed by
+    category. The condition looks up the category `mCategory` and passes when its value
+    equals `mData`.
+  notes:
+    - "Shipped data uses categories such as skin line, faction and race, to play a line when the other unit belongs to a theme."
+
+properties:
+  mCategory:
+    description: "The metadata category to read."
+
+  mData:
+    description: "The value that passes."

@@ -1,0 +1,25 @@
+# ContextualConditionOwnerTeamNetChampionKills Documentation
+
+class:
+  description: |
+    A condition on the **recent champion kills** of the owner's team against the other
+    teams. The client keeps a game-wide list of champion kill records, each with a time and a
+    team. The condition counts the records of the last `mTimeFrameSeconds` seconds: those of
+    the owner's team and those of other teams. The net value is the number of other-team
+    records minus the number of owner-team records.
+
+    The condition passes if the net value compares to `mOwnerTeamNetKillAdvantage` with
+    `mKillAdvantageCompareOp`.
+  notes:
+    - "The client code that adds records was not found. If the team of a record is the team of the victim, the net value is the owner team's kill advantage."
+    - "With the default `mTimeFrameSeconds` of `0`, no record counts and the net value is `0`."
+
+properties:
+  mTimeFrameSeconds:
+    description: "The time window, in seconds. Records older than this are not counted."
+
+  mOwnerTeamNetKillAdvantage:
+    description: "The net value to compare with. A negative value tests a deficit."
+
+  mKillAdvantageCompareOp:
+    description: "The comparison, with the net value on the left. The values are in the `CompareOp` table on [IContextualCondition](/classes/icontextualcondition)."

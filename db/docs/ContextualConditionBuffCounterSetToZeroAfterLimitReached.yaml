@@ -1,0 +1,24 @@
+# ContextualConditionBuffCounterSetToZeroAfterLimitReached Documentation
+
+class:
+  description: |
+    A [buff condition](/classes/icontextualconditionbuff) for the `BuffCounterSet` situation that passes when the **counter of `mBuff`
+    returns to `0` after it reached `mCounterHighestReached`**.
+
+    The client fires the `BuffCounterSet` situation when the counter of a buff is set, and
+    when a buff is removed (new value `0`). The situation carries the buff, the new counter
+    value, the change (new value minus old value) and the highest value that the counter
+    reached since it was last `0`, before this change.
+
+    The condition passes when the buff of the situation is `mBuff`, the new value is `0`,
+    and the highest value before the change is at least `mCounterHighestReached`. The
+    removal of the buff also counts as a change to `0`.
+  notes:
+    - "If `mBuff` does not resolve to an object, the condition fails."
+
+properties:
+  mBuff:
+    description: "The spell object of the buff."
+
+  mCounterHighestReached:
+    description: "The value that the counter must have reached before it returned to `0`."

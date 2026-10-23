@@ -1,0 +1,22 @@
+# ChampionMusicEventTypeTeamwide Documentation
+
+class:
+  description: |
+    A champion music event type that picks a cue by **team**: `TeamSucceededEvent` when the
+    listener is on the succeeding team of the event, `TeamFailedEvent` otherwise.
+    [AudioContextEventType](/classes/audiocontexteventtype) describes the succeeding team.
+
+    For the local player, the client tests whether the picked string is set and does
+    nothing else.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+
+properties:
+  TeamSucceededEvent:
+    description: "The cue for listeners on the succeeding team."
+
+  TeamFailedEvent:
+    description: "The cue for listeners on the other team."
+
+  PriorityBehavior:
+    description: "The [AudioPriorityBehavior](/classes/audioprioritybehavior) of the cue. The client does not read it."

@@ -1,0 +1,28 @@
+# ContextualActionPlayVO Documentation
+
+class:
+  description: |
+    The **voice line action** that plays: it plays the event name that
+    [ContextualActionPlayAudio](/classes/contextualactionplayaudio) chooses for the viewer.
+
+    Where the line plays depends on the situation:
+
+    - In `SpellCast`, `SpellHit` and `MissileMiss` situations the line is attached to the spell
+      of the situation, unless `0x9449aa71` is `true`.
+    - In every other situation, and when `0x9449aa71` is `true`, the line plays on the voice
+      emitter of the unit.
+
+    When the rule sets `ActiveVoiceOver`, the line becomes the unit's playing line. The
+    client first ends the line that played before, which counts as a stomp. When the line
+    ends, the client starts the cooldowns that [ContextualActionData](/classes/contextualactiondata)
+    lists.
+  notes:
+    - "Shipped data uses this class for every audio action of a rule."
+
+properties:
+  "0x9449aa71":
+    description: |
+      Plays the line of a `SpellCast`, `SpellHit` or `MissileMiss` situation on the unit
+      instead of attaching it to the spell. Other situations ignore it.
+    notes:
+      - "Shipped data sets it to `true` on about 980 actions."

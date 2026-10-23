@@ -1,0 +1,10 @@
+# ContextualConditionCharacterPlayingAnimation Documentation
+
+class:
+  description: |
+    A [character subcondition](/classes/icharactersubcondition) that passes when the unit's animation graph is **playing the animation
+    `mAnimationNameHash`**.
+
+properties:
+  mAnimationNameHash:
+    description: "The name of the animation."

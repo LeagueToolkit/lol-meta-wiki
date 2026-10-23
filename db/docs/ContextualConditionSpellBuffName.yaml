@@ -1,0 +1,11 @@
+# ContextualConditionSpellBuffName Documentation
+
+class:
+  description: |
+    A buff condition that passes when the buff of the situation is the buff that `SpellBuff`
+    names. [IContextualConditionBuff](/classes/icontextualconditionbuff) describes which
+    situations set the buff.
+
+properties:
+  SpellBuff:
+    description: "A link, by object path, to the spell object that defines the buff. If the link does not resolve, the condition fails."

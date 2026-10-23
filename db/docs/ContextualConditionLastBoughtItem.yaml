@@ -1,0 +1,14 @@
+# ContextualConditionLastBoughtItem Documentation
+
+class:
+  description: |
+    A condition that passes when `mItem` is the **last item bought**. The client records the
+    item at each `BuyItem` and `Purchase` situation. Unlike the current item of
+    [ContextualConditionItemID](/classes/contextualconditionitemid), the record stays after
+    the situation, so the condition also works in later situations.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  mItem:
+    description: "A link to an `ItemData` object. If the link does not resolve to an item, the condition fails."

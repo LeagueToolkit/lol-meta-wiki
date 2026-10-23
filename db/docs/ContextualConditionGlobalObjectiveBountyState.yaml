@@ -1,0 +1,21 @@
+# ContextualConditionGlobalObjectiveBountyState Documentation
+
+class:
+  description: |
+    A [condition](/classes/icontextualcondition) that passes when the **state of the global objective bounty** equals
+    `TargetGlobalBountyState`.
+
+    The global objective bounty is a game-wide state with a team. The condition does not
+    read the situation or any unit.
+
+properties:
+  TargetGlobalBountyState:
+    description: |
+      The bounty state that passes.
+
+      | Value | Name | Behaviour |
+      |---|---|---|
+      | `0` | Inactive | no bounty |
+      | `1` | Starting | turns into Active 20 seconds after it starts |
+      | `2` | Active | the bounty is active |
+      | `3` | Ending | turns into Inactive 20 seconds after it starts |

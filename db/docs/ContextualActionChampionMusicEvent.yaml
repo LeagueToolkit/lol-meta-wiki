@@ -1,0 +1,26 @@
+# ContextualActionChampionMusicEvent Documentation
+
+class:
+  description: |
+    A contextual action that **triggers a champion music event**. When the action runs, the
+    client triggers `TriggerChampionMusicEvent` with a count of `1` and with the killer, the
+    victim, the assister and the succeeding team of the situation context. Kill situations
+    write these values. [AudioContextEventType](/classes/audiocontexteventtype) describes
+    what the event does with them.
+
+    The action stores the event as the unit's last champion music event. It triggers the
+    event in every case, including during the collect mode of
+    [AnnouncerVoEventTypeModularCac](/classes/announcervoeventtypemodularcac) and when the
+    event's type is a [ChampionMusicEventTypeCac](/classes/championmusiceventtypecac). In
+    the last case the type runs its global situation from inside the action.
+
+    The client plays no sound for the event.
+    [IContextualAction](/classes/icontextualaction) describes which situations run this
+    action kind.
+  notes:
+    - "No shipped bin contains an object of this class. The behaviour is read from the client and is not tested in game."
+    - "The announcer action skips `Cac` event types to prevent a global situation from triggering itself. This action tests for the announcer `Cac` type instead of the champion music one, so the test never matches."
+
+properties:
+  TriggerChampionMusicEvent:
+    description: "The [ChampionMusicEvent](/classes/championmusicevent) to trigger. If it links no loaded object, the action fails."

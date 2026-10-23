@@ -1,0 +1,14 @@
+# ContextualConditionAmountHealed Documentation
+
+class:
+  description: |
+    A [condition](/classes/icontextualcondition) that compares the **amount of the heal or shield** of the situation, in
+    health points, with `AmountHealed`. The client records the amount in the situations
+    `ReceiveHeal`, `GrantShield` and `ReceiveShield`. No other situation writes it.
+
+properties:
+  AmountHealed:
+    description: "The amount, in health points, that the recorded amount is compared with."
+
+  CompareOp:
+    description: "How the amount is compared with `AmountHealed`: the test is `amount <op> AmountHealed`. The operator table is on [IContextualCondition](/classes/icontextualcondition)."

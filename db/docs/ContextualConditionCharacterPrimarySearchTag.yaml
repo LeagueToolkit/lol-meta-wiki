@@ -1,0 +1,16 @@
+# ContextualConditionCharacterPrimarySearchTag Documentation
+
+class:
+  description: |
+    A [character subcondition](/classes/icharactersubcondition) that passes when the unit's character data lists `SearchTag` among its
+    **primary search tags**.
+
+    - If `SearchTag` is empty, the condition fails.
+    - If the unit has no character record, the condition fails.
+  notes:
+    - "Whether the match is on a whole tag or on part of the tag string is not yet identified."
+    - "Shipped data uses the champion class tags."
+
+properties:
+  SearchTag:
+    description: "The tag to find."

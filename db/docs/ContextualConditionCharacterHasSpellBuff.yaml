@@ -1,0 +1,13 @@
+# ContextualConditionCharacterHasSpellBuff Documentation
+
+class:
+  description: |
+    A [character subcondition](/classes/icharactersubcondition) that passes when the unit **has a buff of the spell object `SpellBuff`**. The
+    client looks up the game object of the unit and asks it for the buff. If the object is
+    not of a unit type that holds buffs, the condition fails.
+  notes:
+    - "[ContextualConditionCharacterBuffStackCount](/classes/contextualconditioncharacterbuffstackcount) also tests a buff and can count its stacks."
+
+properties:
+  SpellBuff:
+    description: "The spell object of the buff."

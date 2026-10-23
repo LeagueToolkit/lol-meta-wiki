@@ -1,0 +1,11 @@
+# ChampionMusicEventType Documentation
+
+class:
+  description: |
+    The event type of a [ChampionMusicEvent](/classes/championmusicevent): the object that
+    picks the music cue name for the local player, or selects another type that does.
+    [AudioContextEventType](/classes/audiocontexteventtype) describes the trigger context
+    and the name selection.
+
+    A champion music type that picks a name tests only whether the chosen string is set.
+    It builds no event name and calls nothing after the test.
