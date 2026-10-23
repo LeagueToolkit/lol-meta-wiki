@@ -1,0 +1,28 @@
+# TeamGeComponentDef Documentation
+
+class:
+  description: |
+    The **team of an entity**. It sits in the `Team` field of an entity template. Other
+    components read the team from it, for example a shop, a spawn point or a camp when it
+    builds its object, and an icon when it picks a team-specific texture.
+
+    If `TeamDefinition` is set, it decides the team. Otherwise, `Team` decides.
+
+properties:
+  TeamDefinition:
+    description: |
+      A [TeamDefinition](/classes/teamdefinition). The client looks up its `teamName` in the
+      team table of the current game mode. If the name is not in the table, the entity gets
+      the default team of the mode.
+    notes:
+      - "If the current game mode has no team table, the client crashes."
+  Team:
+    description: |
+      Team id, used when `TeamDefinition` is not set:
+
+      | Value | Team |
+      |---|---|
+      | `100` | Order (blue side) |
+      | `200` | Chaos (red side) |
+      | `300` | Neutral |
+      | any other value | no team |

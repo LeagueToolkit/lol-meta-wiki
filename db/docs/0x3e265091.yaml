@@ -1,0 +1,7 @@
+# 0x3e265091 Documentation
+
+class:
+  description: |
+    A **texture override** of a particle: a rule that replaces one texture of a particle
+    system with another texture. The client applies it when it creates the particle of an
+    entity's [VfxGeComponentDef](/classes/vfxgecomponentdef), from `TextureOverride`.

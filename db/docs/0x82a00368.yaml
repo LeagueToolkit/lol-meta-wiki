@@ -1,0 +1,16 @@
+# 0x82a00368 Documentation
+
+class:
+  description: |
+    A death behaviour for `definition` of [DeathGeComponentDef](/classes/deathgecomponentdef)
+    that adds respawn timing to [0x38ad3494](/classes/0x38ad3494). The client does not read it.
+    When the entity dies or respawns, the client does nothing with this object.
+    [IDeathGeComponentDef](/classes/ideathgecomponentdef) describes the death component.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  RespawnDelay:
+    description: "Not read by the client."
+  RespawnDuration:
+    description: "Not read by the client."

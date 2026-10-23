@@ -1,0 +1,18 @@
+# NetworkingGeComponent Documentation
+
+class:
+  description: |
+    The **client receive side of server replication** for one entity. It holds the network id
+    that the server assigned to the entity, and it handles two kinds of server messages:
+
+    - **Transform.** The server sends a new transform, and the component sets it on the
+      entity. The other components then react to the move as to any transform change.
+    - **Component messages.** The server addresses a message to one component of the entity
+      by its index, and this component passes it on. The state of a
+      [StateMachineGeComponentDef](/classes/statemachinegecomponentdef), the start time of a
+      [VfxGeComponentDef](/classes/vfxgecomponentdef) effect, the team list of a
+      [SuperwardGeComponentDef](/classes/superwardgecomponentdef) and the spawn type of a
+      [NeutralCampGeComponentDef](/classes/neutralcampgecomponentdef) arrive this way.
+
+    [NetworkingGeComponentDef](/classes/networkinggecomponentdef) describes how the component
+    changes the activation of the entity.

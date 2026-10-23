@@ -1,0 +1,17 @@
+# DynamicPointLightGeComponent Documentation
+
+class:
+  description: |
+    The entity component that a
+    [DynamicPointLightGeComponentDef](/classes/dynamicpointlightgecomponentdef) adds. It
+    builds the light from the definition and keeps it registered with the dynamic light
+    renderer while the entity is active:
+
+    - **Activate.** The light is registered if the current quality level is set in
+      `QualityLevels`.
+    - **Deactivate** and **reset.** The light is removed.
+    - **Transform changed.** The light moves to the entity's new position.
+
+    When the entity spawns, the component registers the light's colour, intensity and HDR
+    scale, and its radius, with the entity's
+    [SequencerGeComponent](/classes/sequencergecomponent).

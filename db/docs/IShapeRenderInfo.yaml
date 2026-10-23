@@ -1,0 +1,8 @@
+# IShapeRenderInfo Documentation
+
+class:
+  description: |
+    **Render settings for the outline of a region**. It sits in
+    [`RegionGeComponentDef.RenderInfo`](/classes/regiongecomponentdef#renderinfo). The client asks the render info for its material.
+  notes:
+    - "The client does not read `RegionGeComponentDef.RenderInfo` on the paths that register the region and compute its bounds. How a region with render info is drawn was not traced."

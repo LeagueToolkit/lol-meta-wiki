@@ -1,0 +1,34 @@
+# GameEntityComponent Documentation
+
+class:
+  description: |
+    A **game entity component**: one runtime part of a [GameEntity](/classes/gameentity).
+    A [component definition](/classes/igecomponentdef) in the entity's template creates it
+    when the entity is created, and the component reads its settings from that definition.
+
+    **Lifecycle.** The client calls every component of an entity at these points, in the
+    entity's component order:
+
+    | Event | When |
+    |---|---|
+    | created | right after the definition creates the component, while the entity is built |
+    | spawned | after the entity is added to the world and its tags are registered. Most components read their definition here and register with the entity's [SequencerGeComponent](/classes/sequencergecomponent). |
+    | activate | when the entity activates. Activating an entity that is already active does nothing. |
+    | deactivate | when the entity deactivates |
+    | reset | when the world resets |
+    | transform changed | when the entity's transform is set |
+
+    Components that listen for entity events through `IGameEntityComponentEvents` are told
+    after every component of the entity has activated, and before any component
+    deactivates.
+
+    Components that tick each frame do so through
+    [IUpdatableGeComponent](/classes/iupdatablegecomponent).
+
+    **Reset.** When the world resets, each placed entity is deactivated without events and
+    its components get the reset call. The client then activates again every placed entity
+    whose template starts active. Entities spawned at runtime are destroyed instead.
+
+    **Destruction.** The entity destroys its components in reverse order.
+
+    Many components act on only some of these events and leave the others empty.

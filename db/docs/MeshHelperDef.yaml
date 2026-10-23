@@ -1,0 +1,32 @@
+# MeshHelperDef Documentation
+
+class:
+  description: |
+    The **mesh of a mesh entity**. It is embedded in [`MeshEntityTemplate.MeshHelper`](/classes/meshentitytemplate#meshhelper). When
+    the client creates the entity, it adds the resolved mesh to the environment renderer.
+
+    No client code that reads the flag and pass fields was found.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  MeshPath:
+    description: "Path of the mesh."
+
+  MaterialMapping:
+    description: "Materials for the mesh, keyed by hash. Not yet traced."
+
+  quality:
+    description: "Purpose not yet identified."
+
+  eyeCandy:
+    description: "Purpose not yet identified."
+
+  RenderPass:
+    description: "Purpose not yet identified."
+
+  "0x4bcc2801":
+    description: "Unknown flag. Purpose not yet identified."
+
+  "0x7114af11":
+    description: "Unknown flag. Purpose not yet identified."

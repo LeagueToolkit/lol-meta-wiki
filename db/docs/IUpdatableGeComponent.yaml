@@ -1,0 +1,11 @@
+# IUpdatableGeComponent Documentation
+
+class:
+  description: |
+    The **per-frame tick** of [game entity components](/classes/gameentitycomponent). A
+    component of this kind is added to the world's tick list when its entity activates. It is
+    removed when the entity deactivates and when the world resets. Each frame the world
+    update calls the tick of every component in the list.
+
+    Only components of active entities tick. An entity has no update of its own, so an
+    entity without a ticking component costs nothing per frame.

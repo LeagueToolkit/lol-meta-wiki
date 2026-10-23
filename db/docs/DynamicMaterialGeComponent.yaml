@@ -1,0 +1,15 @@
+# DynamicMaterialGeComponent Documentation
+
+class:
+  description: |
+    The entity component that a
+    [DynamicMaterialGeComponentDef](/classes/dynamicmaterialgecomponentdef) adds. It holds
+    the entity's **sequence material values**: floats and colours, each stored under a key.
+
+    When the entity spawns, the component registers its store with the entity's
+    [SequencerGeComponent](/classes/sequencergecomponent).
+    [SeqInputMaterialParamFloat](/classes/seqinputmaterialparamfloat) and
+    [SeqInputMaterialParamColor](/classes/seqinputmaterialparamcolor) read and write the
+    values of this store.
+  notes:
+    - "The code that applies the values to the entity's materials was not traced."

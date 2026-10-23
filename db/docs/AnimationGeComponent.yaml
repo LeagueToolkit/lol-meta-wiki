@@ -1,0 +1,14 @@
+# AnimationGeComponent Documentation
+
+class:
+  description: |
+    The entity component that an [AnimationGeComponentDef](/classes/animationgecomponentdef)
+    adds. When the entity spawns, it registers an animation interface with the entity's
+    [SequencerGeComponent](/classes/sequencergecomponent).
+
+    The component records the animation requests that pass through the interface, each a
+    pair of names, and the current animation state. When the world resets, the component
+    sends the current state and every recorded request through the interface again, then
+    clears the record.
+  notes:
+    - "Which sequence actions use the interface was not traced."

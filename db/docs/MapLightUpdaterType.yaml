@@ -1,0 +1,13 @@
+# MapLightUpdaterType Documentation
+
+class:
+  description: |
+    The **list of updaters** of a dynamic light. A light links it in `UpdaterType`, and the
+    client runs each updater in `Updaters` on the light.
+    [IMapLightUpdater](/classes/imaplightupdater) describes the updaters.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Updaters:
+    description: "The updaters of the light."

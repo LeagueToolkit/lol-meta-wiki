@@ -1,0 +1,11 @@
+# RegionEntityBase Documentation
+
+class:
+  description: |
+    The entity that a [RegionEntityBaseTemplate](/classes/regionentitybasetemplate) creates,
+    and the base of [RegionEntity](/classes/regionentity). The client's region manager
+    registers a region by this class when the entity spawns, and enables the region while the
+    entity is active.
+
+    A region entity can be shown and hidden like any [game entity](/classes/gameentity). A
+    superward, for example, shows and hides the region entity that it names.

@@ -1,0 +1,11 @@
+# CinematicCameraGeComponentDef Documentation
+
+class:
+  description: |
+    The definition of a [CinematicCameraGeComponent](/classes/cinematiccameragecomponent).
+    The client does not use it: the component does nothing, and no client code reads the
+    definition.
+
+properties:
+  Camera:
+    description: "The client does not read it."

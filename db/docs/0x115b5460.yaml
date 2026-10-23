@@ -1,0 +1,17 @@
+# 0x115b5460 Documentation
+
+class:
+  description: |
+    A [texture override](/classes/0x3e265091) that shows the **tactician of a player** on a
+    particle. The client takes the player at `TacticianIndex` in its player list, gets the
+    texture of that player's tactician, and puts it into the particle in place of the
+    texture `TextureToOverride`.
+  notes:
+    - "Shipped objects replace placeholder textures of particles with the tactician textures of the players."
+
+properties:
+  TacticianIndex:
+    description: "Index of the player in the client's player list. The client clamps it to the list."
+
+  TextureToOverride:
+    description: "Path of the particle texture to replace."

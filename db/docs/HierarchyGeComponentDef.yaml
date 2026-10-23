@@ -1,0 +1,13 @@
+# HierarchyGeComponentDef Documentation
+
+class:
+  description: |
+    Adds the [HierarchyGeComponent](/classes/hierarchygecomponent) to a prefab entity. It sits
+    in the `Hierarchy` field of a [PrefabEntityTemplate](/classes/prefabentitytemplate), which
+    describes how members are resolved and spawned.
+
+    The definition is filled at run time, not from the bin. It holds the member hashes from
+    `MemberList` and, after the template is registered with the world, the member templates
+    that those hashes resolve to. It is the only component definition that acts when its
+    template is registered: at that point it resolves the members and marks each member
+    template so that it does not spawn on its own.

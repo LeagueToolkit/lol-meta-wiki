@@ -1,0 +1,15 @@
+# EsportsBannerData Documentation
+
+class:
+  description: |
+    A **named banner position** on a map, with a team. No client code that reads it was
+    traced.
+  notes:
+    - "Shipped objects are top-level objects, one for each banner position. Their names describe the side, the area and the orientation of the banner."
+
+properties:
+  bannerName:
+    description: "Name of the banner position."
+
+  Team:
+    description: "Team of the banner position. Shipped values are `100`, `200` and `300`. How the client uses the value was not traced."

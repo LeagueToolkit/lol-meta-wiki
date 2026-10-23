@@ -1,0 +1,38 @@
+# PrefabEntityTemplate Documentation
+
+class:
+  description: |
+    An entity template that **groups other placed templates** into one prefab. The members
+    are other items of the same `MapPlaceableContainer`. They do not spawn on their own: they
+    spawn as children of the prefab entity.
+
+    **Load.** When the template loads, the client hashes each string of `MemberList` and
+    stores the hashes in the `Hierarchy` definition. When the template is registered with the
+    world, each hash is looked up among the item keys of the container that places the
+    prefab, in the same chunk instance. Each template that it finds is marked as a member of
+    this prefab. At map load the client spawns every placed template except the marked
+    members (see [GameEntityTemplate](/classes/gameentitytemplate)).
+
+    **Spawn.** When the client creates the prefab entity, it spawns each member template as
+    a separate entity. Each member entity has the prefab entity as its parent, and the
+    prefab's [HierarchyGeComponent](/classes/hierarchygecomponent) keeps the list of
+    children.
+
+    **Activation.** A child entity takes its initial active state from the parent instead of
+    from its own template. When the prefab entity activates or deactivates, the hierarchy
+    component activates or deactivates every child.
+  notes:
+    - "A member string that matches no item key in the container is skipped without a message."
+    - "No shipped object uses it."
+
+properties:
+  MemberList:
+    description: |
+      Names of the member items. Each name is hashed and compared with the keys of the
+      `Items` map of the container that places the prefab. The client resolves the members
+      when the template is registered, not when the prefab spawns.
+  Hierarchy:
+    description: |
+      The [HierarchyGeComponentDef](/classes/hierarchygecomponentdef) that gives the prefab
+      entity its hierarchy component. It has nothing to author: the client fills it from
+      `MemberList`.

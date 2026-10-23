@@ -1,0 +1,21 @@
+# 0x3069f601 Documentation
+
+class:
+  description: |
+    The values of one **light region**: the lighting and fog values of
+    [LightRegionRenderData](/classes/lightregionrenderdata) and two probe references.
+    [MapLightRegions](/classes/maplightregions) describes how a pixel blends the regions
+    that cover it.
+
+    An entity light region links one in [`LightRegionGeComponentDef.parameters`](/classes/lightregiongecomponentdef#parameters). The client
+    uses the link to find the value set of the light region. If the link is not set, the
+    client skips the light region.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Probe:
+    description: "A probe reference of the region. Not yet traced."
+
+  CharacterProbe:
+    description: "A probe reference of the region. Not yet traced."

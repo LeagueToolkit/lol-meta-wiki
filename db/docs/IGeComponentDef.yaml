@@ -1,0 +1,37 @@
+# IGeComponentDef Documentation
+
+class:
+  description: |
+    A **component definition**: the authored half of a game entity component. Definitions
+    sit in the fields of a [GameEntityTemplate](/classes/gameentitytemplate). Each
+    definition class creates one runtime component class, a
+    [GameEntityComponent](/classes/gameentitycomponent), for example
+    `AttackableUnitGeComponentDef` creates `AttackableUnitGeComponent`.
+
+    **Role-named fields.** A template has one field per role, such as `Networking`, `Team`,
+    `Character`, `AttackableUnit`, `Light` or `Sequencer`. When the template loads, the
+    client walks every field of the template whose value is a component definition:
+
+    - An embedded definition always becomes a component. It exists even when the bin does
+      not write the field, so every entity of the template gets that component.
+    - A pointer definition becomes a component only when the field is set. A null pointer
+      adds no component.
+
+    The class of the value decides which component is built, not the name of the field.
+
+    **Calls from the client.** The client calls each definition at these points:
+
+    | When | What the definition does |
+    |---|---|
+    | the template loads | adds its runtime component class to the template's list of component types |
+    | every template of the map is registered | only [HierarchyGeComponentDef](/classes/hierarchygecomponentdef) acts on this call |
+    | every placed entity of the map is spawned | a call with no entity; only the barracks, skin character and VFX definitions act on it |
+    | an entity is created from the template | creates the component for that entity |
+
+    The template sorts its definitions by their runtime component class.
+    [GameEntityTemplate](/classes/gameentitytemplate) describes the resulting component
+    order. A definition that creates no component leaves an empty slot in the entity's
+    component list, and the other components are not affected.
+
+    Every entity made from one template shares the template's definitions. A component keeps
+    a reference to the definition that created it and reads its values from it.

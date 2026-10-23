@@ -1,0 +1,17 @@
+# NetworkingGeComponentDef Documentation
+
+class:
+  description: |
+    Makes an entity **replicated by the server**. It sits in the `Networking` field of the
+    entity templates whose entities the server controls, and adds the
+    [NetworkingGeComponent](/classes/networkinggecomponent) to the entity.
+
+    The client still creates the entity itself when the map loads. When the server spawns the
+    entity, the client binds the server's network id to the existing entity. An entity with
+    this component does not activate on the client when the map loads: it activates only when
+    the server activates it. Entities without it activate locally (see
+    [GameEntityTemplate](/classes/gameentitytemplate)).
+
+    The client always creates this component first among the components of an entity.
+  notes:
+    - "If the server spawns an entity whose client template has no `Networking` field, for example after a mod removes the field, the client crashes."

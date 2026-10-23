@@ -1,0 +1,28 @@
+# EntityStateMachine Documentation
+
+class:
+  description: |
+    The **state table** of the state machine of a map entity. The entity's
+    [StateMachineGeComponentDef](/classes/statemachinegecomponentdef) links it in
+    `StateMachineDef`.
+
+    The entity is in one state at a time. A state is named by a hash. When the client
+    creates the state machine component, the current state is `DefaultState`. After that,
+    the server sends the state changes, and each change carries the time at which it
+    happened.
+
+    The client finds the current state by its hash in `states`. On a change it plays the
+    `OutSequence` of the old state, then the `InSequence` of the new state.
+    [StateMachineGeComponentDef](/classes/statemachinegecomponentdef) describes how the
+    sequences play and which entities they act on.
+  notes:
+    - "The state hashes must match the hashes that the server sends."
+    - "If the current hash is not a key of `states`, no sequence plays. The client does not report an error."
+    - "No shipped object uses it."
+
+properties:
+  DefaultState:
+    description: "Hash of the state that the entity is in when the client creates its state machine component."
+
+  states:
+    description: "The states of the machine, keyed by state hash. See [EntityState](/classes/entitystate)."

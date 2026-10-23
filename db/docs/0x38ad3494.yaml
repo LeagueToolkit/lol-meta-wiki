@@ -1,0 +1,14 @@
+# 0x38ad3494 Documentation
+
+class:
+  description: |
+    A death behaviour for `definition` of [DeathGeComponentDef](/classes/deathgecomponentdef)
+    that carries one string. The client does not read it. When the entity dies or respawns, the
+    client does nothing with this object. [IDeathGeComponentDef](/classes/ideathgecomponentdef)
+    describes the death component.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  "0x1b73f6d3":
+    description: "Not read by the client. Purpose not yet identified."

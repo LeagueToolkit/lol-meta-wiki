@@ -1,0 +1,22 @@
+# RegionEntityBaseTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) that places a **region**: a shape on the
+    map whose area carries tags on the navigation grid. It creates a
+    [RegionEntityBase](/classes/regionentitybase). When the entity spawns, the `navRegion`
+    component registers the shape of `Region` with the client's region manager; the region is
+    enabled while the entity is active.
+
+    Other components find a region entity by its `name`. For example, a superward reads the
+    shape of the region that its `visionRegion` names.
+
+    The entity is local: it activates at map load when `0xbbe68da1` is true.
+  notes:
+    - "No shipped object uses this class itself. Shipped regions use [RegionEntityTemplate](/classes/regionentitytemplate)."
+
+properties:
+  Region:
+    description: "Shape, navigation region settings and render settings of the region. See [RegionGeComponentDef](/classes/regiongecomponentdef)."
+  navRegion:
+    description: "Registers the region with the region manager and enables it while the entity is active. See [NavRegionGeComponentDef](/classes/navregiongecomponentdef)."

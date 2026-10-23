@@ -1,0 +1,22 @@
+# CharacterMeshGeComponent Documentation
+
+class:
+  description: |
+    The entity component that a
+    [CharacterMeshGeComponentDef](/classes/charactermeshgecomponentdef) adds. It shows the
+    skinned mesh of a character on the map through a game object that exists beside the
+    entity.
+
+    - **Spawned.** The component reads the character record and the skin from the entity's
+      `Character` component, a
+      [SkinCharacterGeComponentDef](/classes/skincharactergecomponentdef). It registers
+      with the entity's [SequencerGeComponent](/classes/sequencergecomponent).
+    - **Activate.** If no game object is bound to the component, the component creates one
+      and builds its skinned mesh. The mesh takes the light channels of the entity's
+      [LightChannelsGeComponent](/classes/lightchannelsgecomponent). If `PlayIdleAnimation`
+      is set, the idle animation then starts.
+    - **Transform changed.** The component moves the game object to the entity's position
+      and rotation.
+  notes:
+    - "Without a `Character` component on the template, the game object is created with no skinned mesh and no idle animation."
+    - "If the client fails to create the game object, activating the entity crashes the client."

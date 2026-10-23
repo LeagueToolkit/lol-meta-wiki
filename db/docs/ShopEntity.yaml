@@ -1,0 +1,8 @@
+# ShopEntity Documentation
+
+class:
+  description: |
+    The entity that a [ShopEntityTemplate](/classes/shopentitytemplate) creates. Its primary
+    component is the [ShopGeComponent](/classes/shopgecomponent), which links the entity to the
+    shop object. When the entity's transform changes, the client moves the shop with it. See
+    [LolGameEntity](/classes/lolgameentity).

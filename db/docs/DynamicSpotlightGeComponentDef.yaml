@@ -1,0 +1,78 @@
+# DynamicSpotlightGeComponentDef Documentation
+
+class:
+  description: |
+    The definition of a [DynamicSpotlightGeComponent](/classes/dynamicspotlightgecomponent):
+    a **spotlight carried by a game entity**, on a
+    [DynamicSpotlightEntityTemplate](/classes/dynamicspotlightentitytemplate). The light
+    starts at the entity's position and moves with it.
+
+    The light goes into the same light lists as a
+    [MapDynamicSpotlight](/classes/mapdynamicspotlight). That page describes the projected
+    texture and the texture atlas. [MapDynamicLighting](/classes/mapdynamiclighting)
+    describes the surfaces, the masks and the light types. The light is drawn only on a map
+    that has that component.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  CastsShadows:
+    description: |
+      `false` makes a dynamic light without a shadow, `true` a dynamic light with a shadow
+      map: light types `1` and `2` on [MapDynamicLighting](/classes/mapdynamiclighting).
+
+  Color:
+    description: |
+      Colour of the light. The red, green and blue values are multiplied by `intensity`.
+
+  intensity:
+    description: "Multiplier on `Color`."
+
+  HdrScale:
+    description: "Extra multiplier on the colour, used only by PBR-style shaders."
+
+  Impact:
+    description: |
+      Which kind of surface the light reaches. Bit `0x1` is environment, bit `0x2` is
+      characters.
+
+  LightChannels:
+    description: |
+      Bitmask of light channels. The light reaches an object only when the object's own
+      light channels share a bit with it.
+
+  QualityLevels:
+    description: |
+      Bitmask of quality levels, as on
+      [DynamicPointLightGeComponentDef](/classes/dynamicpointlightgecomponentdef). That the
+      spotlight applies it the same way was not traced.
+
+  Near:
+    description: "Distance from the light to the near plane of its frustum, in world units."
+
+  far:
+    description: |
+      Distance from the light to the far plane of its frustum, in world units. It is also
+      the range of the light.
+
+  Aspect:
+    description: "Width of the frustum divided by its height."
+
+  fov:
+    description: "Opening angle of the frustum, in degrees."
+
+  ProjectedTexture:
+    description: |
+      The texture that the light projects. The component loads it when the entity spawns.
+      A spotlight whose projected texture does not resolve is not drawn.
+
+  ProjectedTextureMaterial:
+    description: |
+      A [StaticMaterialDef](/classes/staticmaterialdef) that draws the projected texture
+      into the light's atlas tile, in place of a plain copy.
+
+  UpdaterType:
+    description: |
+      Updaters that change the light after it is set up, a
+      [MapLightUpdaterType](/classes/maplightupdatertype). See
+      [IMapLightUpdater](/classes/imaplightupdater). When it is null, no updater runs.

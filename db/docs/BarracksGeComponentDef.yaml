@@ -1,0 +1,29 @@
+# BarracksGeComponentDef Documentation
+
+class:
+  description: |
+    The definition of a [BarracksGeComponent](/classes/barracksgecomponent): the **minion
+    barracks** of one lane.
+
+properties:
+  lane:
+    description: |
+      Lane index of the barracks. It is part of the barracks object's name and selects the
+      lane that receives the waypoints of `LinkedPath`.
+
+  LinkedPath:
+    description: |
+      The map path of the lane. When the barracks activates and its lane has no waypoints
+      yet, the client registers the points of this path as the waypoints of the lane. If the
+      path is not found, no waypoints are registered.
+
+  BarracksConfig:
+    description: |
+      The `BarracksConfig` object of the barracks. It applies when no entry of
+      `BarracksConfigMutatorOverrides` matches.
+
+  BarracksConfigMutatorOverrides:
+    description: |
+      `BarracksConfig` objects by game mutator. The client walks the active mutators of the
+      game in order. The first mutator that is a key of this map selects its config in place
+      of `BarracksConfig`.

@@ -1,0 +1,9 @@
+# SuperwardEntity Documentation
+
+class:
+  description: |
+    The entity that a [SuperwardEntityTemplate](/classes/superwardentitytemplate) creates. Its
+    primary component is the
+    [AttackableUnitGeComponent](/classes/attackableunitgecomponent), which links the entity to
+    the ward unit. When the entity's transform changes, the client moves the unit with it. See
+    [LolGameEntity](/classes/lolgameentity).

@@ -1,0 +1,27 @@
+# ShopGeComponentDef Documentation
+
+class:
+  description: |
+    A **shop** placed on the map. It sits in the `Shop` field of a
+    [ShopEntityTemplate](/classes/shopentitytemplate). When the entity activates, the
+    [ShopGeComponent](/classes/shopgecomponent) builds a shop object of the older game object
+    system, named `Shop_T<team>_<index>_<n>` after the team and the spawn index of the
+    entity.
+
+    The shopkeeper model is the character of the entity's `Character` field
+    ([SkinCharacterGeComponentDef](/classes/skincharactergecomponentdef)). The client loads
+    it and plays its `Idle1` animation.
+  notes:
+    - "All shipped shops set the purchase radius, the purchase centre and the bounds."
+
+properties:
+  "0xd1318f26":
+    description: "Purchase radius, in world units. A unit can buy when its distance to the purchase centre is within this radius."
+  "0xf908963":
+    description: "Offset of the purchase centre from the entity, in the entity's local space. The client moves it by the entity transform."
+  "0x651de225":
+    description: "Half the side length of the square around the entity position that the client uses as the bounds of the shop object, in world units."
+  "0xfe060fba":
+    description: "Not read when the client builds the shop. No client reader has been identified."
+  "0xcf0f5b55":
+    description: "Not read when the client builds the shop. No client reader has been identified."

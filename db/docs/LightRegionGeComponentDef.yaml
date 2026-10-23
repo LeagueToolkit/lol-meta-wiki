@@ -1,0 +1,44 @@
+# LightRegionGeComponentDef Documentation
+
+class:
+  description: |
+    The definition of a [LightRegionGeComponent](/classes/lightregiongecomponent): a **light
+    region** placed as a polygon, on a
+    [LightRegionEntityTemplate](/classes/lightregionentitytemplate). A light region gives one
+    part of the map its own lighting and fog values; [MapLightRegions](/classes/maplightregions)
+    describes those values.
+
+    When a light region changes, the client packs the polygons of the light regions of all
+    active entities, with their values, and sends them to the light region shader. Regions
+    of inactive entities are not packed.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  parameters:
+    description: |
+      The lighting and fog values of the region, a [0x3069f601](/classes/0x3069f601). If it
+      is null, the region is skipped.
+
+  Polygon:
+    description: |
+      Outline of the region, in the entity's local space. The client transforms the
+      vertices by the entity's transform. The bounding rectangle of the outline in X and Z
+      is sent to the shader with the vertices.
+
+  radius:
+    description: |
+      Passed to the shader as its inverse. A value of 0 or less passes the largest float
+      instead. How the shader uses it was not traced.
+
+  FalloffPower:
+    description: "Passed to the shader with the polygon. How the shader uses it was not traced."
+
+  strength:
+    description: |
+      Weight of the region. The client multiplies it by a scale that the entity's
+      [SequencerGeComponent](/classes/sequencergecomponent) can animate.
+
+  PriorityOverride:
+    description: |
+      Priority of the region. A negative value uses the `Priority` of `parameters`.

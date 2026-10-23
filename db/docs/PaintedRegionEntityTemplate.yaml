@@ -1,0 +1,16 @@
+# PaintedRegionEntityTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) that places a **painted region**: a set
+    of navigation grid cells with a tag, painted cell by cell instead of drawn as a shape. It
+    creates a [PaintedRegionEntity](/classes/paintedregionentity). The region is enabled while
+    the entity is active.
+
+    The entity is local: it activates at map load when `0xbbe68da1` is true.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  PaintedRegion:
+    description: "The cells, tag and priority of the region. See [PaintedRegionGeComponentDef](/classes/paintedregiongecomponentdef)."

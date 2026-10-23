@@ -1,0 +1,16 @@
+# DragonCampGeComponentDef Documentation
+
+class:
+  description: |
+    The definition of a [DragonCampGeComponent](/classes/dragoncampgecomponent), on a
+    [DragonCampEntityTemplate](/classes/dragoncampentitytemplate). Its component does nothing
+    in the client.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  SoulTypes:
+    description: |
+      The dragon soul types of the camp, a [DragonSoulTypes](/classes/dragonsoultypes). The
+      dragon camp component does not read it. Whether other camp code reads it from the
+      template was not traced.

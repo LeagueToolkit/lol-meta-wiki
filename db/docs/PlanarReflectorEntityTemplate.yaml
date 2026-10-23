@@ -1,0 +1,16 @@
+# PlanarReflectorEntityTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) that places a **planar reflection
+    region**: a polygon on the map and flags that select what the reflection pass draws into
+    it. It creates a plain [GameEntity](/classes/gameentity). The reflector takes part in the
+    reflection pass only while the entity is active.
+
+    The entity is local: it activates at map load when `0xbbe68da1` is true.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  PlanarReflector:
+    description: "The reflection region and its settings. See [PlanarReflectorGeComponentDef](/classes/planarreflectorgecomponentdef)."

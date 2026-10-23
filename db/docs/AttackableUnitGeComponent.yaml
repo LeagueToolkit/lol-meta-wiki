@@ -1,0 +1,24 @@
+# AttackableUnitGeComponent Documentation
+
+class:
+  description: |
+    The entity component that an
+    [AttackableUnitGeComponentDef](/classes/attackableunitgecomponentdef) adds. It ties the
+    entity to a **unit**: a turret, an inhibitor, a nexus, a minion or a generic unit. The
+    unit is a game object that exists beside the entity.
+
+    - **Activate.** If no unit is bound to the component, the component creates a unit of
+      the kind in `type`, with the character and skin of the entity's `Character` component,
+      and binds it.
+    - **Tick.** The component copies the position and rotation of the unit into the entity,
+      so the entity follows the unit.
+    - **Transform changed.** When the entity's transform is set, the component moves the unit
+      to the entity's position and rotation. It skips this while it copies from the unit.
+    - **Reset.** When the world resets, a minion or a generic unit that the client created is
+      destroyed. Turrets, inhibitors and nexuses are kept.
+
+    When the entity spawns, the component registers two interfaces with the entity's
+    [SequencerGeComponent](/classes/sequencergecomponent).
+  notes:
+    - "The tick copies the transform only while a client state flag is set. That flag was not identified."
+    - "If the component cannot create its unit, for example because `type` is out of range, activating the entity crashes the client."

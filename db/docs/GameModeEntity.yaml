@@ -1,0 +1,7 @@
+# GameModeEntity Documentation
+
+class:
+  description: |
+    The entity that a [GameModeEntityTemplate](/classes/gamemodeentitytemplate) or a
+    [SequencerEntityTemplate](/classes/sequencerentitytemplate) creates. It behaves exactly as a
+    [LolGameEntity](/classes/lolgameentity); only its class differs.

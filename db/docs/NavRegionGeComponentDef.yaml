@@ -1,0 +1,20 @@
+# NavRegionGeComponentDef Documentation
+
+class:
+  description: |
+    Makes a region entity **write its region into the nav grid**. It sits in the `navRegion`
+    field of a [RegionEntityBaseTemplate](/classes/regionentitybasetemplate) and acts together
+    with the `Region` field of the same template
+    ([RegionGeComponentDef](/classes/regiongecomponentdef)).
+
+    When the entity spawns, the [NavRegionGeComponent](/classes/navregiongecomponent) takes
+    `NavRegionDef` and `shapeData` from the region definition and registers the region with
+    the region manager of the map. The manager samples the outline onto the nav-grid cells as
+    [RegionBoundaryConfig](/classes/regionboundaryconfig) describes and writes the tags of the
+    [NavRegionDef](/classes/navregiondef) into the covered cells. Activation turns the region
+    on in the manager, and deactivation turns it off.
+
+    If the region definition has no `NavRegionDef`, the client registers nothing and
+    activation has no effect.
+  notes:
+    - "No shipped region has a `NavRegionDef`, so no shipped region writes into the nav grid this way."

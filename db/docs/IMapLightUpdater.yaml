@@ -1,0 +1,23 @@
+# IMapLightUpdater Documentation
+
+class:
+  description: |
+    A **light updater**: a rule that changes a dynamic light after the light is created,
+    such as its colour, its intensity, its position or its rotation. A light takes its
+    updaters from the [MapLightUpdaterType](/classes/maplightupdatertype) in its
+    `UpdaterType`. Without an `UpdaterType`, nothing changes the light after it is set up.
+
+    The client calls each updater of the list with the light and the elapsed time. How
+    often the calls happen was not identified. An updater has one form for point lights and
+    one for spotlights, and an updater that has no point light form does nothing on a point
+    light.
+
+    | Updater | Point light | Spotlight |
+    |---|---|---|
+    | [ColorLogicDriverLightUpdater](/classes/colorlogicdriverlightupdater) | Colour from a driver | Colour from a driver |
+    | [IntensityLogicDriverLightUpdater](/classes/intensitylogicdriverlightupdater) | Intensity from a driver | Intensity from a driver |
+    | [FlickerMapLightUpdater](/classes/flickermaplightupdater) | Random flicker and jitter | Random flicker and jitter |
+    | [RotateMapLightUpdater](/classes/rotatemaplightupdater) | No effect | Constant rotation |
+  notes:
+    - "The updaters of entity lights ([DynamicPointLightGeComponentDef](/classes/dynamicpointlightgecomponentdef), [DynamicSpotlightGeComponentDef](/classes/dynamicspotlightgecomponentdef)) run when `UpdaterType` is set. For the map-placed lights, [MapDynamicPointLight](/classes/mapdynamicpointlight) and [MapDynamicSpotlight](/classes/mapdynamicspotlight), the updater path was not traced."
+    - "No shipped object uses an updater."

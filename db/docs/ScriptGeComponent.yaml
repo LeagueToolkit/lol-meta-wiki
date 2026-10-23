@@ -1,0 +1,21 @@
+# ScriptGeComponent Documentation
+
+class:
+  description: |
+    The entity component that runs the **entity scripts** of a
+    [ScriptGeComponentDef](/classes/scriptgecomponentdef). It creates one script instance for
+    each entry of `ScriptDef` that links a script, and sends the instances these events:
+
+    | When | Event |
+    |---|---|
+    | The entity spawns | `GameEntityOnInit`, once per instance |
+    | The entity activates | `GameEntityOnActivate` |
+    | The entity deactivates, before the other components deactivate | `GameEntityOnDeactivate` |
+    | Every 0.25 seconds of game time, while the entity is active | the periodic update event |
+
+    When a script instance is created, each instance variable that the script declares takes
+    the value of its override from `InstanceVariableOverrides`, or the script default if there
+    is no override. Override keys that the script does not declare are ignored.
+
+    When the world resets, the component deletes all script instances and creates them again
+    as at spawn.

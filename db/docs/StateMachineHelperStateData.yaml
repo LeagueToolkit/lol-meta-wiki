@@ -1,0 +1,26 @@
+# StateMachineHelperStateData Documentation
+
+class:
+  description: |
+    The **entity bindings of one state** of an entity state machine. It is a value of
+    [`StateMachineGeComponentDef.states`](/classes/statemachinegecomponentdef#states), keyed by the same state hash as the
+    [EntityState](/classes/entitystate) in the linked
+    [EntityStateMachine](/classes/entitystatemachine).
+
+    When the client plays a sequence of the state, it looks up the sequence role in
+    `sequences`:
+
+    | Key | Role |
+    |---|---|
+    | hash of `InSequence` (`0xfbc9eeef`) | The `InSequence` of the state |
+    | hash of `OutSequence` (`0x2d4bc6e6`) | The `OutSequence` of the state |
+
+    If the key of a role is missing, the sequence of that role does not play. An
+    `EntityState` without a matching entry here plays nothing.
+  notes:
+    - "The two keys are the same hashes as the names of the two `EntityState` properties."
+    - "No shipped object uses it."
+
+properties:
+  sequences:
+    description: "The bindings for each sequence role. See [StateMachineHelperSequenceData](/classes/statemachinehelpersequencedata)."

@@ -1,0 +1,18 @@
+# EntityShapeData Documentation
+
+class:
+  description: |
+    A **2D outline** that a map entity uses as an area. The client asks the shape for its
+    outline as a list of points. The points lie in the XZ plane, in world units, relative to
+    the entity.
+
+    Each reader of a shape places the points in the world in its own way:
+
+    | Reader | Use of the points |
+    |---|---|
+    | [RegionGeComponentDef](/classes/regiongecomponentdef) `shapeData` | Transformed by the entity transform. They give the bounds of the region entity and the area that a nav region writes onto the nav grid (see [NavRegionDef](/classes/navregiondef)). |
+    | [SfxGeComponentDef](/classes/sfxgecomponentdef) `shapeData` | Offset by the entity position, without rotation. They give the area of the ambient sound. If no shape is set, the sound plays from the entity position. |
+    | [SuperwardGeComponentDef](/classes/superwardgecomponentdef) | The client takes the shape of the region entity in `visionRegion` and triangulates it into a ground mesh. |
+    | [PlanarReflectorGeComponentDef](/classes/planarreflectorgecomponentdef) `Polygon` | Transformed by the entity transform, for the visibility test of the reflection plane. |
+  notes:
+    - "The client does not read [`NeutralCampGeComponentDef.LeashShape`](/classes/neutralcampgecomponentdef#leashshape) when it creates the camp."

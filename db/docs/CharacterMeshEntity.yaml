@@ -1,0 +1,9 @@
+# CharacterMeshEntity Documentation
+
+class:
+  description: |
+    The entity that a [CharacterMeshEntityTemplate](/classes/charactermeshentitytemplate)
+    creates. Its primary component is the
+    [CharacterMeshGeComponent](/classes/charactermeshgecomponent), which links the entity to the
+    object that draws the mesh. When the entity's transform changes, the client moves the object
+    with it. See [LolGameEntity](/classes/lolgameentity).

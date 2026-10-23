@@ -1,0 +1,21 @@
+# EsportsBannerEntityTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) for a character mesh that shows an
+    **esports banner**. Its properties add a character mesh, a character and skin, and a banner
+    component that links to an [EsportsBannerData](/classes/esportsbannerdata), which names a
+    banner and a team.
+
+    The client build that was read does not register this class, so its behaviour is known only
+    from its properties.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  CharacterMesh:
+    description: "The character mesh. See [CharacterMeshGeComponentDef](/classes/charactermeshgecomponentdef)."
+  Character:
+    description: "Character record and skin of the mesh."
+  banner:
+    description: "The banner to show. See [EsportsBannerGeComponentDef](/classes/esportsbannergecomponentdef)."

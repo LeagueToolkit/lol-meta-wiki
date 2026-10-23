@@ -1,0 +1,7 @@
+# SkinCharacterGeComponent Documentation
+
+class:
+  description: |
+    The entity component that a [SkinCharacterGeComponentDef](/classes/skincharactergecomponentdef)
+    adds. It has no behaviour of its own. The unit, shop and character mesh components of the
+    entity read the character and skin through it when they build their objects.

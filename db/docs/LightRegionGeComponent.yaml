@@ -1,0 +1,15 @@
+# LightRegionGeComponent Documentation
+
+class:
+  description: |
+    The entity component that a
+    [LightRegionGeComponentDef](/classes/lightregiongecomponentdef) adds.
+
+    - **Activate.** The component adds its region to the client's light region list and
+      marks the list for a rebuild.
+    - **Deactivate** and **reset.** The component removes its region.
+    - **Transform changed.** While the entity is active, the component marks the list for a
+      rebuild, so the polygon follows the entity.
+
+    When the entity spawns, the component registers the region with the entity's
+    [SequencerGeComponent](/classes/sequencergecomponent).

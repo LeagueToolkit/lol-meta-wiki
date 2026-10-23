@@ -1,0 +1,21 @@
+# EnvironmentEntityTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) that turns a group of **map geometry
+    meshes** into one entity. It creates an [EnvironmentEntity](/classes/environmententity).
+
+    A mesh in the `.mapgeo` can carry the `name` hash of an entity. When the client loads the
+    geometry, it gives each such mesh to the environment mesh component of the entity with that
+    name. Moving the entity then moves its meshes, and sequences can act on them through the
+    entity.
+
+    The entity is local: it activates at map load when `0xbbe68da1` is true.
+
+properties:
+  envMesh:
+    description: "Receives the map geometry meshes that carry this entity's name. See [EnvMeshGeComponentDef](/classes/envmeshgecomponentdef)."
+  dynamicMaterial:
+    description: "Material parameters that sequences set on the entity."
+  Sequencer:
+    description: "Lets sequences act on the entity."

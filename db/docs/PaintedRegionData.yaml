@@ -1,0 +1,23 @@
+# PaintedRegionData Documentation
+
+class:
+  description: |
+    A **painted region**: a list of nav cells with a tag for each cell, for one tag group.
+    It is the `data` of a [PaintedRegionGeComponentDef](/classes/paintedregiongecomponentdef). Unlike a
+    [nav region](/classes/navregiondef), it has no outline: each cell is listed.
+
+    When the entity spawns, the client registers the painted region with the region
+    manager, with the `priority` of its component. Activating the entity turns the region on,
+    and deactivating it turns the region off. In each listed cell, the painted region writes
+    the cell's tag into the group `RegionGroupIndex` if its priority is not lower than the
+    priority of the other regions in that cell. [NavRegionDef](/classes/navregiondef)
+    describes the tag groups.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  RegionGroupIndex:
+    description: "The tag group that the painted region writes, from `0` to `9`."
+
+  Cells:
+    description: "The painted cells. See [PaintedRegionCell](/classes/paintedregioncell)."

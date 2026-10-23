@@ -1,0 +1,22 @@
+# IdentifierComponents Documentation
+
+class:
+  description: |
+    One **spawn type of a neutral camp**: a type name and the components that the client
+    runs for it. It is an entry of [`NeutralCampIdentifier.SpawnTypes`](/classes/neutralcampidentifier#spawntypes).
+
+    When the server switches the camp to this spawn type, the client runs each component of
+    `0x90373b91` on the camp entity. The one kind of component in the client sets an icon
+    ([GameEntityIconData](/classes/gameentityicondata)) on the camp's [NewIconGeComponent](/classes/newicongecomponent).
+  notes:
+    - "Shipped spawn types use it to give a camp a different icon for each kind of monster."
+
+properties:
+  TypeName:
+    description: "Name of the spawn type. The server selects the spawn type by the hash of this name."
+
+  "0x2d63dca5":
+    description: "Components called with the hash of `TypeName` when the identifier loads. The list can hold no object, because no class implements [0x10a4976a](/classes/0x10a4976a)."
+
+  "0x90373b91":
+    description: "Components that the client runs on the camp entity when the camp switches to this spawn type."

@@ -1,0 +1,6 @@
+# EnvMeshGeComponentDef Documentation
+
+class:
+  description: |
+    The definition of an [EnvMeshGeComponent](/classes/envmeshgecomponent). It lets an entity
+    own environment meshes of the map's `.mapgeo` file.

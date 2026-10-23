@@ -1,0 +1,11 @@
+# 0x10a4976a Documentation
+
+class:
+  description: |
+    The interface of the components that a camp identifier calls when it loads. No class
+    implements it, so a list of this type cannot hold an object.
+
+    When a [NeutralCampIdentifier](/classes/neutralcampidentifier) loads, the client calls
+    each entry of its `0x2d63dca5` list with the hash of `CampName`, and each entry of the
+    `0x2d63dca5` list of each [spawn type](/classes/identifiercomponents) with the hash of
+    its `TypeName`. Because no entry can exist, these calls never run.

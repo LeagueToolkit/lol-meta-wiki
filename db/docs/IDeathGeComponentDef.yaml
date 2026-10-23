@@ -1,0 +1,7 @@
+# IDeathGeComponentDef Documentation
+
+class:
+  description: |
+    The **death behaviour** of an entity, in `DeathGeComponentDef.definition`. The client does
+    not read it: the [DeathGeComponent](/classes/deathgecomponent) does nothing in the
+    client.

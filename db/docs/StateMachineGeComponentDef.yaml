@@ -1,0 +1,43 @@
+# StateMachineGeComponentDef Documentation
+
+class:
+  description: |
+    Adds a **state machine** to an entity. The entity is in one state at a time. Each state
+    plays a [Sequence](/classes/sequence) when the entity enters the state and another when it
+    leaves the state. `StateMachineDef` supplies the states and their sequences, and `states`
+    supplies the map entities that each sequence plays on.
+
+    **Initial state.** When the component is created, the current state is the `DefaultState`
+    of the [EntityStateMachine](/classes/entitystatemachine). No sequence plays at that point.
+
+    **State changes.** State changes arrive from the server, each with the new state and the
+    time at which it began. For each change, the client:
+
+    1. stops the running exit sequence and plays the `OutSequence` of the current state;
+    2. stores the new state and its start time;
+    3. stops the running entry sequence and plays the `InSequence` of the new state, seeked to
+       the time since the start time, and at least `0`.
+
+    **Activation.** When the entity activates, the client plays the `InSequence` of the
+    current state again, seeked the same way. An entity that activates late therefore joins
+    the state at the point that the state has reached.
+
+    **Object bindings.** A sequence plays only if both `EntityStateMachine.states` and `states`
+    have an entry for the state, and the entry in `states` has a binding list for the role
+    (`InSequence` or `OutSequence`). Each binding names a selector of the sequence and a map
+    entity by name. Before the sequence plays, the client binds each entity to its selector.
+    Bindings whose entity does not exist are skipped.
+  notes:
+    - "If `StateMachineDef` is not set or does not resolve, the client crashes when it creates the component."
+    - "A `DefaultState` that is not a state of the state machine plays nothing and does not crash."
+    - "No shipped object uses it."
+
+properties:
+  StateMachineDef:
+    description: "The [EntityStateMachine](/classes/entitystatemachine): the states, the default state and the entry and exit sequences."
+  states:
+    description: |
+      The object bindings of each state, keyed by the state name hash. Each value
+      ([StateMachineHelperStateData](/classes/statemachinehelperstatedata)) holds one binding
+      list for `InSequence` and one for `OutSequence`. A state without an entry here plays no
+      sequence.

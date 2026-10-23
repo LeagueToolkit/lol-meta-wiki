@@ -1,0 +1,8 @@
+# EsportsBannerGeComponent Documentation
+
+class:
+  description: |
+    The entity component that an [EsportsBannerGeComponentDef](/classes/esportsbannergecomponentdef)
+    adds to an [EsportsBannerEntityTemplate](/classes/esportsbannerentitytemplate) entity. The
+    client does not register this class, so it has no effect. No client behaviour is documented
+    for it.

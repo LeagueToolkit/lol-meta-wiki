@@ -1,0 +1,14 @@
+# DragonSoulTypes Documentation
+
+class:
+  description: |
+    A **list of dragon soul type names**. [`DragonCampGeComponentDef.SoulTypes`](/classes/dragoncampgecomponentdef#soultypes) links it.
+
+    No client code that reads it was found. The dragon camp component that links it does
+    nothing on the client.
+  notes:
+    - "Shipped data has one object, which lists the soul types of the map."
+
+properties:
+  SoulTypes:
+    description: "Names of the soul types."

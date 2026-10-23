@@ -1,0 +1,19 @@
+# AutoRegionTaggingGeComponentDef Documentation
+
+class:
+  description: |
+    The definition of an
+    [AutoRegionTaggingGeComponent](/classes/autoregiontagginggecomponent). It gives the
+    entity the **tags of the map regions** that contain its position. It sits in the
+    `AutoTagging` field of a [GameplayLocatorTemplate](/classes/gameplaylocatortemplate).
+
+    When the entity activates, the component reads the region groups of the map's
+    navigation grid, the `MapNavGrid` component of the map. For each group it finds the
+    region that contains the entity's position and adds the tag of that region to the
+    entity. The entity's tags work as described on
+    [GameEntityBlock](/classes/gameentityblock): tag blocks and tag lookups find the entity
+    by them.
+  notes:
+    - "If the map has no `MapNavGrid` component, or the grid has no region groups, no tag is added."
+    - "A group in which no region contains the position adds no tag."
+    - "No shipped object uses it."

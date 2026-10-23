@@ -1,0 +1,74 @@
+# FlickerMapLightUpdater Documentation
+
+class:
+  description: |
+    A [light updater](/classes/imaplightupdater) that makes a light **flicker**: it
+    scales the colour of the light by a changing factor and moves the light by a small
+    random offset. It works on point lights and on spotlights.
+
+    The updater keeps a separate state for each light, created the first time it updates
+    that light. It advances only after at least 1/60 second has passed since its last
+    step. The state cycles through three
+    phases:
+
+    | Phase | Behaviour |
+    |---|---|
+    | Flicker | The scale moves along a sine wave between a low and a high value. |
+    | Sleep | No flicker cycle runs. |
+    | Transition | The scale blends linearly, over `TransitionDuration` seconds. |
+
+    **Flicker.** Each cycle picks new values:
+
+    - the low value is `MinFlickerIntensity` plus a random amount up to `FlickerIntensityVariance`;
+    - the high value is `MaxFlickerIntensity` minus a random amount up to `FlickerIntensityVariance`;
+    - the cycle length is a random time between `MinFlickerCycleDuration` and `MaxFlickerCycleDuration`;
+    - the position offset is a random value between `-TranslationRange` and `TranslationRange` on each axis.
+
+    After a random number of cycles between `MinFlickerCyclesBeforeSleep` and
+    `MaxFlickerCyclesBeforeSleep`, the light sleeps for a random time between
+    `MinSleepDuration` and `MaxSleepDuration`. During sleep the position offset follows a
+    noise value multiplied by `TranslationRange`.
+
+    On every step the updater also adds a random amount between `-RandomVariance` and
+    `RandomVariance` to the scale. The client multiplies the colour of the light by the
+    scale and adds the offset to its position.
+  notes:
+    - "A scale of `1` keeps the authored colour. The default range of `0.95` to `1.05` changes the brightness by about 5 percent."
+    - "No shipped object uses it."
+
+properties:
+  MinFlickerIntensity:
+    description: "Base of the low value of the scale in a flicker cycle."
+
+  MaxFlickerIntensity:
+    description: "Base of the high value of the scale in a flicker cycle."
+
+  FlickerIntensityVariance:
+    description: "Largest random amount that each cycle moves the low and the high value towards each other."
+
+  MinFlickerCycleDuration:
+    description: "Shortest flicker cycle, in seconds."
+
+  MaxFlickerCycleDuration:
+    description: "Longest flicker cycle, in seconds."
+
+  MinFlickerCyclesBeforeSleep:
+    description: "Smallest number of flicker cycles before the light sleeps."
+
+  MaxFlickerCyclesBeforeSleep:
+    description: "Largest number of flicker cycles before the light sleeps."
+
+  MinSleepDuration:
+    description: "Shortest sleep, in seconds."
+
+  MaxSleepDuration:
+    description: "Longest sleep, in seconds."
+
+  TransitionDuration:
+    description: "Length of the transition phase, in seconds."
+
+  TranslationRange:
+    description: "Largest position offset on each axis, in world units. `(0, 0, 0)` keeps the light in place."
+
+  RandomVariance:
+    description: "Amplitude of the noise that the updater adds to the scale on every step."

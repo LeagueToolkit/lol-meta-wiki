@@ -1,0 +1,18 @@
+# EnvMeshGeComponent Documentation
+
+class:
+  description: |
+    The entity component that an [EnvMeshGeComponentDef](/classes/envmeshgecomponentdef)
+    adds. It binds **environment meshes** of the map to the entity, so that they move with
+    it.
+
+    In `.mapgeo` files of version 18 and later, an environment mesh can carry the name hash
+    of an entity. When the map geometry loads, the client finds the entity with that `name`
+    and gives the mesh to the entity's EnvMesh component.
+
+    - **Activate** and **deactivate.** The component marks the environment renderer for a
+      rebuild.
+    - **Transform changed.** The component moves every bound mesh and its bounds with the
+      entity, and rebuilds the matching cells of the environment renderer.
+  notes:
+    - "Whether deactivating the entity hides its meshes was not traced."

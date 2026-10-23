@@ -1,0 +1,24 @@
+# 0x15898c52 Documentation
+
+class:
+  description: |
+    Definition of the [0xa98b5b03](/classes/0xa98b5b03) component, which **spins** the
+    character mesh of the entity about the vertical axis at a speed that decays to zero. The
+    component copies the three values when the entity spawns.
+
+    Each tick, the yaw of the mesh advances by the current speed, in degrees, and the speed
+    moves toward zero by `(|speed| * 0x8204ce90 + 0x5cfe86e8) * dt`, with `dt` in seconds.
+    The spin stops when the magnitude of the speed is `0.01` or less.
+  notes:
+    - "What starts the spin has not been identified."
+    - "The update runs only while a client state that has not been identified is set. When the state is not set, the update resets the speed to zero."
+    - "No template class has a field of this type, so bin data cannot add the component to an entity."
+    - "No shipped object uses it."
+
+properties:
+  "0x8204ce90":
+    description: "Proportional decay rate, per second. Each second the speed loses this multiple of its own magnitude."
+  "0x5cfe86e8":
+    description: "Constant decay of the speed, per second."
+  "0xc13228c4":
+    description: "Copied into the component. The spin update does not read it. Purpose not yet identified."

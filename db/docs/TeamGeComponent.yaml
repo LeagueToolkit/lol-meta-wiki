@@ -1,0 +1,7 @@
+# TeamGeComponent Documentation
+
+class:
+  description: |
+    The entity component that a [TeamGeComponentDef](/classes/teamgecomponentdef) adds. It has
+    no behaviour of its own. Code that needs the team of the entity reads the definition
+    through it.

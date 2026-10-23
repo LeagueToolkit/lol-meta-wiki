@@ -1,0 +1,7 @@
+# MapCamera Documentation
+
+class:
+  description: |
+    The entity that a [MapCameraTemplate](/classes/mapcameratemplate) creates. It keeps a copy
+    of the template's eight camera values: the two arm lengths, pitch, yaw, roll, field of view
+    and the two clip distances. Which system reads them from the entity is not yet identified.

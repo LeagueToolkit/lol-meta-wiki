@@ -1,0 +1,37 @@
+# SuperwardGeComponentDef Documentation
+
+class:
+  description: |
+    A **superward**: a unit that owns a vision region on the map and shows effects for the
+    teams that the server lists. It sits in the `Superward` field of a
+    [SuperwardEntityTemplate](/classes/superwardentitytemplate).
+
+    **Region.** When the entity spawns, the component finds the region entity that
+    `visionRegion` names, takes the outline of its `Region` field
+    ([RegionGeComponentDef](/classes/regiongecomponentdef)) and builds a flat ground mesh from
+    it.
+
+    **Region visibility.** Each tick, the component checks a unit that the HUD tracks. While
+    that unit is the unit of the superward for at least 0.1 seconds, the component shows the
+    region entity. Otherwise it hides the region entity. Which HUD state the check reads, such
+    as hover or selection, has not been identified.
+
+    **Teams.** The server adds teams to a team list and removes them. After each change, the
+    client spawns the `VfxSystem` effect if the team of the local player is in the list, and
+    destroys it otherwise. A spectator sees the effect when the list is not empty. The effect
+    gets the ground mesh as its linked mesh, so an emitter with a
+    [VfxEmissionLinkedMeshData](/classes/vfxemissionlinkedmeshdata) surface emits over the
+    region. The server can also send a start time, and the client fast-forwards the effect by
+    the time that has passed since then.
+  notes:
+    - "All shipped superwards use the same two effects and the same `0x724108b0` value."
+
+properties:
+  visionRegion:
+    description: "Name hash of the region entity whose outline the superward uses."
+  VfxSystem:
+    description: "The effect that the client shows while the local team is in the team list."
+  "0xe8f75502":
+    description: "A second effect. The client spawns it when the server sends a message for it. A new message replaces the previous effect."
+  "0x724108b0":
+    description: "Not read by the client. Purpose not yet identified."

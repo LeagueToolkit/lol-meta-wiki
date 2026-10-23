@@ -1,0 +1,25 @@
+# NeutralCampEntityTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) that places a **neutral monster camp**.
+    It creates a [NeutralCampEntity](/classes/neutralcampentity). The `NeutralCamp` component
+    creates the camp in the game's camp system when the entity activates, and receives the
+    camp's spawn state from the server.
+
+    The template is networked: the client creates the entity at map load, and the server
+    activates it.
+
+properties:
+  Networking:
+    description: "Receives the server's updates for the entity. Because of it, the client does not activate the entity; the server does."
+  NeutralCamp:
+    description: "The camp. See [NeutralCampGeComponentDef](/classes/neutralcampgecomponentdef)."
+  Team:
+    description: "Team of the camp, used when the camp's position does not decide it."
+  Icon:
+    description: "Minimap and HUD icon of the camp."
+  StateMachine:
+    description: "State machine of the entity. When null, the entity has no state machine."
+  Sequencer:
+    description: "Lets sequences act on the entity."

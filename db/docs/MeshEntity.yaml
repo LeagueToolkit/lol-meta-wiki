@@ -1,0 +1,7 @@
+# MeshEntity Documentation
+
+class:
+  description: |
+    The entity that a [MeshEntityTemplate](/classes/meshentitytemplate) creates. It keeps the
+    template's `MeshHelper` and the mesh instance that the client builds from it at the
+    entity's transform when it creates the entity.

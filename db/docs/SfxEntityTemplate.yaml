@@ -1,0 +1,25 @@
+# SfxEntityTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) that places an **ambient sound**. It
+    creates a [LolGameEntity](/classes/lolgameentity). The `Sfx` component starts the sound
+    event when the entity activates and stops it when the entity deactivates. An optional
+    polygon makes the sound fill an area.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  IsReplicated:
+    description: |
+      Whether the server controls the entity. When false, the client builds no networking
+      component: the entity activates at map load if `0xbbe68da1` allows it, and it does not
+      receive server updates. When true, the entity waits for the server to activate it.
+  Networking:
+    description: "Receives the server's updates for the entity. The client does not build it when `IsReplicated` is false."
+  Sfx:
+    description: "The sound event and its area. See [SfxGeComponentDef](/classes/sfxgecomponentdef)."
+  Team:
+    description: "Team of the entity."
+  Sequencer:
+    description: "Lets sequences act on the entity."

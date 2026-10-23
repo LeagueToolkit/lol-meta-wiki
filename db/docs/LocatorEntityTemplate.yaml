@@ -1,0 +1,14 @@
+# LocatorEntityTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) that places a **locator**: an entity with
+    a position, a name and tags, and no behaviour of its own. It creates a plain
+    [GameEntity](/classes/gameentity). Scripts and sequences find a locator by its name or tags
+    and read its position.
+
+    The entity is local: it activates at map load when `0xbbe68da1` is true.
+
+properties:
+  Sequencer:
+    description: "Lets sequences act on the entity."

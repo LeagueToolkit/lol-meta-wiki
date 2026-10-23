@@ -1,0 +1,18 @@
+# MinimapTimerDefinition Documentation
+
+class:
+  description: |
+    The **minimap timer of a neutral camp**. It sits in
+    [`NeutralCampGeComponentDef.MinimapTimerDefinition`](/classes/neutralcampgecomponentdef#minimaptimerdefinition). If the field is set, the client
+    creates a minimap timer for the camp when it creates the camp. If it is not set, the camp
+    has no minimap timer.
+  notes:
+    - "No client code that reads `Group` or `StyleSheet` was traced."
+    - "Shipped neutral camps use it."
+
+properties:
+  Group:
+    description: "The [group](/classes/minimaptimergroupdata) of the timer."
+
+  StyleSheet:
+    description: "The [style sheet](/classes/minimaptimerstylesheet) of the timer."

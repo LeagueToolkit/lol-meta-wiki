@@ -1,0 +1,27 @@
+# NeutralCampGeComponent Documentation
+
+class:
+  description: |
+    The entity component that builds the camp of a
+    [NeutralCampGeComponentDef](/classes/neutralcampgecomponentdef).
+
+    **Bridge to the older game object system.** This component, the
+    [ShopGeComponent](/classes/shopgecomponent), the
+    [TeamSpawnPointGeComponent](/classes/teamspawnpointgecomponent) and the
+    [VfxGeComponent](/classes/vfxgecomponent) each own one object of the older game object
+    system (a camp, a shop, a spawn point or a particle). They share this behaviour:
+
+    - **Activate.** If no object is bound, the component creates its object and binds it to
+      the entity.
+    - **Deactivate and reset.** The component destroys the object.
+    - **Transform change.** The component copies the rotation and position of the entity to
+      the object.
+    - **Tick.** While a client state that has not been identified is set, the component
+      copies the transform of the object back to the entity instead.
+    - **Type checks.** A type check on the component asks the object first, then the
+      component.
+
+    **Camp specifics.** When the server sends the current spawn type of the camp, the
+    component passes it to `CampIdentifier`. The camp object can make the entity's icon
+    visible through the component. A transform change also moves the camp icon by
+    `MinimapIconOffset`.

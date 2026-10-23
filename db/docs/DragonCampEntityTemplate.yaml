@@ -1,0 +1,14 @@
+# DragonCampEntityTemplate Documentation
+
+class:
+  description: |
+    A [neutral camp template](/classes/neutralcampentitytemplate) with one more component, the
+    dragon camp component. It creates a [NeutralCampEntity](/classes/neutralcampentity). On the
+    client the dragon camp component does nothing, so the entity behaves as a plain neutral
+    camp.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  "0x1def5862":
+    description: "Adds the dragon camp component. See [DragonCampGeComponentDef](/classes/dragoncampgecomponentdef). The client does not read it."

@@ -1,0 +1,32 @@
+# RegionBoundaryConfig Documentation
+
+class:
+  description: |
+    Settings for how the client **samples a region outline onto the nav grid**. The map
+    default is `MapNavGrid.RegionBoundaryConfig`. A region with a `ConfigOverride` uses its
+    own settings instead.
+
+    For each nav cell inside the bounds of a region, the client measures the **coverage**
+    of the cell: the part of the cell that lies inside the outline.
+
+    - If `0x240ebb1b` is `1`, the client tests the cell centre. The coverage is `0` or `1`.
+    - If `0x240ebb1b` is a larger value N, the client tests an N x N grid of points centred
+      on the cell, spaced `25 / ((N - 1) / 2)` world units apart. The coverage is the
+      fraction of the points that lie inside the outline. The default `3` tests 9 points,
+      25 world units apart.
+
+    A cell belongs to the region if its coverage is at least `CellHitThreshold`. What the
+    region then writes into the cell is described on [NavRegionDef](/classes/navregiondef).
+
+properties:
+  "0x240ebb1b":
+    description: "Number of test points per axis in each nav cell. `1` tests only the cell centre."
+
+  CellHitThreshold:
+    description: "Minimum coverage, from `0` to `1`, for a nav cell to belong to the region."
+
+  "0xb9ace82c":
+    description: |
+      Coverage below which a cell counts as an edge cell. In tag group `0`, a cell that
+      belongs to the region with a coverage below this value also gets the nav cell flag
+      `0x40`.

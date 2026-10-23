@@ -1,0 +1,19 @@
+# DynamicPointLightEntityTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) that places a **dynamic point light** as
+    a game entity. It creates a plain [GameEntity](/classes/gameentity). Unlike a
+    [MapDynamicPointLight](/classes/mapdynamicpointlight), the light exists only while the
+    entity is active, moves with the entity, and sequences can change its colour, intensity
+    and radius.
+
+    The entity is local: it activates at map load when `0xbbe68da1` is true.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Light:
+    description: "The light. See [DynamicPointLightGeComponentDef](/classes/dynamicpointlightgecomponentdef)."
+  Sequencer:
+    description: "Lets sequences act on the entity and on the light."

@@ -1,0 +1,19 @@
+# LolGameEntity Documentation
+
+class:
+  description: |
+    The [game entity](/classes/gameentity) class of the game client. The client creates it
+    directly for templates without an entity class of their own, such as
+    [AreaTriggerEntityTemplate](/classes/areatriggerentitytemplate),
+    [SfxEntityTemplate](/classes/sfxentitytemplate) and
+    [GameplayLocatorTemplate](/classes/gameplaylocatortemplate). It adds these rules to the base
+    entity:
+
+    - The client adds every such entity to the game's entity list when it creates it.
+    - Until the game world is running, activating or deactivating the entity only records the
+      requested state. The client applies it when the world starts.
+    - Deactivating an entity that was created at run time, for example by
+      [SpawnEntityBlock](/classes/spawnentityblock), destroys it. A placed entity stays.
+    - Several subclasses have a **primary component** that links the entity to a game object
+      of the unit system, such as a turret, a shop, a camp or a particle. When the entity's
+      transform changes, the client moves that object with it.

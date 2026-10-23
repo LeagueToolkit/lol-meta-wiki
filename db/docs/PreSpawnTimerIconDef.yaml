@@ -1,0 +1,19 @@
+# PreSpawnTimerIconDef Documentation
+
+class:
+  description: |
+    A [pre-spawn behaviour](/classes/ineutralcampprespawndef) that **changes the icon of a
+    camp as its spawn comes closer**. When the camp receives the time of its next spawn, the
+    client hides the camp icon and starts a countdown.
+
+    The countdown walks the entries of the `Progression`, from the largest `TimeBeforeSpawn`
+    to the smallest. When the time that remains drops below the `TimeBeforeSpawn` of the next
+    entry, the client sets the `Icon` of that entry on the camp's [NewIconGeComponent](/classes/newicongecomponent) and
+    shows the icon. An entry without an `Icon` hides the icon. The countdown ends when the
+    time reaches the spawn.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Progression:
+    description: "The icons and their times. See [PreSpawnTimerIconProgression](/classes/prespawntimericonprogression)."

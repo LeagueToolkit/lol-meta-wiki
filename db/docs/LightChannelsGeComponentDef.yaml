@@ -1,0 +1,13 @@
+# LightChannelsGeComponentDef Documentation
+
+class:
+  description: |
+    The definition of a [LightChannelsGeComponent](/classes/lightchannelsgecomponent): the
+    light channels of a character mesh entity.
+
+properties:
+  LightChannels:
+    description: |
+      Bitmask of light channels of the entity's character mesh. A dynamic light reaches the
+      mesh only when the light's own light channels share a bit with this mask. See the
+      masks on [MapDynamicLighting](/classes/mapdynamiclighting).

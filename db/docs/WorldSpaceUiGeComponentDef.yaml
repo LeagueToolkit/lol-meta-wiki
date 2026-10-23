@@ -1,0 +1,23 @@
+# WorldSpaceUiGeComponentDef Documentation
+
+class:
+  description: |
+    Shows an **interface view controller anchored to an entity** in the world. It sits in the
+    `0xcd4b1f10` field of a [WorldSpaceUiEntityTemplate](/classes/worldspaceuientitytemplate).
+
+    - **Activate.** The client opens the view controller that `ViewController` names and
+      anchors it to the entity transform.
+    - **Deactivate.** The client closes the view controller.
+    - **Transform change.** The client anchors the view controller to the new transform.
+
+    If `ViewController` does not resolve to a view controller, the component does nothing.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  ViewController:
+    description: "Hash of the view controller to show."
+  Anchor:
+    description: "Anchor point that the client passes to the world anchor of the view controller."
+  ScaleX:
+    description: "Scale value that the client passes to the world anchor of the view controller."

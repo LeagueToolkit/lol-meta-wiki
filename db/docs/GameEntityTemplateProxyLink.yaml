@@ -1,0 +1,15 @@
+# GameEntityTemplateProxyLink Documentation
+
+class:
+  description: |
+    A copy of a [GameEntityTemplate](/classes/gameentitytemplate) that the client makes at run
+    time when it **instances** a [MapContainer](/classes/mapcontainer) at a world offset. The
+    copy holds the source template's name, tags, active flag and component definitions, the
+    transform moved by the instance offset, and a key that includes the instance index.
+
+    When the client creates the entity, the proxy passes the request to the source template.
+    The entity is therefore of the source template's class and has its components, at the
+    proxy's position. The client follows a chain of proxies to the end, for example to find the
+    camera templates of an instance.
+  notes:
+    - "It is not authored data. A proxy written in a bin has no source template, and the client crashes when it creates its entity."

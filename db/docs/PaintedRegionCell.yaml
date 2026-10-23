@@ -1,0 +1,16 @@
+# PaintedRegionCell Documentation
+
+class:
+  description: "One cell of a [painted region](/classes/paintedregiondata) and the tag that the region writes into it."
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  X:
+    description: "Column of the cell in the nav grid. The client clamps it to the grid width."
+
+  Y:
+    description: "Row of the cell in the nav grid. The client clamps it to the grid height."
+
+  tag:
+    description: "Value that the region writes into the cell, in the group `RegionGroupIndex`."

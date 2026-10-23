@@ -1,0 +1,12 @@
+# PrefabEntity Documentation
+
+class:
+  description: |
+    The entity that a [PrefabEntityTemplate](/classes/prefabentitytemplate) creates: the parent
+    of a group of entities. When the client creates it, it also creates an entity from each
+    member template of the prefab and makes it a child of this entity. The member templates are
+    not created on their own.
+
+    The children follow the parent: a child takes its initial active state from the parent, and
+    activating or deactivating the parent activates or deactivates every child. See
+    [HierarchyGeComponentDef](/classes/hierarchygecomponentdef).

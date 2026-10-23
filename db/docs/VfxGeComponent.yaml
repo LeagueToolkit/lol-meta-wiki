@@ -1,0 +1,8 @@
+# VfxGeComponent Documentation
+
+class:
+  description: |
+    The entity component that creates the particle object of a
+    [VfxGeComponentDef](/classes/vfxgecomponentdef) when the entity activates. It owns the
+    object as described on [NeutralCampGeComponent](/classes/neutralcampgecomponent). It also
+    keeps the start time that the server sends and fast-forwards the effect by it.

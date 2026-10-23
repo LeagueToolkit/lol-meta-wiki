@@ -19,8 +19,10 @@ class:
     reads as character `Turret`, record `SR_Outer`, skin `3`.
 
     The three values are used to **preload** the character record, and they are what the
-    entity's unit and character mesh components pass on when they create a turret, an
-    inhibitor, a nexus, a minion, another unit, or a decorative mesh.
+    entity's unit, shop and character mesh components pass on when they create a turret, an
+    inhibitor, a nexus, a minion, another unit, a shopkeeper, or a decorative mesh. They read
+    the definition through the entity's
+    [SkinCharacterGeComponent](/classes/skincharactergecomponent).
   notes:
     - "Only the folder names and the trailing `Skin<N>` matter. The rest of each path is ignored."
     - "On the client, whether a changed value alters a unit that the server spawns has not been tested."

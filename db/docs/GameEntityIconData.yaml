@@ -1,0 +1,43 @@
+# GameEntityIconData Documentation
+
+class:
+  description: |
+    The look of the **minimap icon** of a map entity: a texture, a colour and a size, with
+    replacements for each team and for colorblind mode. When the object loads, the client
+    registers it by `ID`.
+
+    The client applies the icon data to an entity's icon when the icon is created (see
+    [0x313c0076](/classes/0x313c0076)), and again when a camp changes the icon. To pick the
+    texture and the colour, the client:
+
+    1. derives a key from the team of the entity;
+    2. looks the key up in the `textures` and `colors` maps of `TeamOverride`;
+    3. falls back to `texture` and `Color` if `TeamOverride` has no entry for the key.
+
+    If the client's colorblind mode is on, it uses `ColorblindTexturePath` and
+    `colorblindColor` of the chosen entries.
+  notes:
+    - "The mapping from the team of the entity to the key of `TeamOverride` was not identified."
+    - "Most shipped icon data is used by the spawn types of camps."
+
+properties:
+  ID:
+    description: "Key under which the client registers the icon data when it loads. What looks icons up by this key was not identified."
+
+  Size:
+    description: "Size of the icon. The client multiplies it by a global icon scale."
+
+  texture:
+    description: "Texture of the icon, with a colorblind variant. Used when `TeamOverride` has no texture for the team."
+
+  Color:
+    description: "Colour of the icon, with an optional colorblind variant. Used when `TeamOverride` has no colour for the team."
+
+  TeamOverride:
+    description: "Textures and colours for each team key. An entry replaces `texture` or `Color` for entities of that team."
+
+  MinScale:
+    description: "The client does not read it when it applies the icon data."
+
+  maxScale:
+    description: "The client does not read it when it applies the icon data."

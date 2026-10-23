@@ -1,0 +1,6 @@
+# EnvironmentEntity Documentation
+
+class:
+  description: |
+    The entity that an [EnvironmentEntityTemplate](/classes/environmententitytemplate) creates.
+    It behaves exactly as a plain [GameEntity](/classes/gameentity); only its class differs.

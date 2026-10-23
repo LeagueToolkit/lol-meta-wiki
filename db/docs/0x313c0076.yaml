@@ -1,0 +1,27 @@
+# 0x313c0076 Documentation
+
+class:
+  description: |
+    The settings of the **minimap icon** of a map entity. [`NewIconGeComponentDef.Config`](/classes/newicongecomponentdef#config)
+    holds it.
+
+    When an entity with a `NewIconGeComponentDef` spawns and `Config` is set, the client
+    creates the icon of the entity, applies the
+    [GameEntityIconData](/classes/gameentityicondata) in `Icon`, and shows or hides the icon
+    by `Enabled`. If `Config` is not set, the entity has no icon.
+
+    Later changes replace the icon data: a [pre-spawn timer](/classes/prespawntimericondef)
+    of a camp, and the spawn type of a camp (see
+    [IdentifierComponents](/classes/identifiercomponents)).
+  notes:
+    - "Shipped data uses it once, for an icon that starts hidden."
+
+properties:
+  Icon:
+    description: "Icon data that the client applies when it creates the icon."
+
+  Enabled:
+    description: "Initial visibility of the icon. If false, the icon starts hidden."
+
+  "0x5a0d5b38":
+    description: "Unknown flag. The client does not read it when it creates the icon."

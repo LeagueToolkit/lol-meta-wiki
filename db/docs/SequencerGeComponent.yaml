@@ -3,6 +3,13 @@
 class:
   description: |
     The entity component that a [SequencerGeComponentDef](/classes/sequencergecomponentdef)
-    adds. It exposes the material parameters of the entity to sequence inputs, which
+    adds. [Sequences](/classes/sequence) reach the other components of the entity through it.
+    When the entity spawns, the light, light region, dynamic material, character mesh, unit,
+    animation and icon components register their interfaces with it, and sequence inputs find
+    those interfaces through it.
+
+    The material parameters that
     [SeqInputMaterialParamFloat](/classes/seqinputmaterialparamfloat) and
-    [SeqInputMaterialParamColor](/classes/seqinputmaterialparamcolor) read and write.
+    [SeqInputMaterialParamColor](/classes/seqinputmaterialparamcolor) read and write are held
+    by the entity's [DynamicMaterialGeComponent](/classes/dynamicmaterialgecomponent), which
+    registers them here. This component does not store them itself.

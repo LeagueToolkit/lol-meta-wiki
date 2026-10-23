@@ -1,0 +1,19 @@
+# BillboardGeComponent Documentation
+
+class:
+  description: |
+    The entity component that a [BillboardGeComponentDef](/classes/billboardgecomponentdef)
+    adds, on entities of a [BillboardEntityTemplate](/classes/billboardentitytemplate). It
+    works on the VFX object of the entity's [VfxGeComponent](/classes/vfxgecomponent) and
+    does two things:
+
+    - **Picking.** When the client tests a ray against the entity, the component intersects
+      the ray with the plane of the VFX object. It reports a hit when the intersection lies
+      inside `HitRect`.
+    - **Show and hide.** When a show of the entity starts, the component marks the VFX object
+      as shown. When a hide starts, it clears that mark and marks the object as hiding.
+
+    The component does nothing on the other lifecycle events.
+  notes:
+    - "Which client feature sends the pick rays was not traced."
+    - "How the VFX system uses the show and hide marks was not traced."

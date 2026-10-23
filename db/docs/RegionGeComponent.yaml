@@ -1,0 +1,7 @@
+# RegionGeComponent Documentation
+
+class:
+  description: |
+    The entity component that a [RegionGeComponentDef](/classes/regiongecomponentdef) adds. It
+    has no behaviour of its own. Other components and the region code read the definition
+    through it.

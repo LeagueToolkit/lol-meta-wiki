@@ -1,0 +1,8 @@
+# NavRegionGeComponent Documentation
+
+class:
+  description: |
+    The entity component that a [NavRegionGeComponentDef](/classes/navregiongecomponentdef)
+    adds. When the entity spawns, it registers the entity's region with the region manager of
+    the map. Activation turns the region on in the manager and deactivation turns it off.
+    [NavRegionGeComponentDef](/classes/navregiongecomponentdef) describes the conditions.

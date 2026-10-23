@@ -1,0 +1,6 @@
+# MinimapTimerGroupData Documentation
+
+class:
+  description: |
+    A **group of minimap timers**, linked by [`MinimapTimerDefinition.Group`](/classes/minimaptimerdefinition#group). It has no data.
+    What the client does with a group was not identified.

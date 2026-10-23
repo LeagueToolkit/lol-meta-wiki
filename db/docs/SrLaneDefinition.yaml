@@ -1,0 +1,34 @@
+# SrLaneDefinition Documentation
+
+class:
+  description: |
+    The **lane and the position in the lane** of a structure on a lane map. It sits in
+    [`AttackableUnitGeComponentDef.LaneDefinition`](/classes/attackableunitgecomponentdef#lanedefinition).
+
+    When the client creates the unit of the entity, it puts the values into the name of the
+    unit object, as `L<lane>` and `P<position>`:
+
+    | Unit | Name pattern |
+    |---|---|
+    | Turret | `Turret_T<team>_L<lane>_P<position>_...` |
+    | Inhibitor | `Inhib_T<team>_L<lane>_P<position>_...` |
+    | Nexus | `Nexus_T<team>_...` (no lane or position) |
+
+    The client also passes the lane to the spawn of the unit.
+  notes:
+    - "If `LaneDefinition` is not set, the client uses lane `3` and position `0`."
+
+properties:
+  lane:
+    description: |
+      The lane:
+
+      | Value | Meaning |
+      |---|---|
+      | `0`, `1`, `2` | One of the three lanes |
+      | `3` | The default, and the value the client uses when `LaneDefinition` is not set |
+
+      Which value is which lane of the map was not identified.
+
+  Position:
+    description: "Index of the structure along its lane. Shipped values are `0` to `5`."

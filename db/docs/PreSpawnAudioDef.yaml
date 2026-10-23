@@ -1,0 +1,25 @@
+# PreSpawnAudioDef Documentation
+
+class:
+  description: |
+    A **sound parameter ramp before a camp spawns**. It sits in
+    [`NeutralCampGeComponentDef.PreSpawnAudio`](/classes/neutralcampgecomponentdef#prespawnaudio). When the camp receives the time of its next
+    spawn, the client starts a countdown. On each update it sets the Wwise game parameter
+    (RTPC) `rtpcName` to:
+
+    ```
+    clamp((1 - remaining / duration) * 100, 0, 100)
+    ```
+
+    `remaining` is the time until the spawn, in seconds. The value stays at `0` until
+    `duration` seconds before the spawn and rises to `100` at the spawn. When the countdown
+    ends or is destroyed, the client sets the parameter back to `0`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  rtpcName:
+    description: "Name of the Wwise game parameter (RTPC) to set."
+
+  duration:
+    description: "Length of the ramp before the spawn, in seconds."

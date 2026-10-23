@@ -1,0 +1,68 @@
+# PlanarReflectorGeComponentDef Documentation
+
+class:
+  description: |
+    The definition of a [PlanarReflectorGeComponent](/classes/planarreflectorgecomponent): a
+    **planar reflection** placed as an entity, on a
+    [PlanarReflectorEntityTemplate](/classes/planarreflectorentitytemplate). The client
+    renders the scene mirrored in a plane into a reflection texture.
+
+    **The plane.** The mirror plane passes through the entity's position, and its normal is
+    the entity's Y axis. `Polygon` is used only to decide whether the reflector is in view.
+
+    **Selection.** While the entity is active, its reflector is in the client's reflector
+    list. Each frame the client takes the first reflector in the list whose transformed
+    `Polygon` intersects the view frustum. If no entity reflector is in view, the client
+    falls back to the planar reflectors of the map's `.mapgeo`.
+
+    **The reflection setting.** A graphics setting controls the reflection pass:
+
+    | Setting | Pass |
+    |---|---|
+    | `0` | off |
+    | `1` | runs only when the selected reflector has `ForceOn` |
+    | `2` or higher | runs every frame with the default render options |
+
+    The five render options of this class (`RenderSunShadow`, `RenderEnvironment`,
+    `RenderParticles`, `SSAO`, `DynamicLighting`) apply only in the `ForceOn` case at setting
+    `1`. At setting `2` or higher the pass uses its defaults: no sun shadow, environment on,
+    particles on, no SSAO, no dynamic lighting, whatever the definition says.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Polygon:
+    description: |
+      Outline of the reflector, an [EntityPolygonData](/classes/entitypolygondata) in the
+      entity's local space. After the entity's transform, the client tests it against the
+      view frustum to select the reflector.
+
+  ForceOn:
+    description: |
+      Runs the reflection pass for this reflector when the reflection setting is `1`, and
+      makes the pass use the five render options of this definition.
+
+  PercentageResolution:
+    description: |
+      Size of the reflection texture, in percent of the viewport. It applies in the
+      client's default reflection resolution mode.
+
+  SkyboxTexture:
+    description: |
+      Texture that the component loads when the entity spawns and passes to the reflection
+      pass. An empty value loads nothing.
+
+  RenderSunShadow:
+    description: "Render option of the reflection pass. It applies only with `ForceOn`. Its effect inside the pass was not traced."
+
+  RenderEnvironment:
+    description: "Render option of the reflection pass. It applies only with `ForceOn`. Its effect inside the pass was not traced."
+
+  RenderParticles:
+    description: "Draws particles in the reflection. It applies only with `ForceOn`."
+
+  SSAO:
+    description: "Applies SSAO in the reflection pass. It applies only with `ForceOn`."
+
+  DynamicLighting:
+    description: "Applies dynamic lighting in the reflection pass. It applies only with `ForceOn`."

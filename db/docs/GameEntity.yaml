@@ -1,0 +1,41 @@
+# GameEntity Documentation
+
+class:
+  description: |
+    A **game entity** at run time: the object that the client creates from a
+    [GameEntityTemplate](/classes/gameentitytemplate). The template page describes how entities
+    are created, activated and destroyed. An entity has no authored data of its own. It holds:
+
+    - its **components**, one per component definition of the template, in the template's
+      sorted order (see [GameEntityComponent](/classes/gameentitycomponent));
+    - its **name** hash and its **tags**, from the template;
+    - its world transform, which starts as the template's `transform`;
+    - an **active** state and a **visibility** state.
+
+    The client creates this class directly for templates that need no entity class of their
+    own, such as lights, light regions, locators and world-space UI.
+
+    ## Activation
+
+    Activating an entity that is already active does nothing. On activation the client adds the
+    entity's ticking components to the tick list and activates every component in order. On
+    deactivation it deactivates the components in reverse order and removes the ticking
+    components from the tick list. Script blocks such as
+    [ActivateEntityBlock](/classes/activateentityblock) and sequence actions such as
+    [SequenceActionActivateEntity](/classes/sequenceactionactivateentity) change this state.
+
+    ## Visibility
+
+    An active entity is **shown** or **hidden**. A show or a hide is a fade over a duration, in
+    seconds. The client ignores a show on an entity that is already shown or showing, and a hide
+    on one that is already hidden or hiding. While a fade runs, the components that react to
+    visibility receive its progress every frame; when it ends, the entity is shown or hidden. A
+    hide can carry a flag that deactivates the entity: with a duration of `0` the entity
+    deactivates at once, otherwise when the fade ends. An inactive entity ignores show and hide.
+
+    ## Logic drivers
+
+    An entity is a [logic driver source](/classes/ilogicdriversource). No logic driver reads an
+    entity as such, so a driver that needs a unit or a map object returns its failure value
+    when it is evaluated with an entity. When an entity is destroyed, drivers drop the values
+    that they kept for it.

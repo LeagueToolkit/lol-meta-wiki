@@ -1,0 +1,13 @@
+# ScriptHelperDef Documentation
+
+class:
+  description: |
+    The **scripts of a map entity**. It is the `ScriptDef` of a
+    [ScriptGeComponentDef](/classes/scriptgecomponentdef), which describes when the scripts
+    run.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Scripts:
+    description: "The scripts. The client creates one script instance for each entry with a `Script`, and skips entries without one. See [GameEntityScriptDefinition](/classes/gameentityscriptdefinition)."

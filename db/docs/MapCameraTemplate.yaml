@@ -1,0 +1,28 @@
+# MapCameraTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) that places a **camera setup** on the
+    map. It creates a [MapCamera](/classes/mapcamera), and the client copies the eight camera
+    values below into that entity. The client also lists every camera template of a map
+    container separately, so it can find the cameras of each map instance.
+
+    Which system reads the camera values from the entity is not yet identified.
+
+properties:
+  MinArmLength:
+    description: "Shortest distance of the camera from its target, in world units."
+  MaxArmLength:
+    description: "Longest distance of the camera from its target, in world units."
+  pitch:
+    description: "Pitch of the camera, in degrees."
+  yaw:
+    description: "Yaw of the camera, in degrees."
+  Roll:
+    description: "Roll of the camera, in degrees."
+  FieldOfView:
+    description: "Field of view of the camera, in degrees."
+  nearClip:
+    description: "Near clip distance, in world units."
+  farClip:
+    description: "Far clip distance, in world units."

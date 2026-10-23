@@ -1,0 +1,43 @@
+# NavRegionDef Documentation
+
+class:
+  description: |
+    The **nav grid data of a region entity**: the tags that the region writes into the nav
+    cells that it covers. It sits in [`RegionGeComponentDef.NavRegionDef`](/classes/regiongecomponentdef#navregiondef).
+
+    When the region entity spawns, its [NavRegionGeComponent](/classes/navregiongecomponent) registers the region with the
+    client's region manager, with the outline from `RegionGeComponentDef.shapeData` and the
+    values of this object. The manager samples the outline onto the nav grid as described on
+    [RegionBoundaryConfig](/classes/regionboundaryconfig). Activating the entity turns the
+    region on, and deactivating it turns the region off. If `NavRegionDef` is not set, the
+    client does not register the region.
+
+    **Tag groups.** A nav cell holds one value for each of the tag groups `0` to `9`. A
+    region writes a value only into the groups that `tags` lists:
+
+    | Group | Value in the cell |
+    |---|---|
+    | `0` | Nav cell flags. An edge cell also gets the flag `0x40`. |
+    | `1` to `9` | One region tag for each group. |
+
+    If several regions cover a cell in the same group, the region with the highest priority
+    sets the value. A painted region ([PaintedRegionData](/classes/paintedregiondata)) takes
+    part in the same comparison, and it replaces the value on equal priority.
+  notes:
+    - "No shipped region has a `NavRegionDef`, so no shipped region writes into the nav grid this way."
+
+properties:
+  tags:
+    description: "The value to write for each tag group. The key is the group (`0` to `9`) and the value is the tag or the flag bits for that group."
+
+  priority:
+    description: "Priority of the region against other regions that cover the same cell. The highest priority wins."
+
+  MinimapColor:
+    description: "Colour of the region on the minimap. In each cell, the covering nav region with the highest priority sets the minimap colour."
+
+  "0x7453bb15":
+    description: "Unknown flag. The client copies it into the region record. Painted regions always set it. No code that reads it was found."
+
+  ConfigOverride:
+    description: "Sampling settings for this region. If it is not set, the region uses `MapNavGrid.RegionBoundaryConfig`."

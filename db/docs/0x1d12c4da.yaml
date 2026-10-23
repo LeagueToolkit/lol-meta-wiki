@@ -1,0 +1,26 @@
+# 0x1d12c4da Documentation
+
+class:
+  description: |
+    [Render settings](/classes/ishaperenderinfo) for the outline of a region: a material and
+    four sizes. When the client asks it for its material, it returns `Material`.
+
+    No client code that reads `Margin`, `Taper`, `height` or `bevel` was found.
+  notes:
+    - "Shipped objects sit in the `RenderInfo` of map regions. All of them use the same material."
+
+properties:
+  Material:
+    description: "The material that the render info returns."
+
+  Margin:
+    description: "Purpose not yet identified."
+
+  Taper:
+    description: "Purpose not yet identified."
+
+  height:
+    description: "Purpose not yet identified."
+
+  bevel:
+    description: "Purpose not yet identified."

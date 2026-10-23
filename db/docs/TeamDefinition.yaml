@@ -1,0 +1,19 @@
+# TeamDefinition Documentation
+
+class:
+  description: |
+    A **named team**. When the definition loads, the client stores the hash of `teamName`.
+
+    A [`TeamGeComponentDef.TeamDefinition`](/classes/teamgecomponentdef#teamdefinition) or a [MultiTeam](/classes/multiteam) that links the
+    definition gets its team by that hash: the client looks the hash up in the team table
+    of the current game mode. If the mode has no team of that name, the client uses the
+    default team.
+  notes:
+    - "Shipped team definitions are top-level objects of the data that the client loads at startup."
+
+properties:
+  teamName:
+    description: "Name of the team. Its hash is the key in the team table of the game mode."
+
+  "0xecc8235f":
+    description: "A localisation key. The default is the key of the HUD text for the blue team. No code that reads it was found."

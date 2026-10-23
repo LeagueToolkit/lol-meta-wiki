@@ -1,0 +1,15 @@
+# IntensityLogicDriverLightUpdater Documentation
+
+class:
+  description: |
+    A [light updater](/classes/imaplightupdater) that sets the **brightness of a light from a
+    logic driver**. On each update the client evaluates `driver` and sets the colour of the
+    light to the base colour of the light multiplied by the result. It works on point lights
+    and on spotlights.
+  notes:
+    - "If `driver` is not set, the updater uses the constant `0` and the light turns black."
+    - "No shipped object uses it."
+
+properties:
+  driver:
+    description: "The multiplier on the colour, as a [float logic driver](/classes/ilogicfloatdriver)."

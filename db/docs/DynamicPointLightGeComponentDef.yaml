@@ -1,0 +1,61 @@
+# DynamicPointLightGeComponentDef Documentation
+
+class:
+  description: |
+    The definition of a
+    [DynamicPointLightGeComponent](/classes/dynamicpointlightgecomponent): a **point light
+    carried by a game entity**, on a
+    [DynamicPointLightEntityTemplate](/classes/dynamicpointlightentitytemplate). The light
+    sits at the entity's position and moves with it.
+
+    The light goes into the same light lists as a
+    [MapDynamicPointLight](/classes/mapdynamicpointlight). It is drawn only on a map that
+    has a [MapDynamicLighting](/classes/mapdynamiclighting) component. That page describes
+    which surfaces take the light, the falloff, the masks and the light types.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  CastsShadows:
+    description: |
+      `false` makes a dynamic light without a shadow, `true` a dynamic light with a shadow
+      map: light types `1` and `2` on [MapDynamicLighting](/classes/mapdynamiclighting).
+      The component cannot make a stationary light.
+
+  lightColor:
+    description: |
+      Colour of the light. The red, green and blue values are multiplied by
+      `intensityScale`; alpha is not used.
+
+  intensityScale:
+    description: "Multiplier on `lightColor`."
+
+  radius:
+    description: |
+      Reach of the light, in world units. Brightness falls off linearly and is zero at this
+      distance.
+
+  HdrScale:
+    description: "Extra multiplier on the colour, used only by PBR-style shaders."
+
+  Impact:
+    description: |
+      Which kind of surface the light reaches. Bit `0x1` is environment, bit `0x2` is
+      characters.
+
+  LightChannels:
+    description: |
+      Bitmask of light channels. The light reaches an object only when the object's own
+      light channels share a bit with it.
+
+  QualityLevels:
+    description: |
+      Bitmask of the quality levels at which the light exists. Bit `N` set registers the
+      light at quality level `N`, for levels `0` to `4`. When the quality level changes,
+      the client adds or removes the light to match.
+
+  UpdaterType:
+    description: |
+      Updaters that change the light after it is set up, a
+      [MapLightUpdaterType](/classes/maplightupdatertype). See
+      [IMapLightUpdater](/classes/imaplightupdater). When it is null, no updater runs.

@@ -1,0 +1,9 @@
+# LightChannelsGeComponent Documentation
+
+class:
+  description: |
+    The entity component that a
+    [LightChannelsGeComponentDef](/classes/lightchannelsgecomponentdef) adds. It copies
+    `LightChannels` from the definition when the entity spawns and when the world resets.
+    The entity's [CharacterMeshGeComponent](/classes/charactermeshgecomponent) copies the
+    value to the skinned mesh when it builds the mesh.

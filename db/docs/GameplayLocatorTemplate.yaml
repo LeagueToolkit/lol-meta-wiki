@@ -1,0 +1,26 @@
+# GameplayLocatorTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) that places a **locator** with a team
+    that tags itself with the regions it stands in. It creates a
+    [LolGameEntity](/classes/lolgameentity).
+
+    When the entity activates, the `AutoTagging` component looks up its position on the
+    navigation grid and adds the tag of each region that contains it. Scripts can then find
+    the locator with tag blocks such as
+    [ForEachEntityWithTagBlock](/classes/foreachentitywithtagblock).
+
+    The entity is local: it activates at map load when `0xbbe68da1` is true.
+  notes:
+    - "No shipped object uses it."
+    - "The template holds a script component definition that no property exposes. The client never builds a script component from it."
+
+properties:
+  Team:
+    description: "Team of the entity."
+  AutoTagging:
+    description: |
+      Adds the region tags of the entity's position to the entity. The template creates this
+      definition by default, so the component exists unless a bin writes null. See
+      [AutoRegionTaggingGeComponentDef](/classes/autoregiontagginggecomponentdef).

@@ -1,0 +1,18 @@
+# LightRegionEntityTemplate Documentation
+
+class:
+  description: |
+    An [entity template](/classes/gameentitytemplate) that places a **light region** as a game
+    entity. It creates a plain [GameEntity](/classes/gameentity). The region takes part in the
+    map's light regions only while the entity is active, follows the entity's transform, and
+    sequences can fade it.
+
+    The entity is local: it activates at map load when `0xbbe68da1` is true.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  LightRegion:
+    description: "The light region. See [LightRegionGeComponentDef](/classes/lightregiongecomponentdef)."
+  Sequencer:
+    description: "Lets sequences act on the entity and on the region."
