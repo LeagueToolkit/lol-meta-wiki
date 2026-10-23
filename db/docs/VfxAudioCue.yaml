@@ -1,0 +1,35 @@
+# VfxAudioCue Documentation
+
+class:
+  description: |
+    One sound of a [VfxAudioComponent](/classes/vfxaudiocomponent): an event name and the rule
+    for when the sound starts and stops.
+
+properties:
+  sound:
+    description: |
+      Name of the sound event that the client sends to the audio system.
+
+  LifetimeBehavior:
+    description: |
+      When the sound starts and stops. A **one-shot** sound plays to its end and is not stopped
+      by the emitter. A **tracked** sound is stopped by the emitter.
+
+      | Value | Name | Behavior |
+      |---|---|---|
+      | `0` | OnSpawn | One-shot. Plays once for each spawn of the emitter, at the position of the first new particle. |
+      | `1` | OnStart | One-shot. Plays when the emitter is first in its emitting phase, at the position of the emitter's first particle. |
+      | `2`, `3` | PerParticle | Tracked. Starts once for each spawn of the emitter, at the position of the first new particle. It stops when that particle dies. The other particles of the spawn carry no sound. |
+      | `4`, `5` | WhileEmitting | Tracked. Starts when the emitter is first in its emitting phase, at the position of the emitter's first particle. It stops when the emitter leaves the emitting phase. |
+      | other | - | The cue is ignored. |
+
+      The emitting phase is the lifetime state between the start delay and the loop delay or
+      the outro, see [VfxLifetimeStateBehavior](/classes/vfxlifetimestatebehavior).
+    notes:
+      - "Values `2` and `3` behave the same, and so do `4` and `5`."
+
+  type:
+    description: "Not read by the client. The cue plays the same sound whatever the value."
+
+  Attachment:
+    description: "Not read by the client. The sound is placed at a particle's position whatever the value."

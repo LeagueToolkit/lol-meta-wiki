@@ -1,0 +1,27 @@
+# VfxAnimatedColorRgb Documentation
+
+class:
+  description: |
+    An [RGB colour curve](/classes/vfxcolorrgbbase) with an interpolation mode for each span.
+    The driver samples it at the time that its `frequency` selects and returns `(r, g, b)`.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  times:
+    description: |
+      The positions of the keys on the driver's time source: seconds
+      for the time sources in seconds, fractions for the others.
+
+  values:
+    description: "The colour at each key, `(r, g, b)`, one entry for each entry of `times`."
+
+  InterpModes:
+    description: |
+      How the curve gets from each key to the next, one entry for each span between two keys.
+      Which value selects which interpolation is not established for this class.
+
+  probabilityTables:
+    description: |
+      Random variation tables. The driver draws no random numbers for this curve, see
+      [VfxColorRgbBase](/classes/vfxcolorrgbbase).

@@ -1,0 +1,41 @@
+# SimpleOutro Documentation
+
+class:
+  description: |
+    A [lifetime state machine](/classes/vfxlifetimestatebehavior) that plays once: a start
+    delay, one emitting phase, an outro, then finished. It has no intro and no loop.
+
+    It is the behaviour that a [VfxLifetimeComponent](/classes/vfxlifetimecomponent) uses
+    when `LifetimeBehavior` is not set. Its values start at: `startDelay` `0`,
+    `EmitterDuration` `1`, `OutroDuration` `0`, `particleLifetime` `1`.
+  notes:
+    - "Almost every shipped component emitter uses it, with an `EmitterDuration` of `-1` or a few seconds."
+
+properties:
+  startDelay:
+    description: |
+      Length of the start delay, in seconds, evaluated once when the emitter is created. A
+      negative value counts as `0`.
+
+  EmitterDuration:
+    description: |
+      Length of the emitting phase, in seconds, evaluated once when the emitter is created.
+      A negative value makes the emitter emit forever. The value is also the emission
+      duration that the emitter reports to the particle system.
+
+  OutroDuration:
+    description: |
+      Length of the outro, in seconds, evaluated when the outro starts. When the outro ends,
+      the client removes every remaining particle. A negative value uses one new evaluation
+      of `particleLifetime` instead, if that is positive and finite, and `0` otherwise.
+    notes:
+      - "With `0`, every particle is removed in the step in which emission ends."
+
+  particleLifetime:
+    description: |
+      Lifetime of each particle, in seconds, evaluated once for each new particle. A driver
+      with a random input gives each particle its own lifetime. A negative value means the
+      particle never expires and is removed only when the emitter is finished.
+
+  DoesParticleLifeScale:
+    description: "Has no effect. The client reads the flag for each new particle and does not use the result."

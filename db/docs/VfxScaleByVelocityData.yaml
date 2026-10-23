@@ -1,0 +1,36 @@
+# VfxScaleByVelocityData Documentation
+
+class:
+  description: |
+    A speed-dependent scale factor of a
+    [VfxPhysicsScaleModifier](/classes/vfxphysicsscalemodifier). When `Enabled` is set, the
+    particle's scale is multiplied on every step by a factor between `MinScaleFactor` and
+    `MaxScaleFactor`:
+
+    `t = min(speed, VelocityThreshold) / VelocityThreshold`, factor = `lerp(MinScaleFactor, MaxScaleFactor, t)`
+
+    `speed` is the particle's world speed over the previous step, in world units per
+    second. It includes every kind of motion, displacements too. The interpolation is per
+    axis.
+  notes:
+    - "No shipped object enables it."
+
+properties:
+  Enabled:
+    description: "Turns the factor on. When clear, the other values are not used."
+
+  MinScaleFactor:
+    description: |
+      Factor at zero speed, per axis. Evaluated once per particle at spawn. Left unset, it is
+      1 on every axis.
+
+  MaxScaleFactor:
+    description: |
+      Factor at `VelocityThreshold` and above, per axis. Evaluated once per particle at
+      spawn. Left unset, it is 1 on every axis.
+
+  VelocityThreshold:
+    description: |
+      Speed, in world units per second, at which the factor reaches `MaxScaleFactor`. A value
+      of `0` or less is treated as a tiny positive number, so any motion gives the full
+      `MaxScaleFactor`.

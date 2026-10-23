@@ -1,0 +1,20 @@
+# VfxEmissionMesh Documentation
+
+class:
+  description: |
+    An [emission source](/classes/ivfxemissionsource) that is the surface of a static mesh.
+    For each particle a triangle is picked at random, weighted by area, and the point is
+    uniformly random inside the triangle. The emission normal is the triangle's face normal.
+    The sampling is the same as for the `emissionMeshName` of a
+    [complex emitter](/classes/vfxemitterdefinitiondata).
+
+    The mesh is not skinned or animated. For points on a unit's body use
+    [VfxEmissionSkin](/classes/vfxemissionskin).
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  meshName:
+    description: |
+      Path of the static mesh. It is loaded when the definition loads. If the name is empty
+      or the mesh has no triangles, the source gives no point.

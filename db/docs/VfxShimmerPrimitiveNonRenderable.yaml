@@ -1,0 +1,17 @@
+# VfxShimmerPrimitiveNonRenderable Documentation
+
+class:
+  description: |
+    A component primitive with no geometry. It builds no vertices, declares no per-particle
+    data, names no mesh and has no facing mode.
+
+    The component emitter does not treat it as a non-rendering primitive. It reserves render
+    data and the vertex space of one quad per particle for it, as for a quad, and the render
+    component builds its material as usual. Whether anything is drawn is not yet identified.
+
+    The legacy [VfxPrimitiveNonRenderable](/classes/vfxprimitivenonrenderable) is the
+    primitive that the component emitter recognises: placed in a
+    [VfxLegacyGeometryComponent](/classes/vfxlegacygeometrycomponent), it makes the render
+    component build no material and draw in no render pass.
+  notes:
+    - "No shipped data uses this class."

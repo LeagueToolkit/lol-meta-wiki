@@ -1,0 +1,111 @@
+# VfxLegacyRenderComponent Documentation
+
+class:
+  description: |
+    A [render component](/classes/vfxrendercomponentbase) that carries the render fields of a
+    [complex emitter](/classes/vfxemitterdefinitiondata). It builds the stock particle material
+    from them the way a complex emitter does, instead of drawing with a
+    [StaticMaterialDef](/classes/staticmaterialdef). Fields with the same name as on
+    [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata) have the meaning that page
+    gives them. This page states what differs.
+
+    The client creates this component only when a bin declares one. It never converts a
+    [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata) into one.
+
+    ## Render phase
+
+    There is no `renderPhaseOverride`: the phase is always chosen by the automatic rules of
+    `renderPhaseOverride` on [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata),
+    with `RenderOrder` in place of `pass`:
+
+    - An emitter of a HUD-layer system draws only in `HudLayer`.
+    - `distortionDefinition` with a non-zero `distortionMode` selects the distortion phases,
+      unless `isGroundLayer` is set.
+    - `isGroundLayer` selects `GroundLayer`.
+    - Without distortion, a negative `RenderOrder` draws in `Default`, and zero or more in
+      `PostDistortion`.
+    - `doesCastShadow` adds `Shadow`, without distortion and without `isGroundLayer`.
+
+    With a [VfxPrimitiveNonRenderable](/classes/vfxprimitivenonrenderable) primitive the
+    emitter draws in no phase.
+
+    How this component uses the fields without a description on this page (colour, flipbook,
+    UV, stencil and the remaining flags) is not established.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  RenderOrder:
+    description: |
+      The first key of the draw order inside a render phase, as `RenderOrder` on
+      [VfxMaterialRenderComponent](/classes/vfxmaterialrendercomponent). Its sign also picks
+      the render phase, see Render phase above.
+
+  blendMode:
+    description: |
+      The blend mode, with the values of `blendMode` on
+      [VfxMaterialRenderComponent](/classes/vfxmaterialrendercomponent): the blend rank of the
+      draw order and the premultiply of the particle colour.
+
+  texture:
+    description: "The base texture, as `texture` on [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata)."
+
+  TextureDivisions:
+    description: "Columns and rows of the base texture's flipbook grid, as `texDiv` on [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata)."
+
+  ColorTexture:
+    description: "The colour-over-life texture, as `particleColorTexture` on [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata)."
+
+  ColorTextureScale:
+    description: "Scale of the `ColorTexture` lookup. How the client applies it on this component is not established."
+
+  ColorTextureOffset:
+    description: "Offset of the `ColorTexture` lookup. How the client applies it on this component is not established."
+
+  FalloffTexturePath:
+    description: "The falloff texture, as `falloffTexture` on [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata)."
+
+  textureMult:
+    description: "The second texture layer, as `textureMult` on [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata)."
+
+  paletteDefinition:
+    description: "The palette texture, as `paletteDefinition` on [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata)."
+
+  alphaErosionDefinition:
+    description: "Alpha erosion, as `alphaErosionDefinition` on [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata)."
+
+  reflectionDefinition:
+    description: "The reflection texture, as `reflectionDefinition` on [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata)."
+
+  softParticleParams:
+    description: "Soft particles, as `softParticleParams` on [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata)."
+
+  distortionDefinition:
+    description: "Scene distortion, as `distortionDefinition` on [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata). It also selects the distortion phases, see Render phase above."
+
+  AlphaSliceRange:
+    description: "Above zero, the emitter uses the slice shaders, as `sliceTechniqueRange` on [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata)."
+
+  DepthPushPull:
+    description: "Moves the particle along the view ray, as `DepthPushPull` on [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata)."
+
+  isGroundLayer:
+    description: "Puts the emitter in the `GroundLayer` phase, see Render phase above."
+
+  doesCastShadow:
+    description: "Also draws the emitter in the `Shadow` phase, see Render phase above."
+
+  ApplyTeamColorCorrection:
+    description: "Applies the colourblind recolour, as bit `0x1` of `colorRenderFlags` on [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata)."
+
+  "0xbdee5d67":
+    description: |
+      A constant RGBA multiplier on the colour of every particle of the emitter.
+
+  "0x53ff5986":
+    description: |
+      Set as the shader parameter `INSTANCE_UV_PARALLAX_SCALE` of instanced mesh draws. The
+      visual result is not established.
+
+  "0x73fc541d":
+    description: "Unknown byte. The client reads it, but its purpose is not yet identified."

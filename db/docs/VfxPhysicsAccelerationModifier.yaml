@@ -1,0 +1,32 @@
+# VfxPhysicsAccelerationModifier Documentation
+
+class:
+  description: |
+    A [physics modifier](/classes/vfxphysicsmodifierbase) that accelerates the particles. It
+    holds two independent accelerations: a local one in the axes of the particle's reference
+    frame and a world one that keeps its world direction. On each step, before the
+    integration, each acceleration is `Initial * Keyed` and is added to the step's
+    acceleration. Units are world units per second squared.
+
+    The position-based model applies the step's acceleration as `a * dt^2` to the position
+    and `a * dt` to the velocity, so the particle keeps the speed it gains. See
+    [VfxModularPhysicsComponent](/classes/vfxmodularphysicscomponent).
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  InitialLocalAcceleration:
+    description: |
+      Local acceleration, evaluated once per particle at spawn. If this driver is null, the
+      local pair does nothing.
+
+  KeyedLocalAcceleration:
+    description: "Multiplier on `InitialLocalAcceleration`, evaluated on every step."
+
+  InitialWorldAcceleration:
+    description: |
+      World acceleration, evaluated once per particle at spawn. A constant `(0, -g, 0)`
+      here is gravity. If this driver is null, the world pair does nothing.
+
+  KeyedWorldAcceleration:
+    description: "Multiplier on `InitialWorldAcceleration`, evaluated on every step."

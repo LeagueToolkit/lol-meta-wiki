@@ -1,0 +1,45 @@
+# VfxPhysicsLingerDefinitionData Documentation
+
+class:
+  description: |
+    The linger replacements of a
+    [VfxLegacyPhysicsComponent](/classes/vfxlegacyphysicscomponent): motion values that take
+    the place of the component's own values while a particle lingers. Each replacement has
+    its own switch. They are the motion half of
+    [`VfxEmitterDefinitionData.Linger`](/classes/vfxemitterdefinitiondata#linger), which
+    describes the linger rules and what each replacement stands in for. There is no colour
+    replacement here; colour belongs to the render component.
+  notes:
+    - "No shipped object uses it."
+    - "The component's flag `0x469f89dc` reads its spin rate from these replacements when one of them is switched on. Which replacement it reads is not confirmed. See [VfxLegacyPhysicsComponent](/classes/vfxlegacyphysicscomponent)."
+
+properties:
+  LingerRotation:
+    description: "Rotation rate used while the particle lingers, when `UseLingerRotation` is set."
+
+  UseLingerRotation:
+    description: "Switch for `LingerRotation`."
+
+  LingerScale:
+    description: "Scale used while the particle lingers, when `UseLingerScale` is set."
+
+  UseLingerScale:
+    description: "Switch for `LingerScale`."
+
+  KeyedLingerAcceleration:
+    description: "Acceleration used while the particle lingers, when `UseKeyedLingerAcceleration` is set."
+
+  UseKeyedLingerAcceleration:
+    description: "Switch for `KeyedLingerAcceleration`."
+
+  KeyedLingerDrag:
+    description: "Drag used while the particle lingers, when `UseKeyedLingerDrag` is set."
+
+  UseKeyedLingerDrag:
+    description: "Switch for `KeyedLingerDrag`."
+
+  KeyedLingerVelocity:
+    description: "Velocity used while the particle lingers, when `UseKeyedLingerVelocity` is set."
+
+  UseKeyedLingerVelocity:
+    description: "Switch for `KeyedLingerVelocity`."

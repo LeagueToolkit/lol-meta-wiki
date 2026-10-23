@@ -8,13 +8,14 @@ class:
 
     The source is the system's position and the target is the effect's target position, each
     moved by the offsets in `Beam`; see
-    [VfxBeamBaseDefinitionData](/classes/vfxbeambasedefinitiondata).
+    [VfxShimmerMeshBeamDefinitionData](/classes/vfxshimmermeshbeamdefinitiondata). The
+    particle's position does not place either end. The mesh beam has no facing mode.
   notes:
     - "No shipped data uses this class."
 
 properties:
   Beam:
-    description: "The two endpoint offsets. See [VfxBeamBaseDefinitionData](/classes/vfxbeambasedefinitiondata)."
+    description: "The two endpoint offsets. See [VfxShimmerMeshBeamDefinitionData](/classes/vfxshimmermeshbeamdefinitiondata)."
 
   Mesh:
     description: "The mesh to stretch. See [VfxMeshDefinitionData](/classes/vfxmeshdefinitiondata)."

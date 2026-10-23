@@ -1,0 +1,12 @@
+# VfxColorRgbBase Documentation
+
+class:
+  description: |
+    An **RGB colour curve**: the `dynamics` of a [ValueColorRgb](/classes/valuecolorrgb).
+    [VfxColorRgbAnimatedWithRandomDriver](/classes/vfxcolorrgbanimatedwithrandomdriver)
+    samples the curve at its time source and returns the colour as `(r, g, b)`.
+
+    The driver draws no random numbers for these curves, so their `probabilityTables` get no
+    random input. What the tables do without it is not established.
+  notes:
+    - "No shipped object uses it."

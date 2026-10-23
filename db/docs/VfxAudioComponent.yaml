@@ -1,0 +1,25 @@
+# VfxAudioComponent Documentation
+
+class:
+  description: |
+    Plays **sound events** for a
+    [component emitter](/classes/vfxshimmeremitterdefinitiondata). It is not one of the five
+    named slots: it goes in the `components` list of the emitter's
+    [VfxComponents](/classes/vfxcomponents) graph. Each entry of `AudioCues` is one sound, and
+    the cue's `LifetimeBehavior` decides when it starts and when it stops, see
+    [VfxAudioCue](/classes/vfxaudiocue).
+
+    The component sends each cue's `sound` to the audio system as an event name, with a
+    particle's position.
+
+    The component creates its running part,
+    [VfxAudioRuntime](/classes/vfxaudioruntime), with the emitter. That object stores the
+    handles of the sounds that are still playing.
+  notes:
+    - "When the emitter is destroyed, the component does not stop the sounds that it started and has not stopped yet. Whether the audio system stops them by another path is not yet identified."
+    - "A few component emitters in `Global.wad.client` use it, with cues of `LifetimeBehavior` `2` and `4`."
+
+properties:
+  AudioCues:
+    description: |
+      The sounds of the emitter. Each cue is handled on its own.

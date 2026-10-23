@@ -1,0 +1,35 @@
+# VfxEmissionCylinder Documentation
+
+class:
+  description: |
+    An [emission source](/classes/ivfxemissionsource) that is the surface of a vertical
+    cylinder centred on the shape's origin. A side point is placed by two coordinates `u`
+    and `v`, each in `[-1, 1]`: the angle around the axis is `u * 180` degrees and the
+    height is `v * height / 2`. The point lies at `radius` from the axis.
+  notes:
+    - "No shipped object uses it."
+    - "Points are only on the surface. There is no setting that fills the volume."
+
+properties:
+  radius:
+    description: "Radius of the cylinder, in world units, as a [float driver value](/classes/vfxfloatdynamicproperty)."
+
+  height:
+    description: "Height of the cylinder, in world units, as a [float driver value](/classes/vfxfloatdynamicproperty). The cylinder reaches half of it above and below the centre."
+
+  IncludeCaps:
+    description: |
+      Also places points on the two caps. For each particle a random draw, weighted by the
+      area of the caps and of the side, picks a cap or the side. A cap point has its normal
+      along +Y or -Y.
+
+  "0x654153c3":
+    description: |
+      A [VfxVector2AnimatedWithRandomDriver](/classes/vfxvector2animatedwithrandomdriver)
+      that supplies the `(u, v)` coordinates of side points, in the same way as on
+      [VfxEmissionSphere](/classes/vfxemissionsphere#0x654153c3).
+
+  DistributionMode:
+    description: |
+      `0` takes the coordinates from `0x654153c3` or at random. Any other value spreads the
+      particles of one spawn evenly over the height, in spawn order.

@@ -1,0 +1,20 @@
+# ValueColorRgb Documentation
+
+class:
+  description: |
+    An **animated RGB colour**: a constant plus an optional curve, the RGB form of the
+    animated values of [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata) (see
+    Animated values there). It is the `colors` of
+    [VfxColorRgbAnimatedWithRandomDriver](/classes/vfxcolorrgbanimatedwithrandomdriver), which
+    samples it.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  constantValue:
+    description: "The colour, `(r, g, b)`. The driver returns it when `dynamics` is not set."
+
+  dynamics:
+    description: |
+      The curve, a [VfxColorRgbBase](/classes/vfxcolorrgbbase). When it is set, the driver
+      samples it and does not use `constantValue`.

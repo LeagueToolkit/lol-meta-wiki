@@ -2,10 +2,13 @@
 
 class:
   description: |
-    Batched geometry between two points, built on the CPU each frame through the shimmer
-    primitives' geometry builder. The number of vertices and indices each particle gets
+    Batched geometry between two points, built on the CPU in every update through the
+    geometry builder of the [component primitives](/classes/vfxshimmerprimitivebase). Only
+    the component VFX system builds it. The number of vertices and indices each particle gets
     follows from the two segment counts in `Laser`; see
     [VfxLaserDefinitionData](/classes/vfxlaserdefinitiondata).
+
+    The laser has no facing mode.
   notes:
     - "No shipped data uses this class."
 

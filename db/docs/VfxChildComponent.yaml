@@ -2,8 +2,44 @@
 
 class:
   description: |
-    The optional **child** slot of a [VfxComponents](/classes/vfxcomponents) graph. When it is
-    set, it is told each spawn count and updates after the render component. What it does with
-    its child particle set is not yet identified.
+    The optional **child** slot of a [VfxComponents](/classes/vfxcomponents) graph. It gives
+    the particles of a component emitter nested particle systems, the way
+    [`childParticleSetDefinition`](/classes/vfxemitterdefinitiondata#childparticlesetdefinition)
+    does for a complex emitter. It reads the same set class, and the set's fields mean the same:
+    `childrenIdentifiers`, `boneToSpawnAt`, `childrenProbability`, `childEmitOnDeath` and
+    `ParentInheritanceDefinition`.
+
+    **Birth children.** Unless `childEmitOnDeath` is set, the component creates the children of
+    a particle on the step after the particle is born, when the child component updates. The
+    physics component has already moved the particle in that step. A birth child follows its
+    parent particle.
+
+    **Death children.** With `childEmitOnDeath`, the component creates the children when the
+    particle dies. A death child takes the particle's transform once and is not bound to it.
+
+    **Which children.**
+
+    - With `boneToSpawnAt`, every identifier spawns a child at the bone at the same position in
+      the list, if the emitter has a skeleton and the skeleton has that bone. The
+      child's scale is the system scale times the particle's scale. With the emitter's
+      `isUniformScale`, the X scale is used for all three axes.
+    - Without bones, one child spawns at the particle's position. `childrenProbability` selects
+      it as an index: the value is clamped to `0` or more, truncated to an integer and wrapped
+      by the number of identifiers. If `ParentInheritanceDefinition` is set, it supplies the
+      child's transform. Otherwise the child takes the particle's transform.
+
+    The client resolves each identifier by its `effect` link first, then by `effectKey`, and
+    otherwise loads the system named by `effectName` asynchronously.
+
+    **Parent death.** When a particle dies, the component stops the birth children of that
+    particle and releases them.
   notes:
+    - "If `boneToSpawnAt` has at least one entry but fewer entries than `childrenIdentifiers`, the component never spawns a child. The client gives no warning."
+    - "If `childrenIdentifiers` is empty or `ChildDefinitionData` is unset, the component does nothing."
     - "No shipped data uses this class."
+
+properties:
+  ChildDefinitionData:
+    description: |
+      The child particle set: which systems to create, on which bones, and at the particle's
+      birth or death.

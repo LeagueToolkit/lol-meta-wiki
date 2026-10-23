@@ -1,0 +1,19 @@
+# VfxEmissionSkeleton Documentation
+
+class:
+  description: |
+    An [emission source](/classes/ivfxemissionsource) that is the bones of the skeleton of
+    the unit the effect is bound to, in the unit's current pose. The bone, the point along
+    it and the normal at right angles to it are picked as
+    [VfxEmissionSkeletonData](/classes/vfxemissionskeletondata) describes for a complex
+    emitter. The client then converts the point and the normal from world space into the
+    emitter's frame.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  SkeletonData:
+    description: |
+      The skeleton and the joint mask. If `skeletonName` is empty, the bound unit's own
+      skeleton is used. If it is empty and the bound object has no skeleton, the source
+      gives no point.

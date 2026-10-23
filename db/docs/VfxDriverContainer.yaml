@@ -2,24 +2,37 @@
 
 class:
   description: |
-    The **material drivers** of a material render component of the component VFX system
-    (`VfxMaterialRenderComponent.Drivers`): material parameter values that the
-    [driver graph](/classes/ivfxbasedriver) computes. When the system is prepared, the render
-    component runs the driver setup over these values: it records which components each
-    driver defines, assigns the random slots and registers the logic drivers. How the results
-    reach the material is not established.
+    The **material drivers** of a
+    [VfxMaterialRenderComponent](/classes/vfxmaterialrendercomponent) (its `Drivers`):
+    shader parameter values that the [driver graph](/classes/ivfxbasedriver) computes. There
+    are two kinds:
+
+    - `materialDrivers`: one value per emitter, set as a named material parameter.
+    - `DynamicParticleParameter`: values per particle, written into a per-particle buffer
+      that the shader reads.
+
+    When the system is prepared, the render component runs the driver setup over both maps:
+    it records which components each driver defines, assigns the random slots and registers
+    the logic drivers.
   notes:
     - "No shipped object uses it."
 
 properties:
   materialDrivers:
     description: |
-      Four-component [drivers](/classes/ivfxvector4driver), each under a string key. What the
-      client matches the key against is not established.
+      Four-component [drivers](/classes/ivfxvector4driver), each under the name of a material
+      parameter. On every draw of the emitter, the client sets each value as the material
+      parameter whose name is the key.
 
-  "0x8ed7a68f":
+  DynamicParticleParameter:
     description: |
-      Entries under a `U8` key. Each entry has `EnableNode` and two four-component driver
-      values, `InitialParameters` and `KeyedParameters`. What the key selects, what
-      `EnableNode` does and how the two values are used is not established. The property's
-      name is not yet known.
+      Per-particle shader values, each a
+      [VfxDynamicParticleParameterDefinition](/classes/vfxdynamicparticleparameterdefinition)
+      under a `U8` key. The key is the index of the value in the particle's record.
+
+      On every draw the client also sets the shader parameter `DYNAMIC_PARTICLE_ENABLE_MASK`:
+      four bits per key, one for each component that the key's drivers define. Bits `0`-`3`
+      belong to key `0`, bits `4`-`7` to key `1`, and so on.
+    notes:
+      - "The per-particle record that reaches the shader holds the particle position and the values of keys `0` and `1`. A key of `2` or more is written past the particle's record, into the record of the next particle, and the last particle writes past the end of the buffer."
+      - "The client keeps a per-particle copy of the value only for keys `0`-`3`."

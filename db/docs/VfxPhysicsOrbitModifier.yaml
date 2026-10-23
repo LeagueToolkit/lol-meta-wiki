@@ -1,0 +1,66 @@
+# VfxPhysicsOrbitModifier Documentation
+
+class:
+  description: |
+    A [physics modifier](/classes/vfxphysicsmodifierbase) that makes the particles circle a
+    centre. Each particle gets an **orbit offset** at spawn, which is the vector from the
+    orbit centre to the particle, and an **orbit rotational velocity**, which is how fast
+    that vector turns.
+
+    - **Spawn.** The offset is `InitialOrbitOffset`, turned by `InitialRotationOffset` if
+      that is set. The particle is displaced by `offset * KeyedOrbitOffset`.
+    - **Each step, before the integration.** The radius vector is the stored offset times
+      `KeyedOrbitOffset`. The angular velocity is
+      `InitialOrbitRotationalVelocity * KeyedOrbitRotationalVelocity`, in degrees per
+      second about each axis. The client turns the radius vector by the angle of this step
+      and moves the particle by the difference, as a displacement.
+
+    Because the orbit is a displacement, it gives the particle no momentum. The particle's
+    other motion moves the orbit centre.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  InitialOrbitOffset:
+    description: "Vector from the orbit centre to the particle at spawn, in world units, in the particle's reference frame."
+
+  KeyedOrbitOffset:
+    description: "Multiplier on the orbit offset, evaluated on every step. A curve here widens or narrows the orbit over the particle's life."
+
+  InitialOrbitRotationalVelocity:
+    description: |
+      Angular velocity of the orbit, in degrees per second about each axis, evaluated once
+      per particle at spawn. Required: if the driver is null, the modifier is skipped.
+
+  KeyedOrbitRotationalVelocity:
+    description: "Multiplier on `InitialOrbitRotationalVelocity`, evaluated on every step."
+
+  InitialRotationOffset:
+    description: |
+      Euler rotation, in degrees, applied to `InitialOrbitOffset` at spawn. A random value
+      here spreads the particles around the orbit. Left unset, the offset is not turned.
+
+  DragScaleFactor:
+    description: |
+      Multiplier on the drag of a [VfxPhysicsDragModifier](/classes/vfxphysicsdragmodifier)
+      when that drag slows the orbit. The fraction removed per step is
+      `drag * DragScaleFactor * dt`, clamped to `[0, 1]`.
+
+  ApplyDrag:
+    description: |
+      Lets the drag of a [VfxPhysicsDragModifier](/classes/vfxphysicsdragmodifier) slow the
+      angular velocity. Without a drag modifier in the list the flag has no effect.
+
+  WorldSpaceRotation:
+    description: |
+      Treats the angular velocity as a world vector: the orbit axis keeps its world
+      direction whatever the rotation of the particle's reference frame.
+
+  OrbitOriginSpace:
+    description: |
+      Which point the particle circles.
+
+      | Value | Centre |
+      |---|---|
+      | `1` | The particle's own orbit centre, at `position - radius vector`. The centre moves with the particle's other motion. |
+      | other | The origin of the particle's reference frame, which is the emitter. The particle's whole position turns about it. |

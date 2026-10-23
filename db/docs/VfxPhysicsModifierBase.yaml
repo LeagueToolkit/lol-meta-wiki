@@ -1,0 +1,53 @@
+# VfxPhysicsModifierBase Documentation
+
+class:
+  description: |
+    One building block of the motion of a
+    [VfxModularPhysicsComponent](/classes/vfxmodularphysicscomponent). Each entry of its
+    `Modifiers` list adds one kind of motion or one per-particle value: velocity,
+    acceleration, drag, an offset, a rotation, a scale, an orbit, attraction, noise, terrain
+    following or ground collision.
+
+    ## Initial and Keyed values
+
+    Most modifiers take their values in pairs of
+    [driver values](/classes/vfxvector3dynamicproperty):
+
+    - An **Initial** value is evaluated once per particle, when the particle spawns, and
+      stored with it.
+    - A **Keyed** value is evaluated on every step and multiplies the stored Initial value,
+      per component. Left unset it is 1, so the Initial value applies unchanged. A curve
+      over the particle's age in a Keyed value shapes the Initial value over the particle's
+      life.
+
+    The drivers of a modifier are evaluated per particle, on the particle's age, unless
+    the modifier's page says otherwise.
+    [IVfxBaseDriver](/classes/ivfxbasedriver) describes the time sources and the random
+    values.
+
+    An Initial value is set by default. Most modifiers check only that their Initial
+    driver is present: data that writes an explicit null in it turns that part of the
+    modifier off.
+
+    ## Local and World values
+
+    A **Local** value is in the axes of the particle's reference frame. A **World** value
+    keeps its world direction whatever the frame's rotation.
+    [VfxModularPhysicsComponent](/classes/vfxmodularphysicscomponent) describes the frame
+    and the flags that choose its rotation.
+
+    ## When modifiers run
+
+    - **Spawn.** After the component places the new particles, each modifier initialises
+      them, in list order. This is when the Initial values are evaluated.
+    - **Step, before the integration.** The acceleration, drag, velocity, position,
+      rotation, orbit, attraction, noise and ground-collision modifiers run in list order.
+      They add to the step's acceleration and displacement, change the velocity, or set
+      the rotation.
+    - **Step, after the integration.**
+      [VfxPhysicsScaleModifier](/classes/vfxphysicsscalemodifier) and
+      [VfxPhysicsFollowTerrainModifier](/classes/vfxphysicsfollowterrainmodifier) run.
+
+    The drivers of all modifiers are bound once, when the emitter is created.
+  notes:
+    - "A modifier class that creates no running part is skipped. `0xc685a3b6` is such a class: its data loads and has no effect."

@@ -1,0 +1,27 @@
+# VfxPhysicsNoiseDefinitionData Documentation
+
+class:
+  description: |
+    The settings of the [noise modifier](/classes/0x8edc8e76): a sphere of influence and a
+    rate of random impulses. All four values are evaluated once per step for the whole
+    emitter.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  Position:
+    description: "Centre of the region of influence, in world units, in the particles' reference frame."
+
+  radius:
+    description: "Radius of the region of influence, in world units. Particles outside it get no impulse."
+
+  frequency:
+    description: |
+      Impulses per second. If the step is shorter than one period, no impulse fires in it;
+      if it is longer, several fire. At `0` only the impulse on the first step fires.
+
+  NoiseVector:
+    description: |
+      Per-axis strength of an impulse, in world units per second squared. Each impulse is a
+      random unit direction multiplied by this vector, so `{0, 1, 0}` gives vertical pushes
+      only.

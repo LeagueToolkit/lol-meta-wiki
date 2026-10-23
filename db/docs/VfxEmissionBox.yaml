@@ -1,0 +1,49 @@
+# VfxEmissionBox Documentation
+
+class:
+  description: |
+    An [emission source](/classes/ivfxemissionsource) that is an axis-aligned box centred on
+    the shape's origin. `FillMode` chooses where on the box the points lie, and
+    `DistributionMode` chooses whether they are random or spread by spawn order.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  BoxSize:
+    description: |
+      Edge lengths of the box, in world units, per axis. A face lies at half this value
+      from the centre.
+
+  FillMode:
+    description: |
+      Where the points lie.
+
+      | Value | Points | Normal |
+      |---|---|---|
+      | `0` | On the six faces. | The outward normal of the face. |
+      | `1` | Inside the box. | The outward normal of a face: the face that was picked when the points are random, the nearest face when they are spread. |
+      | `2` | On the eight corners. | The diagonal from the centre through the corner. |
+
+  DistributionMode:
+    description: |
+      How the points are chosen.
+
+      | Value | Points |
+      |---|---|
+      | `0` | Random for each particle. |
+      | other | Spread by each particle's index in its spawn batch, in a fixed pattern. On faces, the batch is divided evenly over the faces. On corners, consecutive particles take consecutive corners. |
+
+  Distribution:
+    description: |
+      A [VfxVector3AnimatedWithRandomDriver](/classes/vfxvector3animatedwithrandomdriver)
+      that shapes the distribution. Its use depends on `DistributionMode`:
+
+      - **Random** (`0`), faces or inside: the driver's value picks the face. The axis with
+        the largest absolute component is the face axis, and its sign picks the side. If
+        the driver is null, the face is random.
+      - **Spread**, inside: the key range of each axis of the curve sets the range of
+        that coordinate, from `-1` to `1` for the whole box. Left unset, the range is
+        `[-1, 1]`.
+      - **Spread**, faces: a positive key range on an axis enables the positive face, a
+        negative one the negative face, and the faces get particles in proportion to their
+        ranges.

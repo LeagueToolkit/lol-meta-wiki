@@ -1,0 +1,42 @@
+# VfxPhysicsRotationModifier Documentation
+
+class:
+  description: |
+    A [physics modifier](/classes/vfxphysicsmodifierbase) that sets the particles' rotation.
+    Each particle keeps a rotation as Euler angles in degrees. On each step, before the
+    integration, the client builds the particle's orientation from these angles and replaces
+    the orientation it had. The position is not changed.
+
+    The angles come from one of two modes:
+
+    - **Spin** (`UseKeyedRotation` clear): the angles start at `InitialRotation` and grow
+      by `InitialRotationalVelocity * KeyedRotationalVelocity * dt` on every step.
+    - **Keyed** (`UseKeyedRotation` set): the angles start at `InitialRotation` and are set
+      to `KeyedRotation` on every step.
+  notes:
+    - "Some shipped component emitters use it, with a constant `InitialRotation` such as `{180, 0, 0}`."
+
+properties:
+  InitialRotation:
+    description: "Euler angles, in degrees, that the particle starts with. Evaluated once per particle at spawn."
+
+  InitialRotationalVelocity:
+    description: |
+      Spin rate, in degrees per second about each axis, evaluated once per particle at
+      spawn. Not read when `UseKeyedRotation` is set.
+
+  KeyedRotationalVelocity:
+    description: "Multiplier on `InitialRotationalVelocity`, evaluated on every step."
+
+  KeyedRotation:
+    description: |
+      Absolute Euler angles, in degrees, evaluated on every step when `UseKeyedRotation` is
+      set. A curve over the particle's age here animates the rotation directly.
+
+  UseKeyedRotation:
+    description: "Switches from the spin mode to the keyed mode. See the class description."
+
+  WorldSpaceRotation:
+    description: |
+      Treats the rotation values as world rotations: they keep their world meaning whatever
+      the rotation of the particle's reference frame.

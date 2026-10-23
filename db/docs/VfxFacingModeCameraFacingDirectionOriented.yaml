@@ -1,0 +1,15 @@
+# VfxFacingModeCameraFacingDirectionOriented Documentation
+
+class:
+  description: |
+    A [facing mode](/classes/vfxshimmerfacingmode) that lines each particle up with its
+    **direction of travel** and turns it about that axis to face the camera. The axis is the
+    particle's last non-zero displacement. A quad runs along the direction of travel, and a
+    mesh points its local -X along it.
+
+    Only [VfxModularPhysicsComponent](/classes/vfxmodularphysicscomponent) records that
+    direction, and only when `IsDirectionVelocityOriented` or
+    `IsDirectionVelocityOrientedOnSpawn` is set. Without a recorded direction, the mode
+    leaves the particle's transform unchanged.
+
+    The particle's own rotation is applied inside that frame.

@@ -1,0 +1,21 @@
+# 0x402b2a8f Documentation
+
+class:
+  description: |
+    A [physics modifier](/classes/vfxphysicsmodifierbase) that pulls the particles toward a
+    list of points. Each entry of `Attractors` is one
+    [attractor](/classes/vfxphysicsattractiondefinitiondata).
+
+    On each step, before the integration, each attractor's values are evaluated once for
+    the whole emitter. Then, for each particle and each attractor, the client takes the
+    vector from the particle to the attractor's `Position`. If the particle is inside
+    `AttractionRadius`, `AttractionAcceleration` is added to the particle's acceleration
+    along that vector. The pull has the same strength everywhere inside the radius; it does
+    not fall off with distance.
+  notes:
+    - "No shipped object uses it."
+    - "The values are evaluated per emitter, not per particle, so per-particle random values and particle-age curves do not vary between particles."
+
+properties:
+  Attractors:
+    description: "The attractors. A null entry is skipped."

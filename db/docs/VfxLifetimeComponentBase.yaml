@@ -3,12 +3,22 @@
 class:
   description: |
     The **lifetime** slot of a [VfxComponents](/classes/vfxcomponents) graph. It owns emission:
-    in each update it decides whether the emitter is finished and, while it is not, returns the
-    number of particles to spawn in that update. The count is whole and comes straight from
-    this component, with no accumulator or burst limit applied after it.
+    in each update it decides whether the emitter may still spawn and, while it may, returns
+    the number of particles to spawn in that update. It also decides when each particle
+    expires and when the emitter is finished.
 
-    It also reports the emitter's start time, which the emitter's mesh animation clock counts
-    from.
+    The count is whole. The component applies its own per-update cap and the capacity of the
+    primitive itself, and nothing after it changes the count.
+    [VfxSpawnBehavior](/classes/vfxspawnbehavior) describes how the phase-based component
+    computes it.
+
+    It reports two times to the emitter: the start time, which the animation clock of the
+    emitter's material counts from, and the emission duration, which counts toward the
+    duration of the particle system.
+
+    While the component reports the emitter as finished, the client removes every remaining
+    particle in each update. A particle system is finished only when each of its component
+    emitters is finished.
 
     Required: a graph without a lifetime component drops its emitter.
   notes:

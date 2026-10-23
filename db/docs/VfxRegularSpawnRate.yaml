@@ -1,0 +1,15 @@
+# VfxRegularSpawnRate Documentation
+
+class:
+  description: |
+    A [spawn behaviour](/classes/vfxspawnbehavior) with an emission rate and no burst. The
+    emitter emits at the rate during each emitting phase and spawns `1` extra particle at the
+    start of each phase.
+  notes:
+    - "No shipped object uses it."
+
+properties:
+  EmissionRate:
+    description: |
+      Emission rate during the emitting phase, in particles per second, evaluated in every
+      step. It starts at `0`, and with `0` the emitter spawns nothing.

@@ -1,0 +1,39 @@
+# 0xc685a3b6 Documentation
+
+class:
+  description: |
+    A [physics modifier](/classes/vfxphysicsmodifierbase) class that the client loads but
+    does not run. It creates no running part, so
+    [VfxModularPhysicsComponent](/classes/vfxmodularphysicscomponent) skips it and its values
+    have no effect.
+  notes:
+    - "No shipped object uses it."
+    - "No property of this class is read."
+
+properties:
+  ForceMultiplier:
+    description: "Not read. Purpose not identified."
+
+  MaxAcceleration:
+    description: "Not read. Purpose not identified."
+
+  "0x9ec69b60":
+    description: "Not read. Purpose not identified."
+
+  "0x1d52d0ea":
+    description: "Not read. Purpose not identified."
+
+  "0xe8375566":
+    description: "Not read. Purpose not identified."
+
+  "0x41d74438":
+    description: "Not read. Purpose not identified."
+
+  "0x76092f1c":
+    description: "Not read. Purpose not identified."
+
+  "0xcf04b143":
+    description: "Not read. Purpose not identified."
+
+  "0x6bb5eb62":
+    description: "Not read. Purpose not identified."

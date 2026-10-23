@@ -1,0 +1,31 @@
+# VfxColorContainer Documentation
+
+class:
+  description: |
+    The **particle colour** of a
+    [VfxMaterialRenderComponent](/classes/vfxmaterialrendercomponent) (its `Color`). A
+    particle's colour is
+
+    `InitialColor (at spawn) * ColorOverLife (now)`
+
+    all four channels, component by component. An unset value is white, `(1, 1, 1, 1)`. The
+    render component then applies the premultiply of its `blendMode` and passes the colour to
+    the material's shader.
+  notes:
+    - "Shipped component emitters set `InitialColor`, `ColorOverLife` or both on some emitters."
+
+properties:
+  InitialColor:
+    description: |
+      The colour at spawn. The client evaluates it once for each new particle and keeps the
+      result for the particle's life.
+
+  ColorOverLife:
+    description: |
+      The colour over the particle's life. The client evaluates it for each particle in every
+      update and multiplies it by the particle's `InitialColor`.
+    examples:
+      - "A [VfxColorAnimatedWithRandomDriver](/classes/vfxcoloranimatedwithrandomdriver) with `frequency` `2` (particle age fraction) samples its colour curve over the particle's lifetime."
+
+  CensoredColorModulate:
+    description: "No use by the client was found. It does not change the particle colour."

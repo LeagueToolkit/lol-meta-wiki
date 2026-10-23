@@ -3,8 +3,14 @@
 class:
   description: |
     The **geometry** slot of a [VfxComponents](/classes/vfxcomponents) graph: it supplies the
-    primitive that every particle of the emitter is drawn as. The client loads the meshes the
-    primitive names when the system is prepared.
+    primitive that every particle of the emitter is drawn as. The client loads the meshes that
+    the primitive names when the system is prepared, and the render component builds the draw
+    setup from the primitive.
 
     Required, and it must resolve to a primitive. A geometry component with no primitive drops
-    the emitter just as a missing geometry component does.
+    the emitter in the same way as a missing geometry component.
+
+    When the emitter is created, the geometry component's running part has the primitive
+    declare the per-particle values that it needs. The primitive also limits each spawn to its
+    capacity and decides whether particle order is kept when a particle dies, see
+    [IVfxRuntime](/classes/ivfxruntime).

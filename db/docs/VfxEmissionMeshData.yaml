@@ -27,7 +27,7 @@ class:
 
     The point is multiplied by `meshScale` and added to the particle's birth position.
   notes:
-    - "Embedded in a component emitter's [VfxEmissionSkin](/classes/vfxemissionskin), an empty `meshName` falls back to the bound unit's own mesh and skeleton. A complex emitter has no such fallback."
+    - "Embedded in a component emitter's [VfxEmissionSkin](/classes/vfxemissionskin), the bound unit's mesh and skeleton replace `meshName` and the skeleton name whenever the unit has a skinned mesh. A complex emitter has no such replacement."
 
 properties:
   meshName:

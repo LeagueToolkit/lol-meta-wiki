@@ -1,0 +1,25 @@
+# VfxDefaultSpawnBehavior Documentation
+
+class:
+  description: |
+    A [spawn behaviour](/classes/vfxspawnbehavior) with both an emission rate and a burst. It
+    is the behaviour that a [VfxLifetimeComponent](/classes/vfxlifetimecomponent) uses when
+    `SpawnBehavior` is not set.
+
+    Both values start at `0`. With both at `0` the emitter spawns nothing. With a rate above `0`
+    and a burst count of `0`, the emitter emits at the rate and spawns `1` extra particle at the
+    start of each emitting phase.
+  notes:
+    - "Almost every shipped component emitter uses it, with a `SpawnBurstCount` of 1, 2 or 10 and, on some, an `EmissionRate` of 3 or 5."
+
+properties:
+  EmissionRate:
+    description: |
+      Emission rate during the emitting phase, in particles per second, evaluated in every
+      step.
+
+  SpawnBurstCount:
+    description: |
+      Number of particles spawned at the start of each emitting phase, truncated to a whole
+      number. It replaces the first rate count of the phase and is not scaled by
+      `EffectsQuality`.

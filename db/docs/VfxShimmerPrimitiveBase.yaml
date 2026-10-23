@@ -2,29 +2,36 @@
 
 class:
   description: |
-    The **shimmer primitives**: the shapes that the particles of a
-    [component emitter](/classes/vfxcomponents) can be drawn as, held by
+    The **component primitives**: the shapes that the particles of a
+    [component emitter](/classes/vfxcomponents) are drawn as, held by
     [`VfxGeometryComponent.primitive`](/classes/vfxgeometrycomponent#primitive). Complex
     emitters use the [legacy primitives](/classes/vfxlegacyprimitivebase) instead, and some
-    shimmer classes are twins of legacy ones.
+    component primitives are twins of legacy ones.
 
     | Primitive | Draws |
     |---|---|
-    | [VfxShimmerPrimitiveQuad](/classes/vfxshimmerprimitivequad) | a quad, batched |
-    | [VfxShimmerPrimitiveMesh](/classes/vfxshimmerprimitivemesh) | a mesh, per particle |
-    | [VfxShimmerPrimitiveAttachedMesh](/classes/vfxshimmerprimitiveattachedmesh) | the owner's skinned mesh, per particle |
+    | [VfxShimmerPrimitiveQuad](/classes/vfxshimmerprimitivequad) | a quad per particle, batched |
+    | [VfxShimmerPrimitiveMesh](/classes/vfxshimmerprimitivemesh) | a mesh per particle |
+    | [VfxShimmerPrimitiveAttachedMesh](/classes/vfxshimmerprimitiveattachedmesh) | the owner's skinned mesh per particle |
     | [VfxShimmerPrimitiveMeshBeam](/classes/vfxshimmerprimitivemeshbeam) | a mesh stretched between two points, per particle |
-    | [VfxPrimitiveLaser](/classes/vfxprimitivelaser) | tessellated geometry, batched |
+    | [VfxPrimitiveLaser](/classes/vfxprimitivelaser) | tessellated geometry between two points, batched |
     | [VfxPrimitiveRibbon](/classes/vfxprimitiveribbon) | a strip, batched |
+    | [VfxShimmerPrimitiveNonRenderable](/classes/vfxshimmerprimitivenonrenderable) | no geometry; see its page |
 
-    Shipped graphs use only the mesh and the quad, and no shipped graph runs; see
-    [VfxComponents](/classes/vfxcomponents).
+    Shipped graphs use only the mesh and the quad. See [VfxComponents](/classes/vfxcomponents)
+    for which shipped graphs run.
 
-    **Batched** primitives build their vertices on the CPU each frame, through a geometry
-    builder that only this tree has. The component emitter calls that builder for shimmer
-    primitives only, which is why a legacy batched primitive in a component graph draws
-    nothing. **Per-particle** primitives add nothing to the batch and draw each particle
+    **Batched** primitives build their vertices on the CPU in every update, through a
+    geometry builder that only this family has. The component emitter calls that builder only
+    for these primitives, so a legacy batched primitive in a component graph builds no
+    vertices. **Per-particle** primitives add nothing to the batch and draw each particle
     separately.
 
-    Meshes choose how they face the camera through a `FacingMode` object rather than through
-    flags; see [VfxShimmerFacingMode](/classes/vfxshimmerfacingmode).
+    **Facing.** The quad and the meshes turn toward the camera through a `FacingMode` object
+    instead of the alignment flags of legacy meshes; see
+    [VfxShimmerFacingMode](/classes/vfxshimmerfacingmode). The laser, the ribbon, the mesh
+    beam and the non-renderable primitive have no facing mode.
+
+    **Spawn count.** The primitive can lower the number of particles that the emitter spawns
+    in an update. The ribbon does this; see
+    [VfxPrimitiveRibbon](/classes/vfxprimitiveribbon).

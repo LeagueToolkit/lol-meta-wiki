@@ -1,0 +1,138 @@
+# VfxMaterialRenderComponent Documentation
+
+class:
+  description: |
+    A [render component](/classes/vfxrendercomponentbase) that draws the particles with a
+    **material**, the one in `MaterialContainer`. The other render state of the component is
+    a short list of values: the render phase, the draw-order key, the blend mode and the
+    stencil use. The particle colour, the flipbook frame and any extra shader values come
+    from driver values (see [IVfxBaseDriver](/classes/ivfxbasedriver)).
+
+    **When the system is prepared**, the component:
+
+    1. Runs the driver setup over `Color`, `UvAnimation` and `Drivers`.
+    2. Copies the material. Each emitter draws with its own copy, named after the material
+       with the suffix `particleClone`.
+    3. Adds a shadow-map technique to the copy if `CastShadow` is set or `RenderPhase` is
+       `1`.
+    4. Adds the techniques of the render phases that the emitter draws in. The techniques of
+       phases `2`-`4` get the define `DISTORTION`.
+    5. Applies `stencilMode` and `StencilReferenceId` to every pass of the copy.
+
+    **At spawn**, it evaluates `Color.InitialColor`, the flipbook range of `UvAnimation` and
+    the `InitialParameters` of `Drivers.DynamicParticleParameter` for each new particle.
+
+    **In each update**, it evaluates `Color.ColorOverLife`, the flipbook frame and the
+    `KeyedParameters` of `Drivers.DynamicParticleParameter` for each particle.
+
+    **On each draw**, it sets the material parameters of `Drivers.materialDrivers`,
+    `DYNAMIC_PARTICLE_ENABLE_MASK` and `EMITTER_DEPTH_PUSH_PULL`.
+
+    ## Draw order
+
+    Inside one render phase, component emitters are ordered by `RenderOrder`, then by the
+    blend rank of `blendMode`, then by distance. Which end of each key draws first, and which
+    distance the last key measures, is not established.
+  notes:
+    - "If `MaterialContainer` is null, or a [VfxSharedMaterial](/classes/vfxsharedmaterial) link does not resolve, the client crashes when the system is prepared."
+    - "With a [VfxPrimitiveNonRenderable](/classes/vfxprimitivenonrenderable) primitive, the component builds no material and the emitter draws in no phase."
+    - "Every shipped component emitter uses it, with a [VfxEmbeddedMaterial](/classes/vfxembeddedmaterial)."
+
+properties:
+  RenderPhase:
+    description: |
+      The **render phase** that the emitter draws in. The phases and their order are the ones that
+      `renderPhaseOverride` on [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata)
+      lists.
+
+      | Value | Phase |
+      |---|---|
+      | `0` | Default |
+      | `1` | Shadow |
+      | `2` | DistortionNoCharacter |
+      | `3` | DistortionAll |
+      | `4` | PostDistortion |
+      | `5` | GroundLayer |
+      | `6` | HudLayer |
+
+      The emitter draws only in this phase, and in `Shadow` too if `CastShadow` is set. An
+      emitter of a HUD-layer system draws only in `HudLayer`, whatever this value is. A value
+      above `6` matches no phase.
+    notes:
+      - "`1` makes a shadow-only emitter."
+      - "A few shipped emitters use `5`. The rest keep the default."
+
+  RenderOrder:
+    description: |
+      The first key of the draw order inside a render phase, see Draw order above. It takes
+      the place of `pass` on [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata),
+      but it does not choose the render phase.
+
+  blendMode:
+    description: |
+      The blend mode of the particles. It sets the second key of the draw order and the
+      premultiply of the particle colour.
+
+      | Value | Name | Blend rank | Particle colour |
+      |---|---|---|---|
+      | `0` | Add | 1 | RGB multiplied by alpha, alpha set to `1` |
+      | `1` | Alpha | 2 | unchanged |
+      | `2` | Subtract | 1 | RGB multiplied by alpha, alpha set to `1` |
+      | `3` | None | 0 | unchanged |
+      | `4` | AlphaAdd | 2 | unchanged |
+      | `5` | PremultipliedAlpha | 2 | unchanged |
+      | `6` | Min | 2 | unchanged |
+      | `7` | Max | 2 | unchanged |
+      | `8` | TargetAlpha | 3 | unchanged |
+
+    notes:
+      - "Building the material does not read this value. Whether it changes the blend state that the GPU uses is not established."
+
+  stencilMode:
+    description: |
+      How the emitter uses the stencil buffer. The client applies it to every pass of the
+      emitter's material.
+
+      | Value | Name | Test | Writes |
+      |---|---|---|---|
+      | `0` | Disabled | off | no |
+      | `1` | WriteMask | always passes | the reference where it draws |
+      | `2` | TestEqual | draws only where the stencil equals the reference | no |
+      | `3` | TestNotEqual | draws only where the stencil differs from the reference | no |
+      | `4` | WriteMaskIfTestNotEqual | draws only where the stencil differs | the reference where it draws |
+
+      The reference is the one that the material's passes set, unless `StencilReferenceId`
+      replaces it.
+
+  StencilReferenceId:
+    description: |
+      A name hash that replaces the stencil reference of every pass of the material. The
+      client applies it only if `stencilMode` is not `0` and the hash is not zero. It works
+      like `StencilReferenceId` on [VfxEmitterDefinitionData](/classes/vfxemitterdefinitiondata).
+
+  CastShadow:
+    description: |
+      Also draws the emitter in the `Shadow` phase. The client adds a shadow-map technique to
+      the emitter's material for it.
+
+  DepthPushPull:
+    description: |
+      Set on every draw as the shader parameter `EMITTER_DEPTH_PUSH_PULL`.
+      What it does depends on the material's shader.
+
+  Color:
+    description: |
+      The particle colour, see [VfxColorContainer](/classes/vfxcolorcontainer). The colour
+      that reaches the shader is the container's colour with the premultiply of `blendMode`.
+
+  UvAnimation:
+    description: "The flipbook, see [VfxUvAnimationContainer](/classes/vfxuvanimationcontainer)."
+
+  Drivers:
+    description: "Extra shader values per emitter and per particle, see [VfxDriverContainer](/classes/vfxdrivercontainer)."
+
+  MaterialContainer:
+    description: |
+      The material that the emitter draws with, see
+      [VfxMaterialContainer](/classes/vfxmaterialcontainer). Required: the client crashes
+      when the system is prepared if it is null.
