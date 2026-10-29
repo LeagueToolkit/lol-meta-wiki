@@ -27,10 +27,23 @@ class:
     | Child flag | Effect |
     |------------|--------|
     | `kLoop` | The child loops while the parallel plays. |
-    | `kContinue` | The child is not stopped when the main child ends. When the parallel starts again and the child still plays, it keeps playing and is not restarted. |
-    | `kPlayOnce` | The child starts on the first pass only and is not stopped when the main child ends. On a child that is not the main child, it cancels `kLoop` and `kContinue`. |
+    | `kContinue` | The child is not stopped when the main child ends or the parallel is stopped. When the parallel loops and the child still plays, it keeps playing and is not restarted. |
+    | `kPlayOnce` | The child starts on the first pass only and is not stopped when the main child ends or the parallel is stopped. On a child that is not the main child, it cancels `kLoop` and `kContinue`. |
+
+    **Passes belong to one run.** Each time the parallel is played, by name or by a clip
+    above it, the client makes a new run of it. "First pass" and "loops" count within one
+    run. So a new run starts every child again, `kPlayOnce` and `kContinue` children
+    included, and a child [SequencerClipData](/classes/sequencerclipdata) starts again
+    from its first child.
+
+    **Children that are left running.** A child with `kContinue` or `kPlayOnce` is not
+    stopped with the parallel. It keeps playing on its track until it ends by itself or
+    another clip starts on that track. When the parallel is played again, the new run's
+    child on the same track replaces it. Other children are stopped together with the
+    parallel, for example when a condition clip above it switches to another child.
   notes:
     - "Two children that name the same track do not play together. The one that starts later replaces the other on that track."
+    - "Playing the parallel again does not stop the run that plays. The old run ends when the new run's clips replace its clips on their tracks."
 
 properties:
   mClipNameList:

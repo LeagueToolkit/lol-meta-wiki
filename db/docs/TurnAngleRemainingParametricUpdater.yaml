@@ -3,8 +3,13 @@
 class:
   description: |
     A [float updater](/classes/ifloatparametricupdater) that returns **how far the unit
-    still has to turn**: the angle from the direction it faces to the direction it turns
-    to, from `-180` to `180` degrees.
+    still has to turn**: the angle from the direction the unit faces to the direction of
+    its last movement, from `-180` to `180` degrees. The sign gives the side of the turn,
+    the same as for [TurnAngleParametricUpdater](/classes/turnangleparametricupdater).
+
+    The angle is measured on each movement update, before the facing turns in that update.
+    It falls toward `0` as the facing catches up with the movement. It is not measured
+    while the unit stands still, so it keeps the last value it had while the unit moved.
 
     It is one of the turn updaters. A graph that uses any of them turns on turn tracking
     for the unit, see [TurnAngleParametricUpdater](/classes/turnangleparametricupdater).

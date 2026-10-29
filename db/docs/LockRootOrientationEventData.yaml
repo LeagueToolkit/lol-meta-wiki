@@ -15,8 +15,10 @@ class:
     to follow the unit again.
   notes:
     - "The client needs no setup on the skin for this event. It adds the pose modifier that does the lock, a [LockRootOrientationRigPoseModifierData](/classes/lockrootorientationrigposemodifierdata), when a clip of the graph has an event of this kind."
-    - "The world orientation is kept exactly only when no joint above `JointName` is turned, which is the case for the root joint. The joint is turned back in the frame of its parent."
-    - "Events under the same key of `mEventDataMap` share one lock, which ends when the last of them has ended."
+    - "`JointName` can be any joint. The joint is turned back in the frame of its parent, so the world orientation is kept exactly only when no joint above it is turned, which is the case for the root joint. On a joint such as `hip_JNT` it is kept while the joints above turn only around the vertical axis."
+    - "The recorded rotation is the full rotation of the unit, and the whole difference is turned back, not only the turn around the vertical axis."
+    - "The track of the clip does not matter, additive tracks included. The lock is applied after all tracks are combined, and the track's weight does not scale it."
+    - "Events under the same key of `mEventDataMap` share one lock, which ends when the last of them has ended. Events under different keys on the same joint each turn it back, so the correction is applied twice."
 
 properties:
   JointName:

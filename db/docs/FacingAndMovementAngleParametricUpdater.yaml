@@ -7,6 +7,11 @@ class:
     degrees. `0` means the unit moves straight ahead. It is the value for strafing and
     backward run clips.
 
+    The value is **negative** when a unit that faces `+Z` moves toward `+X`, and positive
+    when it moves toward `-X`. That is the opposite sign to the turn updaters, such as
+    [TurnAngleParametricUpdater](/classes/turnangleparametricupdater), which are positive
+    for the same case. Exactly behind the unit, the value is `-180`.
+
     The movement direction follows the unit's velocity with some smoothing. When the unit
     stops, the last movement direction is kept, so the angle does not jump to `0`.
 

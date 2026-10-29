@@ -2,12 +2,31 @@
 
 class:
   description: |
-    A [float updater](/classes/ifloatparametricupdater) that returns the **full angle of
-    the turn that just started**: the angle that was still left from the turn before, plus
-    the angle to the new direction. It can be more than 180 degrees in either direction.
+    A [float updater](/classes/ifloatparametricupdater) that returns the **remaining turn
+    plus the angle to the direction of movement**, in degrees: the value of
+    [TurnAngleRemainingParametricUpdater](/classes/turnangleremainingparametricupdater),
+    plus the angle between the facing and the direction of this update's movement, with the
+    sign of the turn. It can be more than 180 degrees in either direction.
 
-    The value is taken only during the first 0.25 seconds after a turn starts. After that
-    it stays as it is until the next turn.
+    The client updates the value only during the first 0.25 seconds after a turn starts.
+    After that it stays as it is until the next turn. It is not one snapshot of the start:
+
+    - On the update that starts the turn, the remaining angle still points at the old
+      direction, so the value is about the full angle of the new turn, plus what was left
+      of the turn before.
+    - On the next updates, the remaining angle points at the new direction, so the value is
+      about twice the angle that the facing still lags behind.
+
+    So the value that it keeps is the one from the last update inside the 0.25 seconds. On
+    the `Turn` clip itself it can stop earlier, when the turn is marked finished, see
+    [TurnAngleParametricUpdater](/classes/turnangleparametricupdater). If the turn is
+    complete before the 0.25 seconds are over, the value that it keeps is close to `0`.
+    Before the unit's first turn the value is `0`.
+
+    A clip that chooses a child from this value, such as a `Run`
+    [ConditionFloatClipData](/classes/conditionfloatclipdata), sees the value of the same
+    frame: the updaters are read before the clips choose. To keep a choice after the 0.25
+    seconds, give the entry a hold, see `ConditionFloatPairData.mHoldAnimationToLower`.
 
     It is one of the turn updaters. A graph that uses any of them turns on turn tracking
     for the unit, see [TurnAngleParametricUpdater](/classes/turnangleparametricupdater).
