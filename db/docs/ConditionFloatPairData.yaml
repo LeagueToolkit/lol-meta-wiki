@@ -22,12 +22,22 @@ properties:
   mHoldAnimationToLower:
     description: |
       How long the clip stays on this child after the value has moved to a **lower** range,
-      in seconds. While the time runs, this child keeps playing. If the value comes back
-      to this range before the time is over, nothing changes.
+      in seconds. While the time runs, the clip keeps choosing this child, so it keeps
+      playing. When the time is over, `ConditionFloatClipData.mChildAnimDelaySwitchTime`
+      starts, so the two add up.
+
+      - The time counts only while the value is outside this range. If the value comes
+        back before the time is over, the count stops and this child plays on. The next
+        time the value leaves, the hold starts again from the full value.
+      - If the value moves on to a third range while the hold runs, the hold is not
+        started again.
+      - "Lower" compares the `mValue` of the two entries, not the value itself.
 
       `0` switches at once.
     notes:
       - "The hold time is taken from the entry that is left, not from the entry that is entered."
+      - "Holds work only with `ConditionFloatClipData.mChangeAnimationMidPlay`. Without it the clip chooses a child only once."
+      - "A hold belongs to one run of the clip. When the clip, or a clip above it, is played again, the new run starts with no hold."
 
   mHoldAnimationToHigher:
     description: |

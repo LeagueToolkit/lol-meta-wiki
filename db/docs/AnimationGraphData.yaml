@@ -12,6 +12,18 @@ class:
     another before the lookup. A name that is not in the map plays nothing: the graph has no
     fallback to another clip. The name `none` is always accepted and plays nothing.
 
+    **What the game asks for.** A unit asks for `Run` while it moves and `Idle1` while it
+    stands, on every update, not only when a clip ends. A clip that already plays is not
+    started again. While an attack or spell animation plays on the track of `Run` or
+    `Idle1`, the unit does not ask, so that clip plays to its end and then cross-fades into
+    `Run` or `Idle1`. The game plays
+    `Turn` by itself only for graphs that use a turn updater, see
+    [TurnAngleParametricUpdater](/classes/turnangleparametricupdater).
+
+    **Playing a clip again.** A logic clip that is played while it already plays is not
+    restarted in place. The client starts a new run of it next to the old one. The old run
+    ends when the new run's clips replace its clips on their tracks.
+
     **Clips.** A clip is one of several [kinds](/classes/clipbasedata). Two kinds produce a
     pose and play on a track: [AtomicClipData](/classes/atomicclipdata), which plays one
     `.anm` file, and [ParametricClipData](/classes/parametricclipdata), which blends

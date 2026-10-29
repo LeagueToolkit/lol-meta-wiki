@@ -26,6 +26,13 @@ class:
     `mPriority` wins. A later track shows only on joints where the earlier tracks left
     some of the budget, for example joints that their masks set to `0`. When no joint has
     budget left, the client skips the remaining normal tracks.
+
+    **When a clip ends.** A clip that is not looping and has nothing queued behind it
+    leaves its track. The track fades it out, and during the fade it shows the clip's last
+    frame with a falling weight, so the tracks after it take over. On a normal track that
+    is the only active normal track there is no fade: the pose changes at once to the bind
+    pose and any additive tracks. The track does not start another clip by itself; the
+    game asks for the next clip, see `AnimationGraphData`.
   notes:
     - "Because a single active track is used unchanged, a mask or a `mBlendWeight` below `1` has an effect only while another track is also active."
     - "Shipped graphs with one track call it `Default`. In graphs with several tracks, the full-body track usually has the highest `mPriority`, and the tracks that override part of the body (`Upper`, `UpperBody`, `Recall`, ...) have lower numbers."

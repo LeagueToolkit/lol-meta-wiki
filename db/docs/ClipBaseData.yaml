@@ -42,6 +42,10 @@ properties:
       Only `kLoop` has an effect on a clip by itself. The other three have an effect only
       where the table says. On any other clip they do nothing.
 
+      "First pass" and "starts again" count within one run of the parent. A parent that is
+      played again is a new run, and it starts every child again, `kPlayOnce` and
+      `kContinue` children included.
+
       A clip also loops when its parent asks it to. A logic clip passes that request to a
       child only if the child sets `kLoop` itself.
     examples:

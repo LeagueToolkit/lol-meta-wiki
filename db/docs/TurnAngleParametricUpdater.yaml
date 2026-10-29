@@ -2,9 +2,10 @@
 
 class:
   description: |
-    A [float updater](/classes/ifloatparametricupdater) that returns the **angle of the
-    turn the unit makes on the spot**, from `-180` to `180` degrees. The sign gives the
-    side of the turn. Shipped graphs use it in the `Turn` clip, a
+    A [float updater](/classes/ifloatparametricupdater) that returns **how far the unit has
+    turned since the current turn started**, in degrees, limited by how far its facing
+    still lags behind its movement. The sign gives the side of the turn: positive when a
+    unit that faces `+Z` turns toward `+X`. Shipped graphs use it in the `Turn` clip, a
     [ParametricClipData](/classes/parametricclipdata) that blends turn animations for
     different angles.
 
@@ -12,15 +13,38 @@ class:
     for the unit. The turn updaters are this one,
     [TurnAngleRemainingParametricUpdater](/classes/turnangleremainingparametricupdater),
     [TotalTurnAngleParametricUpdater](/classes/totalturnangleparametricupdater) and
-    [IsTurningParametricUpdater](/classes/isturningparametricupdater). With turn tracking
-    on, each time the unit is told to face a new direction:
+    [IsTurningParametricUpdater](/classes/isturningparametricupdater). Turn tracking runs
+    on every movement update of the unit, and only while the unit moves:
 
-    - The client measures the angles that the turn updaters return.
-    - If the new direction is more than 10 degrees away, and the last turn started more
-      than 0.25 seconds ago, the client plays the clip named `Turn`.
+    - The facing of a moving unit does not snap to the direction it moves. On each update
+      it turns toward the direction of the last movement by a share of the difference, so
+      a change of direction takes several updates.
+    - When the facing is more than 10 degrees away from the direction of this update's
+      movement, and the last turn started more than 0.25 seconds ago, the client plays the
+      clip named `Turn`. Each play starts a new copy of `Turn` and of every clip under it.
+    - While the facing stays more than 10 degrees away, `Turn` is played again every 0.25
+      seconds.
 
     Without a turn updater in the graph, the client does not play `Turn` by itself and the
     turn angles stay at `0`.
 
-    A `Turn` clip that is fading out because a new turn has started keeps the angle it
-    had. Only the newest `Turn` clip, and clips with other names, follow the live value.
+    **The value over one turn.**
+
+    1. On the update that starts the turn: the rotation of the facing in that update.
+    2. After that: the rotation since the turn started, but never more than the **cap**,
+       which is the latest angle above 10 degrees between the facing and the direction of
+       movement. The cap shrinks as the facing catches up, and the rotation grows, so the
+       two meet around the middle of the turn.
+    3. When the value reaches the cap, the turn is marked finished.
+    4. Once [TurnAngleRemainingParametricUpdater](/classes/turnangleremainingparametricupdater)
+       is 5 degrees or less, the value is only the rotation of the last update, close to
+       `0`.
+
+    **Which clips follow the value.** An updater on the `Turn` clip itself follows the live
+    value only while its copy of `Turn` is the newest one and the turn is not finished.
+    After that it keeps its last value. A turn is also finished when the unit stops moving.
+    Updaters on clips under `Turn`, and on clips with other names, follow the live value
+    on every frame. This applies to all four turn updaters.
+  notes:
+    - "Shipped graphs play `Turn` on a track of its own, named `TURN`, with a lower `mPriority` than the full-body track. The game asks for `Run` again on every update while the unit moves, so a `Turn` clip on the track of `Run` is replaced on the next update."
+    - "Each play of `Turn` is a new copy, so a `ConditionFloatPairData` hold or a `kPlayOnce` child under `Turn` starts again with each play."

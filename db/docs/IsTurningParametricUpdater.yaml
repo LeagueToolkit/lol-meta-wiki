@@ -3,8 +3,12 @@
 class:
   description: |
     A [bool updater](/classes/ibooleanparametricupdater) that is true **while the unit is
-    turning on the spot**: while more than 5 degrees are left between the direction the
-    unit faces and the direction it turns to.
+    turning**: while
+    [TurnAngleRemainingParametricUpdater](/classes/turnangleremainingparametricupdater) is
+    more than 5 degrees away from `0`, in either direction.
+
+    The remaining angle is measured only while the unit moves, so a unit that stops in the
+    middle of a turn can stay "turning" until it moves again.
 
     It is one of the turn updaters. A graph that uses any of them turns on turn tracking
     for the unit, see [TurnAngleParametricUpdater](/classes/turnangleparametricupdater).
