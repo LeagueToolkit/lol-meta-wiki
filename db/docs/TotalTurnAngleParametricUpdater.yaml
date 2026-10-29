@@ -19,7 +19,14 @@ class:
 
     So the value that it keeps is the one from the last update inside the 0.25 seconds. On
     the `Turn` clip itself it can stop earlier, when the turn is marked finished, see
-    [TurnAngleParametricUpdater](/classes/turnangleparametricupdater).
+    [TurnAngleParametricUpdater](/classes/turnangleparametricupdater). If the turn is
+    complete before the 0.25 seconds are over, the value that it keeps is close to `0`.
+    Before the unit's first turn the value is `0`.
+
+    A clip that chooses a child from this value, such as a `Run`
+    [ConditionFloatClipData](/classes/conditionfloatclipdata), sees the value of the same
+    frame: the updaters are read before the clips choose. To keep a choice after the 0.25
+    seconds, give the entry a hold, see `ConditionFloatPairData.mHoldAnimationToLower`.
 
     It is one of the turn updaters. A graph that uses any of them turns on turn tracking
     for the unit, see [TurnAngleParametricUpdater](/classes/turnangleparametricupdater).

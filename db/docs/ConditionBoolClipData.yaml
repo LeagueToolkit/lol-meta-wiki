@@ -13,8 +13,11 @@ class:
     [EventControlledSelectorClipData](/classes/eventcontrolledselectorclipdata).
 
     - The clip plays one child at a time. The choice is made when the clip starts.
-    - The clip ends when its child ends, or when another clip replaces the child on its
-      track. It does not choose again at that moment.
+    - When its child ends, a clip that does not loop ends too. A clip that loops starts
+      again and chooses again, then plays the chosen child from its start. A clip loops when
+      it sets `kLoop` in its `mFlags`, or when the game plays it as a loop, as it does with
+      `Run` and `Idle1`.
+    - The clip also ends when another clip replaces the child on its track.
     - By default the first choice is kept until the clip ends. With
       `mChangeAnimationMidPlay`, the choice is read again every frame, and a different
       choice switches to the other child.

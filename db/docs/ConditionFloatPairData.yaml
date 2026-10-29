@@ -38,6 +38,7 @@ properties:
       - "The hold time is taken from the entry that is left, not from the entry that is entered."
       - "Holds work only with `ConditionFloatClipData.mChangeAnimationMidPlay`. Without it the clip chooses a child only once."
       - "A hold belongs to one run of the clip. When the clip, or a clip above it, is played again, the new run starts with no hold."
+      - "If this child is not looping and ends while the hold runs, it does not stay on its last frame. A clip that loops starts again and keeps choosing this child, so the child plays again from its start until the hold is over. A clip that does not loop ends with the child."
 
   mHoldAnimationToHigher:
     description: |
