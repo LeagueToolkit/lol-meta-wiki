@@ -1,0 +1,107 @@
+<pbe-history>
+  <form class="history-controls">
+    <label>PBE build<select name="build" disabled aria-label="PBE build"></select></label>
+    <label>Class name or hash<input name="class" list="pbe-class-names" autocomplete="off" disabled /></label>
+    <datalist id="pbe-class-names"></datalist>
+    <button type="submit" disabled>Show definition</button>
+  </form>
+  <p role="status" aria-live="polite">Loading archived builds…</p>
+  <div class="definition" hidden>
+    <h2></h2>
+    <p class="bases"></p>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Property</th><th>Type</th><th>Default</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </div>
+</pbe-history>
+
+<script>
+  import type { MetaClass, MetaVersion } from "../../../../scripts/meta-db";
+  import { revisionAt, archivedType } from "../../utils/pbeHistory";
+
+  class PbeHistory extends HTMLElement {
+    async connectedCallback() {
+      const form = this.querySelector("form")!;
+      const select = this.querySelector("select")!;
+      const input = this.querySelector("input")!;
+      const status = this.querySelector('[role="status"]')!;
+      const definition = this.querySelector<HTMLElement>(".definition")!;
+      let request = 0;
+      try {
+        const response = await fetch("/db/pbe-history/index.json");
+        if (!response.ok) throw new Error("Could not load the archive.");
+        const index: { versions: MetaVersion[]; names: Record<string, string>;
+          externalTypeNames: Record<string, string> } = await response.json();
+        if (!index.versions.length) { status.textContent = "No PBE builds have been archived yet."; return; }
+        const names = { ...index.externalTypeNames, ...index.names };
+        const hashByName = new Map(Object.entries(index.names).map(([h, n]) => [n, h]));
+        for (const v of [...index.versions].reverse()) {
+          select.add(new Option(`${v.patch} · ${v.build}`, String(v.build)));
+        }
+        const list = this.querySelector("datalist")!;
+        for (const name of Object.values(index.names).sort()) list.append(new Option(name, name));
+        for (const control of [select, input, this.querySelector("button")!]) control.disabled = false;
+        const params = new URLSearchParams(location.search);
+        const requested = params.get("build");
+        if (requested && index.versions.some((v) => String(v.build) === requested)) select.value = requested;
+        input.value = params.get("class") ?? "";
+        status.textContent = `${index.versions.length} archived builds. Select a class to inspect.`;
+        const show = async () => {
+          const current = ++request;
+          definition.hidden = true;
+          const name = input.value.trim();
+          const hash = hashByName.get(name) ?? (Object.hasOwn(index.names, name) ? name : undefined);
+          if (!hash) { status.textContent = "Choose a class name or hash from the archive."; return; }
+          const build = Number(select.value);
+          status.textContent = "Loading definition…";
+          try {
+            const res = await fetch(`/db/pbe-history/${hash}.json`);
+            if (!res.ok) throw new Error("Could not load the definition. Try again.");
+            const klass: MetaClass = await res.json();
+            if (current !== request) return;
+            const revision = revisionAt(klass.revisions, build, index.versions);
+            const url = new URL(location.href);
+            url.searchParams.set("build", String(build));
+            url.searchParams.set("class", klass.name ?? hash);
+            history.replaceState(null, "", url);
+            if (!revision) { status.textContent = `${klass.name ?? hash} is absent from this PBE build.`; return; }
+            this.querySelector("h2")!.textContent = `${klass.name ?? hash} · ${build}`;
+            this.querySelector(".bases")!.textContent =
+              `Bases: ${revision.bases.map((h) => names[h] ?? h).join(", ") || "none"}. ` +
+              `Interface: ${revision.interface ? "yes" : "no"}. Value type: ${revision.value ? "yes" : "no"}.`;
+            const body = this.querySelector("tbody")!;
+            body.replaceChildren();
+            for (const [h, property] of Object.entries(klass.properties)
+              .sort(([a, x], [b, y]) => (x.name ?? a).localeCompare(y.name ?? b))) {
+              const rev = revisionAt(property.revisions, build, index.versions);
+              if (!rev) continue;
+              const row = body.insertRow();
+              for (const text of [property.name ?? h, archivedType(rev.type, names),
+                rev.default === undefined ? "—" : JSON.stringify(rev.default)]) {
+                row.insertCell().textContent = text;
+              }
+            }
+            definition.hidden = false;
+            status.textContent = `${body.rows.length} own properties at PBE build ${build}.`;
+          } catch (err) { if (current === request) status.textContent = String(err); }
+        };
+        form.addEventListener("submit", (event) => { event.preventDefault(); void show(); });
+        select.addEventListener("change", () => { if (input.value) void show(); });
+        if (input.value) await show();
+      } catch (err) { status.textContent = `${err} Reload the page to retry.`; }
+    }
+  }
+  customElements.define("pbe-history", PbeHistory);
+</script>
+
+<style>
+  pbe-history { display: block; }
+  .history-controls { display: flex; flex-wrap: wrap; gap: 1rem; align-items: end; }
+  label { display: grid; gap: 0.4rem; flex: 1 1 14rem; }
+  input, select, button { font: inherit; padding: 0.6rem; border: 1px solid var(--sl-color-gray-4); border-radius: 0.35rem; color: var(--sl-color-text); background: var(--sl-color-bg); min-width: 0; }
+  button { cursor: pointer; color: var(--sl-color-text-accent); }
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; font-size: 0.875rem; }
+  td { overflow-wrap: anywhere; }
+</style>

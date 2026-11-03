@@ -1,4 +1,5 @@
 #!/usr/bin/env bun
+import { pbePatches } from "./pbe-history";
 /**
  * LoL Meta DB per-class JSON & MDX generator (Bun)
  *
@@ -787,7 +788,7 @@ build adds, removes or changes.
   }
   return `---
 title: PBE ${info.patch}
-description: Meta schema changes on PBE ${info.patch}, compared with live patch ${info.basePatch} - new, removed, and changed classes.
+description: Meta schema changes on PBE ${info.patch}, compared with ${info.baseChannel ?? "live"} patch ${info.basePatch} - new, removed, and changed classes.
 sidebar:
   order: 0.5
   label: PBE
@@ -1536,6 +1537,20 @@ async function main() {
     // Directory might not exist yet, that's fine
   }
 
+  // The PBE archive is separate from live history and survives live catch-up.
+  const pbeHistory: MetaDb = JSON.parse(await readFile(
+    args.get("pbe-history") ?? "db/meta.pbe-history.json", "utf8"));
+  const archivedPatches = pbePatches(pbeHistory, buildChangelog(pbeHistory, () => undefined));
+  const archiveDir = join(outDir, "pbe-history");
+  await writeIfChanged(join(archiveDir, "index.json"), JSON.stringify({
+    versions: pbeHistory.versions,
+    names: Object.fromEntries(Object.entries(pbeHistory.classes).map(([h, c]) => [h, c.name ?? h])),
+    externalTypeNames: pbeHistory.externalTypeNames,
+  }));
+  for (const [hash, klass] of Object.entries(pbeHistory.classes)) {
+    await writeIfChanged(join(archiveDir, `${hash}.json`), JSON.stringify(klass));
+  }
+
   // --- changelog: per-patch JSON (build-time only, outside public/ like the
   // class JSON) + MDX stubs + an index.json for the overview page ---
   const changelog = buildChangelog(metaDb, (name) => categories.get(name)?.domain);
@@ -1573,19 +1588,31 @@ async function main() {
     });
   }
 
+  for (const [i, cp] of archivedPatches.entries()) {
+    const fileName = `${cp.slug}.${contentHash(cp)}.json`;
+    if (await writeIfChanged(join(changelogOutDir, fileName), JSON.stringify(cp))) clJsonChanged++;
+    generatedChangelogJSON.add(fileName);
+    const mdx = generateChangelogMDX(cp, fileName, changelog.length + i + 1)
+      .replace(`title: Patch ${cp.patch}`, `title: PBE ${cp.patch}`);
+    if (await writeIfChanged(join(changelogMdxDir, `${cp.slug}.mdx`), mdx)) clMdxChanged++;
+    generatedChangelogMDX.add(`${cp.slug}.mdx`);
+  }
+  generatedChangelogMDX.add("pbe-history.mdx");
+
   // The PBE page of the changelog. Its JSON exists only with a preview.
   let previewEntry: ChangelogPreviewEntry | null = null;
   let previewChangelogFile: string | null = null;
   if (preview) {
-    const cp = preview.changes;
-    previewChangelogFile = `${cp.slug}.${contentHash(cp)}.json`;
-    const json = JSON.stringify(cp, null, pretty ? 2 : 0);
+    const cp = archivedPatches.find((p) => p.patch === preview.info.patch) ?? preview.changes;
+    const current = { ...cp, slug: PREVIEW_SLUG };
+    previewChangelogFile = `${PREVIEW_SLUG}.${contentHash(current)}.json`;
+    const json = JSON.stringify(current, null, pretty ? 2 : 0);
     if (await writeIfChanged(join(changelogOutDir, previewChangelogFile), json)) clJsonChanged++;
     generatedChangelogJSON.add(previewChangelogFile);
-    previewEntry = { ...preview.info, slug: cp.slug, counts: cp.counts };
+    previewEntry = { ...cp.preview!, slug: PREVIEW_SLUG, counts: cp.counts };
   }
   const previewMdxFile = `${PREVIEW_SLUG}.mdx`;
-  const previewMdx = generatePreviewChangelogMDX(preview?.info ?? null, previewChangelogFile);
+  const previewMdx = generatePreviewChangelogMDX(previewEntry, previewChangelogFile);
   if (await writeIfChanged(join(changelogMdxDir, previewMdxFile), previewMdx)) clMdxChanged++;
   generatedChangelogMDX.add(previewMdxFile);
 
@@ -1594,6 +1621,7 @@ async function main() {
     latestPatch,
     patches: changelogIndex,
     preview: previewEntry,
+    pbe: archivedPatches.map(({ patch, slug, builds, counts }) => ({ patch, slug, builds, counts })),
   };
   await writeIfChanged(
     join(changelogOutDir, "index.json"),

@@ -39,8 +39,8 @@ jobs:
         with:
           bun-version: latest
 
-      # Both files come from one upstream commit (see scripts/update-db.ts).
-      - name: Fetch latest meta.db.json and meta.pbe.json
+      # All files come from one upstream commit (see scripts/update-db.ts).
+      - name: Fetch live database, PBE preview, and PBE history
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bun scripts/update-db.ts
@@ -50,7 +50,7 @@ jobs:
         run: |
           set -e
           # `git status`, not `git diff`: it also reports an untracked file.
-          if [ -z "$(git status --porcelain -- db/meta.db.json db/meta.pbe.json)" ]; then
+          if [ -z "$(git status --porcelain -- db/meta.db.json db/meta.pbe.json db/meta.pbe-history.json)" ]; then
             echo "Database is already up to date."
             echo "pushed=false" >> $GITHUB_OUTPUT
             exit 0
@@ -67,7 +67,7 @@ jobs:
             # the same patch again.
             MESSAGE=$(python3 -c "import json; p = json.load(open('db/meta.pbe.json')); print('chore: remove the PBE preview' if p['build'] is None else 'chore: update PBE preview to %s.%s' % (p['patch'], p['build']))")
           fi
-          git add db/meta.db.json db/meta.pbe.json
+          git add db/meta.db.json db/meta.pbe.json db/meta.pbe-history.json
           git commit -m "${MESSAGE}"
           git push
           echo "pushed=true" >> $GITHUB_OUTPUT

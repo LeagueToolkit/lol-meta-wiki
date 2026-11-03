@@ -256,6 +256,8 @@ function writeDocsTree(docs: Map<string, ClassDocs>) {
 }
 
 function writeChangelog(resolver: Resolver, preview: Preview | null): number {
+  const history: MetaDb = readJson(path.join(repoRoot, "db", "meta.pbe-history.json"));
+  const historyResolver = new Resolver(history);
   let patches = 0;
   for (const file of fs.readdirSync(src.changelog)) {
     const m = HASHED.exec(file);
@@ -263,11 +265,11 @@ function writeChangelog(resolver: Resolver, preview: Preview | null): number {
       // The PBE page names PBE-only classes, which only the merged resolver knows.
       if (!preview) throw new Error(`${file} exists but there is no PBE preview - site data is stale, re-run generate-db`);
       const patch: SiteChangelogPatch = readJson(path.join(src.changelog, file));
-      writeJson(outFile("changelog", `${m[1]}.json`), transformChangelog(preview.resolver, patch));
+      writeJson(outFile("changelog", `${m[1]}.json`), transformChangelog(patch.preview?.baseChannel === "pbe" ? historyResolver : preview.resolver, patch));
     } else if (m) {
       patches++;
       const patch: SiteChangelogPatch = readJson(path.join(src.changelog, file));
-      writeJson(outFile("changelog", `${m[1]}.json`), transformChangelog(resolver, patch));
+      writeJson(outFile("changelog", `${m[1]}.json`), transformChangelog(m[1].startsWith("pbe-") ? historyResolver : resolver, patch));
     } else if (file === "index.json") {
       fs.copyFileSync(path.join(src.changelog, file), outFile("changelog", "index.json"));
     }

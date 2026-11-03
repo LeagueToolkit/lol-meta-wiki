@@ -176,6 +176,8 @@ export interface PropChange {
 }
 
 export interface ClassChange {
+  /** Exact archived definition for a PBE change. */
+  definitionHref?: string;
   name: string;
   slug: string;
   kind: "added" | "readded" | "removed" | "changed";
@@ -224,6 +226,8 @@ export interface ChangelogIndexEntry {
 
 /** The shape of db-data/changelog/index.json. */
 export interface ChangelogIndex {
+  /** Permanent PBE patch pages, independent of live releases. */
+  pbe?: ChangelogIndexEntry[];
   generatedAt: string;
   latestPatch: string;
   patches: ChangelogIndexEntry[];
@@ -243,6 +247,8 @@ export interface ChangelogPreviewEntry extends PreviewInfo {
 
 /** The PBE build of the preview and the live build that it is compared with. */
 export interface PreviewInfo {
+  /** Omitted for the original live-based preview. */
+  baseChannel?: "pbe" | "live";
   channel: "pbe";
   patch: string;
   build: number;
