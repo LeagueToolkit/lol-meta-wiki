@@ -65,3 +65,5 @@ coverage/
 *.temp
 .cache/
 
+
+!site/src/content/docs/changelog/pbe-history.mdx

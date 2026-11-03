@@ -6,7 +6,7 @@ import type { ChangelogCounts, ChangelogIndex } from "../types";
 // Read the changelog index at build time (server-side only). Lives in
 // site/db-data/changelog/ (outside public/), same as the per-patch JSON.
 const dataUrl = new URL("./db-data/changelog/index.json", root);
-const { patches, preview } = JSON.parse(fs.readFileSync(dataUrl, "utf8")) as ChangelogIndex;
+const { patches, preview, pbe = [] } = JSON.parse(fs.readFileSync(dataUrl, "utf8")) as ChangelogIndex;
 
 // One row per page: the PBE preview first, if the db has one, then the live
 // patches newest first.
@@ -19,6 +19,8 @@ interface Row {
 }
 const rows: Row[] = [
   ...(preview ? [{ ...preview, builds: 1, pbe: true }] : []),
+  ...pbe.filter((p) => p.patch !== preview?.patch)
+    .map((p) => ({ ...p, builds: p.builds.length, pbe: true })),
   ...patches.map((p) => ({ ...p, builds: p.builds.length, pbe: false })),
 ];
 

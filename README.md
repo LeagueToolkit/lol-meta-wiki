@@ -225,3 +225,19 @@ meta dumper by [moonshadow](https://github.com/moonshadow565):
 
 *The LoL Meta Wiki is an unofficial fan project and is not affiliated with, endorsed by, or
 sponsored by Riot Games. League of Legends and its game data are the property of Riot Games, Inc.*
+
+## PBE history
+
+The updater fetches `meta.db.json`, `meta.pbe.json`, and `meta.pbe-history.json`
+from one upstream commit. Deploy the archive-producing `lol-meta-classes`
+change before this wiki change so the third file exists upstream.
+
+PBE changelogs compare consecutive archived PBE builds and remain at
+`/changelog/pbe-<major>-<minor>/` after live catches up. The first archived
+build is the baseline. `/changelog/pbe-history/` browses each class definition
+at an exact archived build, including defaults and removed classes. Live
+class pages retain their existing live-based preview.
+
+Validation: `bun test scripts`, `bun scripts/generate-db.ts` twice (the second
+run reports zero changed/deleted files), `pnpm --filter site build`, and
+`bun api/scripts/build-assets.ts` followed by `pnpm --filter api typecheck`.

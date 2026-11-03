@@ -15,7 +15,7 @@ const { kind, entries } = Astro.props;
 // Hash-only names render as their raw hex - a class page still exists for
 // them, so the link resolves either way.
 const classHref = (c: { name: string; slug: string }) =>
-  classIndex[c.name] ?? `/classes/${c.slug}`;
+  c.definitionHref ?? classIndex[c.name] ?? `/classes/${c.slug}`;
 
 const chipClass = kind === "added" ? "chip-added" : "chip-removed";
 ---

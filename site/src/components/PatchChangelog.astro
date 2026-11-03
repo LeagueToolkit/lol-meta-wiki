@@ -52,8 +52,10 @@ const firstWith = {
   {
     cp.preview && (
       <PreviewNote>
-        PBE build {cp.preview.patch}.{cp.preview.build}, compared with live build{" "}
-        {cp.preview.basePatch}.{cp.preview.base}. Each new PBE build replaces this page.
+        PBE build {cp.preview.patch}.{cp.preview.build}, compared with {cp.preview.baseChannel ?? "live"} build{" "}
+        {cp.preview.basePatch}.{cp.preview.base}.
+        {cp.preview.baseChannel === "pbe" && <span> Each build is compared with the preceding archived PBE build. The first archived build is the baseline.</span>}
+        <a href="/changelog/pbe-history/">Browse archived definitions</a>.
       </PreviewNote>
     )
   }

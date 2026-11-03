@@ -1,15 +1,16 @@
 #!/usr/bin/env bun
 /**
- * Refresh db/meta.db.json and db/meta.pbe.json from the
+ * Refresh the live database, PBE overlay, and permanent PBE history from the
  * LeagueToolkit/lol-meta-classes repository.
  *
  * The two files are a pair: the PBE overlay applies to the live build that is
- * `latest` in the db of the same commit. Both are fetched from one commit, so
+ * `latest` in the db of the same commit. All files are fetched from one commit, so
  * a push between the two downloads, or a CDN that still serves an older copy
  * of one file, cannot produce a pair from different commits.
  *
  * Usage:
  *   bun run scripts/update-db.ts [--out db/meta.db.json] [--preview-out db/meta.pbe.json]
+ *     [--history-out db/meta.pbe-history.json]
  *
  * GITHUB_TOKEN, if set, authenticates the request that resolves the commit.
  */
@@ -27,6 +28,7 @@ const arg = (name: string, fallback: string) => {
   return i !== -1 && process.argv[i + 1] ? process.argv[i + 1] : fallback;
 };
 const outFile = arg("--out", "db/meta.db.json");
+const historyOutFile = arg("--history-out", "db/meta.pbe-history.json");
 const previewOutFile = arg("--preview-out", "db/meta.pbe.json");
 
 /**
@@ -66,9 +68,10 @@ async function fetchText(ref: string, path: string): Promise<string> {
 
 async function main() {
   const ref = await resolveRef();
-  const [dbText, overlayText] = await Promise.all([
+  const [dbText, overlayText, historyText] = await Promise.all([
     fetchText(ref, "db/meta.db.json"),
     fetchText(ref, "db/meta.pbe.json"),
+    fetchText(ref, "db/meta.pbe-history.json"),
   ]);
 
   // Validate before overwriting anything
@@ -88,8 +91,18 @@ async function main() {
       `commits. Nothing was written; run the update again.`
     );
   }
+  const history: MetaDb = JSON.parse(historyText);
+  if (history.formatVersion !== 1 || !Array.isArray(history.versions)
+      || (history.versions.at(-1)?.build ?? 0) !== history.latest) {
+    throw new Error("Invalid PBE history database. Nothing was written.");
+  }
+  if (merged.status === "ok" && history.latest !== merged.info.build) {
+    throw new Error("PBE history and preview disagree. Nothing was written.");
+  }
   const latest = db.versions[db.versions.length - 1];
 
+  await mkdir(dirname(historyOutFile), { recursive: true });
+  await writeFile(historyOutFile, historyText, "utf8");
   await mkdir(dirname(outFile), { recursive: true });
   await writeFile(outFile, dbText, "utf8");
   await mkdir(dirname(previewOutFile), { recursive: true });

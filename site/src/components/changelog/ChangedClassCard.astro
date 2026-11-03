@@ -13,7 +13,7 @@ interface Props {
 const { entry } = Astro.props;
 
 // Hash-only names render as their raw hex - a class page still exists for them.
-const classHref = classIndex[entry.name] ?? `/classes/${entry.slug}`;
+const classHref = entry.definitionHref ?? classIndex[entry.name] ?? `/classes/${entry.slug}`;
 ---
 
 <li class="changed-item">
