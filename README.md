@@ -238,6 +238,9 @@ build is the baseline. `/changelog/pbe-history/` browses each class definition
 at an exact archived build, including defaults and removed classes. Live
 class pages retain their existing live-based preview.
 
+Changelog class and property links open the standard class reference pages.
+Classes found only in older PBE builds keep a standard page with an archive notice.
+
 Validation: `bun test scripts`, `bun scripts/generate-db.ts` twice (the second
 run reports zero changed/deleted files), `pnpm --filter site build`, and
 `bun api/scripts/build-assets.ts` followed by `pnpm --filter api typecheck`.

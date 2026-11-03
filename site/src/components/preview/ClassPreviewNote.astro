@@ -33,7 +33,12 @@ const note: Record<ClassPreviewKind, { text: string; link: typeof changelog }> =
     link: { href: `#${PREVIEW_ANCHOR}`, label: "PBE changes" },
   },
 };
-const { text, link } = note[preview.kind];
+const { text, link } = preview.archived
+  ? {
+      text: `This class was last seen in ${pbe} (build ${preview.build}) and has no live definition. This page preserves its archived PBE definition.`,
+      link: { href: `/changelog/pbe-${preview.patch.replaceAll(".", "-")}/`, label: `${pbe} changes` },
+    }
+  : note[preview.kind];
 ---
 
 <PreviewNote link={link}>{text}</PreviewNote>

@@ -24,11 +24,7 @@ export function pbePatches(db: MetaDb, changes: ChangelogPatch[]): ChangelogPatc
     patch.buildGroups.push({
       build: version.build,
       entries: changes.find((p) => p.patch === version.patch)?.buildGroups
-        .find((g) => g.build === version.build)?.entries.map((entry) => ({
-          ...entry,
-          definitionHref: `/changelog/pbe-history/?build=${entry.kind === "removed"
-            ? db.versions[Math.max(0, i - 1)].build : version.build}&class=${encodeURIComponent(entry.name)}`,
-        })) ?? [],
+        .find((g) => g.build === version.build)?.entries ?? [],
     });
     patch.preview!.build = version.build;
   }

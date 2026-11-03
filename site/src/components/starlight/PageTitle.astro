@@ -28,6 +28,7 @@ const {
 	family,
 	preview,
 	previewKind,
+	previewArchived,
 } = Astro.locals.starlightRoute.entry.data as {
 	title: string;
 	removedIn?: string;
@@ -39,6 +40,7 @@ const {
 	family?: string;
 	preview?: string;
 	previewKind?: ClassPreviewKind;
+	previewArchived?: boolean;
 };
 
 // A class page carries a hash; a domain's own page carries only `domain`, and
@@ -51,7 +53,7 @@ const kindLabel = { class: undefined, interface: 'Interface', value: 'Value stru
 ];
 
 // Each patch pill links to that patch's changelog page (slug = dots → dashes)
-const changelogHref = (patch: string) => `/changelog/${patch.replace(/\./g, "-")}/`;
+const changelogHref = (patch: string) => `/changelog/${previewArchived ? 'pbe-' : ''}${patch.replace(/\./g, "-")}/`;
 
 // The PBE pill: what the PBE build does to the class, and where the details
 // are. Only a changed class has a changes section on its own page.
@@ -59,9 +61,11 @@ const previewPill =
 	preview && previewKind
 		? {
 				only: {
-					label: 'PBE only',
-					title: `This class is in PBE ${preview} and in no live build - see the PBE changes`,
-					href: PREVIEW_CHANGELOG_HREF,
+					label: previewArchived ? 'Archived PBE' : 'PBE only',
+					title: previewArchived
+						? `Last seen in PBE ${preview} - see the archived PBE changes`
+						: `This class is in PBE ${preview} and in no live build - see the PBE changes`,
+					href: previewArchived ? changelogHref(preview) : PREVIEW_CHANGELOG_HREF,
 				},
 				readded: {
 					label: 'Back on PBE',
