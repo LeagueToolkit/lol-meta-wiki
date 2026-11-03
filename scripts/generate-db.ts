@@ -720,7 +720,8 @@ function generateMDX(
     `\nvia: ${category.via}` +
     // The root of a family is its own family; the breadcrumb has nothing to add
     (category.family !== c.name ? `\nfamily: "${category.family}"` : "") +
-    (preview ? `\npreview: "${preview.patch}"\npreviewKind: ${preview.kind}` : "");
+    (preview ? `\npreview: "${preview.patch}"\npreviewKind: ${preview.kind}` : "") +
+    (preview?.archived ? "\npreviewArchived: true" : "");
 
   // Hash-named classes stay searchable (by hash and by property name), but
   // their property headings are heavily down-weighted in Pagefind so classes
@@ -1083,21 +1084,38 @@ async function main() {
   // of both channels: a root or pin can name a class that exists on PBE only.
   const merged = await readPreview(metaDb);
   const mergedClasses = merged ? loadMetaDb(merged.db) : [];
-  const categoryConfig = await loadCategoryConfig(merged ? mergedClasses : classes);
+  const pbeHistory: MetaDb = JSON.parse(await readFile(
+    args.get("pbe-history") ?? "db/meta.pbe-history.json", "utf8"));
+  const archivedClasses = loadMetaDb(pbeHistory);
+  const currentHashes = new Set((merged ? mergedClasses : classes).map((c) => c.hash));
+  const archiveOnly = archivedClasses.filter((c) => !currentHashes.has(c.hash));
+  const categoryConfig = await loadCategoryConfig([
+    ...(merged ? mergedClasses : classes), ...archiveOnly,
+  ]);
   const live = buildClassView(metaDb, classes, categoryConfig);
   const { classMap, children, usedByMap, categories } = live;
   const categoryOf = (name: string) => categories.get(name)!;
   const preview = merged && buildPreview(merged, mergedClasses, live, categoryConfig);
+  const archived = buildClassView(pbeHistory, archivedClasses, categoryConfig, live.categories);
+  const archivedByName = new Map(archiveOnly.map((c) => [c.name, c]));
+  const archiveMetaByHash = new Map(Object.entries(pbeHistory.classes)
+    .map(([hash, c]) => [canonHash(hash), c]));
 
   // Classes that exist on PBE and in no live build. Each gets a page built
   // from the merged view; the live indexes, sidebar and domain pages do not
   // list them.
   const previewOnly = mergedClasses.filter((c) => !classMap.has(c.name));
-  // One page per entry: the live classes plus the PBE-only ones, A→Z.
-  const pages = [...classes, ...previewOnly].sort((a, b) =>
+  // Keep standard pages for archived PBE-only classes as well as current ones.
+  const pages = [...classes, ...previewOnly, ...archiveOnly].sort((a, b) =>
     a.name < b.name ? -1 : a.name > b.name ? 1 : 0
   );
   const previewOf = (c: ClassDoc): ClassPreview | undefined => {
+    if (archivedByName.has(c.name)) {
+      const revision = archiveMetaByHash.get(c.hash)!.revisions.at(-1)!;
+      const build = revision.to ?? pbeHistory.latest;
+      const patch = pbeHistory.versions.find((v) => v.build === build)!.patch;
+      return { patch, build, kind: "only", archived: true };
+    }
     if (!preview) return undefined;
     const { patch, build } = preview.info;
     if (!classMap.has(c.name)) return { patch, build, kind: "only" };
@@ -1140,9 +1158,9 @@ async function main() {
     const docs = await loadDocs(c.name, docsDir);
     if (docs.classDocs || Object.keys(docs.propertyDocs).length > 0) documented.add(c.name);
 
-    // A page shows live data. A PBE-only class has none, so its page shows
-    // the merged view.
-    const base = classJsonOf(c, onlyOnPbe ? preview!.view : live, docs);
+    // Prefer live, then current PBE, then the permanent PBE archive.
+    const base = classJsonOf(c,
+      archivedByName.has(c.name) ? archived : onlyOnPbe ? preview!.view : live, docs);
     const classPreview = previewOf(c);
     const classJson: ClassJson = classPreview ? { ...base, preview: classPreview } : base;
     const json = JSON.stringify(classJson, null, pretty ? 2 : 0);
@@ -1153,7 +1171,7 @@ async function main() {
     if (didJson) jsonChanged++;
     generatedJSON.add(fileName);
 
-    if (preview) {
+    if (preview && !archivedByName.has(c.name)) {
       const mergedJson = onlyOnPbe
         ? base
         : classJsonOf(preview.view.classMap.get(c.name)!, preview.view, docs);
@@ -1190,7 +1208,9 @@ async function main() {
   // in case both map to `<name>.mdx`) or a dropped class would just build a
   // smaller site. Assert before the cleanup passes below, which would happily
   // delete pages a partial run failed to claim.
-  const expectedClasses = Object.keys((preview?.db ?? metaDb).classes).length;
+  const expectedClasses = new Set([
+    ...Object.keys((preview?.db ?? metaDb).classes), ...Object.keys(pbeHistory.classes),
+  ]).size;
   if (
     pages.length !== expectedClasses ||
     generatedMDX.size !== expectedClasses ||
@@ -1538,8 +1558,6 @@ async function main() {
   }
 
   // The PBE archive is separate from live history and survives live catch-up.
-  const pbeHistory: MetaDb = JSON.parse(await readFile(
-    args.get("pbe-history") ?? "db/meta.pbe-history.json", "utf8"));
   const archivedPatches = pbePatches(pbeHistory, buildChangelog(pbeHistory, () => undefined));
   const archiveDir = join(outDir, "pbe-history");
   await writeIfChanged(join(archiveDir, "index.json"), JSON.stringify({

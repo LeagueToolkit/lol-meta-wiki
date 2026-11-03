@@ -24,6 +24,7 @@ export const collections = {
 				// the PBE build does to the class (ClassPreviewKind in types.ts)
 				preview: z.string().optional(),
 				previewKind: z.enum(['only', 'readded', 'removed', 'changed']).optional(),
+				previewArchived: z.boolean().optional(),
 			}),
 		}),
 	}),

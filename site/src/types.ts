@@ -176,8 +176,6 @@ export interface PropChange {
 }
 
 export interface ClassChange {
-  /** Exact archived definition for a PBE change. */
-  definitionHref?: string;
   name: string;
   slug: string;
   kind: "added" | "readded" | "removed" | "changed";
@@ -265,6 +263,8 @@ export interface PreviewInfo {
 export type ClassPreviewKind = "only" | Exclude<ClassChange["kind"], "added">;
 
 export interface ClassPreview {
+  /** The class survives only in the permanent PBE archive. */
+  archived?: boolean;
   patch: string;
   build: number;
   kind: ClassPreviewKind;
